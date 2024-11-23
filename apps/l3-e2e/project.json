@@ -1,0 +1,9 @@
+{
+  "name": "l3-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/l3-e2e/src",
+  "implicitDependencies": ["l3"],
+  "// targets": "to see all targets run: nx show project l3-e2e --web",
+  "targets": {}
+}
