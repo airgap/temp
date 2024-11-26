@@ -1,0 +1,26 @@
+{
+  "name": "monolith-ts-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/monolith-ts-api/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/monolith-ts-api",
+        "main": "libs/monolith-ts-api/src/index.ts",
+        "tsConfig": "libs/monolith-ts-api/tsconfig.lib.json",
+        "assets": ["libs/monolith-ts-api/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/monolith-ts-api/**/*.ts"]
+      }
+    }
+  }
+}

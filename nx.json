@@ -34,11 +34,50 @@
       "options": {
         "targetName": "test"
       }
+    },
+    {
+      "plugin": "@nx/rollup/plugin",
+      "options": {
+        "buildTargetName": "build"
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "typecheckTargetName": "typecheck"
+      }
     }
   ],
   "targetDefaults": {
+    "generate-types": {
+      "dependsOn": ["^build"]
+    },
+    "build": {
+      "dependsOn": ["^build", "^compile", "^generate-types", "^post-build"]
+    },
+    "compile": {
+      "dependsOn": ["^build"]
+    },
     "e2e-ci--**/*": {
       "dependsOn": ["^build"]
+    },
+    "@nx/js:swc": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "@nx/js:tsc": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "post-build": {
+      "dependsOn": ["build"]
     }
   },
   "generators": {
@@ -54,8 +93,14 @@
       },
       "library": {
         "style": "scss",
-        "linter": "eslint"
+        "linter": "eslint",
+        "unitTestRunner": "vitest"
       }
+    }
+  },
+  "release": {
+    "version": {
+      "preVersionCommand": "npx nx run-many -t build"
     }
   }
 }

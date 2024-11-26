@@ -1,0 +1,53 @@
+@use "sass:math"
+@import "generic.module"
+//@import "ui-bits/lib/generic.module"
+//$curve: cubic-bezier(.03,-0.2,.92,1.14)
+//$curve: cubic-bezier(.04,-0.1,.98,1.02)
+//$curve: cubic-bezier(.04,-0.1,.53,.98)
+$pink: #DC00BE
+html
+	//font-family: "Share Tech Mono", monospace
+	//background: rgb(44,37,37)
+	background-color: black
+	color: white
+	//text-align: center
+	//font-family: 'Cabin', 'Gumzilla', "Comfortaa", "SF Alien Encounters Solid", sans-serif
+	//font-weight: 900
+	//letter-spacing: .1em
+	font-family: 'Montserrat', sans-serif
+html, body
+	height: 100% !important
+	margin: 0
+	//height: auto !important
+body > div
+	margin: 0
+	display: flex
+	flex-direction: column
+	min-height: 100vh
+a
+	//font-weight: 500
+
+h1, h2, h3, h4, h5, p
+	//letter-spacing: .1em
+	font-weight: inherit
+	margin: 0
+	padding: 0
+
+// *, *::before, *::after
+.App
+	flex: 1
+	display: flex
+	flex-direction: column
+	min-height: 100vh
+.header
+	text-align: center
+	//filter: glow(0 0 50 pink)
+	filter: drop-shadow(0 0 10px #2a1c4f)
+
+
+
+
+
+.note
+	font-style: italic
+	font-size: .8em

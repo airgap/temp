@@ -1,0 +1,21 @@
+{
+  "name": "ui-bits",
+  "version": "0.0.1",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "@lyku/phrasebooks": "workspace:*",
+    "json-models": "workspace:*",
+    "bson-models": "workspace:*",
+    "@lyku/defaults": "workspace:*",
+    "@lyku/helpers": "workspace:*",
+    "@lyku/mapi-models": "workspace:*",
+    "stats": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  }
+}

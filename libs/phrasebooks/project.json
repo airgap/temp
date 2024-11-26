@@ -1,0 +1,19 @@
+{
+  "name": "@lyku/phrasebooks",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/phrasebooks/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/phrasebooks",
+        "main": "libs/phrasebooks/src/index.ts",
+        "tsConfig": "libs/phrasebooks/tsconfig.lib.json",
+        "assets": ["libs/phrasebooks/*.md"]
+      }
+    }
+  }
+}

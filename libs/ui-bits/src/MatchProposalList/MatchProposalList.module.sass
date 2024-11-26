@@ -1,0 +1,26 @@
+.MatchProposalList
+	border-collapse: collapse
+	tr
+		display: flex
+		+ tr
+			border-top: 1px solid #ffffff55
+	td
+		padding: 2.5%
+		width: auto
+		&:first-child
+			padding-left: 0
+			+ td
+				flex-grow: 1
+				+ td
+					padding-right: 0
+		span:has(img)
+			width: 50pt
+			height: 50pt
+		table
+			padding: 0
+			td
+				+ td
+					text-align: right
+
+.Play
+	white-space: nowrap

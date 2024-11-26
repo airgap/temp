@@ -1,0 +1,128 @@
+@import "../symbols"
+
+.PostCreator
+	text-align: left
+	//border-left: 2px solid transparentize(white, .8)
+	//padding: 10px
+	border-radius: 5px
+	//background: linear-gradient(90deg, transparentize(white, .9), transparent)
+	> div + .UserDetails
+		border-top: $border
+		padding-top: 10px
+	.UserDetails
+		padding-bottom: 0px
+		img
+			//width: 50px
+			//height: 50px
+			//border-radius: 50%
+			vertical-align: middle
+			//border-bottom-left-radius: 0
+			//border-bottom-right-radius: 0
+			//border: $border
+			//margin-bottom: -2px
+		margin-bottom: 10px
+		> *
+			vertical-align: middle
+		.Username
+			margin-left: 5px
+	
+	.Submit
+		text-align: right
+		button
+			color: white
+			opacity: .5
+			padding: 10px
+			padding-right: 0px
+			margin-top: -2px
+			position: relative
+			display: inline-block
+			width: auto
+			border-radius: 0px
+			font-family: 'Montserrat', sans-serif
+			&:hover
+				// background: #ffffff77
+				opacity: .75
+				filter: drop-shadow(0 0 5px #ffffff77)
+				img
+					margin-right: -10px
+					margin-left: 10px
+			&:disabled
+				margin-right: -22px
+			*
+				transition: .25s
+				display: inline-block
+				vertical-align: middle
+			img
+				height: 20px
+				margin-left: 5px
+			// &::after
+			// 	content: '➙'
+			// 	transform-origin: center left
+			// 	display: inline-block
+			// 	margin-left: 2px
+			// 	transform: rotateY(90deg)
+			// 	transition: .25s
+			// &:not(:disabled)
+			// 	margin-right: -6px
+			// 	&::after
+			// 		transform: none
+			//font-family: Gumzilla
+			//border-top-left-radius: 0
+			//border-top-right-radius: 0
+			//border-bottom-left-radius: 20px
+			//border-bottom-right-radius: 20px
+.Error
+	background: #FFC0CB33
+	border-radius: 5px
+	padding: 5px
+.newPost
+	position: relative
+	padding-left: 30px
+//.tox, .tox-editor-container
+//	background: transparent !important
+.editBox
+	background: transparent !important
+	border-bottom: 2px solid #ffffff77
+	[aria-placeholder]::before
+		pointer-events: none
+		color: #ffffffbb !important
+		margin-left: 10px
+		//margin-left: 5px
+		//margin-top: 3px
+	[contenteditable=true]
+		outline: none
+		margin-left: 40px
+		padding: 10px
+		//padding-top: 2px
+		transition: $transition-duration background-color
+		&:focus, &:hover
+			background-color: #ffffff22
+			//outline: 1px solid #ffffff77
+			//outline-offset: 5px
+	p
+		margin: 0
+		//margin-top: .2em
+		//margin-bottom: .2em
+	.editor
+		input
+			//border-top-left-radius: 0
+			//border-bottom-right-radius: 0
+			//margin-bottom: 0
+			padding-bottom: 5px
+			padding-left: 0
+			transition: $transition-duration padding
+			&:placeholder-shown:not(:focus)
+				padding-top: 0px
+			+ label
+				padding-left: 0
+				margin-top: 10px
+				margin-top: -5px
+		input:not(:placeholder-shown), input:focus
+			border-color: #FFFFFF80
+			+ label
+				font-size: .9em
+				margin-top: -8px !important
+				transform: none
+				opacity: .5
+.editable
+	outline: 1px solid red

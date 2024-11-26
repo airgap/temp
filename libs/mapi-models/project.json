@@ -1,0 +1,61 @@
+{
+  "name": "mapi-models",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/mapi-models/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/mapi-models",
+        "main": "libs/mapi-models/src/index.ts",
+        "tsConfig": "libs/mapi-models/tsconfig.lib.json",
+        "assets": ["libs/mapi-models/*.md"]
+      }
+    },
+    "generate-types": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bun libs/mapi-models/src/build.ts > dist/libs/mapi-types.d.ts"
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "type": "static",
+      "source": "@lyku/helpers",
+      "target": "helpers"
+    },
+    {
+      "type": "static",
+      "source": "@lyku/bson-models",
+      "target": "bson-models"
+    },
+    {
+      "type": "static",
+      "source": "@lyku/json-models",
+      "target": "json-models"
+    },
+    {
+      "type": "static",
+      "source": "@lyku/defaults",
+      "target": "defaults"
+    }
+  ]
+}
