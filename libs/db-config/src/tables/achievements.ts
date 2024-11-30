@@ -1,6 +1,6 @@
 import { achievement } from 'bson-models';
 import { TableModel } from 'from-schema';
-import * as docs from '../internalAchievements';
+import { achievements as docs } from '@lyku/stock-docs';
 
 export const achievements = {
 	indexes: ['name', 'points'],

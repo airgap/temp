@@ -14,4 +14,4 @@ export const videoDoc = {
 	},
 	required: [...cloudflareVideoUpload.required, 'id', 'author', 'supertype'],
 } as const satisfies ObjectBsonSchema;
-console.log('videoDoc', videoDoc);
+// console.log('videoDoc', videoDoc);

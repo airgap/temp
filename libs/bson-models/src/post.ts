@@ -52,4 +52,4 @@ export const post = {
 	],
 } as const satisfies ObjectBsonSchema;
 export type Post = FromBsonSchema<typeof post>;
-console.log('post', post);
+// console.log('post', post);

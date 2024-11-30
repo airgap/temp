@@ -1,6 +1,6 @@
 import { TableModel } from 'from-schema';
 import { user } from 'bson-models';
-import * as docs from '../internalUsers';
+import {users as docs} from '@lyku/stock-docs';
 
 export const users = {
 	indexes: [

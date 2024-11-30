@@ -1,8 +1,8 @@
-const { withNx } = require('@nx/rollup/with-nx');
-const url = require('@rollup/plugin-url');
-const svg = require('@svgr/rollup');
+import { withNx } from '@nx/rollup/with-nx.js';
+import url from '@rollup/plugin-url';
+import svg from '@svgr/rollup';
 
-module.exports = withNx(
+export default withNx(
   {
     main: './src/index.ts',
     outputPath: '../../dist/libs/ui-bits',
@@ -13,7 +13,6 @@ module.exports = withNx(
     assets: [{ input: '.', output: '.', glob: 'README.md' }],
   },
   {
-    // Provide additional rollup configuration here. See: https://rollupjs.org/configuration-options
     plugins: [
       svg({
         svgo: false,
@@ -21,7 +20,8 @@ module.exports = withNx(
         ref: true,
       }),
       url({
-        limit: 10000, // 10kB
+        limit: 10000,
+        include: ['**/*.wav'],
       }),
     ],
   }

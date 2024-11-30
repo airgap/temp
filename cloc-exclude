@@ -1,0 +1,11 @@
+package-lock.json
+tools
+node_modules
+build
+package.json
+dist
+.vscode
+tmp
+rethinkdb_data
+apps/monolith/src/app/ais
+.nx

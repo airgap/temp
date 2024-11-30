@@ -1,11 +1,12 @@
 {
   "name": "@lyku/json-models",
   "version": "0.0.1",
-  "dependencies": {
-    "@swc/helpers": "~0.5.11"
+  "devDependencies": {
+    "@swc/helpers": "~0.5.11",
+    "bson-models": "workspace:*"
   },
-  "type": "commonjs",
-  "main": "./src/index.js",
+  "type": "module",
+  "main": "./src/index.ts",
   "typings": "./src/index.d.ts",
   "private": true
 }

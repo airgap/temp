@@ -1,26 +1,12 @@
-import { mkdir, readdir, writeFile } from 'fs/promises';
+import { mkdir } from 'fs/promises';
 import path = require('path');
 import { b2j, b2t, BsonSchemaOrPrimitive, FromBsonSchema, j2t } from 'from-schema';
 import * as ts from 'typescript';
 import * as module from 'bson-models';
 import * as prettier from 'prettier';
 
-const readdirRecursive = async (dir: string): Promise<string[]> => {
-	const dirents = await readdir(dir, { withFileTypes: true });
-	const files = await Promise.all(
-		dirents.map(async dirent => {
-			const res = path.resolve(dir, dirent.name);
-			return dirent.isDirectory() ? await readdirRecursive(res) : res;
-		}),
-	);
-	return files.flat();
-};
-
-// const a = null as unknown as FromBsonSchema<typeof module.attachment>;
-
 const jsonify = async () => {
-	const jsExports = [];
-	const dtsExports = [];
+	const exports = [];
 
 	// Create program and get type checker
 	const program = ts.createProgram([__filename], {});
@@ -39,20 +25,17 @@ const jsonify = async () => {
 			continue;}
 
 		const jsonSchema = b2j(value as BsonSchemaOrPrimitive);
-		jsExports.push(
-			`exports.${key} = ${JSON.stringify(jsonSchema, null, 2)};`
-		);
-
 		const resolvedTypeString = j2t(jsonSchema);
-		console.log(resolvedTypeString);
-		dtsExports.push(
-			`export declare const ${key}: ${JSON.stringify(jsonSchema, null, 2)};\n` +
+		console.log('Resolved', key);
+
+		exports.push(
+			`export const ${key} = ${JSON.stringify(jsonSchema, null, 2)} as const;\n` +
 			`export type ${key[0].toUpperCase() + key.slice(1)} = ${resolvedTypeString};`
 		);
 	}
 
-	if (jsExports.length > 0) {
-		const jsPath = path.join(
+	if (exports.length > 0) {
+		const tsPath = path.join(
 			__dirname,
 			'..',
 			'..',
@@ -61,24 +44,12 @@ const jsonify = async () => {
 			'libs',
 			'json-models',
 			'src',
-			`index.js`
+			`index.ts`
 		);
-		const dtsPath = path.join(
-			__dirname,
-			'..',
-			'..',
-			'..',
-			'dist',
-			'libs',
-			'json-models',
-			'src',
-			`index.d.ts`
-		);
-		const exportDir = path.dirname(jsPath);
+		const exportDir = path.dirname(tsPath);
 		await mkdir(exportDir, { recursive: true });
-		await writeFile(jsPath, jsExports.join('\n\n'));
 		
-		const tsContent = `${dtsExports.join('\n\n')}`;
+		const tsContent = exports.join('\n\n');
 		const formattedTsContent = await prettier.format(tsContent, {
 			parser: 'typescript',
 			semi: true,
@@ -86,8 +57,13 @@ const jsonify = async () => {
 			tabWidth: 2,
 		});
 		
-		await writeFile(dtsPath, formattedTsContent);
+		await Bun.write(tsPath, formattedTsContent);
 	}
 };
 
 jsonify();
+// Copy package.json to dist
+await Bun.write(
+  'dist/libs/json-models/package.json',
+  await Bun.file('libs/json-models/package.json').text()
+);

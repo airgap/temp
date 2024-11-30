@@ -1,5 +1,5 @@
 {
-	"name": "stats",
+	"name": "@lyku/stats",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "libs/stats/src",
 	"projectType": "library",
@@ -10,10 +10,7 @@
 				"commands": [
 					"rimraf dist/libs/stats",
 					"mkdirp dist/libs/stats",
-					"bunx cloc --exclude-list=cloc-exclude --not-match-f=package-lock.json --vcs git --json . >dist/libs/stats/cloc.json",
-					"node -e \"require('fs').writeFileSync('dist/libs/stats/pipes.json', process.env.REACT_APP_PIPE || '420')\"",
 					"bun libs/stats/count-components.ts",
-					"git rev-list --count --all > dist/libs/stats/revisions.json",
 					"bun libs/stats/buildRouteMap.ts"
 				],
 				"parallel": false

@@ -10,7 +10,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/json-models",
-        "command": "bun libs/json-models/src/build.ts && bunx copy libs/json-models/package.json dist/libs/json-models/"
+        "command": "bun libs/json-models/src/build.ts"
       }
     }
   }

@@ -1,11 +1,4 @@
-import de_DE_fallback from 'strings/de-DE-fallback.json';
-import en_AR from 'strings/en-AR.json';
-import en_US from 'strings/en-US.json';
-// import en_US_angry from 'strings/en-US-angry.json';
-import fr_FR_fallback from 'strings/fr-FR-fallback.json';
-import ru_RU from 'strings/ru-RU.json';
-import wa_GH from 'strings/wa-GH.json';
-import ru_RU_fallback from 'strings/ru-RU-fallback.json';
+import {de_DE_fallback,en_AR,en_US,fr_FR_fallback,ru_RU,ru_RU_fallback,wa_GH} from '@lyku/strings';
 import { blaze } from 'blazebook';
 import { PhrasebookMap } from 'blazebook/dist/Phrasebook';
 

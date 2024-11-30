@@ -1,5 +1,5 @@
 import { Divisio } from './Divisio';
-import pipe from 'stats/pipes.json';
+import {pipe} from '@lyku/stats';
 import { Center } from './Center';
 import { Link, phrasebook } from './';
 
@@ -15,7 +15,7 @@ export const Footer = () => (
 			<Divisio size={'l'} layout={'h'} alignItems={'center'}>
 				<span>&copy; 2017-2024 lyku.org</span>|
 				<span>
-					alpha version <Link href="/stats">0.{pipe as number}</Link>
+					alpha version <Link href="/stats">0.{pipe}</Link>
 				</span>
 				|
 				<span>

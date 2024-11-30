@@ -1,6 +1,6 @@
 import { Divisio } from '../Divisio';
 import { AchievementList } from '../AchievementList';
-import { eminence } from '@lyku/db-config/internalGames';
+import { games } from '@lyku/stock-docs';
 // import { Eminence } from '../Eminence';
 import { Center } from '../Center';
 
@@ -9,7 +9,7 @@ export const PlayEminence = () => {
 		<Center>
 			<Divisio layout="v" size="m">
 				{/* <Eminence /> */}
-				<AchievementList game={eminence.id} />
+				<AchievementList game={games.eminence.id} />
 			</Divisio>
 		</Center>
 	);

@@ -35,27 +35,5 @@
         "packageRoot": "dist/{projectRoot}"
       }
     }
-  },
-  "dependencies": [
-    {
-      "type": "static",
-      "source": "@lyku/helpers",
-      "target": "helpers"
-    },
-    {
-      "type": "static",
-      "source": "@lyku/bson-models",
-      "target": "bson-models"
-    },
-    {
-      "type": "static",
-      "source": "@lyku/json-models",
-      "target": "json-models"
-    },
-    {
-      "type": "static",
-      "source": "@lyku/defaults",
-      "target": "defaults"
-    }
-  ]
+  }
 }

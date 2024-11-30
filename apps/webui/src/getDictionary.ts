@@ -1,6 +1,6 @@
 import { getCookie } from 'monolith-ts-api';
-import { CompactedPhrasebook, getPhrasebook } from 'phrasebooks';
-import en_US from 'strings/en-US.json';
+import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
+import {en_US} from '@lyku/strings';
 
 export const getDictionary = (): CompactedPhrasebook => {
 	let lang = getCookie('lang');

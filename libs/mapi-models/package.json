@@ -1,14 +1,16 @@
 {
   "name": "@lyku/mapi-models",
   "version": "0.0.1",
+  "dependencies": {
+    "@lyku/json-models": "workspace:*"
+  },
   "devDependencies": {
     "tslib": "^2.3.0",
-    "@lyku/helpers": "*",
-    "bson-models": "*",
-    "@lyku/defaults": "*",
-    "@lyku/json-models": "*"
+    "@lyku/helpers": "workspace:*",
+    "bson-models": "workspace:*",
+    "@lyku/defaults": "workspace:*"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts"
 }

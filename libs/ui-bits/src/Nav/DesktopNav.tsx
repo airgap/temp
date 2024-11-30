@@ -11,7 +11,7 @@ import { phrasebook } from '../phrasebook';
 import styles from './DesktopNav.module.sass';
 import { Lingo } from '../Lingo';
 import { useCurrentUser } from '../currentUserStore';
-import { getDocsPage } from '../linkToDocs';
+// import { getDocsPage } from '../linkToDocs';
 import { sessionId } from 'monolith-ts-api';
 
 const showAuth = (form: ReactNode) => () => shout('showAuth', form);

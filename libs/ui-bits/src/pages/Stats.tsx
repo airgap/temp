@@ -1,12 +1,9 @@
-import pipe from 'stats/pipes.json';
-import components from 'stats/components.json';
-import revisions from 'stats/revisions.json';
+import {pipe, components, revisions, cloc} from '@lyku/stats';
 import { Center } from '../Center';
 import { Divisio } from '../Divisio';
 import * as monolith from '@lyku/mapi-models';
 import { dbConfig } from '@lyku/db-config';
 // import { monolith, cloudflare, linkShortener, dbConfig } from '@lyku/json-models';
-import cloc from 'stats/cloc.json';
 import { createElement } from 'react';
 import { phrasebook } from '../phrasebook';
 

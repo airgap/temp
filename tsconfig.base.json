@@ -22,14 +22,15 @@
       "@lyku/db-config/*": ["libs/db-config/src/*"],
       "@lyku/defaults": ["libs/defaults/src/index.ts"],
       "@lyku/helpers": ["libs/helpers/src/index.ts"],
-      "@lyku/json-models": ["dist/libs/json-models/src/index"],
+      "@lyku/json-models": ["dist/libs/json-models/src/index.ts"],
       "@lyku/mapi-models": ["libs/mapi-models/src/index.ts"],
       "@lyku/phrasebooks": ["libs/phrasebooks/src/index.ts"],
+      "@lyku/stats": ["dist/libs/stats"],
+      "@lyku/stock-docs": ["libs/stock-docs/src/index.ts"],
       "bson-models": ["libs/bson-models/src/index.ts"],
       "monolith-api-types": ["dist/libs/mapi-types.d.ts"],
       "monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"],
-      "stats/*": ["dist/libs/stats/*"],
-      "strings/*": ["libs/strings/*"],
+      "@lyku/strings": ["libs/strings/src/index.ts"],
       "ui-bits": ["libs/ui-bits/src/index.ts"]
     }
   },

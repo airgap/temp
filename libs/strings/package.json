@@ -1,0 +1,8 @@
+{
+    "name": "@lyku/strings",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "type": "module"
+}

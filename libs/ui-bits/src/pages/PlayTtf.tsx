@@ -10,10 +10,11 @@ import styles from './PlayTtf.module.sass';
 import { api, ThiccSocket } from 'monolith-ts-api';
 import { useCallback, useEffect, useState } from 'react';
 import { TtfMatch } from '@lyku/json-models';
-import { ticTacFlow } from '@lyku/db-config/internalGames';
+import { games } from '@lyku/stock-docs';
 import { FriendInviter } from '../FriendInviter';
 import { TtfBotList } from '../TtfBotList';
 import { WinPanel } from '../WinPanel';
+const {id} = games.ticTacFlow;
 const getMatchId = () => window.location.hash.substring(1);
 export const PlayTtf = () => {
 	const user = useCurrentUser();
@@ -79,7 +80,7 @@ export const PlayTtf = () => {
 								/>
 							) : showFriends ? (
 								<FriendInviter
-									game={ticTacFlow.id}
+									game={id}
 									user={user}
 									onClose={() => setShowFriends(false)}
 								/>
@@ -128,7 +129,7 @@ export const PlayTtf = () => {
 					}
 				/>
 			</div>
-			<AchievementList game={ticTacFlow.id} />
+			<AchievementList game={id} />
 		</Divisio>
 	);
 };

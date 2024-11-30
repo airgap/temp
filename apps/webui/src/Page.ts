@@ -1,4 +1,4 @@
-import { Channel, User } from 'models';
+import { Channel, User } from '@lyku/json-models';
 
 export interface PageProps {
 	user?: User;

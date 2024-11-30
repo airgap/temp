@@ -1,7 +1,7 @@
 import { getCookie } from 'monolith-ts-api';
 import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
 import React, { ReactElement } from 'react';
-import en_US from 'strings/en-US.json';
+import {en_US} from '@lyku/strings';
 
 import { Link } from './Link';
 
