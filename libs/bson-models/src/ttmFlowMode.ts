@@ -1,5 +1,6 @@
-import { EnumBsonSchema } from 'from-schema';
+import { EnumBsonSchema, EnumColumnModel } from 'from-schema';
 
 export const ttmFlowMode = {
-	enum: ['novice'],
-} as const satisfies EnumBsonSchema;
+  type: 'enum',
+  enum: ['novice'],
+} as const satisfies EnumColumnModel;

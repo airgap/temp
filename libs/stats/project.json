@@ -1,21 +1,21 @@
 {
-	"name": "@lyku/stats",
-	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "libs/stats/src",
-	"projectType": "library",
-	"targets": {
-		"build": {
-			"executor": "nx:run-commands",
-			"options": {
-				"commands": [
-					"rimraf dist/libs/stats",
-					"mkdirp dist/libs/stats",
-					"bun libs/stats/count-components.ts",
-					"bun libs/stats/buildRouteMap.ts"
-				],
-				"parallel": false
-			}
-		}
-	},
-	"tags": []
+  "name": "@lyku/stats",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/stats/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rimraf dist/libs/stats",
+          "mkdirp dist/libs/stats",
+          "bun libs/stats/count-components.ts",
+          "bun libs/stats/buildRouteMap.ts"
+        ],
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
 }

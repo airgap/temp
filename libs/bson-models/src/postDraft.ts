@@ -1,24 +1,14 @@
 import { postBody } from './postBody';
-import { attachmentDraft } from './attachmentDraft';
-import { ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { uid } = bsonPrimitives;
-import { shortcode } from './shortcode';
+import { PostgresRecordModel } from 'from-schema';
 
 export const postDraft = {
-	description: 'A draft of a post containing text, images, or videos',
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		authorId: uid,
-		body: postBody,
-		replyTo: uid,
-		echoing: uid,
-		attachments: {
-			bsonType: 'array',
-			items: attachmentDraft,
-		},
-		shortcode,
-	},
-	required: ['id', 'uploadURL', 'authorId'],
-} as const satisfies ObjectBsonSchema;
+  description: 'A draft of a post containing text, images, or videos',
+  properties: {
+    id: { type: 'bigserial' },
+    author: { type: 'bigint' },
+    body: postBody,
+    replyTo: { type: 'bigint' },
+    echoing: { type: 'bigint' },
+  },
+  required: ['id', 'author', 'uploadURL', 'authorId'],
+} as const satisfies PostgresRecordModel;

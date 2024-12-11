@@ -1,15 +1,12 @@
-import { bsonPrimitives } from 'from-schema';
-const { date, uid } = bsonPrimitives;
 import { idBond } from './idBond';
-import { ObjectBsonSchema } from 'from-schema';
+import { PostgresRecordModel } from 'from-schema';
 
 export const userFollow = {
-	bsonType: 'object',
-	properties: {
-		follower: uid,
-		followee: uid,
-		id: idBond,
-		created: date,
-	},
-	required: ['created', 'follower', 'followee', 'id'],
-} as const satisfies ObjectBsonSchema;
+  properties: {
+    follower: { type: 'bigint' },
+    followee: { type: 'bigint' },
+    id: idBond,
+    created: { type: 'timestamp' },
+  },
+  required: ['created', 'follower', 'followee', 'id'],
+} as const satisfies PostgresRecordModel;

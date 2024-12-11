@@ -19,7 +19,8 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    },   {
+    },
+    {
       "path": "../defaults"
     }
   ]

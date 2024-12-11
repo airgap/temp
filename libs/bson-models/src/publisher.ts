@@ -1,13 +1,10 @@
-import { ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { uid, string } = bsonPrimitives;
+import { PostgresRecordModel } from 'from-schema';
 
 export const publisher = {
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		homepage: string,
-		name: string,
-	},
-	required: ['id', 'name', 'homepage'],
-} as const satisfies ObjectBsonSchema;
+  properties: {
+    id: { type: 'bigint' },
+    homepage: { type: 'text', minLength: 1, maxLength: 50 },
+    name: { type: 'text', minLength: 1, maxLength: 50 },
+  },
+  required: ['id', 'name', 'homepage'],
+} as const satisfies PostgresRecordModel;

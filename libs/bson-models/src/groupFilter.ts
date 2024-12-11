@@ -1,5 +1,6 @@
-import { EnumJsonSchema } from "from-schema";
+import { EnumColumnModel } from 'from-schema';
 
 export const groupFilter = {
-	enum: ['iCreated', 'iOwn', 'imIn'],
-} as const satisfies EnumJsonSchema;
+  type: 'enum',
+  enum: ['iCreated', 'iOwn', 'imIn'],
+} as const satisfies EnumColumnModel;

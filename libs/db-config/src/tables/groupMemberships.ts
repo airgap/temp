@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { groupMembership } from 'bson-models';
 
 export const groupMemberships = {
-	indexes: ['user', 'group', { bond: ['user', 'group'] }],
-	schema: groupMembership,
-} as const satisfies TableModel<typeof groupMembership>;
+  indexes: ['user', 'group', { bond: ['user', 'group'] }],
+  schema: groupMembership,
+} as const satisfies PostgresTableModel<typeof groupMembership>;

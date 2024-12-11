@@ -4,11 +4,11 @@ import { Loading } from './Loading';
 import styles from './LoadingOverlay.module.sass';
 
 export const LoadingOverlay = ({ shown }: { shown?: boolean }) => (
-	<div
-		className={classnames(styles.LoadingOverlay, {
-			[hidden.hidden]: !shown,
-		})}
-	>
-		<Loading />
-	</div>
+  <div
+    className={classnames(styles.LoadingOverlay, {
+      [hidden.hidden]: !shown,
+    })}
+  >
+    <Loading />
+  </div>
 );

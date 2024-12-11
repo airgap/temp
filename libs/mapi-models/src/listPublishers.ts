@@ -1,26 +1,25 @@
-import { HandlerModel, jsonPrimitives } from 'from-schema';
+import { TsonHandlerModel } from 'from-schema';
 import { publisher } from '@lyku/json-models';
-const { string, boolean } = jsonPrimitives;
 
 export const listDPublishers = {
-	request: {
-		type: 'object',
-		properties: {
-			query: string,
-			mine: boolean,
-		},
-		required: [],
-	},
+  request: {
+    type: 'object',
+    properties: {
+      query: { type: 'string' },
+      mine: { type: 'boolean' },
+    },
+    required: [],
+  },
 
-	response: {
-		type: 'object',
-		properties: {
-			games: {
-				type: 'array',
-				items: publisher,
-			},
-		},
-		required: ['publishers'],
-	},
-	authenticated: false,
-} as const satisfies HandlerModel;
+  response: {
+    type: 'object',
+    properties: {
+      publishers: {
+        type: 'array',
+        items: publisher,
+      },
+    },
+    required: ['publishers'],
+  },
+  authenticated: false,
+} as const satisfies TsonHandlerModel;

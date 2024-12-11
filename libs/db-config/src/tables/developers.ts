@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { developer } from 'bson-models';
 
 export const developers = {
-	indexes: ['name'],
-	schema: developer,
-} as const satisfies TableModel<typeof developer>;
+  indexes: ['name'],
+  schema: developer,
+} as const satisfies PostgresTableModel<typeof developer>;

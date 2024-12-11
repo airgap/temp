@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
-import { videoDoc } from 'bson-models';
+import { PostgresTableModel } from 'from-schema';
+import { cloudflareVideoDoc } from 'bson-models';
 
 export const videos = {
-	indexes: ['author'],
-	schema: videoDoc,
-} as const satisfies TableModel<typeof videoDoc>;
+  indexes: ['author'],
+  schema: cloudflareVideoDoc,
+} as const satisfies PostgresTableModel<typeof cloudflareVideoDoc>;

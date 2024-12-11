@@ -1,6 +1,7 @@
-import { StringBsonSchema } from 'from-schema';
+import { VarcharColumnModel } from 'from-schema';
 
 export const groupName = {
-	bsonType: 'string',
-	pattern: '^.{3,30}$',
-} as const satisfies StringBsonSchema;
+  type: 'varchar',
+  maxLength: 30,
+  pattern: '^.{3,30}$',
+} as const satisfies VarcharColumnModel;

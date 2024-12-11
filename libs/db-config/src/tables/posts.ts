@@ -1,17 +1,17 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { post } from 'bson-models';
 
 export const posts = {
-	indexes: [
-		'published',
-		'authorId',
-		'likes',
-		'loves',
-		'groupId',
-		'authorId',
-		'replyTo',
-		'echoing',
-		'echoes',
-	],
-	schema: post,
-} as const satisfies TableModel<typeof post>;
+  indexes: [
+    'published',
+    'author',
+    'likes',
+    'loves',
+    'group',
+    'author',
+    'replyTo',
+    'echoing',
+    'echoes',
+  ],
+  schema: post,
+} as const satisfies PostgresTableModel<typeof post>;

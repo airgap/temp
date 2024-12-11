@@ -11,39 +11,39 @@ export type Orientation = 'Horizontal' | 'Vertical';
 
 export type PostReactionHandler = () => void;
 type Props = {
-	disabled?: boolean;
-	onClick?: PostReactionHandler;
-	orientation?: Orientation;
-	glyph: string;
-	value?: number;
-	className?: string;
+  disabled?: boolean;
+  onClick?: PostReactionHandler;
+  orientation?: Orientation;
+  glyph: string;
+  value?: number;
+  className?: string;
 };
 
 export const ReactionButton = ({
-	disabled,
-	onClick,
-	orientation,
-	glyph,
-	value,
-	className,
+  disabled,
+  onClick,
+  orientation,
+  glyph,
+  value,
+  className,
 }: Props) => {
-	return (
-		<span
-			className={classnames(
-				styles.Reaction,
-				{
-					[styles.disabled]: disabled,
-					[styles.vertical]: orientation === 'Vertical',
-				},
-				className,
-			)}
-		>
-			<Link disabled={disabled} onClick={onClick}>
-				<SVG src={glyph} />
-			</Link>
-			{typeof value === 'number' && (
-				<span className={styles.Stat}>{value}</span>
-			)}
-		</span>
-	);
+  return (
+    <span
+      className={classnames(
+        styles.Reaction,
+        {
+          [styles.disabled]: disabled,
+          [styles.vertical]: orientation === 'Vertical',
+        },
+        className,
+      )}
+    >
+      <Link disabled={disabled} onClick={onClick}>
+        <SVG src={glyph} />
+      </Link>
+      {typeof value === 'number' && (
+        <span className={styles.Stat}>{value}</span>
+      )}
+    </span>
+  );
 };

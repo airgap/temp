@@ -1,12 +1,12 @@
-import { EnumBsonSchema, FromBsonSchema } from 'from-schema';
+import { EnumColumnModel } from 'from-schema';
 
 export const imageUploadReason = {
-	enum: [
-		'PostAttachment',
-		'ChannelLogo',
-		'ProfilePicture',
-		'ActiveChannelBackground',
-		'AwayChannelBackground',
-	],
-} as const satisfies EnumBsonSchema;
-export type ImageUploadReason = FromBsonSchema<typeof imageUploadReason>;
+  type: 'enum',
+  enum: [
+    'PostAttachment',
+    'ChannelLogo',
+    'ProfilePicture',
+    'ActiveChannelBackground',
+    'AwayChannelBackground',
+  ],
+} as const satisfies EnumColumnModel;

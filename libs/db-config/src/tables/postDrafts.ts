@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { postDraft } from 'bson-models';
 
 export const postDrafts = {
-	indexes: ['authorId'],
-	schema: postDraft,
-} as const satisfies TableModel<typeof postDraft>;
+  indexes: ['author'],
+  schema: postDraft,
+} as const satisfies PostgresTableModel<typeof postDraft>;

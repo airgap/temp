@@ -1,22 +1,20 @@
 import { groupName } from './groupName';
-import { groupSlug } from './groupSlug';
-import { bsonPrimitives } from 'from-schema';
-const { bool, string, uid } = bsonPrimitives;
-import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
+import { PostgresRecordModel } from 'from-schema';
 
 export const group = {
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		name: groupName,
-		slug: groupSlug,
-		creator: uid,
-		owner: uid,
-		created: string,
-		private: bool,
-		thumbnail: uid,
-		background: uid,
-	},
-	required: ['id', 'name', 'slug', 'owner', 'creator', 'created', 'private'],
-} as const satisfies ObjectBsonSchema;
-export type Group = FromBsonSchema<typeof group>;
+  properties: {
+    id: {
+      type: 'varchar',
+      maxLength: 20,
+      pattern: '^[a-zA-Z0-9_]{3,20}$',
+    },
+    name: groupName,
+    creator: { type: 'bigint' },
+    owner: { type: 'bigint' },
+    created: { type: 'timestamp' },
+    private: { type: 'boolean' },
+    thumbnail: { type: 'varchar', maxLength: 30 },
+    background: { type: 'varchar', maxLength: 30 },
+  },
+  required: ['id', 'name', 'slug', 'owner', 'creator', 'created', 'private'],
+} as const satisfies PostgresRecordModel;

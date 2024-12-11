@@ -1,27 +1,26 @@
-import { bsonPrimitives } from 'from-schema';
-const { string, whole, uid } = bsonPrimitives;
+import { bsonPrimitives, PostgresRecordModel } from 'from-schema';
 import { ttmBoard } from './ttmBoard';
 import { user } from './user';
-import { ObjectBsonSchema } from 'from-schema';
+import { game } from './game';
+
 export const ttmMatch = {
-	// primaryKey: 'id',
-	bsonType: 'object',
-	properties: {
-		// Game ID
-		id: uid,
-		// Player X's ID
-		X: user.properties.id,
-		// Player O's ID
-		O: user.properties.id,
-		// Board string, e.g. 'XXO XO   '
-		board: ttmBoard,
-		// Turn counter
-		turn: whole,
-		// Timestamp the game was created
-		created: string,
-		// Timestamp last piece was placed
-		lastTurn: string,
-		winner: uid,
-	},
-	required: ['id', 'X', 'O', 'board', 'turn', 'created'],
-} as const satisfies ObjectBsonSchema;
+  // primaryKey: 'id',
+  properties: {
+    // Game ID
+    id: game.properties.id,
+    // Player X's ID
+    X: { type: 'bigint' },
+    // Player O's ID
+    O: { type: 'bigint' },
+    // Board string, e.g. 'XXO XO   '
+    board: ttmBoard,
+    // Turn counter
+    turn: { type: 'int' },
+    // Timestamp the game was created
+    created: { type: 'timestamp' },
+    // Timestamp last piece was placed
+    lastTurn: { type: 'timestamp' },
+    winner: { type: 'bigint' },
+  },
+  required: ['id', 'X', 'O', 'board', 'turn', 'created'],
+} as const satisfies PostgresRecordModel;

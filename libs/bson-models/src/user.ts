@@ -1,63 +1,60 @@
 import { hex } from './hex';
 import { username } from './username';
 import { userSlug } from './userSlug';
-import { bsonPrimitives } from 'from-schema';
-const { bool, date, double, uid, whole, uuidv4 } = bsonPrimitives;
-import { EnumBsonSchema, FromBsonSchema, ObjectBsonSchema } from 'from-schema';
+import { BigSerialColumnModel, PostgresRecordModel } from 'from-schema';
+import { uuidv4 } from './uuid';
 
-export const special = {
-	enum: ['cowboy', 'sombrero'],
-} as const satisfies EnumBsonSchema;
+export const userId = {
+  type: 'bigserial',
+} as const satisfies BigSerialColumnModel;
 
 export const user = {
-	bsonType: 'object',
-	properties: {
-		banned: bool,
-		confirmed: bool,
-		bot: {
-			...bool,
-			description: 'Whether or not this user is a bot',
-		},
-		groupLimit: {
-			...whole,
-			description: 'Maximum number of groups this user can create',
-		},
-		chatColor: hex,
-		id: uid,
-		joined: date,
-		live: bool,
-		ownerId: uid,
-		profilePicture: uuidv4,
-		staff: {
-			...bool,
-			description: 'Whether the user is a member of Lyku staff',
-		},
-		username,
-		channelLimit: whole,
-		specials: {
-			bsonType: 'array',
-			items: special,
-		},
-		slug: userSlug,
-		points: double,
-		postCount: whole,
-		lastLogin: {
-			bsonType: 'date',
-		},
-		lastSuper: date,
-	},
-	required: [
-		'banned',
-		'confirmed',
-		'bot',
-		'chatColor',
-		'id',
-		'joined',
-		'live',
-		'lastLogin',
-		'username',
-		'points',
-		'slug',
-	],
-} as const satisfies ObjectBsonSchema;
-export type User = FromBsonSchema<typeof user>;
+  properties: {
+    banned: {
+      type: 'boolean',
+    },
+    confirmed: {
+      type: 'boolean',
+    },
+    bot: {
+      type: 'boolean',
+      description: 'Whether or not this user is a bot',
+    },
+    groupLimit: {
+      type: 'integer',
+      minimum: 0,
+      description: 'Maximum number of groups this user can create',
+    },
+    chatColor: hex,
+    id: userId,
+    joined: { type: 'timestamp' },
+    live: { type: 'boolean' },
+    profilePicture: uuidv4,
+    staff: {
+      type: 'boolean',
+      description: 'Whether the user is a member of Lyku staff',
+    },
+    username,
+    channelLimit: { type: 'integer' },
+    slug: userSlug,
+    points: { type: 'double precision' },
+    postCount: { type: 'bigint' },
+    lastLogin: { type: 'timestamp' },
+    lastSuper: { type: 'timestamp' },
+  },
+  required: [
+    'banned',
+    'confirmed',
+    'bot',
+    'chatColor',
+    'id',
+    'joined',
+    'live',
+    'lastLogin',
+    'username',
+    'points',
+    'slug',
+    'lastLogin',
+    'staff',
+  ],
+} as const satisfies PostgresRecordModel;

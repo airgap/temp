@@ -1,13 +1,10 @@
-import { ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { string, uid } = bsonPrimitives;
+import { PostgresRecordModel } from 'from-schema';
 
 export const shortlinkRow = {
-	bsonType: 'object',
-	properties: {
-		url: string,
-		authorId: uid,
-		postId: uid,
-	},
-	required: ['url'],
-} as const satisfies ObjectBsonSchema;
+  properties: {
+    url: { type: 'character', length: 255 },
+    authorId: { type: 'bigint' },
+    postId: { type: 'bigint' },
+  },
+  required: ['url'],
+} as const satisfies PostgresRecordModel;

@@ -1,69 +1,69 @@
 {
-	"name": "webui",
-	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "apps/webui/src",
-	"projectType": "application",
-	"targets": {
-		"build": {
-			"executor": "@nx/vite:build",
-			"outputs": ["{options.outputPath}"],
-			"defaultConfiguration": "production",
-			"options": {
-				"outputPath": "dist/apps/webui"
-			},
-			"configurations": {
-				"development": {
-					"buildTarget": "webui:build:development",
-					"hmr": true,
-					"mode": "development"
-				},
-				"production": {
-					"buildTarget": "webui:build:production",
-					"hmr": false,
-					"mode": "production"
-				}
-			}
-		},
-		"serve": {
-			"executor": "@nx/vite:dev-server",
-			"defaultConfiguration": "development",
-			"options": {
-				"buildTarget": "webui:build"
-			},
-			"configurations": {
-				"development": {
-					"buildTarget": "webui:build:development",
-					"hmr": true
-				},
-				"production": {
-					"buildTarget": "webui:build:production",
-					"hmr": false
-				}
-			}
-		},
-		"test": {
-			"executor": "@nx/vite:test",
-			"outputs": ["{projectRoot}/coverage"],
-			"options": {
-				"passWithNoTests": false
-			}
-		},
-		"lint": {
-			"executor": "@nx/linter:eslint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": ["apps/webui/**/*.{ts,tsx,js,jsx}"]
-			}
-		},
-		"deploy": {
-			"executor": "nx:run-commands",
-			"options": {
-				"commands": [
-					"./copydocs.sh",
-					"wrangler pages publish dist/apps/webui --project-name bouncing-tv"
-				]
-			}
-		}
-	},
-	"tags": []
+  "name": "webui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/webui/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/webui"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "webui:build:development",
+          "hmr": true,
+          "mode": "development"
+        },
+        "production": {
+          "buildTarget": "webui:build:production",
+          "hmr": false,
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "webui:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "webui:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "webui:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "passWithNoTests": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/webui/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "./copydocs.sh",
+          "wrangler pages publish dist/apps/webui --project-name bouncing-tv"
+        ]
+      }
+    }
+  },
+  "tags": []
 }

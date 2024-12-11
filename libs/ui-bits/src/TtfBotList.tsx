@@ -4,25 +4,23 @@ import { Button } from './Button';
 import { phrasebook } from './phrasebook';
 
 export const TtfBotList = ({ onClose }: { onClose?: () => void }) => (
-	<>
-		<Button onClick={onClose}>&lt; Back</Button>
-		{ttfFlowMode.enum.map(mode => (
-			<Button
-				onClick={() => {
-					api.newAiTtfMatch(mode).then(
-						({ id }) => (window.location.hash = id),
-					);
-				}}
-			>
-				{
-					{
-						novice: phrasebook.vsNoviceAi,
-						easy: phrasebook.vsEasyAi,
-						medium: phrasebook.vsMediumAi,
-						hard: phrasebook.vsHardAi,
-					}[mode]
-				}
-			</Button>
-		))}
-	</>
+  <>
+    <Button onClick={onClose}>&lt; Back</Button>
+    {ttfFlowMode.enum.map((mode) => (
+      <Button
+        onClick={() => {
+          api.newAiTtfMatch(mode).then(({ id }) => (window.location.hash = id));
+        }}
+      >
+        {
+          {
+            novice: phrasebook.vsNoviceAi,
+            easy: phrasebook.vsEasyAi,
+            medium: phrasebook.vsMediumAi,
+            hard: phrasebook.vsHardAi,
+          }[mode]
+        }
+      </Button>
+    ))}
+  </>
 );

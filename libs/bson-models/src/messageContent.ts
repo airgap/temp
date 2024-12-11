@@ -1,7 +1,7 @@
-import { StringBsonSchema } from 'from-schema';
+import { VarcharColumnModel } from 'from-schema';
 
 export const messageContent = {
-	bsonType: 'string',
-	minLength: 1,
-	maxLength: 300,
-} as const satisfies StringBsonSchema;
+  type: 'varchar',
+  minLength: 1,
+  maxLength: 300,
+} as const satisfies VarcharColumnModel;

@@ -1,14 +1,17 @@
-import { FromBsonSchema, ObjectBsonSchema, bsonPrimitives } from 'from-schema';
-const { string, uid } = bsonPrimitives;
+import {
+  FromBsonSchema,
+  ObjectBsonSchema,
+  PostgresRecordModel,
+  bsonPrimitives,
+} from 'from-schema';
 
 export const developer = {
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		homepage: string,
-		name: string,
-		thumbnail: string,
-	},
-	required: ['id', 'name', 'homepage'],
-} as const satisfies ObjectBsonSchema;
+  properties: {
+    id: { type: 'bigint' },
+    homepage: { type: 'text' },
+    name: { type: 'text' },
+    thumbnail: { type: 'text' },
+  },
+  required: ['id', 'name', 'homepage'],
+} as const satisfies PostgresRecordModel;
 export type Developer = FromBsonSchema<typeof developer>;

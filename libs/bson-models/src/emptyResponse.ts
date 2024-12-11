@@ -1,6 +1,6 @@
-import { StringBsonSchema } from 'from-schema';
+import { CharColumnModel } from 'from-schema';
 
 export const emptyResponse = {
-	bsonType: 'string',
-	minLength: 0,
-} as const satisfies StringBsonSchema;
+  type: 'character',
+  length: 0,
+} as const satisfies CharColumnModel;

@@ -1,18 +1,18 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { user } from 'bson-models';
-import {users as docs} from '@lyku/stock-docs';
+import { users as docs } from '@lyku/stock-docs';
 
 export const users = {
-	indexes: [
-		'lastLogin',
-		// 'totalStreamTime',
-		'username',
-		// 'name',
-		'bot',
-		'staff',
-		'ownerId',
-		'lastSuper',
-	],
-	docs: Object.values(docs),
-	schema: user,
-} as const satisfies TableModel<typeof user>;
+  indexes: [
+    'lastLogin',
+    // 'totalStreamTime',
+    'username',
+    // 'name',
+    'bot',
+    'staff',
+    // 'lastSuper',
+  ],
+  docs: Object.values(docs),
+  schema: user,
+  primaryKey: 'id',
+} as const satisfies PostgresTableModel<typeof user>;

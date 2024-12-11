@@ -1,14 +1,12 @@
-import { ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { string, uid } = bsonPrimitives;
+import { JsonSchema, PostgresRecordModel } from 'from-schema';
 
 export const imageUploadPack = {
-	description:
-		'Either the information you need to upload an image or video attachment, or any errors encountered',
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		uploadURL: string,
-	},
-	required: ['id', 'uploadURL'],
-} as const satisfies ObjectBsonSchema;
+  type: 'object',
+  description:
+    'Either the information you need to upload an image or video attachment, or any errors encountered',
+  properties: {
+    id: { type: 'string' },
+    uploadURL: { type: 'string' },
+  },
+  required: ['id', 'uploadURL'],
+} as const satisfies JsonSchema;

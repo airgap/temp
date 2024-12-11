@@ -1,6 +1,7 @@
 import { videoMimeList } from '@lyku/defaults';
-import { EnumBsonSchema } from 'from-schema';
+import { EnumBsonSchema, EnumColumnModel } from 'from-schema';
 
 export const videoMime = {
-	enum: videoMimeList,
-} as const satisfies EnumBsonSchema;
+  type: 'enum',
+  enum: videoMimeList,
+} as const satisfies EnumColumnModel;

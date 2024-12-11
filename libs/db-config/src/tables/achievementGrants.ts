@@ -1,7 +1,8 @@
 import { achievementGrant } from 'bson-models';
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 
 export const achievementGrants = {
-	indexes: ['user', 'granted'],
-	schema: achievementGrant,
-} satisfies TableModel<typeof achievementGrant>;
+  indexes: ['user', 'granted'],
+  schema: achievementGrant,
+  // foreignKeys: { user: { users: 'id' } },
+} satisfies PostgresTableModel<typeof achievementGrant>;

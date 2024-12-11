@@ -1,6 +1,7 @@
-import { StringBsonSchema } from 'from-schema';
+import { VarcharColumnModel } from 'from-schema';
 
 export const password = {
-	bsonType: 'string',
-	pattern: '^.{10,50}$',
-} as const satisfies StringBsonSchema;
+  type: 'varchar',
+  minLength: 10,
+  maxLength: 50,
+} as const satisfies VarcharColumnModel;

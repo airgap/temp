@@ -5,12 +5,12 @@ import { phrasebook } from './phrasebook';
 const { email } = jsonPrimitives;
 
 export const EmailInput = (props: TexticleProps) => (
-	<Texticle
-		type="email"
-		schema={email}
-		empty={phrasebook.emailFieldEmpty}
-		invalid={phrasebook.emailFieldInvalid}
-		valid={phrasebook.emailFieldValid}
-		{...props}
-	/>
+  <Texticle
+    type="email"
+    schema={email}
+    empty={phrasebook.emailFieldEmpty}
+    invalid={phrasebook.emailFieldInvalid}
+    valid={phrasebook.emailFieldValid}
+    {...props}
+  />
 );

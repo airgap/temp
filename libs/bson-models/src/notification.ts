@@ -1,20 +1,15 @@
-import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { date, string, uid } = bsonPrimitives;
-import { user } from './user';
+import { PostgresRecordModel } from 'from-schema';
 
 export const notification = {
-	bsonType: 'object',
-	properties: {
-		id: uid,
-		user: user.properties.id,
-		title: string,
-		subtitle: string,
-		body: string,
-		icon: string,
-		href: string,
-		posted: date,
-	},
-	required: ['id', 'user', 'title', 'body', 'icon', 'posted'],
-} as const satisfies ObjectBsonSchema;
-export type Notification = FromBsonSchema<typeof notification>;
+  properties: {
+    id: { type: 'bigserial' },
+    user: { type: 'bigint' },
+    title: { type: 'varchar', minLength: 5, maxLength: 50 },
+    subtitle: { type: 'varchar', minLength: 5, maxLength: 50 },
+    body: { type: 'text', maxLength: 1000 },
+    icon: { type: 'varchar', minLength: 5, maxLength: 50 },
+    href: { type: 'varchar', minLength: 5, maxLength: 50 },
+    posted: { type: 'timestamp' },
+  },
+  required: ['id', 'user', 'title', 'body', 'icon', 'posted'],
+} as const satisfies PostgresRecordModel;

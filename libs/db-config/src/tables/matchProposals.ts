@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { matchProposal } from 'bson-models';
 
 export const matchProposals = {
-	indexes: ['from', 'to', 'created'],
-	schema: matchProposal,
-} as const satisfies TableModel<typeof matchProposal>;
+  indexes: ['from', 'to', 'created'],
+  schema: matchProposal,
+} as const satisfies PostgresTableModel<typeof matchProposal>;

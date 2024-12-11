@@ -1,23 +1,20 @@
-import { FromBsonSchema, EnumBsonSchema, ObjectBsonSchema } from 'from-schema';
+import { PostgresRecordModel, EnumColumnModel } from 'from-schema';
 import { game } from './game';
-import { bsonPrimitives } from 'from-schema';
-const { string, double, uid } = bsonPrimitives;
 
 export const achievementTier = {
-	enum: ['tin', 'bronze', 'silver', 'gold', 'tritium'],
-} as const satisfies EnumBsonSchema;
+  type: 'enum',
+  enum: ['tin', 'bronze', 'silver', 'gold', 'tritium'],
+} as const satisfies EnumColumnModel;
 
 export const achievement = {
-	bsonType: 'object',
-	properties: {
-		description: string,
-		id: uid,
-		icon: string,
-		name: string,
-		points: double,
-		tier: achievementTier,
-		game: game.properties.id,
-	},
-	required: ['id', 'name', 'points', 'icon'],
-} as const satisfies ObjectBsonSchema;
-export type Achievement = FromBsonSchema<typeof achievement>;
+  properties: {
+    description: { type: 'text' },
+    id: { type: 'bigserial' },
+    icon: { type: 'text', minLength: 1, maxLength: 100 },
+    name: { type: 'text', minLength: 1, maxLength: 100 },
+    points: { type: 'double precision' },
+    tier: achievementTier,
+    game: game.properties.id,
+  },
+  required: ['id', 'name', 'points', 'icon'],
+} as const satisfies PostgresRecordModel;

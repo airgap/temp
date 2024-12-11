@@ -1,7 +1,7 @@
-import { HandlerModel } from 'from-schema';
+import { TsonHandlerModel } from 'from-schema';
 import { user } from '@lyku/json-models';
 
 export const followUser = {
-	request: user.properties.id,
-	authenticated: true,
-} as const satisfies HandlerModel;
+  request: user.properties.id,
+  authenticated: true,
+} as const satisfies TsonHandlerModel;

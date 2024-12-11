@@ -1,3 +1,6 @@
+import { EnumColumnModel } from 'from-schema';
+
 export const matchProposalFilter = {
-	enum: ['sent', 'received'],
-} as const;
+  type: 'enum',
+  enum: ['sent', 'received'],
+} as const satisfies EnumColumnModel;

@@ -1,20 +1,17 @@
-import { bsonPrimitives } from 'from-schema';
-const { date, uid } = bsonPrimitives;
-import { user } from './user';
-import { game } from './game';
-import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
+import { bsonPrimitives, PostgresRecordModel } from 'from-schema';
 
 export const matchProposal = {
-	bsonType: 'object',
-	properties: {
-		// Timestamp the game was created
-		created: date,
-		from: user.properties.id,
-		game: game.properties.id,
-		// Proposal ID
-		id: uid,
-		to: user.properties.id,
-	},
-	required: ['created', 'from', 'game', 'id', 'to'],
-} as const satisfies ObjectBsonSchema;
-export type MatchProposal = FromBsonSchema<typeof matchProposal>;
+  properties: {
+    // Timestamp the game was created
+    created: { type: 'timestamp' },
+    // User ID of the user proposing the match
+    from: { type: 'bigint' },
+    // Game ID of the game being proposed
+    game: { type: 'bigint' },
+    // Proposal ID
+    id: { type: 'bigserial' },
+    // User ID of the user being proposed to
+    to: { type: 'bigint' },
+  },
+  required: ['created', 'from', 'game', 'id', 'to'],
+} as const satisfies PostgresRecordModel;

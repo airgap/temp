@@ -1,36 +1,31 @@
-import { FromBsonSchema } from 'from-schema';
-import { ObjectBsonSchema, bsonPrimitives } from 'from-schema';
-const { double, int, string, uid } = bsonPrimitives;
+import { ObjectJsonSchema } from 'from-schema';
 
 export const cloudflareVideoWatermark = {
-	bsonType: 'object',
-	properties: {
-		uid,
-		size: double,
-		height: int,
-		width: int,
-		created: string,
-		downloadedFrom: string,
-		name: string,
-		opacity: double,
-		padding: int,
-		scale: double,
-		position: string,
-	},
-	required: [
-		'uid',
-		'size',
-		'height',
-		'width',
-		'created',
-		'downloadedFrom',
-		'name',
-		'opacity',
-		'padding',
-		'scale',
-		'position',
-	],
-} as const satisfies ObjectBsonSchema;
-export type CloudflareVideoWatermark = FromBsonSchema<
-	typeof cloudflareVideoWatermark
->;
+  type: 'object',
+  properties: {
+    uid: { type: 'string' },
+    size: { type: 'number' },
+    height: { type: 'integer' },
+    width: { type: 'integer' },
+    created: { type: 'string' },
+    downloadedFrom: { type: 'string' },
+    name: { type: 'string' },
+    opacity: { type: 'number' },
+    padding: { type: 'integer' },
+    scale: { type: 'number' },
+    position: { type: 'string' },
+  },
+  required: [
+    'uid',
+    'size',
+    'height',
+    'width',
+    'created',
+    'downloadedFrom',
+    'name',
+    'opacity',
+    'padding',
+    'scale',
+    'position',
+  ],
+} as const satisfies ObjectJsonSchema;

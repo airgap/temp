@@ -27,6 +27,7 @@
       "dependsOn": ["build"],
       "executor": "nx:run-commands",
       "options": {
+        "outputPath": "dist/libs/mapi-types.d.ts",
         "command": "bun libs/mapi-models/src/build.ts > dist/libs/mapi-types.d.ts"
       }
     },

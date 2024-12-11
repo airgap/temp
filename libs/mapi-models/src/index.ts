@@ -50,7 +50,7 @@ export * from './listDevelopers';
 export * from './listenToMyLikes';
 export * from './getMyLikes';
 export * from './listenToPosts';
-export * from './listenToLikes';
+export * from './listenToLikesOnPosts';
 export * from './listenToUsers';
 export * from './listFriends';
 export * from './listGames';

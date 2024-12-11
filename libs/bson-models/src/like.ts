@@ -1,18 +1,14 @@
 import { user } from './user';
 import { post } from './post';
 import { idBond } from './idBond';
-import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { string } = bsonPrimitives;
+import { PostgresRecordModel } from 'from-schema';
 
 export const like = {
-	bsonType: 'object',
-	properties: {
-		id: idBond,
-		userId: user.properties.id,
-		postId: post.properties.id,
-		created: string,
-	},
-	required: ['id', 'userId', 'postId', 'created'],
-} as const satisfies ObjectBsonSchema;
-export type Like = FromBsonSchema<typeof like>;
+  properties: {
+    id: idBond,
+    userId: { type: 'bigint' },
+    postId: { type: 'bigint' },
+    created: { type: 'timestamp' },
+  },
+  required: ['id', 'userId', 'postId', 'created'],
+} as const satisfies PostgresRecordModel;

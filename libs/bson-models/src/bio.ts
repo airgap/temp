@@ -1,6 +1,6 @@
-import { StringBsonSchema } from 'from-schema';
+import { VarcharColumnModel } from 'from-schema';
 
 export const bio = {
-	bsonType: 'string',
-	pattern: '^.{0,1024}$',
-} as const satisfies StringBsonSchema;
+  type: 'varchar',
+  maxLength: 1024,
+} as const satisfies VarcharColumnModel;

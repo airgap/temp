@@ -1,8 +1,8 @@
-import { TableModel } from 'from-schema';
-import { Group, group } from 'bson-models';
-import { users, groups as docs } from '@lyku/stock-docs';
+import { PostgresTableModel } from 'from-schema';
+import { group } from 'bson-models';
+import { groups as docs } from '@lyku/stock-docs';
 export const groups = {
-	indexes: ['name', 'slug', 'owner', 'creator', 'created', 'private'],
-	schema: group,
-	docs: Object.values(docs),
-} satisfies TableModel<typeof group>;
+  indexes: ['name', 'owner', 'creator', 'created', 'private'],
+  schema: group,
+  docs: Object.values(docs),
+} satisfies PostgresTableModel<typeof group>;

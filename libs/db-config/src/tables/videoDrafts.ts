@@ -1,7 +1,7 @@
-import { TableModel } from 'from-schema';
+import { PostgresTableModel } from 'from-schema';
 import { videoDraft } from 'bson-models';
 
 export const videoDrafts = {
-	indexes: ['userId'],
-	schema: videoDraft,
-} as const satisfies TableModel<typeof videoDraft>;
+  indexes: ['user'],
+  schema: videoDraft,
+} as const satisfies PostgresTableModel<typeof videoDraft>;

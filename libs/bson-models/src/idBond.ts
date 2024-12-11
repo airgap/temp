@@ -1,9 +1,5 @@
-import { FromBsonSchema, StringBsonSchema } from 'from-schema';
-import { bsonPrimitives } from 'from-schema';
-const { uid } = bsonPrimitives;
-const pat = uid.pattern.substring(1, uid.pattern.length - 1);
+import { TextColumnModel } from 'from-schema';
 export const idBond = {
-	bsonType: 'string',
-	pattern: `^${pat}-${pat}$`,
-} as const satisfies StringBsonSchema;
-export type IDBond = FromBsonSchema<typeof idBond>;
+  type: 'text',
+  pattern: `^[0-9af]{1,32}-[0-9af]{1,32}$`,
+} as const satisfies TextColumnModel;

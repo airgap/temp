@@ -1,19 +1,15 @@
-import { ObjectBsonSchema } from 'from-schema';
-import { videoUploadPack } from './videoUploadPack';
-import { bsonPrimitives } from 'from-schema';
-const { uid } = bsonPrimitives;
+import { PostgresRecordModel } from 'from-schema';
 
 export const videoDraft = {
-	description:
-		'Either the information you need to upload an image or video attachment, or any errors encountered',
-	bsonType: 'object',
-	properties: {
-		supertype: 'video',
-		userId: uid,
-		id: uid,
-		channelId: uid,
-		postId: uid,
-		...videoUploadPack.properties,
-	},
-	required: ['supertype', 'id', 'userId', ...videoUploadPack.required],
-} as const satisfies ObjectBsonSchema;
+  description:
+    'Either the information you need to upload an image or video attachment, or any errors encountered',
+  properties: {
+    user: { type: 'bigint' },
+    channel: { type: 'bigint' },
+    post: { type: 'bigint' },
+    uid: { type: 'text', maxLength: 32 },
+    uploadURL: { type: 'text' },
+    created: { type: 'timestamp' },
+  },
+  required: ['user', 'channel', 'post', 'uid', 'uploadURL', 'created'],
+} as const satisfies PostgresRecordModel;

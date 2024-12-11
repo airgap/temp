@@ -9,16 +9,16 @@ import { Await } from 'awaitx';
  * @returns a FeedPage containing the hottest posts
  */
 export const Hot = () => (
-	<div className={styles.FeedPage}>
-		<Await
-			source={() => api.listHotPosts({})}
-			then={posts => (
-				<div className={styles.Feed}>
-					<PostList posts={posts ?? []} />
-				</div>
-			)}
-			fail={error => <h3>{String(error)}</h3>}
-			meanwhile={<>Loading posts...</>}
-		/>
-	</div>
+  <div className={styles.FeedPage}>
+    <Await
+      source={() => api.listHotPosts({})}
+      then={(posts) => (
+        <div className={styles.Feed}>
+          <PostList posts={posts ?? []} />
+        </div>
+      )}
+      fail={(error) => <h3>{String(error)}</h3>}
+      meanwhile={<>Loading posts...</>}
+    />
+  </div>
 );

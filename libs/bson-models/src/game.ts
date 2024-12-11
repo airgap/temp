@@ -1,24 +1,19 @@
-import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
+import { PostgresRecordModel } from 'from-schema';
 import { gameStatus } from './gameStatus';
-import { bsonPrimitives } from 'from-schema';
-const { bool, string, uid } = bsonPrimitives;
 
 export const game = {
-	bsonType: 'object',
-	properties: {
-		background: string,
-		developer: uid,
-		homepage: string,
-		icon: string,
-		id: uid,
-		publisher: uid,
-		thumbnail: string,
-		title: string,
-		description: string,
-		status: gameStatus,
-		nsfw: bool,
-	},
-	required: ['id', 'title', 'status', 'nsfw'],
-} as const satisfies ObjectBsonSchema;
-
-export type Game = FromBsonSchema<typeof game>;
+  properties: {
+    background: { type: 'text' },
+    developer: { type: 'text' },
+    homepage: { type: 'text' },
+    icon: { type: 'text' },
+    id: { type: 'serial' },
+    publisher: { type: 'text' },
+    thumbnail: { type: 'text' },
+    title: { type: 'text' },
+    description: { type: 'text' },
+    status: gameStatus,
+    nsfw: { type: 'boolean' },
+  },
+  required: ['id', 'title', 'status', 'nsfw'],
+} as const satisfies PostgresRecordModel;

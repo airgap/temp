@@ -1,10 +1,8 @@
-import {
-	OneOfBsonSchema,
-} from 'from-schema';
+import { OneOfJsonSchema } from 'from-schema';
 import { imageDoc } from './imageDoc';
-import { videoDoc } from './videoDoc';
+import { cloudflareVideoDoc } from './videoDoc';
 
 // Define the attachment schema as a union using "anyOf"
-export const attachment = {
-	oneOf: [videoDoc, imageDoc], // Use "anyOf" to represent the union
-} as const satisfies OneOfBsonSchema;
+// export const attachment = {
+//   oneOf: [cloudflareVideoDoc, imageDoc], // Use "anyOf" to represent the union
+// } as const satisfies OneOfJsonSchema;

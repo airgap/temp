@@ -8,7 +8,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
-  "references": [
-    { "path": "../../dist/libs/json-models" }
-  ]
+  "references": [{ "path": "../../dist/libs/json-models" }]
 }

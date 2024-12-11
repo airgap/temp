@@ -5,12 +5,12 @@ import { games } from '@lyku/stock-docs';
 import { Center } from '../Center';
 
 export const PlayEminence = () => {
-	return (
-		<Center>
-			<Divisio layout="v" size="m">
-				{/* <Eminence /> */}
-				<AchievementList game={games.eminence.id} />
-			</Divisio>
-		</Center>
-	);
+  return (
+    <Center>
+      <Divisio layout="v" size="m">
+        {/* <Eminence /> */}
+        <AchievementList game={games.eminence.id} />
+      </Divisio>
+    </Center>
+  );
 };

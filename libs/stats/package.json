@@ -1,11 +1,11 @@
 {
-	"name": "@lyku/stats",
-	"version": "0.0.1",
-	"dependencies": {
-		"vite": "^4.4.9",
-		"@nx/vite": "16.7.4"
-	},
-	"type": "module",
-	"main": "./index.js",
-	"types": "./index.d.ts"
+  "name": "@lyku/stats",
+  "version": "0.0.1",
+  "dependencies": {
+    "vite": "^4.4.9",
+    "@nx/vite": "16.7.4"
+  },
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts"
 }

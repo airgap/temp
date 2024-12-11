@@ -1,25 +1,24 @@
-import { HandlerModel, jsonPrimitives } from 'from-schema';
-
-const { uid } = jsonPrimitives;
+import { channel } from '@lyku/json-models';
+import { TsonHandlerModel } from 'from-schema';
 
 export const bounced = {
-	request: {
-		type: 'object',
-		properties: {
-			channelId: uid,
-			corner: {
-				type: 'boolean',
-			},
-			edge: {
-				type: 'boolean',
-			},
-		},
-		required: [],
-	},
-	response: {
-		type: 'object',
-		properties: {},
-		required: ['current', 'total'],
-	},
-	authenticated: true,
-} as const satisfies HandlerModel;
+  request: {
+    type: 'object',
+    properties: {
+      channelId: channel.properties.id,
+      corner: {
+        type: 'boolean',
+      },
+      edge: {
+        type: 'boolean',
+      },
+    },
+    required: [],
+  },
+  response: {
+    type: 'object',
+    properties: {},
+    required: ['current', 'total'],
+  },
+  authenticated: true,
+} as const satisfies TsonHandlerModel;

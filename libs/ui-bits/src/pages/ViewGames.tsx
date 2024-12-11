@@ -9,40 +9,35 @@ import { Await } from 'awaitx';
 
 // CSS classes for various game statuses
 const statusClasses = {
-	planned: styles.planned,
-	wip: styles.wip,
-	ea: styles.ea,
-	ga: styles.ga,
-	maintenance: styles.maintenance,
+  planned: styles.planned,
+  wip: styles.wip,
+  ea: styles.ea,
+  ga: styles.ga,
+  maintenance: styles.maintenance,
 } satisfies Record<GameStatus, string>;
 
 export const ViewGames = () => (
-	<div style={{ textAlign: 'center' }}>
-		<Await
-			source={() => api.listGames({}).then(sortGamesByPrecedence)}
-			then={games =>
-				games.map(({ id, homepage, title, status, thumbnail }) => (
-					<a
-						className={classNames(
-							styles.game,
-							statusClasses[status],
-						)}
-						id={id}
-						key={id}
-						style={{ display: 'inline-block', margin: '10px' }}
-						href={homepage}
-					>
-						<Thumbnail alt={title} id={thumbnail} />
-						<label htmlFor={id}>
-							{title}
-							{status !== 'ga' && (
-								<div>[ {phrasebook[status]} ]</div>
-							)}
-						</label>
-					</a>
-				))
-			}
-			fail={error => String(error)}
-		/>
-	</div>
+  <div style={{ textAlign: 'center' }}>
+    <Await
+      source={() => api.listGames({}).then(sortGamesByPrecedence)}
+      then={(games) =>
+        games.map(({ id, homepage, title, status, thumbnail }) => (
+          <a
+            className={classNames(styles.game, statusClasses[status])}
+            id={id}
+            key={id}
+            style={{ display: 'inline-block', margin: '10px' }}
+            href={homepage}
+          >
+            <Thumbnail alt={title} id={thumbnail} />
+            <label htmlFor={id}>
+              {title}
+              {status !== 'ga' && <div>[ {phrasebook[status]} ]</div>}
+            </label>
+          </a>
+        ))
+      }
+      fail={(error) => String(error)}
+    />
+  </div>
 );

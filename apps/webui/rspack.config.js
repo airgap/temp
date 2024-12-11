@@ -6,8 +6,8 @@ module.exports = composePlugins(withNx(), withReact(), (config) => {
     test: /\.wav$/,
     type: 'asset/resource',
     generator: {
-      emit: false
-    }
+      emit: false,
+    },
   });
   return config;
 });
