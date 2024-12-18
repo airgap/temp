@@ -3,7 +3,7 @@ import { matchProposal } from '@lyku/json-models';
 import { ttfMatch } from '@lyku/json-models';
 
 export const acceptMatchProposal = {
-  request: matchProposal.properties.id,
-  response: ttfMatch.properties.id,
-  authenticated: true,
+	request: matchProposal.properties.id,
+	response: ttfMatch.properties.id,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

@@ -1,19 +1,19 @@
 {
-  "name": "@lyku/stock-docs",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/stock-docs/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/stock-docs",
-        "main": "libs/stock-docs/src/index.ts",
-        "tsConfig": "libs/stock-docs/tsconfig.lib.json",
-        "assets": ["libs/stock-docs/*.md"]
-      }
-    }
-  }
+	"name": "@lyku/stock-docs",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/stock-docs/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/stock-docs",
+				"main": "libs/stock-docs/src/index.ts",
+				"tsConfig": "libs/stock-docs/tsconfig.lib.json",
+				"assets": ["libs/stock-docs/*.md"]
+			}
+		}
+	}
 }

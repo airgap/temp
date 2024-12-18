@@ -1,0 +1,17 @@
+{
+	"name": "monolith",
+	"scripts": {
+		"start": "node main.js",
+		"start:doppled": "bash ./dopple bun run start",
+		"start:bg": "pm2 --name monolith-$(basename `pwd`) start npm -- run start:doppled",
+		"delete": "pm2 delete monolith-$(basename `pwd`)"
+	},
+	"dependencies": {
+		"bson-models": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"@lyku/defaults": "workspace:*",
+		"@lyku/phrasebooks": "workspace:*",
+		"@lyku/monolith-ts-api": "workspace:*",
+		"@lyku/db-config": "workspace:*"
+	}
+}

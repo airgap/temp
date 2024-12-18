@@ -1,6 +1,6 @@
-import { StringJsonSchema } from 'from-schema';
+import { TextColumnModel } from 'from-schema';
 
 export const error = {
-  type: 'string',
-  description: 'The first error encountered, if any',
-} as const satisfies StringJsonSchema;
+	type: 'text',
+	description: 'The first error encountered, if any',
+} as const satisfies TextColumnModel;

@@ -9,95 +9,95 @@ let currentUser: User | undefined = undefined;
 export const getCurrentUser = () => currentUser;
 
 export const setCurrentUser = (user?: User) => {
-  currentUser = user;
-  if (user) {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  } else {
-    localStorage.removeItem('currentUser');
-  }
-  subscribers.forEach((callback) => callback());
+	currentUser = user;
+	if (user) {
+		localStorage.setItem('currentUser', JSON.stringify(user));
+	} else {
+		localStorage.removeItem('currentUser');
+	}
+	subscribers.forEach((callback) => callback());
 };
 
 export const subscribeToCurrentUser = (callback: () => void) => {
-  subscribers.add(callback);
-  return () => {
-    subscribers.delete(callback);
-  };
+	subscribers.add(callback);
+	return () => {
+		subscribers.delete(callback);
+	};
 };
 
 export const useCurrentUser = () =>
-  useSyncExternalStore(subscribeToCurrentUser, getCurrentUser);
+	useSyncExternalStore(subscribeToCurrentUser, getCurrentUser);
 
 export const useCurrentUserStatus = () => {
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+	const [user, setUser] = useState<User | undefined>(undefined);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const storedUser = localStorage.getItem('currentUser');
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-        setLoading(false);
-      } catch (error) {
-        setError(error as Error);
-        setLoading(false);
-      }
-    };
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const storedUser = localStorage.getItem('currentUser');
+				if (storedUser) {
+					setUser(JSON.parse(storedUser));
+				}
+				setLoading(false);
+			} catch (error) {
+				setError(error as Error);
+				setLoading(false);
+			}
+		};
 
-    const unsubscribe = subscribeToCurrentUser(() => {
-      setUser(getCurrentUser());
-    });
+		const unsubscribe = subscribeToCurrentUser(() => {
+			setUser(getCurrentUser());
+		});
 
-    fetchUser();
+		fetchUser();
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+		return () => {
+			unsubscribe();
+		};
+	}, []);
 
-  return { user, loading, error };
+	return { user, loading, error };
 };
 
 interface MaybeUserProps {
-  loggedIn?: (user: User) => ReactNode;
-  loggedOut?: () => ReactNode;
-  failed?: (error: Error) => ReactNode;
-  meanwhile?: () => ReactNode;
-  catchall?: (props: {
-    user: User | undefined;
-    loading: boolean;
-    error: Error | null;
-  }) => ReactNode;
+	loggedIn?: (user: User) => ReactNode;
+	loggedOut?: () => ReactNode;
+	failed?: (error: Error) => ReactNode;
+	meanwhile?: () => ReactNode;
+	catchall?: (props: {
+		user: User | undefined;
+		loading: boolean;
+		error: Error | null;
+	}) => ReactNode;
 }
 
 export const MaybeUser = ({
-  loggedIn,
-  loggedOut,
-  failed,
-  meanwhile,
-  catchall,
+	loggedIn,
+	loggedOut,
+	failed,
+	meanwhile,
+	catchall,
 }: MaybeUserProps) => {
-  const status = useCurrentUserStatus();
+	const status = useCurrentUserStatus();
 
-  if (status.loading && meanwhile) {
-    return meanwhile();
-  }
+	if (status.loading && meanwhile) {
+		return meanwhile();
+	}
 
-  if (status.error && failed) {
-    return failed(status.error);
-  }
+	if (status.error && failed) {
+		return failed(status.error);
+	}
 
-  if (status.user && loggedIn && sessionId) {
-    return loggedIn(status.user);
-  }
-  if (!sessionId && loggedOut) return loggedOut();
-  return catchall?.(status);
+	if (status.user && loggedIn && sessionId) {
+		return loggedIn(status.user);
+	}
+	if (!sessionId && loggedOut) return loggedOut();
+	return catchall?.(status);
 };
 // Load currentUser from localStorage on initial load
 const storedUser = localStorage.getItem('currentUser');
 if (storedUser) {
-  currentUser = JSON.parse(storedUser);
+	currentUser = JSON.parse(storedUser);
 }

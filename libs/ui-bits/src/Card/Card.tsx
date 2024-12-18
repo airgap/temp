@@ -9,7 +9,7 @@ type Props = { children?: ReactNode; block?: boolean };
  * @noInheritDoc
  */
 export const Card: FC<Props> = ({ children, block = false }: Props) => (
-  <div className={classnames(styles.card, { [styles.block]: block })}>
-    {children}
-  </div>
+	<div className={classnames(styles.card, { [styles.block]: block })}>
+		{children}
+	</div>
 );

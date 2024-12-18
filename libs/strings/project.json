@@ -1,31 +1,31 @@
 {
-  "name": "@lyku/strings",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/strings",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/strings",
-        "main": "libs/strings/src/index.ts",
-        "tsConfig": "libs/strings/tsconfig.lib.json",
-        "assets": ["libs/strings/*.md"],
-        "generatePackageJson": true,
-        "format": ["cjs", "esm"],
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "skipTypeCheck": false,
-        "generateLockfile": false
-      }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/strings/**/*.ts"]
-      }
-    }
-  },
-  "tags": []
+	"name": "@lyku/strings",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/strings",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/strings",
+				"main": "libs/strings/src/index.ts",
+				"tsConfig": "libs/strings/tsconfig.lib.json",
+				"assets": ["libs/strings/*.md"],
+				"generatePackageJson": true,
+				"format": ["cjs", "esm"],
+				"buildableProjectDepsInPackageJsonType": "dependencies",
+				"skipTypeCheck": false,
+				"generateLockfile": false
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/strings/**/*.ts"]
+			}
+		}
+	},
+	"tags": []
 }

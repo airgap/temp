@@ -9,5 +9,5 @@ type BannerProps = { children?: ReactNode };
  * @noInheritDoc
  */
 export const Banner: FC<BannerProps> = (props) => (
-  <div className={classnames(bannerStyles.Banner)}>{props.children}</div>
+	<div className={classnames(bannerStyles.Banner)}>{props.children}</div>
 );

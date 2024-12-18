@@ -2,4 +2,4 @@
 import { getPointsForLevel } from './getLevelFromPoints';
 
 export const getPointsToNextLevel = (points: number, currentLevel: number) =>
-  getPointsForLevel(currentLevel + 1) - points;
+	getPointsForLevel(currentLevel + 1) - points;

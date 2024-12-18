@@ -1,2 +1,2 @@
-export const bondIds = (...ids: string[]) => bindIds(...ids.sort());
-export const bindIds = (...ids: string[]) => ids.join('~');
+export const bondIds = (...ids: (string | bigint)[]) => bindIds(...ids.sort());
+export const bindIds = (...ids: (string | bigint)[]) => ids.join('~');

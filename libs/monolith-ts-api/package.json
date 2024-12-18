@@ -1,13 +1,13 @@
 {
-  "name": "monolith-ts-api",
-  "version": "0.0.1",
-  "devDependencies": {
-    "@swc/helpers": "~0.5.11",
-    "defaults": "workspace:*",
-    "@lyku/mapi-models": "workspace:*"
-  },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts",
-  "private": true
+	"name": "monolith-ts-api",
+	"version": "0.0.1",
+	"devDependencies": {
+		"@swc/helpers": "~0.5.11",
+		"defaults": "workspace:*",
+		"@lyku/mapi-models": "workspace:*"
+	},
+	"type": "commonjs",
+	"main": "./src/index.js",
+	"typings": "./src/index.d.ts",
+	"private": true
 }

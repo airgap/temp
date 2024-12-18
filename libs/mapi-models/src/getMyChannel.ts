@@ -3,14 +3,12 @@ import { channel } from '@lyku/json-models';
 import { TsonHandlerModel } from 'from-schema';
 
 export const getMyChannel = {
-  request: {
-    type: 'object',
-    properties: {
-      name: channelName,
-      id: channel.properties.id,
-    },
-    required: [],
-  },
-  response: channel,
-  authenticated: true,
+	request: {
+		oneOf: [
+			{ type: 'object', properties: { name: channelName } },
+			{ type: 'object', properties: { id: channel.properties.id } },
+		],
+	},
+	response: channel,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

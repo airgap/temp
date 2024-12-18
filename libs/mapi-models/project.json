@@ -1,40 +1,40 @@
 {
-  "name": "mapi-models",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/mapi-models/src",
-  "projectType": "library",
-  "release": {
-    "version": {
-      "generatorOptions": {
-        "packageRoot": "dist/{projectRoot}",
-        "currentVersionResolver": "git-tag"
-      }
-    }
-  },
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/mapi-models",
-        "main": "libs/mapi-models/src/index.ts",
-        "tsConfig": "libs/mapi-models/tsconfig.lib.json",
-        "assets": ["libs/mapi-models/*.md"]
-      }
-    },
-    "generate-types": {
-      "dependsOn": ["build"],
-      "executor": "nx:run-commands",
-      "options": {
-        "outputPath": "dist/libs/mapi-types.d.ts",
-        "command": "bun libs/mapi-models/src/build.ts > dist/libs/mapi-types.d.ts"
-      }
-    },
-    "nx-release-publish": {
-      "options": {
-        "packageRoot": "dist/{projectRoot}"
-      }
-    }
-  }
+	"name": "mapi-models",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/mapi-models/src",
+	"projectType": "library",
+	"release": {
+		"version": {
+			"generatorOptions": {
+				"packageRoot": "dist/{projectRoot}",
+				"currentVersionResolver": "git-tag"
+			}
+		}
+	},
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/mapi-models",
+				"main": "libs/mapi-models/src/index.ts",
+				"tsConfig": "libs/mapi-models/tsconfig.lib.json",
+				"assets": ["libs/mapi-models/*.md"]
+			}
+		},
+		"generate-types": {
+			"dependsOn": ["build"],
+			"executor": "nx:run-commands",
+			"options": {
+				"outputPath": "dist/libs/mapi-types.d.ts",
+				"command": "bun libs/mapi-models/src/build.ts > dist/libs/mapi-types.d.ts"
+			}
+		},
+		"nx-release-publish": {
+			"options": {
+				"packageRoot": "dist/{projectRoot}"
+			}
+		}
+	}
 }

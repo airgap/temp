@@ -1,17 +1,17 @@
 {
-  "name": "@lyku/json-models",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/json-models/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/json-models",
-        "command": "bun libs/json-models/src/build.ts"
-      }
-    }
-  }
+	"name": "@lyku/json-models",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/json-models/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/json-models",
+				"command": "bun libs/json-models/src/build.ts"
+			}
+		}
+	}
 }

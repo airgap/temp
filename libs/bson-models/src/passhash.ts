@@ -1,6 +1,6 @@
 import { CharColumnModel, StringBsonSchema } from 'from-schema';
 
 export const passhash = {
-  type: 'character',
-  length: 64,
+	type: 'character',
+	length: 64,
 } as const satisfies CharColumnModel;

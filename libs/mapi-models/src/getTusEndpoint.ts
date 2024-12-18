@@ -1,9 +1,7 @@
 import { TsonHandlerModel } from 'from-schema';
 
 export const getTusEndpoint = {
-  response: {
-    type: 'object',
-    properties: {},
-    required: ['post'],
-  },
+	response: {
+		type: 'string',
+	},
 } as const satisfies TsonHandlerModel;

@@ -9,7 +9,7 @@ type Props = { children?: ReactNode; dense?: boolean };
  * @noInheritDoc
  */
 export const Codette: FC<Props> = ({ children, dense = false }: Props) => (
-  <span className={classnames(styles.Codette, { [styles.dense]: dense })}>
-    {children}
-  </span>
+	<span className={classnames(styles.Codette, { [styles.dense]: dense })}>
+		{children}
+	</span>
 );

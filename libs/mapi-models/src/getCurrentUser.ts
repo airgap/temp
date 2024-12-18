@@ -2,6 +2,6 @@ import { TsonHandlerModel } from 'from-schema';
 import { user } from '@lyku/json-models';
 
 export const getCurrentUser = {
-  response: user,
-  authenticated: false,
+	response: user,
+	authenticated: false,
 } as const satisfies TsonHandlerModel;

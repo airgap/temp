@@ -1,25 +1,23 @@
-import { cloudflareVideoUpload } from '@lyku/json-models';
+import { cloudflareVideoDoc, channelId } from '@lyku/json-models';
 import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
 
-const { uid } = jsonPrimitives;
-
 export const listChannelVideos = {
-  request: {
-    // title: 'Image Upload Authorization Request',
-    description: 'List videos uploaded by a specific channel',
-    type: 'object',
-    properties: {
-      channelId: {
-        ...uid,
-        description: 'The channel whose videos you want to list',
-      },
-    },
-    required: ['channelId'],
-  },
-  response: {
-    description: "The channel's videos",
-    type: 'array',
-    items: cloudflareVideoUpload,
-  },
-  authenticated: false,
+	request: {
+		// title: 'Image Upload Authorization Request',
+		description: 'List videos uploaded by a specific channel',
+		type: 'object',
+		properties: {
+			channelId: {
+				...channelId,
+				description: 'The channel whose videos you want to list',
+			},
+		},
+		required: ['channelId'],
+	},
+	response: {
+		description: "The channel's videos",
+		type: 'array',
+		items: cloudflareVideoDoc,
+	},
+	authenticated: false,
 } as const satisfies TsonHandlerModel;

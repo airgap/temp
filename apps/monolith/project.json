@@ -1,0 +1,80 @@
+{
+	"name": "monolith",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/monolith/",
+	"projectType": "application",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"target": "node",
+				"compiler": "tsc",
+				"outputPath": "dist/apps/monolith",
+				"main": "apps/monolith/src/main.ts",
+				"tsConfig": "apps/monolith/tsconfig.app.json",
+				"assets": ["apps/monolith/package.json"],
+				"externalDependencies": "none",
+				"webpackConfig": "apps/monolith/webpack.config.js"
+			},
+			"configurations": {
+				"production": {
+					"optimization": true,
+					"extractLicenses": true,
+					"inspect": false,
+					"fileReplacements": [
+						{
+							"replace": "apps/monolith/src/environments/environment.ts",
+							"with": "apps/monolith/src/environments/environment.prod.ts"
+						}
+					]
+				}
+			}
+		},
+		"pack": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"rm -rf \"dist/tars/monolith\"",
+					"mkdirp \"dist/tars/monolith\"",
+					"cp dopple \"dist/apps/monolith\"",
+					"cd \"dist/apps/monolith\" && tar cvzf \"../../tars/monolith/pkg.tgz\" ./*"
+				],
+				"parallel": false
+			}
+		},
+		"deploy": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["bash deploy monolith API_HOST"]
+			}
+		},
+		"serve": {
+			"executor": "@nx/js:node",
+			"options": {
+				"buildTarget": "monolith:build"
+			},
+			"configurations": {
+				"production": {
+					"buildTarget": "monolith:build:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["apps/monolith/**/*.ts"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "apps/monolith/jest.config.ts",
+				"passWithNoTests": false
+			}
+		}
+	},
+	"tags": []
+}

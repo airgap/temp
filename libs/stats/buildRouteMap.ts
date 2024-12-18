@@ -7,8 +7,8 @@ const routeMap: Record<string, string> = {};
 
 let match;
 while ((match = routeRegex.exec(appFileContent)) !== null) {
-  const [, routeMatch, component] = match;
-  routeMap[routeMatch] = component;
+	const [, routeMatch, component] = match;
+	routeMap[routeMatch] = component;
 }
 
 const jsonOutput = JSON.stringify(routeMap, null, 2);

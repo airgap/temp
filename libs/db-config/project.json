@@ -1,19 +1,27 @@
 {
-  "name": "@lyku/db-config",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/db-config/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/db-config",
-        "main": "libs/db-config/src/index.ts",
-        "tsConfig": "libs/db-config/tsconfig.lib.json",
-        "assets": ["libs/db-config/*.md"]
-      }
-    }
-  }
+	"name": "@lyku/db-config",
+	"$schema": "../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/db-config/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/db-config",
+				"main": "libs/db-config/src/index.ts",
+				"tsConfig": "libs/db-config/tsconfig.lib.json",
+				"assets": ["libs/db-config/*.md"]
+			}
+		},
+		"generate-types": {
+			"dependsOn": ["build"],
+			"executor": "nx:run-commands",
+			"options": {
+				"outputPath": "dist/libs/db-config/kysely.d.ts",
+				"command": "bun libs/db-config/kysely.ts"
+			}
+		}
+	}
 }

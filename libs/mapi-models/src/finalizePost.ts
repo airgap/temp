@@ -4,21 +4,14 @@ import { post } from '@lyku/json-models';
 const { string } = jsonPrimitives;
 
 export const finalizePost = {
-  request: {
-    type: 'object',
-    properties: {
-      id: string,
-      body: string,
-    },
-    required: ['id'],
-  },
-  response: {
-    type: 'object',
-    properties: {
-      error: string,
-      post,
-    },
-    required: [],
-  },
-  authenticated: true,
+	request: {
+		type: 'object',
+		properties: {
+			id: { type: 'bigint' },
+			body: string,
+		},
+		required: ['id'],
+	},
+	response: post,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

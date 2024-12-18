@@ -3,11 +3,11 @@ import styles from './app.module.scss';
 import NxWelcome from './nx-welcome';
 
 export function App() {
-  return (
-    <div>
-      <NxWelcome title="l3" />
-    </div>
-  );
+	return (
+		<div>
+			<NxWelcome title="l3" />
+		</div>
+	);
 }
 
 export default App;

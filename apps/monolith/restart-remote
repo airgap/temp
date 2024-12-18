@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Stopping remote"
+./rexec "bun --prefix /monolith/$DOPPLER_ENVIRONMENT run restart:pm2"
+echo "Done stopping remote"

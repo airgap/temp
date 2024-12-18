@@ -1,13 +1,6 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-
-const { uuidv4 } = jsonPrimitives;
+import { TsonHandlerModel } from 'from-schema';
 
 export const confirmVideoUpload = {
-  request: uuidv4,
-  response: {
-    type: 'object',
-    properties: {},
-    required: [],
-  },
-  authenticated: true,
+	request: { type: 'bigint' },
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

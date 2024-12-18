@@ -4,10 +4,10 @@ import App from './app/app';
 import './styles.scss';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
+	document.getElementById('root') as HTMLElement,
 );
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+	<StrictMode>
+		<App />
+	</StrictMode>,
 );

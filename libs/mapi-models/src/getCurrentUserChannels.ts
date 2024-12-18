@@ -2,23 +2,9 @@ import { TsonHandlerModel } from 'from-schema';
 import { channel } from '@lyku/json-models';
 
 export const getCurrentUserChannels = {
-  request: {
-    type: 'object',
-    properties: {},
-    required: [],
-  },
-  response: {
-    type: 'object',
-    properties: {
-      channels: {
-        type: 'array',
-        items: channel,
-      },
-      error: {
-        type: 'string',
-      },
-    },
-    required: [],
-  },
-  authenticated: true,
+	response: {
+		type: 'array',
+		items: channel,
+	},
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

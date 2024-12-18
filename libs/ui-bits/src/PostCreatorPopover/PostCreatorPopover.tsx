@@ -7,24 +7,24 @@ import styles from './PostCreatorPopover.module.sass';
 import { useCurrentUser } from '../currentUserStore';
 
 export const PostCreatorPopover = () => {
-  const user = useCurrentUser();
-  const [echoing, setEchoing] = useState<Post>();
-  useEffect(() => {
-    listen('echo', setEchoing);
-  }, []);
-  return (
-    user &&
-    echoing && (
-      <div className={styles.PostCreatorPopover}>
-        <div>
-          <Close
-            onClick={() => {
-              shout('echo', undefined);
-            }}
-          />
-          <PostCreator showInset={true} user={user} echo={echoing?.id} />
-        </div>
-      </div>
-    )
-  );
+	const user = useCurrentUser();
+	const [echoing, setEchoing] = useState<Post>();
+	useEffect(() => {
+		listen('echo', setEchoing);
+	}, []);
+	return (
+		user &&
+		echoing && (
+			<div className={styles.PostCreatorPopover}>
+				<div>
+					<Close
+						onClick={() => {
+							shout('echo', undefined);
+						}}
+					/>
+					<PostCreator showInset={true} user={user} echo={echoing?.id} />
+				</div>
+			</div>
+		)
+	);
 };

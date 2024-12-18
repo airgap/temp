@@ -10,13 +10,13 @@ type Props = { children?: ReactElement[] };
  * @noInheritDoc
  */
 export const Cards = ({ children }: Props) => (
-  <div className={styles.Cards}>
-    {children?.map((child, i) => {
-      return child.type === Cardless.name ? (
-        <span key={i}>child</span>
-      ) : (
-        <Card key={i}>{child}</Card>
-      );
-    })}
-  </div>
+	<div className={styles.Cards}>
+		{children?.map((child, i) => {
+			return child.type === Cardless.name ? (
+				<span key={i}>child</span>
+			) : (
+				<Card key={i}>{child}</Card>
+			);
+		})}
+	</div>
 );

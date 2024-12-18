@@ -3,7 +3,7 @@ import { channelSensitives } from '@lyku/json-models';
 import { channel } from '@lyku/json-models';
 
 export const getChannelSensitives = {
-  request: channel.properties.id,
-  response: channelSensitives,
-  authenticated: true,
+	request: channel.properties.id,
+	response: channelSensitives,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

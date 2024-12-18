@@ -1,19 +1,19 @@
 {
-  "name": "@lyku/defaults",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/defaults/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/defaults",
-        "main": "libs/defaults/src/index.ts",
-        "tsConfig": "libs/defaults/tsconfig.lib.json",
-        "assets": ["libs/defaults/*.md"]
-      }
-    }
-  }
+	"name": "@lyku/defaults",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/defaults/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/defaults",
+				"main": "libs/defaults/src/index.ts",
+				"tsConfig": "libs/defaults/tsconfig.lib.json",
+				"assets": ["libs/defaults/*.md"]
+			}
+		}
+	}
 }

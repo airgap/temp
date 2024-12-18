@@ -1,4 +1,4 @@
 export type Vector = {
-  angle: number;
-  magnitude: number;
+	angle: number;
+	magnitude: number;
 };

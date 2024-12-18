@@ -1,0 +1,12 @@
+{
+	"name": "@lyku/handles",
+	"version": "0.0.1",
+	"devDependencies": {
+		"@swc/helpers": "~0.5.11",
+		"@lyku/json-models": "workspace:*"
+	},
+	"type": "module",
+	"main": "./src/index.ts",
+	"typings": "./src/index.d.ts",
+	"private": true
+}

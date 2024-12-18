@@ -1,82 +1,82 @@
 {
-  "components": 0,
-  "revisions": 0,
-  "cloc": {
-    "header": {
-      "cloc_url": "github.com/AlDanial/cloc",
-      "cloc_version": "2.02",
-      "elapsed_seconds": 0,
-      "n_files": 0,
-      "n_lines": 0,
-      "files_per_second": 0,
-      "lines_per_second": 0
-    },
-    "TypeScript": {
-      "nFiles": 0,
-      "blank": 0,
-      "comment": 0,
-      "code": 0
-    },
-    "Sass": {
-      "nFiles": 0,
-      "blank": 0,
-      "comment": 364,
-      "code": 2086
-    },
-    "JSON": {
-      "nFiles": 54,
-      "blank": 0,
-      "comment": 0,
-      "code": 1237
-    },
-    "SCSS": {
-      "nFiles": 5,
-      "blank": 8,
-      "comment": 19,
-      "code": 680
-    },
-    "SVG": {
-      "nFiles": 27,
-      "blank": 0,
-      "comment": 0,
-      "code": 136
-    },
-    "JavaScript": {
-      "nFiles": 8,
-      "blank": 9,
-      "comment": 4,
-      "code": 123
-    },
-    "Markdown": {
-      "nFiles": 11,
-      "blank": 81,
-      "comment": 0,
-      "code": 107
-    },
-    "YAML": {
-      "nFiles": 2,
-      "blank": 12,
-      "comment": 15,
-      "code": 36
-    },
-    "HTML": {
-      "nFiles": 1,
-      "blank": 1,
-      "comment": 0,
-      "code": 13
-    },
-    "INI": {
-      "nFiles": 1,
-      "blank": 2,
-      "comment": 0,
-      "code": 11
-    },
-    "SUM": {
-      "blank": 1053,
-      "comment": 834,
-      "code": 15970,
-      "nFiles": 751
-    }
-  },
-  "pipe": "420"
+	"components": 0,
+	"revisions": 0,
+	"cloc": {
+		"header": {
+			"cloc_url": "github.com/AlDanial/cloc",
+			"cloc_version": "2.02",
+			"elapsed_seconds": 0,
+			"n_files": 0,
+			"n_lines": 0,
+			"files_per_second": 0,
+			"lines_per_second": 0
+		},
+		"TypeScript": {
+			"nFiles": 0,
+			"blank": 0,
+			"comment": 0,
+			"code": 0
+		},
+		"Sass": {
+			"nFiles": 0,
+			"blank": 0,
+			"comment": 364,
+			"code": 2086
+		},
+		"JSON": {
+			"nFiles": 54,
+			"blank": 0,
+			"comment": 0,
+			"code": 1237
+		},
+		"SCSS": {
+			"nFiles": 5,
+			"blank": 8,
+			"comment": 19,
+			"code": 680
+		},
+		"SVG": {
+			"nFiles": 27,
+			"blank": 0,
+			"comment": 0,
+			"code": 136
+		},
+		"JavaScript": {
+			"nFiles": 8,
+			"blank": 9,
+			"comment": 4,
+			"code": 123
+		},
+		"Markdown": {
+			"nFiles": 11,
+			"blank": 81,
+			"comment": 0,
+			"code": 107
+		},
+		"YAML": {
+			"nFiles": 2,
+			"blank": 12,
+			"comment": 15,
+			"code": 36
+		},
+		"HTML": {
+			"nFiles": 1,
+			"blank": 1,
+			"comment": 0,
+			"code": 13
+		},
+		"INI": {
+			"nFiles": 1,
+			"blank": 2,
+			"comment": 0,
+			"code": 11
+		},
+		"SUM": {
+			"blank": 1053,
+			"comment": 834,
+			"code": 15970,
+			"nFiles": 751
+		}
+	},
+	"pipe": "420"
 }

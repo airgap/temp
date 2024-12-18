@@ -1,12 +1,13 @@
 {
-  "name": "@lyku/phrasebooks",
-  "version": "0.0.1",
-  "dependencies": {
-    "@swc/helpers": "~0.5.11",
-    "@lyku/strings": "workspace:*"
-  },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts",
-  "private": true
+	"name": "@lyku/phrasebooks",
+	"version": "0.0.1",
+	"dependencies": {
+		"@swc/helpers": "~0.5.11",
+		"@lyku/strings": "workspace:*",
+		"@lyku/defaults": "workspace:*"
+	},
+	"type": "commonjs",
+	"main": "./src/index.js",
+	"typings": "./src/index.d.ts",
+	"private": true
 }

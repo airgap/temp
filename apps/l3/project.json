@@ -1,53 +1,53 @@
 {
-  "name": "l3",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/l3/src",
-  "projectType": "application",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/rspack:rspack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "target": "web",
-        "outputPath": "dist/apps/l3",
-        "index": "apps/l3/src/index.html",
-        "main": "apps/l3/src/main.tsx",
-        "tsConfig": "apps/l3/tsconfig.app.json",
-        "rspackConfig": "apps/l3/rspack.config.js",
-        "assets": ["apps/l3/src/favicon.ico", "apps/l3/src/assets"]
-      },
-      "configurations": {
-        "development": {
-          "mode": "development"
-        },
-        "production": {
-          "mode": "production",
-          "optimization": true,
-          "sourceMap": false
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nx/rspack:dev-server",
-      "options": {
-        "buildTarget": "l3:build:development"
-      },
-      "configurations": {
-        "development": {},
-        "production": {
-          "buildTarget": "l3:build:production"
-        }
-      }
-    },
-    "serve-static": {
-      "executor": "@nx/web:file-server",
-      "dependsOn": ["build"],
-      "options": {
-        "buildTarget": "l3:build",
-        "spa": true
-      }
-    }
-  }
+	"name": "l3",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/l3/src",
+	"projectType": "application",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/rspack:rspack",
+			"outputs": ["{options.outputPath}"],
+			"defaultConfiguration": "production",
+			"options": {
+				"target": "web",
+				"outputPath": "dist/apps/l3",
+				"index": "apps/l3/src/index.html",
+				"main": "apps/l3/src/main.tsx",
+				"tsConfig": "apps/l3/tsconfig.app.json",
+				"rspackConfig": "apps/l3/rspack.config.js",
+				"assets": ["apps/l3/src/favicon.ico", "apps/l3/src/assets"]
+			},
+			"configurations": {
+				"development": {
+					"mode": "development"
+				},
+				"production": {
+					"mode": "production",
+					"optimization": true,
+					"sourceMap": false
+				}
+			}
+		},
+		"serve": {
+			"executor": "@nx/rspack:dev-server",
+			"options": {
+				"buildTarget": "l3:build:development"
+			},
+			"configurations": {
+				"development": {},
+				"production": {
+					"buildTarget": "l3:build:production"
+				}
+			}
+		},
+		"serve-static": {
+			"executor": "@nx/web:file-server",
+			"dependsOn": ["build"],
+			"options": {
+				"buildTarget": "l3:build",
+				"spa": true
+			}
+		}
+	}
 }

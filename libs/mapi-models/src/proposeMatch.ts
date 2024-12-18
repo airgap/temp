@@ -4,20 +4,20 @@ import { game } from '@lyku/json-models';
 import { TsonHandlerModel } from 'from-schema';
 
 export const proposeMatch = {
-  request: {
-    type: 'object',
-    properties: {
-      user: user.properties.id,
-      game: game.properties.id,
-    },
-    required: ['user', 'game'],
-  },
-  response: {
-    type: 'object',
-    properties: {
-      proposalId: matchProposal.properties.id,
-    },
-    required: ['proposalId'],
-  },
-  authenticated: true,
+	request: {
+		type: 'object',
+		properties: {
+			user: user.properties.id,
+			game: game.properties.id,
+		},
+		required: ['user', 'game'],
+	},
+	response: {
+		type: 'object',
+		properties: {
+			proposalId: matchProposal.properties.id,
+		},
+		required: ['proposalId'],
+	},
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

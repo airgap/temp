@@ -2,17 +2,17 @@ import { TsonHandlerModel } from 'from-schema';
 import { channel } from '@lyku/json-models';
 
 export const listMyChannels = {
-  // request: {},
+	// request: {},
 
-  response: {
-    type: 'object',
-    properties: {
-      channels: {
-        type: 'array',
-        items: channel,
-      },
-    },
-    required: ['channels'],
-  },
-  authenticated: true,
+	response: {
+		type: 'object',
+		properties: {
+			channels: {
+				type: 'array',
+				items: channel,
+			},
+		},
+		required: ['channels'],
+	},
+	authenticated: true,
 } as const satisfies TsonHandlerModel;
