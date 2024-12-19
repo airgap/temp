@@ -1,0 +1,116 @@
+#!/bin/bash
+
+TOOLS_DIR="tools/generators/route"
+
+# Create directory structure
+mkdir -p "$TOOLS_DIR/files/src"
+
+# Create schema.json
+cat > "$TOOLS_DIR/schema.json" << 'EOF'
+{
+ "$schema": "http://json-schema.org/schema",
+ "cli": "nx",
+ "id": "route",
+ "type": "object",
+ "properties": {
+   "name": {
+     "type": "string",
+     "description": "Route name",
+     "$default": {
+       "$source": "argv",
+       "index": 0
+     }
+   }
+ },
+ "required": ["name"]
+}
+EOF
+
+# Create index.ts
+cat > "$TOOLS_DIR/index.ts" << 'EOF'
+import { Tree, generateFiles, names } from '@nx/devkit';
+import * as path from 'path';
+
+export default async function(tree: Tree, schema: any) {
+ const routeName = names(schema.name);
+ generateFiles(
+   tree,
+   path.join(__dirname, 'files'),
+   `libs/routes/${routeName.fileName}`,
+   {
+     ...routeName,
+     template: ''
+   }
+ );
+}
+EOF
+
+# Create template files
+cat > "$TOOLS_DIR/files/src/index.ts.template" << 'EOF'
+import { Router } from 'express';
+
+export function <%= fileName %>(router: Router) {
+ router.get('/<%= fileName %>', (req, res) => {
+   res.json({ message: '<%= fileName %> endpoint' });
+ });
+}
+EOF
+
+cat > "$TOOLS_DIR/files/src/lib.spec.ts.template" << 'EOF'
+import { Router } from 'express';
+import { <%= fileName %> } from '.';
+
+describe('<%= fileName %>', () => {
+ it('registers route', () => {
+   const router = Router();
+   <%= fileName %>(router);
+ });
+});
+EOF
+
+cat > "$TOOLS_DIR/files/tsconfig.json.template" << 'EOF'
+{
+ "extends": "../../../tsconfig.base.json",
+ "compilerOptions": {
+   "outDir": "../../../dist/out-tsc"
+ },
+ "include": ["**/*.ts"],
+ "references": [{"path": "./tsconfig.spec.json"}]
+}
+EOF
+
+cat > "$TOOLS_DIR/files/tsconfig.spec.json.template" << 'EOF'
+{
+ "extends": "./tsconfig.json",
+ "compilerOptions": {
+   "types": ["jest", "node"]
+ },
+ "include": ["**/*.spec.ts", "**/*.test.ts"]
+}
+EOF
+
+cat > "$TOOLS_DIR/files/project.json.template" << 'EOF'
+{
+ "name": "routes-<%= fileName %>",
+ "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+ "sourceRoot": "libs/routes/<%= fileName %>/src",
+ "projectType": "library",
+ "targets": {
+   "lint": {
+     "executor": "@nx/eslint:lint"
+   },
+   "test": {
+     "executor": "@nx/jest:jest",
+     "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+     "options": {
+       "jestConfig": "libs/routes/<%= fileName %>/jest.config.ts"
+     }
+   }
+ },
+ "tags": []
+}
+EOF
+
+chmod +x "$0"
+
+echo "Generator files created in $TOOLS_DIR"

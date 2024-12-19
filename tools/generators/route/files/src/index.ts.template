@@ -1,0 +1,7 @@
+import { Router } from 'express';
+
+export function <%= fileName %>(router: Router) {
+ router.get('/<%= fileName %>', (req, res) => {
+   res.json({ message: '<%= fileName %> endpoint' });
+ });
+}

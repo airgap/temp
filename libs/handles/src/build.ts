@@ -52,24 +52,8 @@ const jsonify = async () => {
 		);
 		const exportDir = path.dirname(tsPath);
 		await mkdir(exportDir, { recursive: true });
-
-		const tsContent = `import { Kysely } from "kysely";
-		import { Database } from "@lyku/db-config/kysely";
-		import { CompactedPhrasebook } from "@lyku/phrasebooks";
-		import { Server as HttpServer, IncomingMessage } from "http";
-		import { Server as HttpsServer } from "https";
-		import { WebSocket } from "ws";
-		type ContextBase = {
-	db: Kysely<Database>;
-	isSecure?: boolean;
-	httpServer?: HttpServer | HttpsServer;
-	strings: CompactedPhrasebook,
-	message: IncomingMessage
-}
-export type GuestContext = ContextBase & {requester?: bigint, session?: string}
-export type SecureContext = ContextBase & {requester: bigint, session: string}
-export type GuestSocketContext = GuestContext & {socket: WebSocket}
-export type SecureSocketContext = SecureContext & {socket: WebSocket}
+		const preamble = Bun.file('libs/handles/src/preamble.ts').text();
+		const tsContent = `${preamble}
 	${handles.join('\n\n')}
 	`;
 		const formattedTsContent = await prettier.format(tsContent, {
