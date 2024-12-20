@@ -52,7 +52,7 @@ const jsonify = async () => {
 		);
 		const exportDir = path.dirname(tsPath);
 		await mkdir(exportDir, { recursive: true });
-		const preamble = Bun.file('libs/handles/src/preamble.ts').text();
+		const preamble = await Bun.file('libs/handles/src/preamble.ts').text();
 		const tsContent = `${preamble}
 	${handles.join('\n\n')}
 	`;

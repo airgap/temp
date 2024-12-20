@@ -34,7 +34,8 @@
 			"monolith-api-types": ["dist/libs/mapi-types.d.ts"],
 			"monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"],
 			"@lyku/strings": ["libs/strings/src/index.ts"],
-			"ui-bits": ["libs/ui-bits/src/index.ts"]
+			"ui-bits": ["libs/ui-bits/src/index.ts"],
+			"@lyku/get-current-user": ["libs/routes/getCurrentUser/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
