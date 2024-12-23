@@ -61,7 +61,32 @@ const pgColumnTypes = [
 	'xml',
 ];
 const jsonify = async () => {
+	const jsPath = path.join(
+		__dirname,
+		'..',
+		'..',
+		'..',
+		'dist',
+		'libs',
+		'json-models',
+		'src',
+		`index.js`,
+	);
+	const dtsPath = path.join(
+		__dirname,
+		'..',
+		'..',
+		'..',
+		'dist',
+		'libs',
+		'json-models',
+		'src',
+		`index.d.ts`,
+	);
+	const exportDir = path.dirname(jsPath);
+	await mkdir(exportDir, { recursive: true });
 	const exports = [];
+	const dtsExports = [];
 	const kyselyExports = [];
 	const handlerExports = [];
 	const clientExports = [];
@@ -74,7 +99,7 @@ const jsonify = async () => {
 		const hasType = 'type' in value;
 		const hasProperties = 'properties' in value;
 		let schema;
-		console.log('Detecting', key, value);
+		// console.log('Detecting', key, value);
 		const tsonSchema = hasType
 			? pgColumnTypes.includes(value.type)
 				? postgresColumnToTson(value as any)
@@ -82,9 +107,9 @@ const jsonify = async () => {
 			: hasProperties
 				? postgresRecordToTson(value as any)
 				: value;
-		console.log('Typing', tsonSchema);
+		// console.log('Typing', tsonSchema);
 		const resolvedTypeString = tsonToType(tsonSchema as any);
-		console.log('Resolved', key);
+		// console.log('Resolved', key);
 
 		exports.push(
 			`export const ${key} = ${JSON.stringify(
@@ -96,43 +121,46 @@ const jsonify = async () => {
 					return value;
 				},
 				2,
-			)} as const;\n` +
-				`export type ${
-					key[0].toUpperCase() + key.slice(1)
-				} = ${resolvedTypeString};`,
+			)};`,
+		);
+
+		dtsExports.push(
+			`export declare const ${key}: ${JSON.stringify(tsonSchema, (_, value) => {
+				if (typeof value === 'bigint') {
+					return value.toString() + 'n';
+				}
+				return value;
+			}, 2)};\n` +
+			`export type ${key[0].toUpperCase() + key.slice(1)} = ${resolvedTypeString};`
 		);
 	}
 
 	if (exports.length > 0) {
-		const tsPath = path.join(
-			__dirname,
-			'..',
-			'..',
-			'..',
-			'dist',
-			'libs',
-			'json-models',
-			'src',
-			`index.ts`,
-		);
-		const exportDir = path.dirname(tsPath);
-		await mkdir(exportDir, { recursive: true });
+		const jsContent = exports.join('\n\n');
+		const dtsContent = dtsExports.join('\n\n');
 
-		const tsContent = exports.join('\n\n');
-		const formattedTsContent = await prettier.format(tsContent, {
+		const formattedJsContent = await prettier.format(jsContent, {
+			parser: 'babel',
+			semi: true,
+			singleQuote: true,
+			tabWidth: 2,
+		});
+
+		const formattedDtsContent = await prettier.format(dtsContent, {
 			parser: 'typescript',
 			semi: true,
 			singleQuote: true,
 			tabWidth: 2,
 		});
 
-		await Bun.write(tsPath, formattedTsContent);
+		await Bun.write(jsPath, formattedJsContent);
+		await Bun.write(dtsPath, formattedDtsContent);
 	}
 };
 
-jsonify();
+await jsonify();
 // Copy package.json to dist
 await Bun.write(
-	'dist/libs/json-models/package.json',
-	await Bun.file('libs/json-models/package.json').text(),
+	'../../dist/libs/json-models/package.json',
+	await Bun.file('package.json').text(),
 );

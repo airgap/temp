@@ -8,7 +8,7 @@ const statusPrecedence = {
 	maintenance: 3,
 	wip: 4,
 	planned: 5,
-} satisfies Record<GameStatus, number>;
+} as const satisfies Record<GameStatus, number>;
 export const sortGamesByPrecedence = (games: Game[]) =>
 	games.sort(
 		(g1: Game, g2: Game) =>

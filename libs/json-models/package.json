@@ -6,7 +6,7 @@
 		"bson-models": "workspace:*"
 	},
 	"type": "module",
-	"main": "./src/index.ts",
+	"main": "./src/index.js",
 	"typings": "./src/index.d.ts",
 	"private": true
 }

@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/routes/{routeName}/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/routes/{routeName}",
+        "command": "bun run ibuild.ts apps/routes/{routeName}/src/index.ts dist/apps/routes/{routeName}"
+      }
+    }
+  }
+} 

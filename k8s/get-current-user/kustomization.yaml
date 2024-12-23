@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../base/micro.yaml
+
+patches:
+- target:
+    kind: Template
+    name: micro-service-base
+  patch: |
+    - op: replace
+      path: /parameters/0/value
+      value: get-current-user
+    - op: replace
+      path: /parameters/1/value
+      value: your-registry/get-current-user:latest 

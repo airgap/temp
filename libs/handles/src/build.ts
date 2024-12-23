@@ -6,6 +6,7 @@ import {
 	postgresColumnToTson,
 	buildValidator,
 } from 'from-schema';
+import tsconfig from '../../../tsconfig.base.json';
 import * as ts from 'typescript';
 import * as models from '@lyku/mapi-models';
 import { MonolithTypes } from '@lyku/mapi-types';
@@ -27,11 +28,12 @@ const jsonify = async () => {
 		const request = 'request' in value ? tsonToType(value.request) : 'never';
 		const response = 'response' in value ? tsonToType(value.response) : 'void';
 		const optional = 'authenticated' in value && value.authenticated ? '' : '?';
+		const protocol = 'stream' in value && value.stream ? 'Websocket' : 'Http';
 		const context =
 			'authenticated' in value && value.authenticated
 				? 'SecureContext'
 				: 'GuestContext';
-		const handle = `export const handle${key[0].toUpperCase()}${key.slice(1)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => ({
+		const handle = `export const handle${key[0].toUpperCase()}${key.slice(1)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => serve${protocol}({
 				execute: handler,
 				validate: ${'request' in value ? buildValidator(value.request) : () => true}
 			});`;
@@ -39,20 +41,20 @@ const jsonify = async () => {
 	}
 
 	if (handles.length > 0) {
-		const tsPath = path.join(
+		const tmpPath = path.join(
 			__dirname,
 			'..',
 			'..',
 			'..',
-			'dist',
+			'tmp',
 			'libs',
 			'handles',
 			'src',
 			`index.ts`,
 		);
-		const exportDir = path.dirname(tsPath);
-		await mkdir(exportDir, { recursive: true });
-		const preamble = await Bun.file('libs/handles/src/preamble.ts').text();
+		const tmpDir = path.dirname(tmpPath);
+		await mkdir(tmpDir, { recursive: true });
+		const preamble = await Bun.file('src/preamble.ts').text();
 		const tsContent = `${preamble}
 	${handles.join('\n\n')}
 	`;
@@ -63,13 +65,60 @@ const jsonify = async () => {
 			tabWidth: 2,
 		});
 
-		await Bun.write(tsPath, formattedTsContent);
+		await Bun.write(tmpPath, formattedTsContent);
+
+		// Build the tmp file to dist using bun
+		// const outdir = path.join(__dirname, '..', '..', '..', 'dist', 'libs', 'handles', 'src');
+		// console.log(outdir);
+		// const result = await Bun.build({
+		// 	entrypoints: [tmpPath],
+		// 	outdir,
+		// 	target: 'bun',
+		// 	// minify: true,
+		// 	format: 'esm', // Export as ES modules
+		// 	external: [], // Bundle all dependencies 
+		// 	splitting: false, // Disable code splitting for single bundle
+		// 	sourcemap: 'external',
+		// 	plugins: [
+		// 		{
+		// 			name: 'path-resolver',
+		// 			setup(build) {
+		// 				build.onResolve({ filter: /^@lyku\// }, args => {
+		// 					const paths = tsconfig.compilerOptions.paths;
+		// 					console.log(paths);
+		// 					const matchedPath = Object.entries(paths).find(([alias]) => 
+		// 						args.path.startsWith(alias.replace('/*', ''))
+		// 					);
+		// 					if (matchedPath) {
+		// 						const [alias, [mapping]] = matchedPath;
+		// 						const resolvedPath = args.path.replace(
+		// 							alias.replace('/*', ''),
+		// 							mapping.replace('/*', '')
+		// 						);
+		// 						return { path: path.resolve(__dirname, '..', '..', '..', resolvedPath) };
+		// 					}
+		// 				});
+		// 			}
+		// 		}
+		// 	]
+		// });
+
+		// if (!result.success) {
+		// 	console.error('Build success?', result.success,':', result.logs);
+		// 	throw new Error('Build failed');
+		// }
+
+		// for (const output of result.outputs) {
+		// 	const outPath = path.join(outdir, path.basename(output.path));
+		// 	await Bun.write(outPath, output);
+		// 	console.log('Wrote', outPath, output);
+		// }
 	}
 };
 
 jsonify();
 // Copy package.json to dist
 await Bun.write(
-	'dist/libs/handles/package.json',
-	await Bun.file('libs/handles/package.json').text(),
+	'../../dist/libs/handles/package.json',
+	await Bun.file('package.json').text(),
 );

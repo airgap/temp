@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/get-current-user(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: get-current-user-service
+                port:
+                  number: 80

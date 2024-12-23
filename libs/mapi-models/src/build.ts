@@ -16,4 +16,7 @@ const functions = `export type MonolithTypes = {
 		.join(',\n')}
 }`;
 
-console.log(prettier.format(functions, { parser: 'typescript' }));
+Bun.write(
+	'../../dist/libs/mapi-types.d.ts',
+	prettier.format(functions, { parser: 'typescript' }),
+);

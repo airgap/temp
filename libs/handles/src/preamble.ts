@@ -1,13 +1,14 @@
-import { serve } from 'bun';
+const {serve} = Bun;
 import { Database } from '@lyku/db-config/kysely'; // this is the Database interface we defined earlier
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
-import { CompactedPhrasebook } from '@lyku/phrasebooks';
+import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
 import { Server as HttpServer, IncomingMessage } from 'http';
 import { Server as HttpsServer } from 'https';
 import { WebSocket } from 'ws';
 import { decode, encode } from '@msgpack/msgpack'; // Import the MessagePack decoder
-import { getDictionary } from '@lyku/phrasebooks';
+import { en_US } from '@lyku/strings';
+
 type ContextBase = {
 	db: Kysely<Database>;
 	isSecure?: boolean;
@@ -44,6 +45,42 @@ export const db = new Kysely<Database>({
 	dialect,
 });
 
+export function getCookie(cookies: string, cname: string) {
+	const name = cname + '=';
+	const ca = cookies.split(';');
+	for (const element of ca) {
+		let c = element;
+		while (c.charAt(0) === ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) === 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return '';
+}
+
+
+
+export const getDictionary = (msg: IncomingMessage): CompactedPhrasebook => {
+	let lang = getCookie(msg.headers.cookie ?? '', 'lang');
+	let dictionary;
+	if (lang) dictionary = getPhrasebook(lang);
+	else {
+		const acceptableLanguages =
+			msg.headers['accept-language'] ??
+			''.replace(/;q=[0-9.]{1,3}/g, '').split(/, /g);
+		for (lang of acceptableLanguages) {
+			dictionary = getPhrasebook(lang);
+			if (dictionary) break;
+		}
+	}
+	if (!dictionary) dictionary = en_US;
+	return dictionary;
+};
+
+const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
+
 export const serveHttp = ({
 	execute,
 	validate,
@@ -52,7 +89,7 @@ export const serveHttp = ({
 	validate: (params: unknown) => boolean;
 }) =>
 	serve({
-		port: 3000,
+		port,
 		async fetch(req) {
 			// HTTP handler
 			const auth = req.headers.get('authorization');
@@ -98,7 +135,7 @@ export const serveHttp = ({
 		},
 	});
 
-export const hostWebsocket = ({
+export const serveWebsocket = ({
 	execute,
 	validate,
 }: {

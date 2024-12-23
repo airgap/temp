@@ -1,12 +1,18 @@
 {
 	"name": "@lyku/handles",
 	"version": "0.0.1",
-	"devDependencies": {
-		"@swc/helpers": "~0.5.11",
-		"@lyku/json-models": "workspace:*"
-	},
 	"type": "module",
 	"main": "./src/index.ts",
-	"typings": "./src/index.d.ts",
-	"private": true
+	"types": "./src/index.ts",
+	"dependencies": {
+		"@lyku/mapi-models": "workspace:*",
+		"@lyku/phrasebooks": "workspace:*",
+		"@lyku/strings": "workspace:*",
+		"@msgpack/msgpack": "3.0.0-beta2",
+		"kysely": "^0.27.2",
+		"pg": "^8.11.3",
+		"ws": "^8.16.0",
+		"typescript": "^5.3.3",
+		"prettier": "^3.2.5"
+	}
 }
