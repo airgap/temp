@@ -1,5 +1,10 @@
 {
 	"name": "@lyku/get-current-user",
 	"extends": ["../_shared/project.json"],
-	"tags": []
+	"tags": [],
+	"targets": {
+		"build": {
+			"$extends": ["../_shared/project.json:build"]
+		}
+	}
 }
