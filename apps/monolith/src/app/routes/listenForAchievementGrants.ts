@@ -10,7 +10,7 @@ export const listenForAchievementGrants = useContract(
 			socket,
 			game ? all.filter<false>({ game }) : all,
 			connection,
-			{ includeInitial: true },
+			{ includeInitial: true }
 		);
-	},
+	}
 );

@@ -14,7 +14,7 @@ export const acceptFriendRequest = handleAcceptFriendRequest(
 						eb.val([requester, user]).as('users'),
 						eb.val(new Date()).as('created'),
 					])
-					.where('id', '=', bondIds(requester, user)),
+					.where('id', '=', bondIds(requester, user))
 			)
 			.returningAll()
 			.execute();
@@ -22,5 +22,5 @@ export const acceptFriendRequest = handleAcceptFriendRequest(
 		if (result.length === 0) {
 			throw new Error('404');
 		}
-	},
+	}
 );

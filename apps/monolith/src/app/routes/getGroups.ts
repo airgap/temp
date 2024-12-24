@@ -7,5 +7,5 @@ export const getGroups = useContract(
 		tables.groups
 			.getAll(...ids)
 			.coerceTo('array')
-			.run(connection),
+			.run(connection)
 );

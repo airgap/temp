@@ -7,5 +7,5 @@ export const listMyBots = useContract(
 		tables.users
 			.getAll(userId, { index: 'ownerId' })
 			.coerceTo('array')
-			.run(connection),
+			.run(connection)
 );

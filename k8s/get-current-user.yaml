@@ -3,10 +3,10 @@ kind: Template
 metadata:
   name: get-current-user
   annotations:
-    description: "Get Current User microservice template"
+    description: 'Get Current User microservice template'
 $patch: select
 $from: base/micro.yaml
 $use: Template
 parameters:
-- name: SERVICE_NAME
-  value: get-current-user
+  - name: SERVICE_NAME
+    value: get-current-user

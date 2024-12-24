@@ -7,7 +7,7 @@ import { newShortlink } from 'models/apis/link-shortener';
 
 console.log('end', linkShortenerEndpoint);
 const linkShortenerLocal = ['127.0.0.1:8787', 'localhost'].includes(
-	linkShortenerEndpoint,
+	linkShortenerEndpoint
 );
 console.log('local', linkShortenerLocal);
 const protocol = linkShortenerLocal ? 'http:' : 'https:';

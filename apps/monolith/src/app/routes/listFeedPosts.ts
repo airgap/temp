@@ -9,7 +9,7 @@ type FilterMap = Partial<
 		string,
 		(
 			userIdQuery: Ex<string> | string,
-			tables: ActualTables,
+			tables: ActualTables
 		) => (row: Ex<Post>) => Ex<boolean>
 	>
 >;
@@ -21,22 +21,22 @@ const filterMap: FilterMap = {
 				row('authorId').eq(userId),
 				tables.userFollows.getAll([userId, row('authorId')], {
 					index: 'bond',
-				}),
-			),
+				})
+			)
 		),
 	groups: (userId, tables) => (row) =>
 		and(
 			row.hasFields('groupId'),
 			tables.groupMemberships.getAll([userId, row('groupId') as Ex<string>], {
 				index: 'bond',
-			}),
+			})
 		),
 	all: () => () => and(expr(true), expr(true)), // god help me
 };
 
 export const isValidKey = <T extends object>(
 	key: keyof T | undefined,
-	obj: T,
+	obj: T
 ): key is keyof T => {
 	return Boolean(key && key in obj);
 };
@@ -46,7 +46,7 @@ export const listFeedPosts = useContract(
 	async (
 		{ before, tags, groups, filter },
 		{ tables, connection },
-		{ userId },
+		{ userId }
 	) => {
 		// let query = tables.posts.orderBy(desc('published')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 		let query: Sequence<Post> = tables.posts.orderBy(desc('published'));
@@ -63,10 +63,10 @@ export const listFeedPosts = useContract(
 					(groups === true
 						? tables.groupMemberships.getAll(userId, {
 								index: 'userId',
-							})
+						  })
 						: expr(groups)
-					).includes(row('groupId')),
-				),
+					).includes(row('groupId'))
+				)
 			);
 		if (tags)
 			filters.push((ro: Ex<Post>) =>
@@ -74,15 +74,15 @@ export const listFeedPosts = useContract(
 					ro.hasFields('lowerTags'),
 					row('lowerTags')
 						.filter((r: string) => expr(tags).contains(r))
-						.limit(1),
-				),
+						.limit(1)
+				)
 			);
 		if (filters.length)
 			query = query.filter<boolean>(
-				filters.length > 1 ? and(...filters) : filters[0],
+				filters.length > 1 ? and(...filters) : filters[0]
 			);
 		const posts = await query.limit(20).coerceTo('array').run(connection);
 		console.log('Listing', posts.length, 'posts');
 		return posts;
-	},
+	}
 );

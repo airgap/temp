@@ -2,9 +2,10 @@ import { PostgresRecordModel } from 'from-schema';
 
 export const shortlinkRow = {
 	properties: {
+		id: { type: 'bigserial' },
 		url: { type: 'character', length: 255 },
-		authorId: { type: 'bigint' },
-		postId: { type: 'bigint' },
+		author: { type: 'bigint' },
+		post: { type: 'bigint' },
 	},
-	required: ['url'],
+	required: ['id', 'url'],
 } as const satisfies PostgresRecordModel;

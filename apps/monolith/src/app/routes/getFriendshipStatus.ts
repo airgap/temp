@@ -15,5 +15,5 @@ export const getFriendshipStatus = useContract(
 			await tables.friendRequests.get(bond).default(null).run(connection);
 		if (!request) return 'none';
 		return request.from === userId ? 'youOffered' : 'theyOffered';
-	},
+	}
 );

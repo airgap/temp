@@ -17,8 +17,8 @@ export const listPostReplies = useContract(
 					ro.hasFields('lowerTags'),
 					row('lowerTags')
 						.filter((r: string) => expr(tags).contains(r))
-						.limit(1),
-				),
+						.limit(1)
+				)
 			);
 		query = query.filter<false>(and(...filters));
 		query = query.limit(20);
@@ -36,5 +36,5 @@ export const listPostReplies = useContract(
 		const res = await query.coerceTo('array').run(connection);
 		console.log('Listing', res.length, 'posts');
 		return { posts: res as Post[] };
-	},
+	}
 );

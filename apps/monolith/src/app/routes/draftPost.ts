@@ -22,7 +22,7 @@ export const draftPost = useContract(
 		{ attachments, body, replyTo, echoing },
 		{ tables, connection },
 		{ userId: authorId },
-		strings,
+		strings
 	) => {
 		if (!cfApiToken && attachments?.length)
 			throw new Error('We forgot to enter our Cloudflare password');
@@ -64,11 +64,11 @@ export const draftPost = useContract(
 				imageDrafts.length,
 				'images and',
 				videoDrafts.length,
-				'videos drafted',
+				'videos drafted'
 			);
 			atAts.push(
 				...(imageDrafts as FromSchema<typeof attachmentDraft>[]),
-				...(videoDrafts as FromSchema<typeof attachmentDraft>[]),
+				...(videoDrafts as FromSchema<typeof attachmentDraft>[])
 			);
 		}
 		console.log('atAts', atAts);
@@ -93,7 +93,7 @@ export const draftPost = useContract(
 			...(shortlinkRes
 				? {
 						shortcode: shortlinkRes.code,
-					}
+				  }
 				: {}),
 		};
 		if (replyTo) draft.replyTo = replyTo;
@@ -105,7 +105,7 @@ export const draftPost = useContract(
 			// userId,
 			id: postId,
 		};
-	},
+	}
 );
 type AttachmentInitializer<Return> = (props: {
 	authorId: string;
@@ -173,7 +173,7 @@ const uploadVideo: AttachmentInitializer<
 		'stdout',
 		stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1],
 		'stderr',
-		stderr,
+		stderr
 	);
 	const uploadURL = stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1];
 	const id = stdout.match(/^stream-media-id: ([a-z0-9]{32})$/m)?.[1];

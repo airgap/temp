@@ -7,5 +7,5 @@ export const listenForTtfPlays = useContract(
 	(id, { tables, connection }, { socket }) =>
 		feedSocket(socket, tables.ttfMatches.get(id), connection, {
 			includeInitial: true,
-		}),
+		})
 );

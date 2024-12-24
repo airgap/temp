@@ -1,7 +1,7 @@
 import { ServerResponse } from 'http';
 
 export const addBasicHeaders = (
-	res: ServerResponse,
+	res: ServerResponse
 	// TODO: use this
 	// secure = false
 ) => {
@@ -13,7 +13,7 @@ export const addBasicHeaders = (
 	res.setHeader('Access-Control-Allow-Methods', 'POST');
 	res.setHeader(
 		'Access-Control-Allow-Headers',
-		'Sessionid, Set-Cookie, sessionid, sessionId, Authorization',
+		'Sessionid, Set-Cookie, sessionid, sessionId, Authorization'
 	);
 	res.setHeader('Access-Control-Allow-Credentials', 'true');
 };

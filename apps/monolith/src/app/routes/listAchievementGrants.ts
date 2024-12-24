@@ -10,5 +10,5 @@ export const listAchievementGrants = useContract(
 
 			return query.coerceTo('array').run(connection);
 		}
-	},
+	}
 );

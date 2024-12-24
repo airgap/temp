@@ -10,7 +10,7 @@ export declare const imageMimeList: readonly [
 	'image/jpg',
 	'image/jpeg',
 	'image/gif',
-	'image/webp',
+	'image/webp'
 ];
 export declare const videoMimeList: readonly ['video/mov', 'video/mp4'];
 export declare const imageMimes: string;

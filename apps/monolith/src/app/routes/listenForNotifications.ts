@@ -8,6 +8,6 @@ export const listenForNotifications = useContract(
 		feedSocket(
 			socket,
 			tables.notifications.getAll(userId, { index: 'user' }),
-			connection,
-		),
+			connection
+		)
 );

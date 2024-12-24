@@ -28,3 +28,4 @@ export * from './users';
 export * from './userFollows';
 export * from './userHashes';
 export * from './videoDrafts';
+export * from './shortlinks';

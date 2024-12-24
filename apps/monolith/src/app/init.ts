@@ -17,7 +17,7 @@ export const init = async () => {
 	try {
 		const dbExists = await rootPool.query(
 			`SELECT 1 FROM pg_database WHERE datname = $1`,
-			[dbName],
+			[dbName]
 		);
 
 		if (dbExists.rows.length === 0) {

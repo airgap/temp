@@ -14,7 +14,7 @@ export const unlikePost = useContract(
 		const post = tables.posts.get(postId);
 		const like = await and(
 			tables.posts.get(postId),
-			tables.likes.get(likeId),
+			tables.likes.get(likeId)
 		).run(connection);
 		console.log('like', like);
 		if (!like) throw 'You have not liked that post';
@@ -25,7 +25,7 @@ export const unlikePost = useContract(
 				{ likes: row('likes').sub(1) },
 				{
 					returnChanges: true,
-				},
+				}
 			)('changes')(0)('new_val')
 			.run(connection);
 		console.log('Updated post', postUpdate);
@@ -46,5 +46,5 @@ export const unlikePost = useContract(
 		console.log('Liker update', upd, 'likee update', upd2);
 		console.log('YAY YOU PASS');
 		return postUpdate.likes;
-	},
+	}
 );

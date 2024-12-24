@@ -14,5 +14,5 @@ export const listGroupsIOwn = useContract(
 			.run(connection);
 		console.log('groups', groups);
 		return { groups };
-	},
+	}
 );

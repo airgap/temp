@@ -19,5 +19,5 @@ export const listMyChannels = useContract(
 		if ('error' in res) throw new Error(res.error?.toString());
 		console.log('channels', channels);
 		return { channels: res };
-	},
+	}
 );

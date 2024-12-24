@@ -17,5 +17,5 @@ export const getGroup = useContract(
 			group,
 			...(typeof membership === 'object' ? { membership } : {}),
 		};
-	},
+	}
 );

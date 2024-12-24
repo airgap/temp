@@ -12,11 +12,11 @@ export const listGroupsImIn = useContract(
 				index: 'userId',
 			})
 			.map<FromSchema<typeof group>>((membership) =>
-				tables.groups.get(membership('group')),
+				tables.groups.get(membership('group'))
 			)
 			.coerceTo('array')
 			.run(connection);
 		console.log('groups', groups);
 		return { groups };
-	},
+	}
 );

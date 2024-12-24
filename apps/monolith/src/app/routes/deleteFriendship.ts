@@ -7,5 +7,5 @@ export const deleteFriendship = useContract(
 		const bond = bondIds(userId, user);
 		await tables.friendships.get(bond).delete().run(connection);
 		return { status: 'none' };
-	},
+	}
 );

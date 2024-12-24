@@ -4,11 +4,11 @@ import { Notification } from 'models';
 
 export const sendNotification = async (
 	notification: Omit<Notification, 'posted' | 'id'>,
-	{ tables, connection }: HardenedState,
+	{ tables, connection }: HardenedState
 ): Promise<Notification> =>
 	tables.notifications
 		.insert(
 			{ ...notification, posted: now() },
-			{ returnChanges: true },
+			{ returnChanges: true }
 		)('changes')(0)('new_val')
 		.run(connection);

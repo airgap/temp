@@ -8,5 +8,5 @@ export const getTables = (db: Db) =>
 			...o,
 			[t]: db.table(t),
 		}),
-		{},
+		{}
 	) as ActualTables;

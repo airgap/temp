@@ -3,7 +3,7 @@ import { TtfBoard } from 'models';
 export const isValidTicTacToeMove = (
 	board: TtfBoard,
 	who: 'X' | 'O',
-	where: number,
+	where: number
 ) => {
 	if (board[where - 1] !== '-') return false;
 	const xs = board.match(/X/g)?.length ?? 0;

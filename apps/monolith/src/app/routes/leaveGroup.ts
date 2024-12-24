@@ -11,5 +11,5 @@ export const leaveGroup = useContract(
 			.branch(doc.delete(), false)
 			.run(connection);
 		if (!res) throw new Error('Cannot leave group');
-	},
+	}
 );

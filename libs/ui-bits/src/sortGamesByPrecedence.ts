@@ -12,5 +12,5 @@ const statusPrecedence = {
 export const sortGamesByPrecedence = (games: Game[]) =>
 	games.sort(
 		(g1: Game, g2: Game) =>
-			statusPrecedence[g1.status] - statusPrecedence[g2.status],
+			statusPrecedence[g1.status] - statusPrecedence[g2.status]
 	);

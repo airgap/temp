@@ -18,5 +18,5 @@ const functions = `export type MonolithTypes = {
 
 Bun.write(
 	'../../dist/libs/mapi-types.d.ts',
-	prettier.format(functions, { parser: 'typescript' }),
+	prettier.format(functions, { parser: 'typescript' })
 );

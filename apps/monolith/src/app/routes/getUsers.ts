@@ -7,5 +7,5 @@ export const getUsers = useContract(
 			.getAll(users, { index: 'username' })
 			.coerceTo('array')
 			.run(connection),
-	}),
+	})
 );

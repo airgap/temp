@@ -50,5 +50,5 @@ export const confirmVideoUpload = handleConfirmVideoUpload(
 		if (!dbres) throw new Error(strings.unknownBackendError);
 
 		return dbres.id;
-	},
+	}
 );

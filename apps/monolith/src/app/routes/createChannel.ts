@@ -29,8 +29,8 @@ export const createChannel = handleCreateChannel(
 			branch(
 				underLimit,
 				{ uuid: uuid() },
-				{ error: strings.channelLimitReached },
-			),
+				{ error: strings.channelLimitReached }
+			)
 		);
 		const res = await query.run(connection);
 		if (!res) {
@@ -92,5 +92,5 @@ export const createChannel = handleCreateChannel(
 			.run(connection);
 		console.log('Inserted channel in database', channelUpdateResult);
 		return { channel: c };
-	},
+	}
 );

@@ -15,7 +15,7 @@ export const httpListener =
 		res.setHeader('Access-Control-Allow-Origin', '*');
 		res.setHeader(
 			'Access-Control-Allow-Headers',
-			'Authorization, Content-Type',
+			'Authorization, Content-Type'
 		);
 		// currentReqs.inc();
 		// console.log(
@@ -107,7 +107,7 @@ export const httpListener =
 					message: msg,
 					requester: userId,
 					strings: phrasebook,
-				} as GuestContext,
+				} as GuestContext
 			);
 			r?.then(end).catch((e) => {
 				console.error('Route', path, 'threw', e.message);

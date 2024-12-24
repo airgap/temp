@@ -18,6 +18,7 @@
 		"esModuleInterop": true,
 		"maxNodeModuleJsDepth": 100,
 		"paths": {
+			"@lyku/route-helpers": ["libs/route-helpers/src/index.ts"],
 			"@lyku/db-config": ["libs/db-config/src/index.ts"],
 			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely.d.ts"],
 			"@lyku/defaults": ["libs/defaults/src/index.ts"],

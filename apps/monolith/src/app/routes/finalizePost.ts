@@ -73,9 +73,9 @@ export const finalizePost = useContract(
 						.run(connection)
 				: [];
 			const attachments = authRes.attachments.map((att) =>
-				(
-					({ image: images, video: videos })[att.supertype] as Attachment[]
-				).find(({ id }) => id === att.id),
+				(({ image: images, video: videos }[att.supertype] as Attachment[]).find(
+					({ id }) => id === att.id
+				))
 			);
 			console.log('Attachment draft status', attachments);
 			protopost.attachments = attachments as Attachment[];
@@ -114,5 +114,5 @@ export const finalizePost = useContract(
 			// attachmentUploadPacks: atAts,
 			post: p,
 		};
-	},
+	}
 );

@@ -45,7 +45,7 @@ export const ttfBots: Record<
 } as const;
 
 export const ttfBotsById = Object.fromEntries(
-	Object.values(ttfBots).map((b) => [b.user.id, b]),
+	Object.values(ttfBots).map((b) => [b.user.id, b])
 );
 
 export const internalUsers: FromSchema<typeof user>[] = [

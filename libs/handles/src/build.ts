@@ -23,7 +23,7 @@ const jsonify = async () => {
 
 	for (const [key, value] of Object.entries(models) as [
 		keyof typeof models,
-		MonolithTypes[keyof typeof models],
+		MonolithTypes[keyof typeof models]
 	][]) {
 		const request = 'request' in value ? tsonToType(value.request) : 'never';
 		const response = 'response' in value ? tsonToType(value.response) : 'void';
@@ -33,7 +33,9 @@ const jsonify = async () => {
 			'authenticated' in value && value.authenticated
 				? 'SecureContext'
 				: 'GuestContext';
-		const handle = `export const handle${key[0].toUpperCase()}${key.slice(1)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => serve${protocol}({
+		const handle = `export const handle${key[0].toUpperCase()}${key.slice(
+			1
+		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => serve${protocol}({
 				execute: handler,
 				validate: ${'request' in value ? buildValidator(value.request) : () => true}
 			});`;
@@ -50,7 +52,7 @@ const jsonify = async () => {
 			'libs',
 			'handles',
 			'src',
-			`index.ts`,
+			`index.ts`
 		);
 		const tmpDir = path.dirname(tmpPath);
 		await mkdir(tmpDir, { recursive: true });
@@ -76,7 +78,7 @@ const jsonify = async () => {
 		// 	target: 'bun',
 		// 	// minify: true,
 		// 	format: 'esm', // Export as ES modules
-		// 	external: [], // Bundle all dependencies 
+		// 	external: [], // Bundle all dependencies
 		// 	splitting: false, // Disable code splitting for single bundle
 		// 	sourcemap: 'external',
 		// 	plugins: [
@@ -86,7 +88,7 @@ const jsonify = async () => {
 		// 				build.onResolve({ filter: /^@lyku\// }, args => {
 		// 					const paths = tsconfig.compilerOptions.paths;
 		// 					console.log(paths);
-		// 					const matchedPath = Object.entries(paths).find(([alias]) => 
+		// 					const matchedPath = Object.entries(paths).find(([alias]) =>
 		// 						args.path.startsWith(alias.replace('/*', ''))
 		// 					);
 		// 					if (matchedPath) {
@@ -120,5 +122,5 @@ jsonify();
 // Copy package.json to dist
 await Bun.write(
 	'../../dist/libs/handles/package.json',
-	await Bun.file('package.json').text(),
+	await Bun.file('package.json').text()
 );

@@ -1,4 +1,4 @@
-const {serve} = Bun;
+const { serve } = Bun;
 import { Database } from '@lyku/db-config/kysely'; // this is the Database interface we defined earlier
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
@@ -59,8 +59,6 @@ export function getCookie(cookies: string, cname: string) {
 	}
 	return '';
 }
-
-
 
 export const getDictionary = (msg: IncomingMessage): CompactedPhrasebook => {
 	let lang = getCookie(msg.headers.cookie ?? '', 'lang');
@@ -129,7 +127,7 @@ export const serveHttp = ({
 			res.headers.set('Access-Control-Allow-Origin', '*');
 			res.headers.set(
 				'Access-Control-Allow-Headers',
-				'Authorization, Content-Type',
+				'Authorization, Content-Type'
 			);
 			return res;
 		},

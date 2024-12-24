@@ -11,7 +11,7 @@ export const createGroup = useContract(
 		{ name, slug, private: p },
 		{ tables, connection },
 		{ userId },
-		strings,
+		strings
 	) => {
 		if (!tables) {
 			console.error('Tables missing');
@@ -31,11 +31,7 @@ export const createGroup = useContract(
 		const query = branch(
 			groupExists,
 			{ error: strings.groupAlreadyExists },
-			branch(
-				underLimit,
-				{ uuid: uuid() },
-				{ error: strings.groupLimitReached },
-			),
+			branch(underLimit, { uuid: uuid() }, { error: strings.groupLimitReached })
 		);
 		const res = await query.run(connection);
 		if ('error' in res) {
@@ -62,9 +58,9 @@ export const createGroup = useContract(
 					id: bindIds(userId, id),
 					created: now(),
 				},
-				{ returnChanges: true },
+				{ returnChanges: true }
 			)('changes')(0)('new_val')
 			.run(connection);
 		return g;
-	},
+	}
 );

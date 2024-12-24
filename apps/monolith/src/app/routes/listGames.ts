@@ -17,9 +17,9 @@ export const listGames = useContract(
 		if (publisher) query = query.filter<false>({ publisher });
 		if (hint)
 			query = query.filter<true>((doc) =>
-				doc('title').downcase().contains(hint),
+				doc('title').downcase().contains(hint)
 			);
 		const games = await query.coerceTo('array').run(connection);
 		return games;
-	},
+	}
 );

@@ -30,7 +30,7 @@ const createPressedKeysStore = () => {
 	};
 
 	const setPressedKeys = (
-		newPressedKeysOrCallback: KeyMap | ((prevPressedKeys: KeyMap) => KeyMap),
+		newPressedKeysOrCallback: KeyMap | ((prevPressedKeys: KeyMap) => KeyMap)
 	) => {
 		if (typeof newPressedKeysOrCallback === 'function') {
 			pressedKeys = newPressedKeysOrCallback(pressedKeys);
@@ -74,6 +74,6 @@ export const usePressedKeys = () => {
 	}, []);
 	return useSyncExternalStore(
 		pressedKeysStore.subscribe,
-		pressedKeysStore.getPressedKeys,
+		pressedKeysStore.getPressedKeys
 	);
 };

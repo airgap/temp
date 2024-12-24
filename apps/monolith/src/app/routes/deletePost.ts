@@ -15,5 +15,5 @@ export const deletePost = useContract(
 		console.log('ViewPost finalization authorized');
 
 		if ('error' in authRes) throw new Error('404');
-	},
+	}
 );

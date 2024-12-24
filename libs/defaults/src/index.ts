@@ -19,7 +19,16 @@ export const imageMimeList = [
 	'image/webp',
 ] as const;
 export const videoMimeList = ['video/mov', 'video/mp4'] as const;
+export const audioMimeList = [
+	'audio/mpeg',
+	'audio/mp3',
+	'audio/aac',
+	'audio/wav',
+	'audio/ogg',
+	'audio/webm',
+] as const;
 export const imageMimes = imageMimeList.join(', ');
 export const videoMimes = videoMimeList.join(', ');
+export const audioMimes = audioMimeList.join(', ');
 
 export const imageAndVideoMimes = `${imageMimes}, ${videoMimes}`;

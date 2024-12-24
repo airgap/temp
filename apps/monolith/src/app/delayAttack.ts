@@ -6,7 +6,7 @@ import { now, Connection } from 'rethinkdb';
 export const delayAttack = async (
 	matchId: string,
 	tables: ActualTables,
-	connection: Connection,
+	connection: Connection
 ) => {
 	const doc = tables.ttfMatches.get(matchId);
 	await delay(2000);

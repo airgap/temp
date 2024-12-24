@@ -11,7 +11,7 @@ export const loginUser = useContract(
 		{ tables, connection },
 		{ msg },
 		strings,
-		res,
+		res
 	) => {
 		const lowerEmail = email.toLocaleLowerCase();
 		const existing = await tables.userHashes
@@ -31,10 +31,10 @@ export const loginUser = useContract(
 			userId,
 			msg,
 			tables,
-			connection,
+			connection
 		);
 		res.setHeader('Set-Cookie', `sessionid=${sessionId}`);
 		console.log('Logged user in');
 		return { sessionId };
-	},
+	}
 );

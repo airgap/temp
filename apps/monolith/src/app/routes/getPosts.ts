@@ -7,5 +7,5 @@ export const getPosts = useContract(
 		tables.posts
 			.getAll(...ids)
 			.coerceTo('array')
-			.run(connection),
+			.run(connection)
 );

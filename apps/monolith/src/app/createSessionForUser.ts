@@ -10,7 +10,7 @@ export const createSessionForUser = async (
 	userId: string,
 	msg: IncomingMessage,
 	tables: ActualTables,
-	connection: Connection,
+	connection: Connection
 ): Promise<FromSchema<typeof sessionId>> => {
 	const id = generateSessionId();
 	const userLogin: Insertable<FromSchema<typeof userLoginSchema>> = {

@@ -11,17 +11,17 @@ import { GuestSocketContext } from '@lyku/handles';
 export const webSocketServer = new WebSocketServer({ noServer: true });
 
 const isStream = (
-	model: HandlerModel,
+	model: HandlerModel
 ): model is HandlerModel & { stream: true } =>
 	Boolean('stream' in model && model.stream);
 const isAuthenticated = (
-	model: HandlerModel,
+	model: HandlerModel
 ): model is HandlerModel & { authenticated: true } =>
 	Boolean('authenticated' in model && model.authenticated);
 
 export const handleConnection = async (
 	ws: WebSocket,
-	request: IncomingMessage,
+	request: IncomingMessage
 ) => {
 	ws.on('error', (e) => console.log('ERROR', e));
 	const path = request.url?.substring(1).split(/[/?]/)[0];
@@ -83,7 +83,7 @@ export const handleConnection = async (
 					body: parameters,
 					socket: ws,
 				},
-				strings,
+				strings
 			);
 		} catch (err) {
 			console.log('err', err);

@@ -9,13 +9,10 @@ export const getMyLikes = useContract(
 			.getAll(...ids.map((id) => bindIds(userId, id)))('id')
 			.coerceTo('array')
 			.run(connection);
-		const map = likes.reduce(
-			(o, l) => {
-				o[l] = true;
-				return o;
-			},
-			{} as Record<Uuid, boolean>,
-		);
+		const map = likes.reduce((o, l) => {
+			o[l] = true;
+			return o;
+		}, {} as Record<Uuid, boolean>);
 		return ids.map((id) => ({ id, liked: id in map }));
-	},
+	}
 );

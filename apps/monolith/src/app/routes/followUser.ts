@@ -18,10 +18,10 @@ export const followUser = useContract(
 						followee: user,
 						created: now(),
 					}),
-					false,
-				),
+					false
+				)
 			)
 			.run(connection);
 		if (!res) throw 404;
-	},
+	}
 );

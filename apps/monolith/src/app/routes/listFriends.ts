@@ -19,5 +19,5 @@ export const listFriends = useContract(
 					.run(connection)
 			: [];
 		return { friends };
-	},
+	}
 );

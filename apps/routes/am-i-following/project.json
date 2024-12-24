@@ -1,0 +1,10 @@
+{
+	"name": "@lyku/am-i-following",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"$extends": ["../_shared/project.json:build"]
+		}
+	}
+}

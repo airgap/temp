@@ -9,5 +9,5 @@ export const listGroupsICreated = useContract(
 				index: 'creatorId',
 			})
 			.coerceTo('array')
-			.run(connection),
+			.run(connection)
 );

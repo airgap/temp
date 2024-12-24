@@ -8,7 +8,7 @@ import { sendNotification } from './sendNotification';
 export const grantAchievementToUser = async (
 	achievement: string | Achievement,
 	user: string,
-	state: HardenedState,
+	state: HardenedState
 ) => {
 	const { tables, connection } = state;
 	const ach =
@@ -25,7 +25,7 @@ export const grantAchievementToUser = async (
 				user,
 				id,
 				...(ach.game ? { game: ach.game } : {}),
-			}),
+			})
 		)
 		.run(connection);
 	console.log('Granted achievement?', result);
@@ -39,6 +39,6 @@ export const grantAchievementToUser = async (
 				icon: ach.icon,
 				href: `/achievements/${ach.id}`,
 			},
-			state,
+			state
 		);
 };

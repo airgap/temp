@@ -16,9 +16,9 @@ export const joinGroup = useContract(
 					id: bindIds(userId, group),
 					created: now(),
 				}),
-				false,
+				false
 			)
 			.run(connection);
 		if (!res) throw new Error('Cannot join');
-	},
+	}
 );

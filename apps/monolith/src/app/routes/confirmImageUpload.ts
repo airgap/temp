@@ -76,5 +76,5 @@ export const confirmImageUpload = handleConfirmImageUpload(
 		}
 
 		return cfres.result.id;
-	},
+	}
 );

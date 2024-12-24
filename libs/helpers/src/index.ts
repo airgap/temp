@@ -5,6 +5,7 @@ export * from './flagUnsafeTags';
 export * from './getLevelFromPoints';
 export * from './getPointsToNextLevel';
 export * from './getProgressToNextLevel';
+export * from './getSupertypeFromMime';
 export * from './bondIds';
 export * from './Only';
 export * from './prettyTime';

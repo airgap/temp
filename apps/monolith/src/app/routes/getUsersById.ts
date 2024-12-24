@@ -15,5 +15,5 @@ export const getUsersById = useContract(
 			unsorted.splice(i, 1);
 		}
 		return sorted;
-	},
+	}
 );

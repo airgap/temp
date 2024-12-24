@@ -21,7 +21,7 @@ export const getChannel = useContract(
 		const res = await channelBy.run(connection);
 		if (!res) {
 			console.error(
-				'Yo what the fuck happened, the db returned empty but it should error',
+				'Yo what the fuck happened, the db returned empty but it should error'
 			);
 			throw new Error(strings.unknownBackendError);
 		}
@@ -30,5 +30,5 @@ export const getChannel = useContract(
 		}
 		console.log('channel', res);
 		return res;
-	},
+	}
 );

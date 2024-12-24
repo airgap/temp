@@ -54,7 +54,7 @@ export const registerUser = useContract(
 		{ tables, connection },
 		{ msg },
 		strings,
-		res,
+		res
 	) => {
 		const lowerEmail = email.toLocaleLowerCase();
 		const lowerUsername = username.toLocaleLowerCase();
@@ -65,8 +65,8 @@ export const registerUser = useContract(
 			.filter<true>((doc) =>
 				or(
 					// doc('email').eq(lowerEmail),
-					doc('username').downcase().eq(lowerUsername),
-				),
+					doc('username').downcase().eq(lowerUsername)
+				)
 			)
 			.count()
 			.gt(0)
@@ -96,7 +96,7 @@ export const registerUser = useContract(
 					Authorization: `Bearer ${cfApiToken}`,
 				},
 				body: blob,
-			},
+			}
 		);
 
 		const cfres = (await response.json()) as UrlImageUploadResponse;
@@ -130,10 +130,10 @@ export const registerUser = useContract(
 			userId,
 			msg,
 			tables,
-			connection,
+			connection
 		);
 		res.setHeader('Set-Cookie', `sessionid=${sessionId}; Path=/;`);
 		console.log('Logged user in', sessionId);
 		return sessionId;
-	},
+	}
 );

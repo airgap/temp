@@ -129,7 +129,7 @@ const hydrate = (book: CompactedPhrasebook) =>
 		Object.entries(book).map(([k, v]) => [
 			k,
 			typeof v === 'string' ? v : convertTextToComponents(v.md),
-		]),
+		])
 	);
 export type HydratedPhrasebook = {
 	[K in keyof CompactedPhrasebook]: CompactedPhrasebook[K] extends string

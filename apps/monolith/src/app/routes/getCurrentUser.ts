@@ -10,5 +10,5 @@ export const getCurrentUser = useContract(
 		}
 		userId ??= guestUser.id;
 		return tables.users.get(userId).run(connection);
-	},
+	}
 );

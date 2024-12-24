@@ -9,7 +9,7 @@ export const proposeMatch = useContract(
 	async ({ user: oppId, game }, { tables, connection }, { userId }) => {
 		await and(
 			tables.games.get(game),
-			tables.friendships.get(bondIds(userId, oppId)),
+			tables.friendships.get(bondIds(userId, oppId))
 		).run(connection);
 		const proposalId = await tables.matchProposals
 			.insert({
@@ -20,5 +20,5 @@ export const proposeMatch = useContract(
 			})('generated_keys')(0)
 			.run(connection);
 		return { proposalId };
-	},
+	}
 );

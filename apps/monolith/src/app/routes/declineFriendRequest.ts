@@ -7,5 +7,5 @@ export const declineFriendRequest = useContract(
 	async (user, { tables, connection }, { userId }) => {
 		const bond = bondIds(userId, user);
 		await tables.friendRequests.get(bond).delete().run(connection);
-	},
+	}
 );

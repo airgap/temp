@@ -10,7 +10,7 @@ export const updateChannel = useContract(
 		{ id, name, tagline, bio, bgColor, fgColor, tvColor },
 		{ tables, connection },
 		{ userId },
-		strings,
+		strings
 	) => {
 		const partial = Object.fromEntries(
 			Object.entries({
@@ -20,7 +20,7 @@ export const updateChannel = useContract(
 				bgColor,
 				fgColor,
 				tvColor,
-			}).filter(([, v]) => typeof v !== 'undefined'),
+			}).filter(([, v]) => typeof v !== 'undefined')
 		) as Partial<FromSchema<typeof user>>;
 		console.log('Partial channel update', partial);
 		const channel = tables.channels.get(id);
@@ -36,5 +36,5 @@ export const updateChannel = useContract(
 			throw new Error(strings.unknownBackendError);
 		// console.log('channel', res);
 		return res.changes[0].new_val;
-	},
+	}
 );

@@ -15,17 +15,17 @@ export const listMatchProposals = useContract(
 			filter === 'received'
 				? q.getAll(myId, { index: 'to' })
 				: filter === 'sent'
-					? q.getAll(myId, { index: 'from' })
-					: union<FromObjectSchema<typeof matchProposal>>(
-							q.getAll(myId, { index: 'from' }),
-							q.getAll(myId, { index: 'to' }),
-						);
+				? q.getAll(myId, { index: 'from' })
+				: union<FromObjectSchema<typeof matchProposal>>(
+						q.getAll(myId, { index: 'from' }),
+						q.getAll(myId, { index: 'to' })
+				  );
 		const proposals = await query.coerceTo('array').run(ctx.connection);
 		const userIds = [
 			...new Set(
 				proposals.map((proposal) =>
-					proposal.to === myId ? proposal.from : proposal.to,
-				),
+					proposal.to === myId ? proposal.from : proposal.to
+				)
 			),
 		];
 		const users = await ctx.tables.users
@@ -33,5 +33,5 @@ export const listMatchProposals = useContract(
 			.coerceTo('array')
 			.run(ctx.connection);
 		return { proposals, users };
-	},
+	}
 );

@@ -11,7 +11,7 @@ export const deleteGroup = useContract(
 				youCanEdit.branch(groupExists.delete(), {
 					error: 'That is not your toy to play with',
 				}),
-				{ error: 'Group not found, maybe make it?' },
+				{ error: 'Group not found, maybe make it?' }
 			)
 			.run(connection);
 		if ('error' in res) {
@@ -19,5 +19,5 @@ export const deleteGroup = useContract(
 		}
 
 		return {};
-	},
+	}
 );

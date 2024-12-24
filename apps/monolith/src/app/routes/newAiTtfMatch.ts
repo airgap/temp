@@ -27,5 +27,5 @@ export const newAiTtfMatch = useContract(
 			.run(connection);
 		if (!amX) void delayAttack(m.id, tables, connection);
 		return m;
-	},
+	}
 );

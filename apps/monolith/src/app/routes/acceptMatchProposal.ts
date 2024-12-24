@@ -24,5 +24,5 @@ export const acceptMatchProposal = handleAcceptMatchProposal(
 
 		console.log('Deleted accepted proposal');
 		return BigInt(matchId);
-	},
+	}
 );

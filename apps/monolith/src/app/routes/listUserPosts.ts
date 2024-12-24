@@ -47,7 +47,7 @@ export const listUserPosts = useContract(
 							})
 							.limit(1)(0)('id')
 							.default(false),
-					}
+				  }
 				: {}),
 			// likes: tables.likes.getAll(post('id'), {index: 'postId'}).count()
 		}));
@@ -55,5 +55,5 @@ export const listUserPosts = useContract(
 		const res = await final.run(connection);
 		console.log('Listing', res.length, 'posts');
 		return res;
-	},
+	}
 );

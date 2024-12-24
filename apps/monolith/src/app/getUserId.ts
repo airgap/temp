@@ -8,7 +8,7 @@ import { SessionId, UserId } from '@lyku/json-models';
 
 export const getUserId = async (
 	msgOrSessionId: Messagish | string,
-	db: Kysely<Database>,
+	db: Kysely<Database>
 ): Promise<UserId> => {
 	const sessionId =
 		typeof msgOrSessionId === 'string'

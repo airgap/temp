@@ -26,5 +26,5 @@ export const listChannelVideos = useContract(
 		console.log('CFRES', cfres);
 		if (!cfres.success) throw new Error(strings.unknownBackendError);
 		return cfres.result as CloudflareVideoDoc[];
-	},
+	}
 );

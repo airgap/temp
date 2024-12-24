@@ -13,5 +13,5 @@ export const listMessages = useContract(
 			.coerceTo('array')
 			.run(connection);
 		return { messages };
-	},
+	}
 );

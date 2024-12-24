@@ -9,7 +9,7 @@ export const getMyChannel = useContract(
 			channelBy = tables.channels.get(id).do((v) =>
 				v.and({ owner: userId }).branch(v, {
 					error: strings.youHaveNoChannelByThatId,
-				}),
+				})
 			);
 		else if (name)
 			channelBy = tables.channels
@@ -25,7 +25,7 @@ export const getMyChannel = useContract(
 		const res = await query.run(connection);
 		if (!res) {
 			console.error(
-				'Yo what the fuck happened, the db returned empty but it should error',
+				'Yo what the fuck happened, the db returned empty but it should error'
 			);
 			throw new Error(strings.unknownBackendError);
 		}
@@ -34,5 +34,5 @@ export const getMyChannel = useContract(
 		}
 		console.log('channel', res);
 		return res;
-	},
+	}
 );

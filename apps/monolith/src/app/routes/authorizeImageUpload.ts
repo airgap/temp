@@ -10,7 +10,7 @@ export const authorizeImageUpload = useContract(
 		{ channelId, reason },
 		{ tables, connection },
 		{ userId },
-		strings,
+		strings
 	) => {
 		if (!cfApiToken)
 			throw new Error('We forgot to enter our Cloudflare password');
@@ -26,7 +26,7 @@ export const authorizeImageUpload = useContract(
 				throw new Error(
 					`You must provide a channel ID to update ${reason
 						.replace(/([A-Z])/g, (a) => ` ${a.toLowerCase()}`)
-						.trim()}`,
+						.trim()}`
 				);
 
 			const channel = tables.channels.get(channelId);
@@ -52,5 +52,5 @@ export const authorizeImageUpload = useContract(
 		await tables.imageDrafts.insert(imageUpload).run(connection);
 
 		return { id: cfres.result.id, url: cfres.result.uploadURL };
-	},
+	}
 );

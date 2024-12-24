@@ -11,7 +11,7 @@ export const streamCurrentUser = useContract(
 				err
 					? console.error(err)
 					: feed.each(async (err, { new_val }) =>
-							err ? console.error(err) : socket.send(JSON.stringify(new_val)),
-						);
-			}),
+							err ? console.error(err) : socket.send(JSON.stringify(new_val))
+					  );
+			})
 );

@@ -27,5 +27,5 @@ export const listGroups = useContract(
 		}
 		const groups = await selector.coerceTo('array').run(connection);
 		return { memberships, groups };
-	},
+	}
 );

@@ -8,7 +8,7 @@ export const getChannelSensitives = useContract(
 				.and(v('owner').eq(userId))
 				.branch(tables.channelSensitives.get(channelId), {
 					error: strings.youHaveNoChannelByThatId,
-				}),
+				})
 		);
 		const res = await channelBy.run(connection);
 		if ('error' in res) {
@@ -16,5 +16,5 @@ export const getChannelSensitives = useContract(
 		}
 		console.log('channel', res);
 		return res;
-	},
+	}
 );

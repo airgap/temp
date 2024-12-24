@@ -18,11 +18,11 @@ export const logoutUser = useContract(
 						.delete(),
 					{
 						deleted: 0,
-					},
-				)
+					}
+			  )
 			: session.delete();
 		const { deleted } = await query.run(connection);
 		if (deleted) return { deleted, sessionId: '' };
 		throw new Error(strings.sessionNotFound);
-	},
+	}
 );

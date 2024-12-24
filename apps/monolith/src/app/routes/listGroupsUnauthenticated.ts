@@ -14,5 +14,5 @@ export const listGroupsUnauthenticated = useContract(
 			.slice(skip ?? 0, limit ?? 20)
 			.coerceTo('array')
 			.run(connection);
-	},
+	}
 );

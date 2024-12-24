@@ -167,7 +167,7 @@ export const ImageUpload = (props: Props) => {
 					setSucceeded(true);
 					if (props.reason === 'AwayChannelBackground')
 						window.location.reload();
-				}),
+				})
 			);
 		}
 	}, [pack, file, props, submitting, succeeded]);
@@ -182,7 +182,7 @@ export const ImageUpload = (props: Props) => {
 			setWorking(false);
 			setSubmitting(false);
 		},
-		[props],
+		[props]
 	);
 
 	useEffect(() => {
@@ -212,7 +212,7 @@ export const ImageUpload = (props: Props) => {
 				<Image
 					size="l"
 					url={
-						(image ? logoUrl() : (base64 ?? logoUrl())) ??
+						(image ? logoUrl() : base64 ?? logoUrl()) ??
 						defaultImages[props.reason]
 					}
 					shape={props.shape}

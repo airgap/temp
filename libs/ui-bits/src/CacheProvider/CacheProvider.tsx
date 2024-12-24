@@ -93,8 +93,9 @@ const cacheConfigMap = {
 	myLikes,
 } as const satisfies CacheConfigMap;
 
-type DocOfModel<T extends CacheConfig<any>> =
-	T extends CacheConfig<infer G> ? G : never;
+type DocOfModel<T extends CacheConfig<any>> = T extends CacheConfig<infer G>
+	? G
+	: never;
 
 type DocMapOfCacheConfig<T extends CacheConfig<any>> = Map<
 	DocOfModel<T>['id'],
@@ -107,10 +108,10 @@ type Cache = {
 	readonly [key in keyof CacheConfigs]: {
 		items: DocMapOfCacheConfig<CacheConfigs[key]>;
 		fetch: (
-			id: DocOfModel<CacheConfigs[key]>['id'],
+			id: DocOfModel<CacheConfigs[key]>['id']
 		) => Promise<DocOfModel<CacheConfigs[key]> | undefined>;
 		fetchAll: (
-			ids: DocOfModel<CacheConfigs[key]>['id'][],
+			ids: DocOfModel<CacheConfigs[key]>['id'][]
 		) => Promise<(DocOfModel<CacheConfigs[key]> | undefined)[]>;
 	};
 };
@@ -120,7 +121,7 @@ const createCacheStore = () => {
 			...acc,
 			[k]: { items: {} },
 		}),
-		{} as Cache,
+		{} as Cache
 	);
 
 	const createFetchMethods = <M extends keyof CacheConfigs>(model: M) => ({
@@ -149,7 +150,7 @@ const createCacheStore = () => {
 					(id) =>
 						cache[model].items.get(id) as
 							| DocOfModel<CacheConfigs[M]>
-							| undefined,
+							| undefined
 				);
 			}
 
@@ -158,7 +159,7 @@ const createCacheStore = () => {
 				docs.forEach((doc: any) => {
 					cache[model].items.set(
 						doc.id as DocOfModel<CacheConfigs[M]>['id'],
-						doc as DocOfModel<CacheConfigs[M]>,
+						doc as DocOfModel<CacheConfigs[M]>
 					);
 				});
 				notify();
@@ -166,7 +167,7 @@ const createCacheStore = () => {
 					(id) =>
 						cache[model].items.get(id) as
 							| DocOfModel<CacheConfigs[M]>
-							| undefined,
+							| undefined
 				);
 			} catch (error) {
 				console.error('Error fetching docs:', error);
@@ -174,7 +175,7 @@ const createCacheStore = () => {
 					(id) =>
 						cache[model].items.get(id) as
 							| DocOfModel<CacheConfigs[M]>
-							| undefined,
+							| undefined
 				);
 			}
 		},
@@ -187,7 +188,7 @@ const createCacheStore = () => {
 			...acc,
 			[k]: { ...cache[k], ...createFetchMethods(k) },
 		}),
-		{} as Cache,
+		{} as Cache
 	);
 
 	const listeners = new Set<() => void>();
@@ -214,11 +215,11 @@ const cacheStore = createCacheStore();
 
 export function useCacheSingleton<M extends keyof CacheConfigs>(
 	model: M,
-	id: DocOfModel<CacheConfigs[M]>['id'] | undefined,
+	id: DocOfModel<CacheConfigs[M]>['id'] | undefined
 ) {
 	const { items } = cacheStore.cache[model];
 	const cache = useSyncExternalStore(cacheStore.subscribe, () =>
-		id ? items.get(id) : undefined,
+		id ? items.get(id) : undefined
 	);
 	console.log('cacheStore', cacheStore);
 
@@ -234,7 +235,7 @@ export function useCacheSingleton<M extends keyof CacheConfigs>(
 				setLoading(true);
 				try {
 					await cacheStore.cache[model].fetch(
-						id as DocOfModel<CacheConfigs[M]>['id'],
+						id as DocOfModel<CacheConfigs[M]>['id']
 					);
 				} catch (err) {
 					setError(String(err));
@@ -251,14 +252,14 @@ export function useCacheSingleton<M extends keyof CacheConfigs>(
 }
 export function useCacheData<M extends keyof CacheConfigs>(
 	model: M,
-	ids: (DocOfModel<CacheConfigs[M]>['id'] | undefined)[],
+	ids: (DocOfModel<CacheConfigs[M]>['id'] | undefined)[]
 ) {
 	const snapshot = useMemo(
 		() =>
 			(ids.filter((id) => id) as DocOfModel<CacheConfigs[M]>['id'][]).map(
-				(id) => cacheStore.cache[model].items.get(id),
+				(id) => cacheStore.cache[model].items.get(id)
 			),
-		[ids, model],
+		[ids, model]
 	);
 	const cache = useSyncExternalStore(cacheStore.subscribe, () => snapshot);
 	console.log('cacheStore', cacheStore);
@@ -274,7 +275,7 @@ export function useCacheData<M extends keyof CacheConfigs>(
 				setLoading(true);
 				try {
 					await cacheStore.cache[model].fetchAll(
-						ids.filter((id) => id) as DocOfModel<CacheConfigs[M]>['id'][],
+						ids.filter((id) => id) as DocOfModel<CacheConfigs[M]>['id'][]
 					);
 				} catch (err) {
 					setError(String(err));

@@ -3,11 +3,11 @@ export const urlSafeChars =
 export const convertBase = (
 	value: string,
 	from_base: number,
-	to_base: number,
+	to_base: number
 ) => {
 	const range =
 		'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/'.split(
-			'',
+			''
 		);
 	const from_range = range.slice(0, from_base);
 	const to_range = range.slice(0, to_base);
@@ -18,7 +18,7 @@ export const convertBase = (
 		.reduce(function (carry, digit, index) {
 			if (from_range.indexOf(digit) === -1)
 				throw new Error(
-					'Invalid digit `' + digit + '` for base ' + from_base + '.',
+					'Invalid digit `' + digit + '` for base ' + from_base + '.'
 				);
 			return (carry += from_range.indexOf(digit) * Math.pow(from_base, index));
 		}, 0);

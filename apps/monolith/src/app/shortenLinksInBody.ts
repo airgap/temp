@@ -4,12 +4,12 @@ import { FromBsonSchema } from 'from-schema';
 
 const urlRegex = new RegExp(
 	'((http|ftp|https):\\/\\/)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])',
-	'g',
+	'g'
 );
 export const shortenLinksInBody = async (
 	body: string,
 	postId: string,
-	userId: string,
+	userId: string
 ) => {
 	const matches = body.match(urlRegex);
 	if (!matches?.length) return body;
@@ -24,8 +24,8 @@ export const shortenLinksInBody = async (
 				} as FromBsonSchema<(typeof newShortlink)['request']>;
 				const { code } = await shortenLink(data);
 				return [url, `${basepath}/${code}`];
-			}),
-		),
+			})
+		)
 	);
 	console.log('matches', matches, 'shortlinks', shortlinks);
 	for (const match of matches) body = body.replace(match, shortlinks[match]);

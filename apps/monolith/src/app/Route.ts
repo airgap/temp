@@ -11,6 +11,6 @@ export type Route<Request, Response> = {
 		params: FromSchema<Request>,
 		state: HardenedState,
 		req: IncomingMessage,
-		strings: CompactedPhrasebook,
+		strings: CompactedPhrasebook
 	) => FromSchema<Response> | Promise<FromSchema<Response>>;
 };

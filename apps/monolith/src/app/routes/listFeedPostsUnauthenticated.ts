@@ -8,7 +8,7 @@ export const listFeedPostsUnauthenticated = useContract(
 	async ({ before, groups, tags }, { tables, connection }) => {
 		// let query = tables.posts.orderBy(desc('published')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 		let query: Table<Post> | Sequence<Post> = tables.posts.orderBy(
-			desc('published'),
+			desc('published')
 		);
 		// .orderBy(desc('published'))
 		// .merge((p: Ex<FromSchema<typeof post>>) => ({
@@ -19,7 +19,7 @@ export const listFeedPostsUnauthenticated = useContract(
 		if (before) filters.push(row('postDate').lt(new Date(before)));
 		if (groups)
 			filters.push(
-				and(row.hasFields('groupId'), expr(groups).includes(row('groupId'))),
+				and(row.hasFields('groupId'), expr(groups).includes(row('groupId')))
 			);
 		if (tags)
 			filters.push(
@@ -27,12 +27,12 @@ export const listFeedPostsUnauthenticated = useContract(
 					row.hasFields('lowerTags'),
 					row('lowerTags')
 						.filter((r: string[]) => expr(tags).contains(r))
-						.limit(1),
-				),
+						.limit(1)
+				)
 			);
 		if (filters.length)
 			query = query.filter<boolean>(
-				filters.length > 1 ? and(...filters) : filters[0],
+				filters.length > 1 ? and(...filters) : filters[0]
 			);
 		const posts = await query.coerceTo('array').run(connection);
 		if ('error' in posts) throw { error: posts.error };
@@ -42,5 +42,5 @@ export const listFeedPostsUnauthenticated = useContract(
 		// 	.run(connection);
 		console.log('Listing posts', posts);
 		return posts;
-	},
+	}
 );

@@ -70,7 +70,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.js`,
+		`index.js`
 	);
 	const dtsPath = path.join(
 		__dirname,
@@ -81,7 +81,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.d.ts`,
+		`index.d.ts`
 	);
 	const exportDir = path.dirname(jsPath);
 	await mkdir(exportDir, { recursive: true });
@@ -105,8 +105,8 @@ const jsonify = async () => {
 				? postgresColumnToTson(value as any)
 				: value
 			: hasProperties
-				? postgresRecordToTson(value as any)
-				: value;
+			? postgresRecordToTson(value as any)
+			: value;
 		// console.log('Typing', tsonSchema);
 		const resolvedTypeString = tsonToType(tsonSchema as any);
 		// console.log('Resolved', key);
@@ -120,18 +120,24 @@ const jsonify = async () => {
 					}
 					return value;
 				},
-				2,
-			)};`,
+				2
+			)};`
 		);
 
 		dtsExports.push(
-			`export declare const ${key}: ${JSON.stringify(tsonSchema, (_, value) => {
-				if (typeof value === 'bigint') {
-					return value.toString() + 'n';
-				}
-				return value;
-			}, 2)};\n` +
-			`export type ${key[0].toUpperCase() + key.slice(1)} = ${resolvedTypeString};`
+			`export declare const ${key}: ${JSON.stringify(
+				tsonSchema,
+				(_, value) => {
+					if (typeof value === 'bigint') {
+						return value.toString() + 'n';
+					}
+					return value;
+				},
+				2
+			)};\n` +
+				`export type ${
+					key[0].toUpperCase() + key.slice(1)
+				} = ${resolvedTypeString};`
 		);
 	}
 
@@ -162,5 +168,5 @@ await jsonify();
 // Copy package.json to dist
 await Bun.write(
 	'../../dist/libs/json-models/package.json',
-	await Bun.file('package.json').text(),
+	await Bun.file('package.json').text()
 );

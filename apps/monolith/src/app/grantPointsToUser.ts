@@ -26,7 +26,7 @@ const levelMap = {
 export const grantPointsToUser = async (
 	points: number,
 	userId: string,
-	state: HardenedState,
+	state: HardenedState
 ) => {
 	console.log('Granting', points, 'points to user', userId);
 	const { tables, connection } = state;
@@ -48,13 +48,13 @@ export const grantPointsToUser = async (
 					body: 'Reached level ' + newLevel,
 					title: 'Level up!',
 				},
-				state,
+				state
 			);
 			if (newLevel in levelMap)
 				await grantAchievementToUser(
 					levelMap[newLevel as keyof typeof levelMap],
 					userId,
-					state,
+					state
 				);
 		}
 	}

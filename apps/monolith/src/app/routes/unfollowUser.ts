@@ -8,5 +8,5 @@ export const unfollowUser = useContract(
 		const bond = bindIds(userId, user);
 		const res = await tables.userFollows.get(bond).delete().run(connection);
 		if (!res) throw 404;
-	},
+	}
 );

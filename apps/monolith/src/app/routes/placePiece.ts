@@ -15,7 +15,7 @@ import * as achievements from 'models/internalAchievements/ttf';
 const isValidTicTacFlowMove = (
 	{ board, turn, winner }: FromSchema<typeof ttfMatch>,
 	who: 'X' | 'O',
-	where: number,
+	where: number
 ) => {
 	if (winner) return false;
 	if (board[where] !== '-') return false;
@@ -44,7 +44,7 @@ export const placePiece = useContract(
 	async ({ matchId, square }, state, { msg }) => {
 		const { tables, connection } = state;
 		const userId = await getUserId(msg, tables, connection).catch(
-			() => guestUser.id,
+			() => guestUser.id
 		);
 		// let query = tables.posts.orderBy(desc('published')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 		const match = await tables.ttfMatches.get(matchId).run(connection);
@@ -57,7 +57,7 @@ export const placePiece = useContract(
 			'and',
 			canPlace ? 'can' : 'cannot',
 			'place a piece at',
-			square,
+			square
 		);
 		if (!canPlace) throw new Error('You Fucknut you cant do that haha');
 		placePieceInMatch(iAm, square, match);
@@ -77,5 +77,5 @@ export const placePiece = useContract(
 		match.lastTurn = now() as unknown as string;
 		await tables.ttfMatches.get(matchId).update(match).run(connection);
 		return {};
-	},
+	}
 );

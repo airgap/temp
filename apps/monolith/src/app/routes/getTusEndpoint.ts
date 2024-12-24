@@ -26,5 +26,5 @@ export const getTusEndpoint = useContract(
 		});
 
 		return;
-	},
+	}
 );

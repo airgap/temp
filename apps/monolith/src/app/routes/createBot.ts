@@ -39,5 +39,5 @@ export const createBot = handleCreateBot(
 			.returning('id')
 			.executeTakeFirst();
 		return { id };
-	},
+	}
 );

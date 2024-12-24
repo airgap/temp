@@ -25,13 +25,13 @@ export const listHotPosts = useContract(
 		filters.push(row('published').ne(false));
 		if (filters.length)
 			query = query.filter<false>(
-				filters.length > 1 ? and(...filters) : filters[0],
+				filters.length > 1 ? and(...filters) : filters[0]
 			);
 		query = query
 			.merge((p: Ex<FromSchema<typeof post>>) => ({
 				hotness: div(
 					add(p('likes').default(0), mul(p('loves').default(0), 10)),
-					sub(now(), p('published')),
+					sub(now(), p('published'))
 				),
 			}))
 			.orderBy(desc('hotness'))
@@ -53,5 +53,5 @@ export const listHotPosts = useContract(
 		const res = await query.run(connection);
 		console.log('Hot posts:', res.length);
 		return res;
-	},
+	}
 );

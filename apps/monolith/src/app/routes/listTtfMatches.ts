@@ -10,7 +10,7 @@ export const listTtfMatches = useContract(
 		const q = ctx.tables.ttfMatches;
 		const unfiltered = union(
 			q.getAll(myId, { index: 'X' }),
-			q.getAll(myId, { index: 'O' }),
+			q.getAll(myId, { index: 'O' })
 		);
 		const filtered = finished
 			? unfiltered.hasFields('winner')
@@ -18,7 +18,7 @@ export const listTtfMatches = useContract(
 		const matches = await filtered.coerceTo('array').run(ctx.connection);
 		const userIds = [
 			...new Set(
-				matches.map((match) => (match.X === myId ? match.O : match.X)),
+				matches.map((match) => (match.X === myId ? match.O : match.X))
 			),
 		];
 		const users = await ctx.tables.users
@@ -27,5 +27,5 @@ export const listTtfMatches = useContract(
 			.run(ctx.connection);
 		console.log('users', users);
 		return { matches, users };
-	},
+	}
 );

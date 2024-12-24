@@ -41,7 +41,7 @@ export const Texticle = (props: TexticleProps) => {
 		return true;
 	};
 	const onInput: FormEventHandler<HTMLInputElement | HTMLTextAreaElement> = (
-		ev,
+		ev
 	) => {
 		const { value } = ev.currentTarget;
 		setValue(value);
@@ -54,8 +54,8 @@ export const Texticle = (props: TexticleProps) => {
 		setInvalid(!isValid);
 		const label = value
 			? isValid
-				? (props.valid ?? props.empty)
-				: (props.invalid ?? props.empty)
+				? props.valid ?? props.empty
+				: props.invalid ?? props.empty
 			: props.empty;
 		setLabel(label ?? props.empty ?? ' ');
 	};

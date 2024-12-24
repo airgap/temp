@@ -1,0 +1,19 @@
+{
+	"name": "@lyku/route-helpers",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/route-helpers/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/route-helpers",
+				"main": "libs/route-helpers/src/index.ts",
+				"tsConfig": "libs/route-helpers/tsconfig.lib.json",
+				"assets": ["libs/route-helpers/*.md"]
+			}
+		}
+	}
+}

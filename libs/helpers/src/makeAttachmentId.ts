@@ -1,11 +1,11 @@
 export const makeAttachmentId = (
 	postId: bigint,
-	orderNum: bigint,
-	supertype: bigint,
+	orderNum: number,
+	supertype: number
 ) => {
-	if (orderNum > 255n || orderNum < 0n)
+	if (orderNum > 255 || orderNum < 0)
 		throw new Error('Order number must be 0-255');
-	if (supertype > 255n || supertype < 0n)
+	if (supertype > 255 || supertype < 0)
 		throw new Error('Supertype must be 0-255');
-	return (postId << 16n) | (orderNum << 8n) | supertype;
+	return (postId << 16n) | BigInt(orderNum << 8) | BigInt(supertype);
 };

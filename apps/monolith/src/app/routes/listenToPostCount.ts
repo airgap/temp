@@ -8,5 +8,5 @@ export const listenToPostCount = useContract(
 		void feedSocket(socket, tables.posts.count(), connection, {
 			includeInitial: true,
 		});
-	},
+	}
 );

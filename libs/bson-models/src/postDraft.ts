@@ -9,6 +9,7 @@ export const postDraft = {
 		body: postBody,
 		replyTo: { type: 'bigint' },
 		echoing: { type: 'bigint' },
+		attachments: { type: 'array', items: { type: 'bigint' } },
 	},
 	required: ['id', 'author', 'uploadURL', 'authorId'],
 } as const satisfies PostgresRecordModel;

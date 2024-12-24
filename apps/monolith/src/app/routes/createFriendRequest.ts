@@ -19,5 +19,5 @@ export const createFriendRequest = useContract(
 			})
 			.run(connection);
 		return { id };
-	},
+	}
 );
