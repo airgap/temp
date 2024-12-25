@@ -1,0 +1,7 @@
+import { handle<%= names(fileName).propertyName %> } from '@lyku/handles';
+
+handle<%= names(fileName).propertyName %> = (router: Router) => {
+ router.get('/<%= names(fileName).propertyName %>', (req, res) => {
+   res.json({ message: '<%= names(fileName).propertyName %> endpoint' });
+ });
+}

@@ -1,5 +1,19 @@
 {
 	"singleQuote": true,
 	"tabWidth": 2,
-	"useTabs": true
+	"useTabs": true,
+	"overrides": [
+		{
+			"files": ["*.ts.template"],
+			"options": {
+				"parser": "typescript"
+			}
+		},
+		{
+			"files": ["*.json.template"],
+			"options": {
+				"parser": "json"
+			}
+		}
+	]
 }

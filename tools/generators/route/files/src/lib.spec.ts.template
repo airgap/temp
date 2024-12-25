@@ -1,9 +1,0 @@
-import { Router } from 'express';
-import { <%= fileName %> } from '.';
-
-describe('<%= fileName %>', () => {
- it('registers route', () => {
-   const router = Router();
-   <%= fileName %>(router);
- });
-});

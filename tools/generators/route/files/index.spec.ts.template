@@ -1,0 +1,7 @@
+import { <%= fileName %> } from '.';
+
+describe('<%= fileName %>', () => {
+ it('serves route', () => {
+   // <%= fileName %>();
+ });
+});

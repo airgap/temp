@@ -17,20 +17,19 @@ export const shortenLinksInBody = async (
 	if (!matches?.length) return body;
 	const unique = [...new Set(matches)];
 	const shortlinks = Object.fromEntries(
-		await Promise.all(
-			unique.map(async (url) => {
-				const [{ id }] = await db
-					.insertInto('shortlinks')
-					.values({
+		(
+			await db
+				.insertInto('shortlinks')
+				.values(
+					unique.map((url) => ({
 						url,
 						author,
 						post,
-					})
-					.returning('id')
-					.execute();
-				return [url, join(shortlinkBasepath, id.toString())];
-			})
-		)
+					}))
+				)
+				.returning(['id', 'url'])
+				.execute()
+		).map(({ id, url }) => [url, join(shortlinkBasepath, id.toString())])
 	);
 	console.log('matches', matches, 'shortlinks', shortlinks);
 	for (const match of matches) body = body.replace(match, shortlinks[match]);
