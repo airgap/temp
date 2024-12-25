@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/get-current-user",
+	"name": "@lyku/finalize-post",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
