@@ -4,12 +4,22 @@ import { TsonHandlerModel } from 'from-schema';
 
 export const getChannel = {
 	request: {
-		type: 'object',
-		properties: {
-			name: channelName,
-			id: channel.properties.id,
-		},
-		required: [],
+		oneOf: [
+			{
+				type: 'object',
+				properties: {
+					name: channelName,
+				},
+				required: ['name'],
+			},
+			{
+				type: 'object',
+				properties: {
+					id: channel.properties.id,
+				},
+				required: ['id'],
+			},
+		],
 	},
 	response: channel,
 	authenticated: false,

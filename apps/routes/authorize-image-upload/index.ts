@@ -1,7 +1,7 @@
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { handleAuthorizeImageUpload } from '@lyku/handles';
 import { run } from '@lyku/route-helpers';
-import { ImageDraft } from '@lyku/json-models/index';
+import { ImageDraft } from '@lyku/json-models';
 export const authorizeImageUpload = handleAuthorizeImageUpload(
 	async ({ channelId, reason }, { db, requester, strings }) => {
 		if (!cfApiToken)

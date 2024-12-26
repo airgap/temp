@@ -1,0 +1,8 @@
+{
+	"dependencies": {
+		"@lyku/handles": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"@lyku/helpers": "workspace:*",
+		"@lyku/stock-docs": "workspace:*"
+	}
+}

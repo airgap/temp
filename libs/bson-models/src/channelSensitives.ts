@@ -3,6 +3,7 @@ import { PostgresRecordModel } from 'from-schema';
 export const channelSensitives = {
 	properties: {
 		id: { type: 'bigint' },
+		owner: { type: 'bigint' },
 		// Live Input ID - system only - NOT visible
 		inputId: { type: 'text' },
 		// RTMPS Key - visible ONLY to owning user
@@ -12,5 +13,13 @@ export const channelSensitives = {
 		// WebRTC (WHIP) URL - visible ONLY to owning user
 		whipUrl: { type: 'text' },
 	},
-	required: ['id', 'inputId', 'rtmpsKey', 'srtUrl', 'whipUrl', 'whepKey'],
+	required: [
+		'id',
+		'owner',
+		'inputId',
+		'rtmpsKey',
+		'srtUrl',
+		'whipUrl',
+		'whepKey',
+	],
 } as const satisfies PostgresRecordModel;

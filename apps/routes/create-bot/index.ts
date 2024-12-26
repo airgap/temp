@@ -1,6 +1,6 @@
 import { handleCreateBot } from '@lyku/handles';
 import { Insertable, sql } from 'kysely';
-import { User } from '@lyku/json-models/index';
+import { User } from '@lyku/json-models';
 
 export const createBot = handleCreateBot(
 	async ({ username }, { db, requester, strings }) => {

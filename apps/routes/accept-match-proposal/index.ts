@@ -1,6 +1,6 @@
 import { handleAcceptMatchProposal } from '@lyku/handles';
 import { gameStarters } from './internalGames';
-import type { MatchProposal } from '@lyku/types';
+import { MatchProposal } from '@lyku/json-models';
 
 export const acceptMatchProposal = handleAcceptMatchProposal(
 	async (id, ctx) => {
