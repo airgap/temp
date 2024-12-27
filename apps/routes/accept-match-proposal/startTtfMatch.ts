@@ -1,27 +1,27 @@
-import { now } from 'rethinkdb';
 import crypto from 'crypto';
-import { HardenedState } from './types/State';
 import { Starter } from './Starter';
-import { FromBsonSchema } from 'from-schema';
-import { matchProposal } from 'models';
-
+import { MatchProposal } from '@lyku/json-models';
+import { Kysely } from 'kysely';
+import { Database } from '@lyku/db-config/kysely';
+import { SecureContext } from '@lyku/handles';
 export const startTtfMatch: Starter = async (
-	myId: string,
-	proposal: FromBsonSchema<typeof matchProposal>,
-	context: HardenedState
+	proposal: MatchProposal,
+	{ db, requester }: SecureContext
 ) => {
 	const amX = Boolean(crypto.randomInt(0, 1));
-	const X = amX ? myId : proposal.from;
-	const matchId = await context.tables.ttfMatches
-		.insert({
+	const X = amX ? requester : proposal.from;
+	const { id } = await db
+		.insertInto('ttfMatches')
+		.values({
 			X,
-			O: amX ? proposal.from : myId,
+			O: amX ? proposal.from : requester,
 			board: '---------',
 			turn: 1,
-			created: now(),
+			created: new Date(),
 			whoseTurn: X,
-		})('generated_keys')(0)
-		.run(context.connection);
-	console.log('Added match', matchId);
-	return matchId;
+		})
+		.returning('id')
+		.executeTakeFirst();
+	console.log('Added match', id);
+	return id;
 };

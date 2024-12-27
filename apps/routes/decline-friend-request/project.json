@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route decline-friend-request"
+				"command": "./scripts/build-route decline-friend-request"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route decline-friend-request"
 			}
 		}
 	}

@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route get-users"
+				"command": "./scripts/build-route get-users"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route get-users"
 			}
 		}
 	}

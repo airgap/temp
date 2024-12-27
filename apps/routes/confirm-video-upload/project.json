@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route confirm-video-upload"
+				"command": "./scripts/build-route confirm-video-upload"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route confirm-video-upload"
 			}
 		}
 	}

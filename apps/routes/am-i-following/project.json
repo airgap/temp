@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route am-i-following"
+				"command": "./scripts/build-route am-i-following"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route am-i-following"
 			}
 		}
 	}

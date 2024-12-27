@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route get-posts"
+				"command": "./scripts/build-route get-posts"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route get-posts"
 			}
 		}
 	}

@@ -4,7 +4,16 @@
 	"tags": [],
 	"targets": {
 		"build": {
-			"$extends": ["../_shared/project.json:build"]
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/build-route accept-match-proposal"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route accept-match-proposal"
+			}
 		}
 	}
 }

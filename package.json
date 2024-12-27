@@ -3,9 +3,9 @@
 	"version": "0.0.0",
 	"license": "MIT",
 	"scripts": {
-		"build": "nx run-many --target=build --skip-nx-cache --parallel",
-		"lint": "nx run-many --target=lint --skip-nx-cache --parallel",
-		"test": "nx run-many --target=test --skip-nx-cache --parallel",
+		"build": "nx run-many --target=build --skip-nx-cache --parallel 99",
+		"lint": "nx run-many --target=lint --skip-nx-cache --parallel 99",
+		"test": "nx run-many --target=test --skip-nx-cache --parallel 99",
 		"format": "prettier -w .",
 		"clean-artifacts": "rimraf -g dist tmp .nx/cache",
 		"clean-modules": "rimraf -g ./**/node_modules",

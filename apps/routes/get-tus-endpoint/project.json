@@ -7,7 +7,7 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route get-tus-endpoint"
+				"command": "./scripts/build-route get-tus-endpoint"
 			}
 		}
 	}

@@ -7,7 +7,13 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route get-channel-sensitives"
+				"command": "./scripts/build-route get-channel-sensitives"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route get-channel-sensitives"
 			}
 		}
 	}
