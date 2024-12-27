@@ -60,6 +60,9 @@
 		"build": {
 			"dependsOn": ["^build", "^compile", "^generate-types", "^post-build"]
 		},
+		"dockerize": {
+			"dependsOn": ["build"]
+		},
 		"compile": {
 			"dependsOn": ["^build"]
 		},

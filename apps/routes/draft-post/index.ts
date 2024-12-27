@@ -7,7 +7,6 @@ import {
 	webuiDomain,
 	flagUnsafeHtml,
 	run,
-	shortenLink,
 	shortenLinksInBody,
 } from '@lyku/route-helpers';
 import { handleDraftPost } from '@lyku/handles';

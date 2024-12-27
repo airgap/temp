@@ -4,7 +4,16 @@
 	"tags": [],
 	"targets": {
 		"build": {
-			"$extends": ["../_shared/project.json:build"]
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/build-route delete-post"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route delete-post --push"
+			}
 		}
 	}
 }

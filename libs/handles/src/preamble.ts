@@ -86,7 +86,7 @@ export const serveHttp = ({
 }: {
 	execute: (params: unknown, context: GuestContext) => unknown;
 	validate: (params: unknown) => boolean;
-}) =>
+}) =>{
 	serve({
 		port,
 		async fetch(req) {
@@ -133,7 +133,8 @@ export const serveHttp = ({
 			return res;
 		},
 	});
-
+	console.log('HTTP server started on port', port);
+}
 export const serveWebsocket = ({
 	execute,
 	validate,

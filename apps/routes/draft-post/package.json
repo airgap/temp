@@ -1,0 +1,9 @@
+{
+	"dependencies": {
+		"@lyku/handles": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"@lyku/route-helpers": "workspace:*",
+		"@lyku/helpers": "workspace:*",
+		"@lyku/db-config": "workspace:*"
+	}
+}

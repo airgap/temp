@@ -13,7 +13,7 @@
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route accept-friend-request"
+				"command": "./scripts/dockerize-route accept-friend-request --push"
 			}
 		}
 	}

@@ -12,7 +12,7 @@
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route get-user-by-name"
+				"command": "./scripts/dockerize-route get-user-by-name --push"
 			}
 		}
 	}

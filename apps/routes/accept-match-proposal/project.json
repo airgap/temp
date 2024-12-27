@@ -12,7 +12,7 @@
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route accept-match-proposal"
+				"command": "./scripts/dockerize-route accept-match-proposal --push"
 			}
 		}
 	}
