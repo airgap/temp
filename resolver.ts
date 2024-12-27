@@ -7,7 +7,7 @@ export const plugins = [
 		setup(build: any) {
 			build.onResolve({ filter: /^@lyku\// }, (args: { path: string }) => {
 				const paths = tsconfig.compilerOptions.paths;
-				console.log(paths);
+				// console.log(paths);
 				const matchedPath = Object.entries(paths).find(([alias]) =>
 					args.path.startsWith(alias.replace('/*', ''))
 				);

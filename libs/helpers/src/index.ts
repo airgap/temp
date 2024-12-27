@@ -1,3 +1,4 @@
+export * from './base58SnowflakeRegex';
 export * from './convertBases';
 export * from './delay';
 export * from './Either';

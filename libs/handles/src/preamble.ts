@@ -3,7 +3,7 @@ import { Database } from '@lyku/db-config/kysely'; // this is the Database inter
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
-import { Server as HttpServer, IncomingMessage } from 'http';
+import { Server as HttpServer, IncomingMessage, ServerResponse } from 'http';
 import { Server as HttpsServer } from 'https';
 import { WebSocket } from 'ws';
 import { decode, encode } from '@msgpack/msgpack'; // Import the MessagePack decoder
@@ -14,7 +14,8 @@ type ContextBase = {
 	isSecure?: boolean;
 	httpServer?: HttpServer | HttpsServer;
 	strings: CompactedPhrasebook;
-	message: IncomingMessage;
+	message: typeof Bun.Request;
+	response: typeof Bun.Response;
 };
 export type GuestContext = ContextBase & {
 	requester?: bigint;

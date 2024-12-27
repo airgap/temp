@@ -20,11 +20,11 @@ import styles from './MyChannel.module.sass';
 export const MyChannel = () => {
 	const [channel, setChannel] = useState<Channel>();
 	const [queriedChannel, setQueryiedChannel] = useState(false);
-	useEffect(() => {
-		if (queriedChannel) return;
-		setQueryiedChannel(true);
-		api.getMyChannel({}).then(setChannel);
-	}, [queriedChannel]);
+	// useEffect(() => {
+	// 	if (queriedChannel) return;
+	// 	setQueryiedChannel(true);
+	// 	api.getMyChannel({}).then(setChannel);
+	// }, [queriedChannel]);
 	const [name, setName] = useState(getChannelNameFromUrl());
 	const [nameValid, setNameValid] = useState(true);
 	const [tagline, setTagline] = useState('');

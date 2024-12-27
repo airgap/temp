@@ -4,7 +4,11 @@
 	"tags": [],
 	"targets": {
 		"build": {
-			"$extends": ["../_shared/project.json:build"]
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./build-route authorize-image-upload"
+			}
 		}
 	}
 }

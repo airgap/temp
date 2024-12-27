@@ -18,7 +18,10 @@ export const UserPage = () =>
 	ident ? (
 		<Await
 			source={() =>
-				Promise.all([api.listUserPosts({ user: ident }), api.getUser(ident)])
+				Promise.all([
+					api.listUserPosts({ user: ident }),
+					api.getUserByName(ident),
+				])
 			}
 			then={([posts, user]) => (
 				<Center>

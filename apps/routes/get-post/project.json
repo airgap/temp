@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/create-friend-request",
+	"name": "@lyku/get-post",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,7 +7,7 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./build-route create-friend-request"
+				"command": "./build-route get-post"
 			}
 		}
 	}

@@ -7,7 +7,7 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "bun run ibuild.ts apps/routes/${projectName}/src/index.ts dist/apps/routes/${projectName}"
+				"command": "./build-route ${projectName}"
 			}
 		}
 	}

@@ -43,7 +43,7 @@ export * from './getPosts';
 export * from './getTusEndpoint';
 export * from './getLike';
 export * from './getLikes';
-export * from './getUser';
+export * from './getUserByName';
 export * from './getUserById';
 export * from './getUsersById';
 export * from './getUsers';

@@ -1,0 +1,8 @@
+#! /bin/bash
+projectName=$1
+if [ -z "$projectName" ]; then
+  echo "Error: projectName is missing"
+  exit 1
+fi
+
+bun run ibuild.ts apps/routes/${projectName}/index.ts dist/apps/routes/${projectName}
