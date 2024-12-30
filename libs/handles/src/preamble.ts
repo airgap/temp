@@ -86,11 +86,16 @@ export const serveHttp = ({
 }: {
 	execute: (params: unknown, context: GuestContext) => unknown;
 	validate: (params: unknown) => boolean;
-}) =>{
+}) => {
 	serve({
 		port,
 		async fetch(req) {
 			// HTTP handler
+			if (req.url.endsWith('/health')) {
+				console.log('Health check');
+				return new Response(':D', { status: 200 });
+			}
+
 			const auth = req.headers.get('authorization');
 			if (!auth) return new Response('Unauthorized', { status: 401 });
 
@@ -133,8 +138,13 @@ export const serveHttp = ({
 			return res;
 		},
 	});
-	console.log('HTTP server started on port', port);
-}
+	console.log(
+		'HTTP server started on port',
+		port,
+		'for',
+		process.env['SERVICE_NAME']
+	);
+};
 export const serveWebsocket = ({
 	execute,
 	validate,

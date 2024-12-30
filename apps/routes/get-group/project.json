@@ -15,6 +15,12 @@
 			"options": {
 				"command": "./scripts/dockerize-route get-group --push"
 			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route get-group"
+			}
 		}
 	}
 }

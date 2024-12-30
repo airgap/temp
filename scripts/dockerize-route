@@ -9,7 +9,7 @@ fi
 
 ROUTE_NAME=$1
 PUSH_FLAG=""
-REGISTRY="nicolemuzzin"  # Changed to your Docker Hub username
+REGISTRY="registry.digitalocean.com/lyku"  # Changed to DigitalOcean registry
 REPO="lyku"             # Added repository name
 
 # Parse arguments

@@ -2,8 +2,6 @@ import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { run } from '@lyku/route-helpers';
 import { handleConfirmImageUpload } from '@lyku/handles';
 
-// import { FormData } from 'http';
-console.log('strings', strings.f);
 export const confirmImageUpload = handleConfirmImageUpload(
 	async (id, { requester, strings, db }) => {
 		console.log('Confirming image upload', id);

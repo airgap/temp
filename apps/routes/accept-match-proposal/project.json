@@ -14,6 +14,12 @@
 			"options": {
 				"command": "./scripts/dockerize-route accept-match-proposal --push"
 			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route accept-match-proposal"
+			}
 		}
 	}
 }

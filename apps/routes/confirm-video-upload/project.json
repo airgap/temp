@@ -15,6 +15,12 @@
 			"options": {
 				"command": "./scripts/dockerize-route confirm-video-upload --push"
 			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route confirm-video-upload"
+			}
 		}
 	}
 }
