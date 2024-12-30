@@ -12,9 +12,12 @@ const ingressTemplate = {
 		name: 'api-ingress',
 		annotations: {
 			'nginx.ingress.kubernetes.io/rewrite-target': '/$2',
+			'nginx.ingress.kubernetes.io/use-regex': 'true',
+			'nginx.ingress.kubernetes.io/proxy-body-size': '50m'
 		},
 	},
 	spec: {
+		ingressClassName: 'nginx',
 		rules: [
 			{
 				http: {
@@ -25,30 +28,36 @@ const ingressTemplate = {
 	},
 };
 
-// Get all directories in routes folder
+// Get all directories in routes folder, excluding _shared
 const routeDirs = fs
 	.readdirSync(ROUTES_DIR, { withFileTypes: true })
-	.filter((dirent) => dirent.isDirectory())
+	.filter((dirent) => dirent.isDirectory() && dirent.name !== '_shared')
 	.map((dirent) => dirent.name);
 
 // Generate path for each route
 routeDirs.forEach((route) => {
 	ingressTemplate.spec.rules[0].http.paths.push({
 		path: `/api/${route}(/|$)(.*)`,
-		pathType: 'Prefix',
+		pathType: 'ImplementationSpecific',
 		backend: {
 			service: {
 				name: `${route}-service`,
 				port: {
-					number: 80,
+					number: 3000,
 				},
 			},
 		},
 	});
 });
 
+// Sort paths alphabetically for consistency
+ingressTemplate.spec.rules[0].http.paths.sort((a, b) => 
+	a.path.localeCompare(b.path)
+);
+
 // Write to k8s/base/ingress.yaml
-const outputPath = path.join(__dirname, '../k8s/base/ingress.yaml');
+const outputPath = path.join(__dirname, '../tmp/ingress.yaml');
 fs.writeFileSync(outputPath, yaml.stringify(ingressTemplate));
 
 console.log('Generated ingress configuration at:', outputPath);
+console.log(`Created routes for ${routeDirs.length} endpoints`);
