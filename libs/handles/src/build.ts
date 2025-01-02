@@ -35,7 +35,7 @@ const jsonify = async () => {
 				: 'GuestContext';
 		const handle = `export const handle${key[0].toUpperCase()}${key.slice(
 			1
-		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => serve${protocol}({
+		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => ({
 				execute: handler,
 				validate: ${'request' in value ? buildValidator(value.request) : () => true}
 			});`;

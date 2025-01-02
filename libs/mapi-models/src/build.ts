@@ -1,4 +1,4 @@
-import { tsonToType } from 'from-schema';
+import { TsonSchemaOrPrimitive, tsonToType } from 'from-schema';
 import * as src from './';
 import * as prettier from 'prettier';
 
@@ -11,7 +11,26 @@ const functions = `export type MonolithTypes = {
 				'request' in value ? `request: ${tsonToType(value.request)},` : '';
 			return `${key}: {${request}${
 				'response' in value ? `response: ${tsonToType(value.response)},` : ''
-			}${'stream' in value ? `stream: ${tsonToType(value.stream)},` : ''}}`;
+			}${
+				'stream' in value
+					? `stream: ${
+							typeof value.stream === 'boolean'
+								? value.stream
+								: `{
+										tweakRequest: ${tsonToType(value.stream.tweakRequest)},
+										tweakResponse:
+											${
+												'tweakResponse' in value.stream
+													? tsonToType(
+															value.stream
+																.tweakResponse as TsonSchemaOrPrimitive
+													  )
+													: 'never'
+											},
+								  }`
+					  },`
+					: ''
+			}}`;
 		})
 		.join(',\n')}
 }`;

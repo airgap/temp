@@ -14,7 +14,7 @@ const ingressTemplate = {
 			'nginx.ingress.kubernetes.io/rewrite-target': '/$2',
 			'nginx.ingress.kubernetes.io/use-regex': 'true',
 			'nginx.ingress.kubernetes.io/proxy-body-size': '50m',
-			'nginx.ingress.kubernetes.io/ssl-redirect': 'true'
+			'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
 		},
 	},
 	spec: {
@@ -22,8 +22,8 @@ const ingressTemplate = {
 		tls: [
 			{
 				hosts: ['api.lyku.org'],
-				secretName: 'cloudflare-origin-cert'
-			}
+				secretName: 'cloudflare-origin-cert',
+			},
 		],
 		rules: [
 			{
@@ -59,7 +59,7 @@ routeDirs.forEach((route) => {
 });
 
 // Sort paths alphabetically for consistency
-ingressTemplate.spec.rules[0].http.paths.sort((a, b) => 
+ingressTemplate.spec.rules[0].http.paths.sort((a, b) =>
 	a.path.localeCompare(b.path)
 );
 

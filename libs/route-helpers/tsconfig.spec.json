@@ -6,7 +6,7 @@
 			"vitest/globals",
 			"vitest/importMeta",
 			"vite/client",
-			"node",
+			"bun",
 			"vitest"
 		]
 	},

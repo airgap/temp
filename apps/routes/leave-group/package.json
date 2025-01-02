@@ -1,0 +1,7 @@
+{
+	"type": "module",
+	"dependencies": {
+		"@lyku/handles": "workspace:*",
+		"@lyku/json-models": "workspace:*"
+	}
+}

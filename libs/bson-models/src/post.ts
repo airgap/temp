@@ -2,6 +2,7 @@ import { postBody } from './postBody';
 import { postTitle } from './postTitle';
 import {
 	ArrayJsonSchema,
+	BigIntColumnModel,
 	BigSerialColumnModel,
 	EnumColumnModel,
 	PostgresRecordModel,
@@ -14,8 +15,8 @@ export const bodyType = {
 	enum: ['plaintext', 'markdown'],
 } as const satisfies EnumColumnModel;
 export const postId = {
-	type: 'bigserial',
-} as const satisfies BigSerialColumnModel;
+	type: 'bigint',
+} as const satisfies BigIntColumnModel;
 export const post = {
 	description: 'A post containing text, images, or videos',
 	properties: {

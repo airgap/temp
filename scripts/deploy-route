@@ -2,7 +2,7 @@
 # deploy-route.sh
 
 # Set KUBECONFIG to the specified file
-export KUBECONFIG=C:\Users\nickm\Downloads\lyk8s-kubeconfig.yaml
+export KUBECONFIG=C:\Users\nickm\lyk8s-kubeconfig.yaml
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <service-name>"

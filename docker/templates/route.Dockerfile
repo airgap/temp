@@ -18,4 +18,4 @@ HEALTHCHECK --interval=30s --timeout=3s \
   CMD bun --eval 'fetch("http://localhost:3000/health").then(r => process.exit(r.ok ? 0 : 1))' || exit 1
 
 # Direct execution without shell wrapper
-CMD ["bun", "--eval", "console.log('Container starting...'); require('./index.js')"]
+CMD ["bun", "--eval", "console.log('Container starting...'); require('./serve.js')"]
