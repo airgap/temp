@@ -1,7 +1,7 @@
 import { handleAcceptFriendRequest } from '@lyku/handles';
 import { bondIds } from '@lyku/helpers';
 
-handleAcceptFriendRequest(async (user, { requester, db }) => {
+export default handleAcceptFriendRequest(async (user, { requester, db }) => {
 	const result = await db
 		.insertInto('friendships')
 		.columns(['id', 'users', 'created'])

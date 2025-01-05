@@ -29,15 +29,29 @@ const jsonify = async () => {
 		const response = 'response' in value ? tsonToType(value.response) : 'void';
 		const optional = 'authenticated' in value && value.authenticated ? '' : '?';
 		const protocol = 'stream' in value && value.stream ? 'Websocket' : 'Http';
+		const authenticated = 'authenticated' in value && value.authenticated;
 		const context =
-			'authenticated' in value && value.authenticated
-				? 'SecureContext'
-				: 'GuestContext';
+			protocol === 'Websocket'
+				? authenticated
+					? 'SecureSocketContext'
+					: 'MaybeSecureSocketContext'
+				: authenticated
+				? 'SecureHttpContext'
+				: 'MaybeSecureHttpContext';
+		console.log('Request', value.request);
 		const handle = `export const handle${key[0].toUpperCase()}${key.slice(
 			1
 		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => ({
 				execute: handler,
-				validate: ${'request' in value ? buildValidator(value.request) : () => true}
+				validator: ${
+					'request' in value
+						? (() => {
+								const validator = buildValidator(value.request);
+								console.log('Validator', validator.validate.toString());
+								return `{ "validate": ${validator.validate.toString()}, "validateOrThrow": ${validator.validateOrThrow.toString()}, "isValid": ${validator.isValid.toString()} }`;
+						  })()
+						: '{ "validate": "() => []", "validateOrThrow": "() => {}", "isValid": "() => true" }'
+				}
 			});`;
 		handles.push(handle);
 	}
