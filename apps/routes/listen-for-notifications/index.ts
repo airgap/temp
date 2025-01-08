@@ -1,17 +1,9 @@
-import { handleGetUsers } from '@lyku/handles';
-import { User } from '@lyku/json-models';
+import { handleListenForNotifications } from '@lyku/handles';
 
-export const getUsers = handleGetUsers(async ({ users }, { db }) => {
-	const unsorted = await db
-		.selectFrom('users')
-		.selectAll()
-		.where('id', 'in', users)
-		.execute();
-	const sorted: User[] = [];
-	for (const u of users) {
-		const i = unsorted.findIndex(({ id }) => id === u);
-		sorted.push(unsorted[i]);
-		unsorted.splice(i, 1);
+export default handleListenForNotifications(
+	async (_, { nats, requester, emit, socket }) => {
+		const sub = nats.subscribe(`notifications.${requester}`);
+		socket.on('close', () => sub.unsubscribe());
+		for await (const msg of sub) emit(msg.data);
 	}
-	return sorted;
-});
+);

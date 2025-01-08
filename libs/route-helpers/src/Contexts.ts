@@ -2,12 +2,13 @@ import { Database } from '@lyku/db-config/kysely';
 import { CompactedPhrasebook } from '@lyku/phrasebooks';
 import { ServerWebSocket, Server } from 'bun';
 import { Kysely } from 'kysely';
+import * as nats from 'nats';
 
 type BaseContextFragment = {
 	db: Kysely<Database>;
-	isSecure?: boolean;
-	server?: Server;
+	server: Server;
 	strings: CompactedPhrasebook;
+	nats: nats.NatsConnection;
 };
 type HttpContextFragment = {
 	request: Request;

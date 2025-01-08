@@ -1,17 +1,7 @@
-import { handleGetUsers } from '@lyku/handles';
-import { User } from '@lyku/json-models';
+import { handleListenForTtfPlays } from '@lyku/handles';
+import { emit } from 'process';
 
-export const getUsers = handleGetUsers(async ({ users }, { db }) => {
-	const unsorted = await db
-		.selectFrom('users')
-		.selectAll()
-		.where('id', 'in', users)
-		.execute();
-	const sorted: User[] = [];
-	for (const u of users) {
-		const i = unsorted.findIndex(({ id }) => id === u);
-		sorted.push(unsorted[i]);
-		unsorted.splice(i, 1);
-	}
-	return sorted;
+export default handleListenForTtfPlays(async ({ match }, { nats }) => {
+	const sub = nats.subscribe(`ttfMatches.${match}`);
+	for await (const msg of sub) emit(msg.data);
 });

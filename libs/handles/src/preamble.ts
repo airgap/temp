@@ -14,4 +14,5 @@ import {
 	SecureSocketContext,
 	MaybeSecureContext,
 	MaybeSecureHttpContext,
+	MaybeSecureSocketContext,
 } from '@lyku/route-helpers';

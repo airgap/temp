@@ -22,6 +22,8 @@ export * from './posts';
 export * from './publishers';
 export * from './scores';
 export * from './sessions';
+export * from './hashtags';
+export * from './hashtagUsages';
 export * from './ttfMatches';
 export * from './ttmMatches';
 export * from './users';

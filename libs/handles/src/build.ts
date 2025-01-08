@@ -6,12 +6,9 @@ import {
 	postgresColumnToTson,
 	buildValidator,
 } from 'from-schema';
-import tsconfig from '../../../tsconfig.base.json';
-import * as ts from 'typescript';
+import * as prettier from 'prettier';
 import * as models from '@lyku/mapi-models';
 import { MonolithTypes } from '@lyku/mapi-types';
-import * as prettier from 'prettier';
-// import { dbConfig } from '@lyku/db-config';
 
 type Handle<I, O, H = (input: I) => O> = (handler: H) => {
 	execute: H;
@@ -26,9 +23,12 @@ const jsonify = async () => {
 		MonolithTypes[keyof typeof models]
 	][]) {
 		const request = 'request' in value ? tsonToType(value.request) : 'never';
-		const response = 'response' in value ? tsonToType(value.response) : 'void';
 		const optional = 'authenticated' in value && value.authenticated ? '' : '?';
 		const protocol = 'stream' in value && value.stream ? 'Websocket' : 'Http';
+		const response =
+			protocol === 'Http' && 'response' in value
+				? tsonToType(value.response)
+				: 'void';
 		const authenticated = 'authenticated' in value && value.authenticated;
 		const context =
 			protocol === 'Websocket'
@@ -50,8 +50,9 @@ const jsonify = async () => {
 								console.log('Validator', validator.validate.toString());
 								return `{ "validate": ${validator.validate.toString()}, "validateOrThrow": ${validator.validateOrThrow.toString()}, "isValid": ${validator.isValid.toString()} }`;
 						  })()
-						: '{ "validate": "() => []", "validateOrThrow": "() => {}", "isValid": "() => true" }'
-				}
+						: '{ validate: () => [], validateOrThrow: () => {}, isValid: () => true }'
+				},
+				model: ${JSON.stringify(value)}
 			});`;
 		handles.push(handle);
 	}

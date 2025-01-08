@@ -25,7 +25,7 @@ export const FriendInviter = ({
 	useEffect(() => {
 		if (queried) return;
 		setQueried(true);
-		api.listFriends().then(({ friends }) => {
+		api.listFriends().then((friends) => {
 			setFriends(friends);
 			setFriendsById(Object.fromEntries(friends.map((f) => [f.id, f])));
 		});

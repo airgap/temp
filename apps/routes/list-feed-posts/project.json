@@ -1,0 +1,26 @@
+{
+	"name": "@lyku/list-feed-posts",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./scripts/build-route list-feed-posts"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route list-feed-posts --push"
+			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route list-feed-posts"
+			}
+		}
+	}
+}

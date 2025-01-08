@@ -13,16 +13,24 @@ export const listFeedPosts = {
 				oneOf: [
 					{
 						type: 'array',
-						items: uid,
+						items: { type: 'bigint' },
+					},
+					true,
+				],
+			},
+			authors: {
+				oneOf: [
+					{
+						type: 'array',
+						items: { type: 'bigint' },
 					},
 					true,
 				],
 			},
 			tags: {
 				type: 'array',
-				items: uid,
+				items: { type: 'string' },
 			},
-			filter: listFeedFilter,
 			before: number,
 		},
 		required: [],

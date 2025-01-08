@@ -8,10 +8,11 @@ import { ServerWebSocket } from 'bun';
 import { TsonSchemaOrPrimitive } from 'from-schema';
 import { WebSocketRoute } from 'from-schema';
 import { en_US } from '@lyku/strings';
+import * as nats from 'nats';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 type Data = { authenticated: boolean; user?: bigint; sessionId?: string };
-export const serveWebsocket = ({
+export const serveWebsocket = async ({
 	onOpen,
 	onTweak,
 	validate,
@@ -21,8 +22,9 @@ export const serveWebsocket = ({
 	onTweak: (params: unknown, context: MaybeSecureSocketContext) => unknown;
 	validate: (params: unknown) => boolean;
 	model: WebSocketRoute;
-}) =>
-	Bun.serve({
+}) => {
+	const nc = await nats.connect();
+	const server = Bun.serve({
 		port,
 		fetch(server, req) {
 			req.upgrade(server);
@@ -117,6 +119,8 @@ export const serveWebsocket = ({
 						session: ws.data.sessionId,
 						socket: ws,
 						emit: (data: unknown) => ws.send(encode(data)),
+						nats: nc,
+						server,
 					});
 
 					// ws.send(encode("Authenticated"));
@@ -135,6 +139,8 @@ export const serveWebsocket = ({
 					session: ws.data.sessionId,
 					socket: ws,
 					emit: (data: unknown) => ws.send(encode(data)),
+					server,
+					nats: nc,
 				};
 
 				// Validate the decoded params
@@ -153,3 +159,4 @@ export const serveWebsocket = ({
 			},
 		},
 	});
+};
