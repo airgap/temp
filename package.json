@@ -91,7 +91,7 @@
 		"eslint-plugin-playwright": "^1.8.3",
 		"eslint-plugin-react": "7.35.0",
 		"eslint-plugin-react-hooks": "5.0.0",
-		"from-schema": "../from-schema",
+		"from-schema": "from-schema",
 		"glob": "^11.0.0",
 		"gsap": "./gsap-bonus.tgz",
 		"jest": "^29.7.0",
