@@ -7,7 +7,7 @@ export const videoDraft = {
 		user: { type: 'bigint' },
 		channel: { type: 'bigint' },
 		post: { type: 'bigint' },
-		id: { type: 'bigint' },
+		id: { type: 'text' },
 		uid: { type: 'text', maxLength: 32 },
 		uploadURL: { type: 'text' },
 		created: { type: 'timestamp' },

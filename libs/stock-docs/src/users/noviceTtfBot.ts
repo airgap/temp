@@ -14,4 +14,5 @@ export const noviceTtfBot = {
 	points: 0,
 	slug: 'lykunovicettfbot',
 	staff: true,
+	groupLimit: 0
 } as const satisfies User;

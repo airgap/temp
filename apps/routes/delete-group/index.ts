@@ -1,6 +1,6 @@
 import { handleDeleteGroup } from '@lyku/handles';
 
-export const deleteGroup = handleDeleteGroup(
+export default handleDeleteGroup(
 	async ({ id }, { db, requester }) => {
 		const group = await db
 			.selectFrom('groups')
@@ -11,6 +11,5 @@ export const deleteGroup = handleDeleteGroup(
 			throw new Error('That is not your toy to play with');
 		}
 		await db.deleteFrom('groups').where('id', '=', id).execute();
-		return {};
 	}
 );

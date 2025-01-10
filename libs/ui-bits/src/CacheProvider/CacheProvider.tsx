@@ -58,8 +58,8 @@ const posts = {
 } as const satisfies CacheConfig<Post>;
 
 const users = {
-	get: api.getUserById,
-	getAll: api.getUsersById,
+	get: api.getUser,
+	getAll: api.getUsers,
 	listen: api.listenToUsers,
 } as const satisfies CacheConfig<User>;
 

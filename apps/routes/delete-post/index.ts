@@ -1,6 +1,6 @@
 import { handleDeletePost } from '@lyku/handles';
 
-handleDeletePost(async (id, { db, requester, strings }) => {
+export default handleDeletePost(async (id, { db, requester, strings }) => {
 	const post = await db
 		.selectFrom('posts')
 		.where('id', '=', id)

@@ -1,7 +1,7 @@
 import { MatchProposal } from '@lyku/json-models';
-import { SecureContext } from '@lyku/handles';
+import { AnySecureContext } from '@lyku/route-helpers';
 
 export type Starter = (
 	proposal: MatchProposal,
-	context: SecureContext
+	context: AnySecureContext
 ) => Promise<bigint>;

@@ -3,7 +3,7 @@ import { handleCreateGroup } from '@lyku/handles';
 import { Group } from '@lyku/json-models/index';
 import { sql } from 'kysely';
 
-export const createGroup = handleCreateGroup(
+export default handleCreateGroup(
 	async ({ name, id, private: p }, { db, requester, strings }) => {
 		const lowerSlug = id.toLowerCase();
 		const user = await db

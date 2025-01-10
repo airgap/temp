@@ -14,4 +14,5 @@ export const hardTtfBot = {
 	points: 0,
 	slug: 'lykuhardttfbot',
 	staff: true,
+	groupLimit: 0
 } as const satisfies User;

@@ -1,7 +1,7 @@
 import { handleCreateFriendRequest } from '@lyku/handles';
 import { bondIds } from '@lyku/helpers';
 
-export const createFriendRequest = handleCreateFriendRequest(
+export default handleCreateFriendRequest(
 	async (user, { db, requester }) => {
 		const them = await db
 			.selectFrom('users')

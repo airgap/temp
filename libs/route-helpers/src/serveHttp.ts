@@ -1,5 +1,5 @@
 import { decode, encode } from '@msgpack/msgpack';
-import { MaybeSecureContext, MaybeSecureHttpContext } from './Contexts';
+import { MaybeSecureHttpContext, MaybeSecureSocketContext, SecureHttpContext, SecureSocketContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
 import { TsonHandlerModel } from 'from-schema';
@@ -13,7 +13,7 @@ export const serveHttp = async ({
 	validator,
 	model,
 }: {
-	execute: (params: unknown, context: MaybeSecureHttpContext) => unknown;
+	execute: ((params: any | undefined, context: SecureHttpContext) => any) | ((params: any | undefined, context: MaybeSecureHttpContext) => any);
 	validator: Validator;
 	model: TsonHandlerModel;
 }) => {
@@ -43,6 +43,8 @@ export const serveHttp = async ({
 						.executeTakeFirst()
 				: null;
 
+			if (needsAuth && !session) return new Response('Invalid session', { status: 403 });
+
 			// Parse params from MessagePack
 			const arrayBuffer = await req.arrayBuffer();
 			const params = decode(new Uint8Array(arrayBuffer));
@@ -59,20 +61,20 @@ export const serveHttp = async ({
 				db,
 				strings: phrasebook,
 				request: req,
-				requester: session?.userId,
+				requester: session!.userId, // oh just kill me
 				session: sessionId,
 				responseHeaders,
 				nats: nc,
 				server,
-			});
+			}) as any;
 
 			const pack = encode(output);
 
 			// Route handling here
-			const res = new Response(pack, {
+			
+			return new Response(pack, {
 				headers: responseHeaders,
 			});
-			return res;
 		},
 	});
 	console.log(

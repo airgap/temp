@@ -7,6 +7,7 @@ export * from './channelSensitives';
 export * from './friendRequests';
 export * from './friendships';
 export * from './developers';
+export * from './friendLists';
 export * from './games';
 export * from './groups';
 export * from './groupMemberships';

@@ -21,7 +21,7 @@ export const MatchInfo = ({
 		if (match && !tried) {
 			setTried(true);
 			api
-				.getUsersById([match.X, match.O])
+				.getUsers([match.X, match.O])
 				.then(([x, o]) => {
 					setXUser(x);
 					setOUser(o);

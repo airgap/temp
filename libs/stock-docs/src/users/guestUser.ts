@@ -14,4 +14,5 @@ export const guestUser = {
 	points: 0,
 	slug: 'lykuguest',
 	staff: true,
+	groupLimit: 0
 } as const satisfies User;

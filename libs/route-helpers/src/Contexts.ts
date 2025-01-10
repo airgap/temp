@@ -9,6 +9,8 @@ type BaseContextFragment = {
 	server: Server;
 	strings: CompactedPhrasebook;
 	nats: nats.NatsConnection;
+	requester?: bigint;
+	session?: string;
 };
 type HttpContextFragment = {
 	request: Request;
@@ -28,3 +30,6 @@ type SocketBase = {
 };
 export type MaybeSecureSocketContext = MaybeSecureContext & SocketBase;
 export type SecureSocketContext = SecureContext & SocketBase;
+export type AnyMaybeSecureContext = MaybeSecureHttpContext | MaybeSecureSocketContext;
+export type AnySecureContext = SecureHttpContext | SecureSocketContext;
+export type AnyContext = AnyMaybeSecureContext | AnySecureContext;

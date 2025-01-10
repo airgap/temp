@@ -12,14 +12,15 @@ import * as nats from 'nats';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 type Data = { authenticated: boolean; user?: bigint; sessionId?: string };
+type Responder = ((params: any, context: MaybeSecureSocketContext) => any) | ((params: any, context: SecureSocketContext) => any)
 export const serveWebsocket = async ({
 	onOpen,
 	onTweak,
 	validate,
 	model,
 }: {
-	onOpen: (params: unknown, context: MaybeSecureSocketContext) => unknown;
-	onTweak: (params: unknown, context: MaybeSecureSocketContext) => unknown;
+	onOpen: Responder;
+	onTweak: Responder;
 	validate: (params: unknown) => boolean;
 	model: WebSocketRoute;
 }) => {

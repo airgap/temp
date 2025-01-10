@@ -14,4 +14,5 @@ export const system = {
 	points: 0,
 	slug: 'system',
 	staff: true,
+	groupLimit: 0
 } as const satisfies User;

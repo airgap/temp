@@ -1,7 +1,7 @@
 import { handleFollowUser } from '@lyku/handles';
 import { bindIds } from '@lyku/helpers';
 
-handleFollowUser(async (user, { db, requester }) => {
+export default handleFollowUser(async (user, { db, requester }) => {
 	const id = bindIds(requester, user);
 	const them = await db
 		.selectFrom('users')

@@ -67,7 +67,7 @@ export const ImageUpload = (props: Props) => {
 	const [working, setWorking] = useState(props.working);
 	const [inputId] = useState(String(Math.random()).substring(2));
 	const formRef = createRef<HTMLFormElement>();
-	const [pack, setPack] = useState<{ url: string; id: bigint }>();
+	const [pack, setPack] = useState<{ url: string; id: string }>();
 	const [submitting, setSubmitting] = useState(false);
 	const [succeeded, setSucceeded] = useState(false);
 	console.log('type', file?.type);

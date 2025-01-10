@@ -2,7 +2,7 @@ import { handleAcceptMatchProposal } from '@lyku/handles';
 import { gameStarters } from './internalGames';
 import { MatchProposal } from '@lyku/json-models';
 
-export const acceptMatchProposal = handleAcceptMatchProposal(
+export default handleAcceptMatchProposal(
 	async (id, ctx) => {
 		const proposal = (await ctx.db
 			.selectFrom('matchProposals')

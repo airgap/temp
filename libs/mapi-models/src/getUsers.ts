@@ -1,27 +1,14 @@
-import { username } from '@lyku/json-models';
-import { user } from '@lyku/json-models';
 import { TsonHandlerModel } from 'from-schema';
+import { user } from '@lyku/json-models';
 
 export const getUsers = {
 	request: {
-		type: 'object',
-		properties: {
-			users: {
-				type: 'array',
-				items: username,
-			},
-		},
-		required: ['users'],
+		type: 'array',
+		items: user.properties.id,
 	},
 	response: {
-		type: 'object',
-		properties: {
-			users: {
-				type: 'array',
-				items: user,
-			},
-		},
-		required: ['users'],
+		type: 'array',
+		items: user,
 	},
 	authenticated: false,
 } as const satisfies TsonHandlerModel;

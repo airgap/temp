@@ -68,6 +68,7 @@ export * from './ttmMatch';
 export * from './user';
 export * from './userBlock';
 export * from './userFollow';
+export * from './friendList';
 export * from './userLogin';
 export * from './username';
 export * from './userSlug';

@@ -10,12 +10,6 @@ export const createBot = {
 		},
 		required: ['username'],
 	},
-	response: {
-		type: 'object',
-		properties: {
-			botId: user.properties.id,
-		},
-		required: ['botId'],
-	},
+	response: user.properties.id,
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

@@ -29,7 +29,7 @@ export const user = {
 		id: userId,
 		joined: { type: 'timestamp' },
 		live: { type: 'boolean' },
-		profilePicture: uuidv4,
+		profilePicture: { type: 'text' },
 		staff: {
 			type: 'boolean',
 			description: 'Whether the user is a member of Lyku staff',
@@ -57,5 +57,6 @@ export const user = {
 		'slug',
 		'lastLogin',
 		'staff',
+		'groupLimit',
 	],
 } as const satisfies PostgresRecordModel;

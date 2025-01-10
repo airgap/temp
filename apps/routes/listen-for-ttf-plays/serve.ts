@@ -1,4 +1,4 @@
-import listenForTtfPlays from './index';
+import listenForTtfPlays from '.';
 import { serveWebsocket } from '@lyku/route-helpers';
 
 serveWebsocket(listenForTtfPlays);

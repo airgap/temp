@@ -13,7 +13,7 @@ export const listFeedPosts = {
 				oneOf: [
 					{
 						type: 'array',
-						items: { type: 'bigint' },
+						items: { type: 'string' },
 					},
 					true,
 				],

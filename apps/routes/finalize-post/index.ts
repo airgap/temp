@@ -1,8 +1,9 @@
 import { handleFinalizePost } from '@lyku/handles';
 import { AttachmentType, getSupertypeFromAttachmentId } from '@lyku/helpers';
 import { Post, User } from '@lyku/json-models/index';
+import { sql } from 'kysely';
 
-export const finalizePost = handleFinalizePost(
+export default handleFinalizePost(
 	async ({ body, id }, { db, requester }) => {
 		const authRes = await db
 			.selectFrom('postDrafts')
@@ -42,7 +43,7 @@ export const finalizePost = handleFinalizePost(
 			.insertInto('posts')
 			.values(protopost)
 			.returningAll()
-			.executeTakeFirst();
+			.executeTakeFirstOrThrow();
 		const user = await db
 			.selectFrom('users')
 			.where('id', '=', requester)
@@ -51,9 +52,9 @@ export const finalizePost = handleFinalizePost(
 		await db
 			.updateTable('users')
 			.set({
-				postCount: db.ref('postCount').add(1),
-				points: db.ref('points').add(canSuper ? 10 : 2),
-				lastSuper: canSuper ? new Date() : db.ref('lastSuper'),
+				postCount: sql`postCount + 1`,
+				points: sql`points + ${canSuper ? 10 : 2}`,
+				lastSuper: canSuper ? new Date() : sql`lastSuper`,
 			})
 			.where('id', '=', requester)
 			.execute();
@@ -62,7 +63,7 @@ export const finalizePost = handleFinalizePost(
 			await db
 				.updateTable('posts')
 				.set({
-					replies: db.ref('replies').add(1),
+					replies: sql`replies + 1`,
 				})
 				.where('id', '=', authRes.replyTo)
 				.execute();
@@ -70,13 +71,11 @@ export const finalizePost = handleFinalizePost(
 			await db
 				.updateTable('posts')
 				.set({
-					echoes: db.ref('echoes').add(1),
+					echoes: sql`echoes + 1`,
 				})
 				.where('id', '=', authRes.echoing)
 				.execute();
-		return {
-			// attachmentUploadPacks: atAts,
-			post: p,
-		};
+		return p
+		;
 	}
 );

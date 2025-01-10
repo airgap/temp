@@ -2,7 +2,7 @@ import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { handleAuthorizeImageUpload } from '@lyku/handles';
 import { run } from '@lyku/route-helpers';
 import { ImageDraft } from '@lyku/json-models';
-export const authorizeImageUpload = handleAuthorizeImageUpload(
+export default handleAuthorizeImageUpload(
 	async ({ channelId, reason }, { db, requester, strings }) => {
 		if (!cfApiToken)
 			throw new Error('We forgot to enter our Cloudflare password');
@@ -23,12 +23,12 @@ export const authorizeImageUpload = handleAuthorizeImageUpload(
 
 			const channel = await db
 				.selectFrom('channels')
+				.select(['id', 'owner'])
 				.where('id', '=', channelId)
 				.executeTakeFirst();
-			if (!channel) throw new Error(strings.youHaveNoChannelByThatId);
+			if (!channel) throw 404;
 			if (channel.owner !== requester)
 				throw new Error(strings.youHaveNoChannelByThatId);
-			if ('error' in authRes) throw new Error(authRes.error);
 		}
 
 		const command = `curl --request POST --url https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload --header 'Content-Type: multipart/form-data' --header 'Authorization: Bearer ${cfApiToken}' --form 'requireSignedURLs=false' --form 'metadata={"eatAss": "smokeGrass"}'`;
@@ -43,7 +43,10 @@ export const authorizeImageUpload = handleAuthorizeImageUpload(
 			...(channelId ? { channelId } : {}),
 			supertype: 'image',
 		};
-		await tables.imageDrafts.insert(imageUpload).run(connection);
+		await db
+			.insertInto('imageDrafts')
+			.values(imageUpload)
+			.executeTakeFirstOrThrow();
 
 		return { id: cfres.result.id, url: cfres.result.uploadURL };
 	}

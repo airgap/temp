@@ -7,9 +7,9 @@ export const matchProposal = {
 		// User ID of the user proposing the match
 		from: { type: 'bigint' },
 		// Game ID of the game being proposed
-		game: { type: 'bigint' },
+		game: { type: 'integer' },
 		// Proposal ID
-		id: { type: 'bigserial' },
+		id: { type: 'bigint' },
 		// User ID of the user being proposed to
 		to: { type: 'bigint' },
 	},

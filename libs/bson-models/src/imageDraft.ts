@@ -9,7 +9,7 @@ export const imageDraft = {
 		channel: { type: 'bigint' },
 		post: { type: 'bigint' },
 		reason: imageUploadReason,
-		id: { type: 'bigint' },
+		id: { type: 'text' },
 		uploadURL: { type: 'text' },
 		created: { type: 'timestamp' },
 		filename: { type: 'text', maxLength: 100 },

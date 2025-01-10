@@ -14,4 +14,5 @@ export const mediumTtfBot = {
 	points: 0,
 	slug: 'lykumediumttfbot',
 	staff: true,
+	groupLimit: 0
 } as const satisfies User;

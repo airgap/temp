@@ -46,14 +46,14 @@ const jsonify = async () => {
 				validator: ${
 					'request' in value
 						? (() => {
-								const validator = buildValidator(value.request);
+								const validator = buildValidator('request', value.request);
 								console.log('Validator', validator.validate.toString());
-								return `{ "validate": ${validator.validate.toString()}, "validateOrThrow": ${validator.validateOrThrow.toString()}, "isValid": ${validator.isValid.toString()} }`;
+								return `{ "validate": (request: unknown) => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (request: unknown) => {${validator.validateOrThrow.toString()}}, "isValid": (request: unknown) => {${validator.isValid.toString()}; return true} }`;
 						  })()
 						: '{ validate: () => [], validateOrThrow: () => {}, isValid: () => true }'
 				},
 				model: ${JSON.stringify(value)}
-			});`;
+			} as const);`;
 		handles.push(handle);
 	}
 

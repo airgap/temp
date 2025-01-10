@@ -2,7 +2,7 @@ import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { run } from '@lyku/route-helpers';
 import { handleConfirmVideoUpload } from '@lyku/handles';
 
-export const confirmVideoUpload = handleConfirmVideoUpload(
+export default handleConfirmVideoUpload(
 	async (id, { db, requester, strings }) => {
 		console.log('Confirming image upload', id);
 		if (!cfApiToken)

@@ -1,6 +1,6 @@
 import { handleGetChannel } from '@lyku/handles';
 
-export const getChannel = handleGetChannel(async (params, { db, strings }) => {
+export default handleGetChannel(async (params, { db, strings }) => {
 	const selection = db.selectFrom('channels').selectAll();
 	const channelBy =
 		'id' in params

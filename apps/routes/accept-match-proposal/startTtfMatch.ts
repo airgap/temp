@@ -1,16 +1,14 @@
 import crypto from 'crypto';
 import { Starter } from './Starter';
 import { MatchProposal } from '@lyku/json-models';
-import { Kysely } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
-import { SecureContext } from '@lyku/handles';
+import { AnySecureContext } from '@lyku/route-helpers';
 export const startTtfMatch: Starter = async (
 	proposal: MatchProposal,
-	{ db, requester }: SecureContext
+	{ db, requester }: AnySecureContext
 ) => {
 	const amX = Boolean(crypto.randomInt(0, 1));
 	const X = amX ? requester : proposal.from;
-	const { id } = await db
+	const result = await db
 		.insertInto('ttfMatches')
 		.values({
 			X,
@@ -21,7 +19,8 @@ export const startTtfMatch: Starter = async (
 			whoseTurn: X,
 		})
 		.returning('id')
-		.executeTakeFirst();
+		.executeTakeFirstOrThrow();
+	const id = result.id;
 	console.log('Added match', id);
 	return id;
 };

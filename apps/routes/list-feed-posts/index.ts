@@ -31,7 +31,7 @@ export default handleListFeedPosts(
 							.selectFrom('hashtags')
 							.select('id')
 							.where('lowerText', 'in', tags)
-							.whereRef('id', '=', eb.ref('hashtag'))
+							.whereRef('id', 'in', eb.fn('unnest', [eb.ref('hashtags')]))
 					),
 				])
 			);

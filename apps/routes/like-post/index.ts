@@ -1,17 +1,55 @@
-import { handleGetUsers } from '@lyku/handles';
-import { User } from '@lyku/json-models';
+import { handleLikePost } from "@lyku/handles";
 
-export const getUsers = handleGetUsers(async ({ users }, { db }) => {
-	const unsorted = await db
-		.selectFrom('users')
-		.selectAll()
-		.where('id', 'in', users)
-		.execute();
-	const sorted: User[] = [];
-	for (const u of users) {
-		const i = unsorted.findIndex(({ id }) => id === u);
-		sorted.push(unsorted[i]);
-		unsorted.splice(i, 1);
+import { sql } from 'kysely';
+export default handleLikePost(async (postId,{ requester ,  db }) => {
+	const likeId = `${requester}~${postId}`;
+
+	// Check if post exists and isn't already liked by this user
+	const existingLike = await db
+		.selectFrom('likes')
+		.where('id', '=', likeId)
+		.executeTakeFirstOrThrow();
+
+	const post = await db
+		.selectFrom('posts')
+		.where('id', '=', postId)
+		.executeTakeFirst();
+
+	if(!post) throw "Post doesn't exist";
+
+	if (!post || existingLike || post.author === requester) {
+		throw "Post doesn't exist or is already liked";
 	}
-	return sorted;
+
+	// Insert the like
+	await db
+		.insertInto('likes')
+		.values({
+			id: likeId,
+			userId: requester,
+			postId: postId,
+			created: new Date(),
+		})
+		.execute();
+
+	// Increment post like count
+	const updatedPost = await db
+		.updateTable('posts')
+		.set({
+			likes: sql`likes + 1`,
+		})
+		.where('id', '=', postId)
+		.returning('likes')
+		.executeTakeFirstOrThrow();
+
+	// Add points to both users
+	await db
+		.updateTable('users')
+		.set((eb) => ({
+			points: eb('points', '+', 1),
+		}))
+		.where('id', 'in', [requester, post.author])
+		.executeTakeFirstOrThrow();
+
+	return updatedPost.likes;
 });
