@@ -1,4 +1,4 @@
-import { serveHttp } from "@lyku/route-helpers";
-import likePost from ".";
+import { serveHttp } from '@lyku/route-helpers';
+import likePost from '.';
 
 serveHttp(likePost);

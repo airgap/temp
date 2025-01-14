@@ -15,7 +15,7 @@ import { getSupertypeFromMime, makeAttachmentId } from '@lyku/helpers';
 
 type AttachmentDraft = ImageDraft | VideoDraft;
 
-export const draftPost = handleDraftPost(
+export default handleDraftPost(
 	async (
 		{ attachments, body, replyTo, echoing },
 		{ db, requester, strings }
@@ -34,7 +34,7 @@ export const draftPost = handleDraftPost(
 				.where('id', '=', reversion)
 				.executeTakeFirst();
 		const draft: PostDraft = await db
-			.insertInto('posts')
+			.insertInto('postDrafts')
 			.values({
 				author: requester,
 				body,
@@ -42,9 +42,10 @@ export const draftPost = handleDraftPost(
 			.returningAll()
 			.executeTakeFirstOrThrow();
 		const atAts: AttachmentDraft[] = [];
-		const attachmentIds: bigint[] = attachments.map((a, i) =>
-			makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type))
-		);
+		const attachmentIds: bigint[] =
+			attachments?.map((a, i) =>
+				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type))
+			) ?? [];
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
 				console.log('Drafting upload', a, 'of', attachments.length);
@@ -84,7 +85,7 @@ export const draftPost = handleDraftPost(
 		if (body) {
 			console.log('body', body);
 			if (flagUnsafeHtml(body)) throw 400;
-			body = await shortenLinksInBody(body, draft.id, requester);
+			body = await shortenLinksInBody(body, draft.id, requester, db);
 		}
 		const webuiPath = `${dev ? 'http' : 'https'}://${webuiDomain}/p/${
 			draft.id
@@ -126,8 +127,8 @@ const uploadImage: AttachmentInitializer<ImageDraft> = async ({
 	// Do I need <size>?
 	const url = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload`;
 	const metadata = {
-		authorId,
-		postId,
+		author,
+		post,
 	};
 	const command = `curl --request POST \\
     --url ${url} \\
@@ -155,8 +156,8 @@ const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 	const endpoint = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/stream?direct_user=true`;
 
 	const metadata = {
-		authorId,
-		postId,
+		author,
+		post,
 	};
 	const command = `curl -i --request POST \\
     --url ${endpoint} \\
@@ -183,8 +184,8 @@ const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 		id,
 		uid: id,
 		uploadURL,
-		userId: authorId,
-		postId,
-		supertype: 'video',
+		user: author,
+		post,
+		created: new Date(),
 	};
 };

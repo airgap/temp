@@ -13,7 +13,7 @@ export const listFeedPosts = {
 				oneOf: [
 					{
 						type: 'array',
-						items: { type: 'string' },
+						items: { type: 'bigint' },
 					},
 					true,
 				],
@@ -32,6 +32,12 @@ export const listFeedPosts = {
 				items: { type: 'string' },
 			},
 			before: number,
+			count: {
+				type: 'integer',
+				minimum: 1,
+				maximum: 100,
+				default: 20,
+			},
 		},
 		required: [],
 	},

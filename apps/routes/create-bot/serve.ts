@@ -1,4 +1,4 @@
-import { serveHttp } from "@lyku/route-helpers";
-import createBot from ".";
+import { serveHttp } from '@lyku/route-helpers';
+import createBot from '.';
 
 serveHttp(createBot);

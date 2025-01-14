@@ -1,5 +1,10 @@
 import { decode, encode } from '@msgpack/msgpack';
-import { MaybeSecureHttpContext, MaybeSecureSocketContext, SecureHttpContext, SecureSocketContext } from './Contexts';
+import {
+	MaybeSecureHttpContext,
+	MaybeSecureSocketContext,
+	SecureHttpContext,
+	SecureSocketContext,
+} from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
 import { TsonHandlerModel } from 'from-schema';
@@ -13,7 +18,7 @@ export const serveHttp = async ({
 	validator,
 	model,
 }: {
-	execute: ((params: any | undefined, context: SecureHttpContext) => any) | ((params: any | undefined, context: MaybeSecureHttpContext) => any);
+	execute: (...args: any[]) => any;
 	validator: Validator;
 	model: TsonHandlerModel;
 }) => {
@@ -43,7 +48,8 @@ export const serveHttp = async ({
 						.executeTakeFirst()
 				: null;
 
-			if (needsAuth && !session) return new Response('Invalid session', { status: 403 });
+			if (needsAuth && !session)
+				return new Response('Invalid session', { status: 403 });
 
 			// Parse params from MessagePack
 			const arrayBuffer = await req.arrayBuffer();
@@ -57,7 +63,7 @@ export const serveHttp = async ({
 
 			const responseHeaders = new Headers();
 			responseHeaders.set('Access-Control-Allow-Origin', '*');
-			const output = await execute(params, {
+			const output = (await execute(params, {
 				db,
 				strings: phrasebook,
 				request: req,
@@ -66,12 +72,13 @@ export const serveHttp = async ({
 				responseHeaders,
 				nats: nc,
 				server,
-			}) as any;
+				model,
+			})) as any;
 
 			const pack = encode(output);
 
 			// Route handling here
-			
+
 			return new Response(pack, {
 				headers: responseHeaders,
 			});

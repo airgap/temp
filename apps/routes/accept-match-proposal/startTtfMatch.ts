@@ -4,7 +4,7 @@ import { MatchProposal } from '@lyku/json-models';
 import { AnySecureContext } from '@lyku/route-helpers';
 export const startTtfMatch: Starter = async (
 	proposal: MatchProposal,
-	{ db, requester }: AnySecureContext
+	{ db, requester }: AnySecureContext<any>
 ) => {
 	const amX = Boolean(crypto.randomInt(0, 1));
 	const X = amX ? requester : proposal.from;

@@ -1,7 +1,8 @@
 import { handleListenForTtfPlays } from '@lyku/handles';
-import { emit } from 'process';
+import { onEach } from '@lyku/helpers';
 
-export default handleListenForTtfPlays(async (match , { nats }) => {
+export default handleListenForTtfPlays((match, { nats, emit }) => {
 	const sub = nats.subscribe(`ttfMatches.${match}`);
-	for await (const msg of sub) emit(msg.data);
+	onEach(sub, (msg) => emit(msg.data));
+	return sub.unsubscribe;
 });

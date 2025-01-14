@@ -18,3 +18,4 @@ export * from './getPostIdFromAttachmentId';
 export * from './getPositionFromAttachmentId';
 export * from './getSupertypeFromAttachmentId';
 export * from './AttachmentType';
+export * from './onEach';

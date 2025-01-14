@@ -16,6 +16,7 @@ export * from './leaderboards';
 export * from './likes';
 export * from './logins';
 export * from './matchProposals';
+export * from './membershipLists';
 export * from './messages';
 export * from './notifications';
 export * from './postDrafts';

@@ -1,7 +1,7 @@
 import { bindIds } from '@lyku/helpers';
 import { handleGetMyLikes } from '@lyku/handles';
 
-export const getMyLikes = handleGetMyLikes(async (ids, { db, requester }) => {
+export default handleGetMyLikes(async (ids, { db, requester }) => {
 	const likes = await db
 		.selectFrom('likes')
 		.selectAll()

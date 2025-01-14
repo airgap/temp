@@ -1,11 +1,11 @@
 import { bindIds } from '@lyku/helpers';
 import { handleCreateGroup } from '@lyku/handles';
 import { Group } from '@lyku/json-models/index';
-import { sql } from 'kysely';
+import { Insertable, sql } from 'kysely';
 
 export default handleCreateGroup(
-	async ({ name, id, private: p }, { db, requester, strings }) => {
-		const lowerSlug = id.toLowerCase();
+	async ({ name, slug, private: p }, { db, requester, strings }) => {
+		const lowerSlug = slug.toLowerCase();
 		const user = await db
 			.selectFrom('users')
 			.selectAll()
@@ -32,21 +32,25 @@ export default handleCreateGroup(
 			throw new Error(strings.groupLimitReached);
 		}
 
-		const g: Group = {
-			id,
-			owner: requester,
-			created: new Date(),
-			name,
-			private: p,
-			creator: requester,
-		};
-		await db.insertInto('groups').values(g).execute();
+		const g = await db
+			.insertInto('groups')
+			.values({
+				slug,
+				lowerSlug,
+				owner: requester,
+				created: new Date(),
+				name,
+				private: p,
+				creator: requester,
+			} as Group)
+			.returningAll()
+			.executeTakeFirstOrThrow();
 		await db
 			.insertInto('groupMemberships')
 			.values({
-				group: id,
+				group: g.id,
 				user: requester,
-				id: bindIds(requester, id),
+				id: bindIds(requester, g.id),
 				created: new Date(),
 			})
 			.execute();

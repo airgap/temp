@@ -18,40 +18,73 @@ type Handle<I, O, H = (input: I) => O> = (handler: H) => {
 const jsonify = async () => {
 	const handles = [];
 
-	for (const [key, value] of Object.entries(models) as [
-		keyof typeof models,
-		MonolithTypes[keyof typeof models]
-	][]) {
-		const request = 'request' in value ? tsonToType(value.request) : 'never';
+	let modelImports: string[] = [];
+	let typeImports: string[] = ['MonolithTypes'];
+
+	for (const [key, value] of Object.entries(models)) {
+		modelImports.push(key);
+		const upper = key[0].toUpperCase() + key.slice(1);
+		// modelImports.push(upper);
+		const request = upper + 'Request';
 		const optional = 'authenticated' in value && value.authenticated ? '' : '?';
 		const protocol = 'stream' in value && value.stream ? 'Websocket' : 'Http';
 		const response =
-			protocol === 'Http' && 'response' in value
-				? tsonToType(value.response)
-				: 'void';
+			protocol === 'Http'
+				? 'response' in value
+					? key[0].toUpperCase() + key.slice(1) + 'Response'
+					: 'void'
+				: '() => void';
+		const tweakRequest =
+			'stream' in value &&
+			typeof value.stream === 'object' &&
+			'tweakRequest' in value.stream
+				? upper + 'TweakRequest'
+				: undefined;
+		const tweakResponse =
+			'stream' in value &&
+			typeof value.stream === 'object' &&
+			'tweakResponse' in value.stream
+				? upper + 'TweakResponse'
+				: undefined;
+		typeImports.push(request);
+		if (!response.endsWith('void')) typeImports.push(response);
+		if (tweakRequest !== undefined) typeImports.push(tweakRequest);
+		if (tweakResponse !== undefined) typeImports.push(tweakResponse);
 		const authenticated = 'authenticated' in value && value.authenticated;
 		const context =
 			protocol === 'Websocket'
 				? authenticated
-					? 'SecureSocketContext'
-					: 'MaybeSecureSocketContext'
+					? `SecureSocketContext<typeof ${key}, MonolithTypes['${key}']>`
+					: `MaybeSecureSocketContext<typeof ${key}, MonolithTypes['${key}']>`
 				: authenticated
-				? 'SecureHttpContext'
-				: 'MaybeSecureHttpContext';
-		console.log('Request', value.request);
+				? `SecureHttpContext<typeof ${key}>`
+				: `MaybeSecureHttpContext<typeof ${key}>`;
+		const validator =
+			'request' in value
+				? (() => {
+						const validator = buildValidator('request', value.request);
+						return `{ "validate": (request: unknown): string[] => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (request: unknown): void => {${validator.validateOrThrow.toString()}}, "isValid": (request: unknown): string | true => {${validator.isValid.toString()}; return true as const } }`;
+				  })()
+				: '{ validate: (): string[] => [], validateOrThrow: (): void => {}, isValid: (): true => true as const }';
+		console.log('validator', validator);
+		const tweakValidator =
+			'stream' in value &&
+			typeof value.stream === 'object' &&
+			'tweakRequest' in value.stream
+				? `tweakValidator: ${(() => {
+						const validator = buildValidator(
+							'tweakRequest',
+							value.stream.tweakRequest
+						);
+						return `{ "validate": (tweakRequest: unknown): string[] => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (tweakRequest: unknown): void => {${validator.validateOrThrow.toString()}}, "isValid": (tweakRequest: unknown): string | true => {${validator.isValid.toString()}; return true as const } },`;
+				  })()}`
+				: '';
 		const handle = `export const handle${key[0].toUpperCase()}${key.slice(
 			1
 		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => ({
-				execute: handler,
-				validator: ${
-					'request' in value
-						? (() => {
-								const validator = buildValidator('request', value.request);
-								console.log('Validator', validator.validate.toString());
-								return `{ "validate": (request: unknown) => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (request: unknown) => {${validator.validateOrThrow.toString()}}, "isValid": (request: unknown) => {${validator.isValid.toString()}; return true} }`;
-						  })()
-						: '{ validate: () => [], validateOrThrow: () => {}, isValid: () => true }'
-				},
+				${protocol === 'Websocket' ? 'onOpen' : 'execute'}: handler,
+				validator: ${validator},
+				${tweakValidator}
 				model: ${JSON.stringify(value)}
 			} as const);`;
 		handles.push(handle);
@@ -73,6 +106,8 @@ const jsonify = async () => {
 		await mkdir(tmpDir, { recursive: true });
 		const preamble = await Bun.file('src/preamble.ts').text();
 		const tsContent = `${preamble}
+		import { ${modelImports.join(', ')} } from '@lyku/mapi-models';
+		import { ${typeImports.join(', ')} } from '@lyku/mapi-types';
 	${handles.join('\n\n')}
 	`;
 		const formattedTsContent = await prettier.format(tsContent, {
@@ -83,53 +118,6 @@ const jsonify = async () => {
 		});
 
 		await Bun.write(tmpPath, formattedTsContent);
-
-		// Build the tmp file to dist using bun
-		// const outdir = path.join(__dirname, '..', '..', '..', 'dist', 'libs', 'handles', 'src');
-		// console.log(outdir);
-		// const result = await Bun.build({
-		// 	entrypoints: [tmpPath],
-		// 	outdir,
-		// 	target: 'bun',
-		// 	// minify: true,
-		// 	format: 'esm', // Export as ES modules
-		// 	external: [], // Bundle all dependencies
-		// 	splitting: false, // Disable code splitting for single bundle
-		// 	sourcemap: 'external',
-		// 	plugins: [
-		// 		{
-		// 			name: 'path-resolver',
-		// 			setup(build) {
-		// 				build.onResolve({ filter: /^@lyku\// }, args => {
-		// 					const paths = tsconfig.compilerOptions.paths;
-		// 					console.log(paths);
-		// 					const matchedPath = Object.entries(paths).find(([alias]) =>
-		// 						args.path.startsWith(alias.replace('/*', ''))
-		// 					);
-		// 					if (matchedPath) {
-		// 						const [alias, [mapping]] = matchedPath;
-		// 						const resolvedPath = args.path.replace(
-		// 							alias.replace('/*', ''),
-		// 							mapping.replace('/*', '')
-		// 						);
-		// 						return { path: path.resolve(__dirname, '..', '..', '..', resolvedPath) };
-		// 					}
-		// 				});
-		// 			}
-		// 		}
-		// 	]
-		// });
-
-		// if (!result.success) {
-		// 	console.error('Build success?', result.success,':', result.logs);
-		// 	throw new Error('Build failed');
-		// }
-
-		// for (const output of result.outputs) {
-		// 	const outPath = path.join(outdir, path.basename(output.path));
-		// 	await Bun.write(outPath, output);
-		// 	console.log('Wrote', outPath, output);
-		// }
 	}
 };
 

@@ -1,5 +1,5 @@
 import { TsonHandlerModel } from 'from-schema';
-import { imageUploadReason } from '@lyku/json-models';
+import { imageDraft, imageUploadReason } from '@lyku/json-models';
 import { sessionId } from '@lyku/json-models';
 
 const request = {
@@ -26,8 +26,8 @@ const response = {
 		'Either the information you need to upload an image, or any errors encountered',
 	type: 'object',
 	properties: {
-		id: { type: 'bigint', description: 'Cloudflare Images draft upload ID' },
-		url: { type: 'string', description: 'URL to upload your image to' },
+		id: imageDraft.properties.id,
+		url: imageDraft.properties.uploadURL,
 	},
 	required: ['id', 'url'],
 } as const;

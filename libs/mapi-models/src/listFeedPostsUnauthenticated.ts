@@ -8,13 +8,23 @@ export const listFeedPostsUnauthenticated = {
 		properties: {
 			groups: {
 				type: 'array',
-				items: uid,
+				items: { type: 'bigint' },
+			},
+			authors: {
+				type: 'array',
+				items: { type: 'bigint' },
 			},
 			tags: {
 				type: 'array',
 				items: uid,
 			},
 			before: number,
+			count: {
+				type: 'integer',
+				minimum: 1,
+				maximum: 100,
+				default: 20,
+			},
 		},
 		required: [],
 	},

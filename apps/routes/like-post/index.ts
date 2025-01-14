@@ -1,21 +1,24 @@
-import { handleLikePost } from "@lyku/handles";
+import { handleLikePost } from '@lyku/handles';
 
 import { sql } from 'kysely';
-export default handleLikePost(async (postId,{ requester ,  db }) => {
+export default handleLikePost(async (postId, { requester, db }) => {
 	const likeId = `${requester}~${postId}`;
 
 	// Check if post exists and isn't already liked by this user
 	const existingLike = await db
 		.selectFrom('likes')
 		.where('id', '=', likeId)
-		.executeTakeFirstOrThrow();
+		.executeTakeFirst();
+
+	if (existingLike) throw 'Post already liked';
 
 	const post = await db
 		.selectFrom('posts')
+		.selectAll()
 		.where('id', '=', postId)
 		.executeTakeFirst();
 
-	if(!post) throw "Post doesn't exist";
+	if (!post) throw "Post doesn't exist";
 
 	if (!post || existingLike || post.author === requester) {
 		throw "Post doesn't exist or is already liked";

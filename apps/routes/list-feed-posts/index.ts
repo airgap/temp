@@ -1,7 +1,11 @@
 import { handleListFeedPosts } from '@lyku/handles';
+import { sql } from 'kysely';
 
 export default handleListFeedPosts(
-	async ({ before, tags, groups, authors, count }, { db, requester }) => {
+	async (
+		{ before, tags, groups, authors, count },
+		{ db, requester, model }
+	) => {
 		let query = db.selectFrom('posts').selectAll().orderBy('published', 'desc');
 
 		if (before) {
@@ -23,21 +27,19 @@ export default handleListFeedPosts(
 		}
 
 		if (tags) {
-			query = query.where((eb) =>
-				eb.and([
-					eb.ref('hashtags').$notNull(),
-					eb.exists(
-						db
-							.selectFrom('hashtags')
-							.select('id')
-							.where('lowerText', 'in', tags)
-							.whereRef('id', 'in', eb.fn('unnest', [eb.ref('hashtags')]))
-					),
-				])
+			query = query.where(
+				(eb) =>
+					sql`hashtags IS NOT NULL AND EXISTS (
+					SELECT 1 FROM hashtags 
+					WHERE lowerText IN (${sql.join(tags)}) 
+					AND id IN (SELECT unnest(hashtags) FROM posts)
+				)`
 			);
 		}
 
-		const posts = await query.limit(count).execute();
+		const posts = await query
+			.limit(count ?? model.request.properties.count.default)
+			.execute();
 		console.log('Listing', posts.length, 'posts');
 		return posts;
 	}

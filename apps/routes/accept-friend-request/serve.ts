@@ -1,4 +1,4 @@
-import { serveHttp } from "@lyku/route-helpers";
-import acceptFriendRequest from ".";
+import { serveHttp } from '@lyku/route-helpers';
+import acceptFriendRequest from '.';
 
 serveHttp(acceptFriendRequest);

@@ -1,7 +1,7 @@
 import { handleGetCurrentUser } from '@lyku/handles';
 
 console.log('get-current-user');
-handleGetCurrentUser(async (_, { db, requester, strings }) => {
+export default handleGetCurrentUser(async (_, { db, requester, strings }) => {
 	const user = await db
 		.selectFrom('users')
 		.selectAll()

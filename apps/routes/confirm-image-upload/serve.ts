@@ -1,4 +1,4 @@
-import { serveHttp } from "@lyku/route-helpers";
-import confirmImageUpload from ".";
+import { serveHttp } from '@lyku/route-helpers';
+import confirmImageUpload from '.';
 
 serveHttp(confirmImageUpload);

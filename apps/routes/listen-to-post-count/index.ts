@@ -1,7 +1,8 @@
 import { handleListenToPostCount } from '@lyku/handles';
+import { onEach } from '@lyku/helpers';
 
-export default handleListenToPostCount(async (_, { emit, socket, nats }) => {
+export default handleListenToPostCount((_, { emit, nats }) => {
 	const sub = nats.subscribe('post.count');
-	socket.on('close', () => sub.unsubscribe());
-	for await (const msg of sub) emit(msg.data);
+	onEach(sub, (msg) => emit(msg.data));
+	return sub.unsubscribe;
 });

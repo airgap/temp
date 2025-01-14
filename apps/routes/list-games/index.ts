@@ -1,8 +1,5 @@
 import { handleListGames } from '@lyku/handles';
 
-export default handleListGames(async (_, { db, requester }) => {
-	const query = db
-		.selectFrom('games')
-		.selectAll()
-		.where('user', '=', requester);
-});
+export default handleListGames(async (_, { db }) =>
+	db.selectFrom('games').selectAll().execute()
+);

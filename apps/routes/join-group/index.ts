@@ -1,6 +1,7 @@
 import { handleJoinGroup } from '@lyku/handles';
 import { bindIds } from '@lyku/helpers';
-handleJoinGroup(async (group, { db, requester }) => {
+
+export default handleJoinGroup(async (group, { db, requester }) => {
 	const groupData = await db
 		.selectFrom('groups')
 		.select('private')

@@ -1,7 +1,7 @@
 {
-    "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "target": "ESNext"
-    },
-    "include": ["serve.ts"]
+	"extends": "../../../tsconfig.base.json",
+	"compilerOptions": {
+		"target": "ESNext"
+	},
+	"include": ["serve.ts"]
 }

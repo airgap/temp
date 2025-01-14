@@ -27,6 +27,7 @@ export * from './gameStats';
 export * from './gameStatus';
 export * from './group';
 export * from './groupMembership';
+export * from './membershipList';
 export * from './groupName';
 export * from './hashdoc';
 export * from './hashtag';

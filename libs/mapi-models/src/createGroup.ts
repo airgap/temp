@@ -6,10 +6,10 @@ export const createGroup = {
 		type: 'object',
 		properties: {
 			name: group.properties.name,
-			id: group.properties.id,
+			slug: group.properties.slug,
 			private: { type: 'boolean' },
 		},
-		required: ['name', 'id', 'private'],
+		required: ['name', 'slug', 'private'],
 	},
 	response: group,
 	authenticated: true,

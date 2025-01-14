@@ -11,10 +11,13 @@ if (!entrypoint || !outdir) {
 }
 
 const sharedTsConfig = path.join(path.dirname(entrypoint), 'tsconfig.app.json');
-const proc = Bun.spawn(['tsc', '--noEmit', '--pretty', '--project', sharedTsConfig], { 
-	stderr: 'pipe',
-	stdout: 'pipe'
-});
+const proc = Bun.spawn(
+	['tsc', '--noEmit', '--pretty', '--project', sharedTsConfig],
+	{
+		stderr: 'pipe',
+		stdout: 'pipe',
+	}
+);
 const stdout = await new Response(proc.stdout).text();
 const stderr = await new Response(proc.stderr).text();
 const typecheck = await proc.exited;

@@ -1,6 +1,5 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-    },
-    "include": ["serve.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {},
+	"include": ["serve.ts"]
 }

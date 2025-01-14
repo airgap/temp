@@ -1,7 +1,7 @@
 import { handleGetUsers } from '@lyku/handles';
 import { User } from '@lyku/json-models';
 
-export default handleGetUsers(async ({ users }, { db }) => {
+export default handleGetUsers(async (users, { db }) => {
 	const unsorted = await db
 		.selectFrom('users')
 		.selectAll()

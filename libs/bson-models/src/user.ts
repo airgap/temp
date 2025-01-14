@@ -42,6 +42,7 @@ export const user = {
 		lastLogin: { type: 'timestamp' },
 		lastSuper: { type: 'timestamp' },
 		owner: { type: 'bigint' },
+		name: { type: 'text', maxLength: 30, minLength: 3 },
 	},
 	required: [
 		'banned',
@@ -58,5 +59,7 @@ export const user = {
 		'lastLogin',
 		'staff',
 		'groupLimit',
+		'lastSuper',
+		'postCount',
 	],
 } as const satisfies PostgresRecordModel;

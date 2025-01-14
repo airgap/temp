@@ -2,7 +2,9 @@ import { Group } from '@lyku/json-models';
 import { system } from '../users';
 
 export const beta = {
-	id: 'beta',
+	id: 1n,
+	slug: 'Beta',
+	lowerSlug: 'beta',
 	name: 'Beta',
 	private: false,
 	creator: system.id,

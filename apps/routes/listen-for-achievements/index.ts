@@ -1,9 +1,10 @@
 import { handleListenForAchievements } from '@lyku/handles';
+import { onEach } from '@lyku/helpers';
 
 export default handleListenForAchievements(
-	async (_, { nats, emit, requester, socket }) => {
+	(_, { nats, emit, requester, socket }) => {
 		const sub = nats.subscribe(`achievementGrants.${requester}`);
-		socket.on('close', () => sub.unsubscribe());
-		for await (const msg of sub) emit(msg.data);
+		onEach(sub, ({ data }) => emit(data));
+		return sub.unsubscribe;
 	}
 );

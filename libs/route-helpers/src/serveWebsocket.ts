@@ -1,30 +1,35 @@
 import { decode } from '@msgpack/msgpack';
-import { SecureSocketContext } from './Contexts';
+import { SecureSocketContext, TweakHandler } from './Contexts';
 import { encode } from '@msgpack/msgpack';
 import { MaybeSecureSocketContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
 import { ServerWebSocket } from 'bun';
-import { TsonSchemaOrPrimitive } from 'from-schema';
-import { WebSocketRoute } from 'from-schema';
+import {
+	StreamConfig,
+	TsonSchemaOrPrimitive,
+	TsonStreamHandlerModel,
+	Validator,
+} from 'from-schema';
 import { en_US } from '@lyku/strings';
 import * as nats from 'nats';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 type Data = { authenticated: boolean; user?: bigint; sessionId?: string };
-type Responder = ((params: any, context: MaybeSecureSocketContext) => any) | ((params: any, context: SecureSocketContext) => any)
-export const serveWebsocket = async ({
+export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 	onOpen,
-	onTweak,
-	validate,
+	validator,
+	tweakValidator,
 	model,
 }: {
-	onOpen: Responder;
-	onTweak: Responder;
-	validate: (params: unknown) => boolean;
-	model: WebSocketRoute;
+	onOpen: any;
+	validator: Validator;
+	tweakValidator?: Model['stream'] extends StreamConfig ? Validator : never;
+	model: Model;
 }) => {
 	const nc = await nats.connect();
+	let closers: (() => void)[] = [];
+	let tweakers: ((params: any) => void)[] = [];
 	const server = Bun.serve({
 		port,
 		fetch(server, req) {
@@ -51,12 +56,7 @@ export const serveWebsocket = async ({
 						!('auth' in decodedMessage) ||
 						typeof decodedMessage.auth !== 'string'
 					) {
-						ws.send(
-							encode({
-								authenticated: false,
-								error: 'Invalid auth token',
-							})
-						);
+						ws.close(1008, 'Invalid auth token');
 						return;
 					}
 					if (
@@ -72,18 +72,17 @@ export const serveWebsocket = async ({
 						ws.close(1008, 'Invalid sessionId');
 						return;
 					}
+					const hasRequest = 'request' in model;
+					let request;
 
-					if ('request' in model) {
-						if (
-							'request' in decodedMessage &&
-							!validate(decodedMessage.request)
-						) {
-							ws.send(
-								encode({
-									authenticated: false,
-									error: 'Invalid request',
-								})
-							);
+					if (hasRequest) {
+						if (!('request' in decodedMessage)) {
+							ws.close(1008, 'Invalid request');
+							return;
+						}
+						request = decodedMessage.request;
+						if (!validator.isValid(request)) {
+							ws.close(1008, 'Invalid request');
 							return;
 						}
 					} else {
@@ -113,15 +112,18 @@ export const serveWebsocket = async ({
 					ws.data.sessionId = sessionId;
 					ws.data.authenticated = true;
 
-					onOpen?.('request' in decodedMessage ? decodedMessage.request : {}, {
+					onOpen?.(request, {
 						db,
 						strings: en_US,
 						requester: ws.data.user,
 						session: ws.data.sessionId,
 						socket: ws,
-						emit: (data: unknown) => ws.send(encode(data)),
+						emit: (data: any) => ws.send(encode(data)),
 						nats: nc,
 						server,
+						onClose: (closer: () => void) => closers.push(closer),
+						onTweak: (tweaker: any) => tweakers.push(tweaker),
+						model,
 					});
 
 					// ws.send(encode("Authenticated"));
@@ -132,29 +134,14 @@ export const serveWebsocket = async ({
 					return;
 				}
 
-				// Handle authenticated messages
-				const context: SecureSocketContext = {
-					db,
-					strings: en_US,
-					requester: ws.data.user,
-					session: ws.data.sessionId,
-					socket: ws,
-					emit: (data: unknown) => ws.send(encode(data)),
-					server,
-					nats: nc,
-				};
-
-				// Validate the decoded params
-				try {
-					validate(decodedMessage);
-				} catch (e) {
-					ws.send(encode('Invalid request'));
+				if (!tweakValidator?.isValid(decodedMessage)) {
+					ws.close(1008, 'Invalid request');
 					return;
 				}
-
-				await onTweak(decodedMessage, context);
+				tweakers.forEach((tweaker) => tweaker(decodedMessage));
 			},
-			close(ws) {
+			close(ws: ServerWebSocket<Data>) {
+				closers.forEach((closer) => closer());
 				// Cleanup
 				console.log('Connection closed');
 			},

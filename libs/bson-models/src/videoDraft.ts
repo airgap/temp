@@ -13,5 +13,5 @@ export const videoDraft = {
 		created: { type: 'timestamp' },
 		filename: { type: 'text', maxLength: 100 },
 	},
-	required: ['id', 'user', 'channel', 'post', 'uid', 'uploadURL', 'created'],
+	required: ['id', 'user', 'post', 'uid', 'uploadURL', 'created'],
 } as const satisfies PostgresRecordModel;
