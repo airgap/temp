@@ -1,10 +1,5 @@
 import { decode, encode } from '@msgpack/msgpack';
-import {
-	MaybeSecureHttpContext,
-	MaybeSecureSocketContext,
-	SecureHttpContext,
-	SecureSocketContext,
-} from './Contexts';
+import { SecureHttpContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
 import { TsonHandlerModel } from 'from-schema';
@@ -73,7 +68,7 @@ export const serveHttp = async ({
 				nats: nc,
 				server,
 				model,
-			})) as any;
+			})) as SecureHttpContext<any>;
 
 			const pack = encode(output);
 

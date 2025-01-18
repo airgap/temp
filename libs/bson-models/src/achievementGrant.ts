@@ -6,7 +6,7 @@ export const achievementGrant = {
 		achievement: { type: 'bigint' },
 		user: { type: 'bigint' },
 		granted: { type: 'timestamp' },
-		game: { type: 'bigint' },
+		game: { type: 'int' },
 	},
-	required: ['id', 'achievement', 'user', 'granted', 'game'],
+	required: ['id', 'achievement', 'user', 'granted'],
 } as const satisfies PostgresRecordModel;

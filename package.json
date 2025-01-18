@@ -65,6 +65,7 @@
 		"@swc/jest": "~0.2.37",
 		"@testing-library/react": "15.0.6",
 		"@tinymce/tinymce-react": "^5.1.1",
+		"@types/bcryptjs": "^2.4.6",
 		"@types/bun": "latest",
 		"@types/jest": "^29.5.14",
 		"@types/node": "18.16.9",

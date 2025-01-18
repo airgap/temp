@@ -9,7 +9,7 @@ export const achievementTier = {
 export const achievement = {
 	properties: {
 		description: { type: 'text' },
-		id: { type: 'bigserial' },
+		id: { type: 'bigint' },
 		icon: { type: 'text', minLength: 1, maxLength: 100 },
 		name: { type: 'text', minLength: 1, maxLength: 100 },
 		points: { type: 'double precision' },

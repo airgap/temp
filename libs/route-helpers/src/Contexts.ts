@@ -21,7 +21,7 @@ type BaseContextFragment<Model extends TsonHandlerModel> = {
 };
 type HttpContextFragment = {
 	request: Request;
-	responseHeaders: Bun.HeadersInit;
+	responseHeaders: Headers;
 };
 export type SecurityContextFragment = {
 	requester: bigint;
