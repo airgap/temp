@@ -12,11 +12,13 @@ export const Hot = () => (
 	<div className={styles.FeedPage}>
 		<Await
 			source={() => api.listHotPosts({})}
-			then={(posts) => (
-				<div className={styles.Feed}>
-					<PostList posts={posts ?? []} />
-				</div>
-			)}
+			then={(posts) => {
+				return (
+					<div className={styles.Feed}>
+						<PostList posts={posts?.posts ?? []} />
+					</div>
+				);
+			}}
 			fail={(error) => <h3>{String(error)}</h3>}
 			meanwhile={<>Loading posts...</>}
 		/>

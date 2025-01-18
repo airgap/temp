@@ -10,18 +10,8 @@ export const listGroupsIOwn = {
 	},
 
 	response: {
-		type: 'object',
-		properties: {
-			groups: {
-				type: 'array',
-				items: group,
-			},
-			memberships: {
-				type: 'array',
-				items: groupMembership,
-			},
-		},
-		required: ['groups'],
+		type: 'array',
+		items: group,
 	},
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

@@ -1,5 +1,5 @@
 import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-import { post } from '@lyku/json-models';
+import { like, user, post } from '@lyku/json-models';
 const { number, uid } = jsonPrimitives;
 
 export const listHotPosts = {
@@ -23,6 +23,13 @@ export const listHotPosts = {
 		},
 		required: [],
 	},
-	response: { type: 'array', items: post },
+	response: {
+		type: 'object',
+		properties: {
+			posts: { type: 'array', items: post },
+			authors: { type: 'array', items: user },
+			likes: { type: 'array', items: like },
+		},
+	},
 	authenticated: false,
 } as const satisfies TsonHandlerModel;

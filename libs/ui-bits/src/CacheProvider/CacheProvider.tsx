@@ -113,13 +113,16 @@ type Cache = {
 		fetchAll: (
 			ids: DocOfModel<CacheConfigs[key]>['id'][]
 		) => Promise<(DocOfModel<CacheConfigs[key]> | undefined)[]>;
+		update: (item: DocOfModel<CacheConfigs[key]>) => void;
+		remove: (id: DocOfModel<CacheConfigs[key]>['id']) => void;
 	};
 };
+
 const createCacheStore = () => {
 	const cache = (Object.keys(cacheConfigMap) as (keyof Cache)[]).reduce(
 		(acc, k) => ({
 			...acc,
-			[k]: { items: {} },
+			[k]: { items: new Map() },
 		}),
 		{} as Cache
 	);
@@ -178,6 +181,14 @@ const createCacheStore = () => {
 							| undefined
 				);
 			}
+		},
+		update: (item: DocOfModel<CacheConfigs[M]>) => {
+			cache[model].items.set(item.id, item);
+			notify();
+		},
+		remove: (id: DocOfModel<CacheConfigs[M]>['id']) => {
+			cache[model].items.delete(id);
+			notify();
 		},
 	});
 
@@ -250,6 +261,7 @@ export function useCacheSingleton<M extends keyof CacheConfigs>(
 
 	return [cache, { loading, error }] as const;
 }
+
 export function useCacheData<M extends keyof CacheConfigs>(
 	model: M,
 	ids: (DocOfModel<CacheConfigs[M]>['id'] | undefined)[]
@@ -295,4 +307,5 @@ export function useCacheData<M extends keyof CacheConfigs>(
 		{ loading, error },
 	] as const;
 }
+
 export { cacheStore };

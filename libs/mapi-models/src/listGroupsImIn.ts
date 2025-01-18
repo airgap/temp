@@ -10,12 +10,12 @@ export const listGroupsImIn = {
 				type: 'array',
 				items: group,
 			},
-			memberships: {
+			groupMemberships: {
 				type: 'array',
 				items: groupMembership,
 			},
 		},
-		required: ['groups'],
+		required: ['groups', 'groupMemberships'],
 	},
 	authenticated: true,
 } as const satisfies TsonHandlerModel;
