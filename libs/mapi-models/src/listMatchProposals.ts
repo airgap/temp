@@ -27,5 +27,5 @@ export const listMatchProposals = {
 		},
 		required: ['proposals', 'users'],
 	},
-	authenticated: false,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

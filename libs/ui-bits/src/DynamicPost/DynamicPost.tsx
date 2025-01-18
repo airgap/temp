@@ -81,7 +81,7 @@ export const DynamicPost = ({
 		console.log('replies', post.replies);
 		if (queriedReplies || !post.replies) return;
 		setQueriedReplies(true);
-		api.listPostReplies({ id: post.id }).then(({ posts }) => setReplies(posts));
+		api.listPostReplies({ id: post.id }).then((posts) => setReplies(posts));
 	}, [queriedReplies, post]);
 	const content = (
 		<>
@@ -148,11 +148,11 @@ export const DynamicPost = ({
 							case AttachmentType.Image:
 								return <Image id={at} size="full-post" />;
 							case AttachmentType.Video:
-								const src = videos?.find((v) => v.id === at)?.uid;
+								const src = videos?.find((v) => v.id === at)?.id;
 								if (!src) return '';
 								return (
 									<Stream
-										src={src}
+										src={src.toString()}
 										controls={true}
 										autoplay={autoplay}
 										onAbort={(e) => setError('Video failed to load')}

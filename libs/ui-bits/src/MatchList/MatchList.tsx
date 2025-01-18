@@ -7,6 +7,7 @@ import { ProfilePicture } from '../ProfilePicture';
 import { localizeUsername } from '../localizeUsername';
 import styles from './MatchList.module.sass';
 import { Divisio } from '../Divisio';
+import { useCacheData } from '../CacheProvider';
 
 export const MatchList = ({
 	user,
@@ -16,21 +17,23 @@ export const MatchList = ({
 	onClose: () => void;
 }) => {
 	const [matches, setMatches] = useState<TtfMatch[]>([]);
-	const [users, setUsers] = useState<Map<bigint, User>>(new Map());
 
 	const [queried, setQueried] = useState(false);
 	useEffect(() => {
 		if (queried) return;
 		setQueried(true);
-		api.listTtfMatches({ finished: false }).then(({ matches, users }) => {
+		api.listTtfMatches({ finished: false }).then((matches) => {
 			const mine: TtfMatch[] = [];
 			const theirs: TtfMatch[] = [];
 			for (const match of matches)
 				(match.whoseTurn === user.id ? mine : theirs).push(match);
 			setMatches([...mine, ...theirs]);
-			setUsers(Object.fromEntries(users.map((u) => [u.id, u])));
 		});
 	}, [queried, user.id]);
+	const [users] = useCacheData(
+		'users',
+		matches.flatMap((m) => [m.X, m.O])
+	);
 	return (
 		<div className={styles.MatchList}>
 			<table>
@@ -42,7 +45,8 @@ export const MatchList = ({
 				{matches.length ? (
 					matches.map((match) => {
 						const mine = match.whoseTurn === user.id;
-						const them = users.get(match.X === user.id ? match.O : match.X);
+						const theirId = mine ? match.O : match.X;
+						const them = users?.find((u) => u.id === theirId);
 						if (!them) return <>They are absent</>;
 						// if (!them) return match.X === user.id ? match.O : match.X;
 						return (

@@ -13,18 +13,8 @@ export const listTtfMatches = {
 	},
 
 	response: {
-		type: 'object',
-		properties: {
-			matches: {
-				type: 'array',
-				items: ttfMatch,
-			},
-			users: {
-				type: 'array',
-				items: user,
-			},
-		},
-		required: ['matches', 'users'],
+		type: 'array',
+		items: ttfMatch,
 	},
-	authenticated: false,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

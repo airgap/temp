@@ -8,27 +8,15 @@ export const listPostReplies = {
 			id: post.properties.id,
 			tags: {
 				type: 'array',
-				items: post.properties.id,
+				items: post.properties.hashtags,
 			},
 			before: post.properties.published,
 		},
 		required: ['id'],
 	},
 	response: {
-		type: 'object',
-		properties: {
-			posts: {
-				type: 'array',
-				items: post,
-			},
-			// authors: {
-			//     type: 'object',
-			//     patternProperties: {
-			//         [uuid.pattern]: sanitizedUser
-			//     }
-			// },
-		},
-		required: ['posts'],
+		type: 'array',
+		items: post,
 	},
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

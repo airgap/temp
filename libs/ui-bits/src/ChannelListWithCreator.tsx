@@ -19,7 +19,7 @@ export const ChannelListWithCreator = () => {
 		setQueriedChannels(true);
 		void api
 			.listMyChannels()
-			.then(({ channels }) => {
+			.then((channels) => {
 				if (channels) setChannels(channels);
 			})
 			.catch(console.error);

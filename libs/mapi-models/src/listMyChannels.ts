@@ -5,14 +5,8 @@ export const listMyChannels = {
 	// request: {},
 
 	response: {
-		type: 'object',
-		properties: {
-			channels: {
-				type: 'array',
-				items: channel,
-			},
-		},
-		required: ['channels'],
+		type: 'array',
+		items: channel,
 	},
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

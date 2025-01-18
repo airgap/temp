@@ -1,7 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-import { group, post } from '@lyku/json-models';
-const { number, uid } = jsonPrimitives;
-import { username } from '@lyku/json-models';
+import { group, post, username } from '@lyku/json-models';
+import { TsonHandlerModel } from 'from-schema';
 
 export const listUserPosts = {
 	request: {
@@ -18,11 +16,10 @@ export const listUserPosts = {
 			},
 			tags: {
 				type: 'array',
-				items: uid,
+				items: { type: 'bigint' },
 			},
-			before: number,
-			user: username,
-			// user: { enum: [uuid, username] },
+			before: { type: 'bigint' },
+			user: { oneOf: [username, { type: 'bigint' }] },
 		},
 		required: ['user'],
 	},

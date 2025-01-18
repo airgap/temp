@@ -8,7 +8,7 @@ export const listMessages = {
 		properties: {
 			channel: { type: 'bigint' },
 		},
-		required: ['channel'],
+		required: [],
 	},
 	response: {
 		type: 'object',
