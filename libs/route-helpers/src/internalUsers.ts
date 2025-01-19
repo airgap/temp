@@ -2,10 +2,7 @@ import { BoardWithCountdown, MaybeMove, Player } from './Player';
 import { findBestNoviceMove } from './ais/findBestNoviceMove';
 import * as ais from './ais';
 import { findBestHardMove } from './ais/findBestHardMove';
-import {
-	TtfFlowMode,
-	User,
-} from '@lyku/json-models';
+import { TtfFlowMode, User } from '@lyku/json-models';
 import { users } from '@lyku/stock-docs';
 
 export const ttfBots: Record<
@@ -38,13 +35,13 @@ export const ttfBots: Record<
 	},
 } as const;
 
-export const ttfBotsById = new Map<bigint, typeof ttfBots[keyof typeof ttfBots]>(
-	Object.values(ttfBots).map((b) => [b.user.id, b])
-);
+export const ttfBotsById = new Map<
+	bigint,
+	(typeof ttfBots)[keyof typeof ttfBots]
+>(Object.values(ttfBots).map((b) => [b.user.id, b]));
 
 export const internalUsers: User[] = [
 	users.guestUser,
 	users.system,
 	...Object.values(ttfBots).map((b) => b.user),
 ];
-

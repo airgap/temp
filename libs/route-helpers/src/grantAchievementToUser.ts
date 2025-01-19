@@ -12,7 +12,11 @@ export const grantAchievementToUser = async (
 ) => {
 	const ach =
 		typeof achievement === 'bigint'
-			? await db.selectFrom('achievements').selectAll().where('id', '=', achievement).executeTakeFirstOrThrow()
+			? await db
+					.selectFrom('achievements')
+					.selectAll()
+					.where('id', '=', achievement)
+					.executeTakeFirstOrThrow()
 			: achievement;
 	const id = bindIds(ach.id, user);
 	const result = await db

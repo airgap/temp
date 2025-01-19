@@ -5,5 +5,5 @@ import { ttfMatch } from '@lyku/json-models';
 export const newAiTtfMatch = {
 	request: ttfFlowMode,
 	response: ttfMatch,
-	authenticated: false,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

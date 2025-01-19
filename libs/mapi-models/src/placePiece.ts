@@ -13,9 +13,5 @@ export const placePiece = {
 		},
 		required: ['match', 'square'],
 	},
-	response: {
-		type: 'object',
-		properties: {},
-	},
-	authenticated: false,
+	authenticated: true,
 } as const satisfies TsonHandlerModel;

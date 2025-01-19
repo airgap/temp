@@ -6,4 +6,8 @@ export const sendNotification = async (
 	notification: Omit<Notification, 'posted' | 'id'>,
 	db: Kysely<Database>
 ): Promise<Notification> =>
-	db.insertInto('notifications').values({ ...notification, posted: new Date() }).returningAll().executeTakeFirstOrThrow();
+	db
+		.insertInto('notifications')
+		.values({ ...notification, posted: new Date() })
+		.returningAll()
+		.executeTakeFirstOrThrow();

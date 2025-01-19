@@ -1,0 +1,4 @@
+{
+	"extends": "../_shared/tsconfig.json",
+	"include": ["serve.ts"]
+}

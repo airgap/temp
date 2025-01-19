@@ -5,4 +5,3 @@ export const newGameSession = (): GameSession => ({
 	edges: 0n,
 	corners: 0n,
 });
-

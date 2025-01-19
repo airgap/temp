@@ -31,8 +31,13 @@ export const grantPointsToUser = async (
 	db: Kysely<Database>
 ) => {
 	console.log('Granting', points, 'points to user', userId);
-	const change = await db.updateTable('users').set({ points: sql<number>`${sql.raw('points')} + ${points}` }).where('id', '=', userId).returningAll().executeTakeFirstOrThrow();
-		
+	const change = await db
+		.updateTable('users')
+		.set({ points: sql<number>`${sql.raw('points')} + ${points}` })
+		.where('id', '=', userId)
+		.returningAll()
+		.executeTakeFirstOrThrow();
+
 	if (change) {
 		const newLevel = getLevelFromPoints(change.points);
 		const oldLevel = getLevelFromPoints(change.points - points);

@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/new-ai-ttf-match",
+	"name": "@lyku/place-piece",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,19 +7,19 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./scripts/build-route new-ai-ttf-match"
+				"command": "./scripts/build-route place-piece"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route new-ai-ttf-match --push"
+				"command": "./scripts/dockerize-route place-piece --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/deploy-route new-ai-ttf-match"
+				"command": "./scripts/deploy-route place-piece"
 			}
 		}
 	}

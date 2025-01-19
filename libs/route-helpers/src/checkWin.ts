@@ -9,7 +9,7 @@ const winCombos = [
 	[2, 5, 8], // Right column
 	[0, 4, 8], // Diagonal from top-left
 	[2, 4, 6], // Diagonal from top-right
-];
+] as const;
 
 export const checkWin = (board: TtfBoard, player: 'X' | 'O') =>
 	winCombos.some((combo) => combo.every((index) => board[index] === player));

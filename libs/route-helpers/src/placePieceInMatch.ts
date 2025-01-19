@@ -5,7 +5,7 @@ export const placePieceInMatch = (
 	iAm: Player,
 	square: number,
 	match: TtfMatch
-) => {
+): TtfMatch => {
 	match.board = `${match.board.substring(
 		0,
 		square
