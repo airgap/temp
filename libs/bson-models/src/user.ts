@@ -37,7 +37,7 @@ export const user = {
 		username,
 		channelLimit: { type: 'integer' },
 		slug: userSlug,
-		points: { type: 'double precision' },
+		points: { type: 'bigint' },
 		postCount: { type: 'bigint' },
 		lastLogin: { type: 'timestamp' },
 		lastSuper: { type: 'timestamp' },

@@ -12,7 +12,7 @@ export const guestUser = {
 	postCount: 0n,
 	username: 'lykuGuest',
 	profilePicture: '/bots/grin-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'lykuguest',
 	staff: true,
 	groupLimit: 0,

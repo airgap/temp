@@ -1,6 +1,6 @@
 import { getLevelFromPoints } from '@lyku/helpers';
 import { achievements } from '@lyku/stock-docs';
-import { Achievement, userId } from '@lyku/json-models';
+import { Achievement } from '@lyku/json-models';
 import { grantAchievementToUser } from './grantAchievementToUser';
 import { sendNotification } from './sendNotification';
 import { sql } from 'kysely';
@@ -33,14 +33,14 @@ export const grantPointsToUser = async (
 	console.log('Granting', points, 'points to user', userId);
 	const change = await db
 		.updateTable('users')
-		.set({ points: sql<number>`${sql.raw('points')} + ${points}` })
+		.set({ points: sql<bigint>`${sql.raw('points')} + ${points}` })
 		.where('id', '=', userId)
 		.returningAll()
 		.executeTakeFirstOrThrow();
 
 	if (change) {
 		const newLevel = getLevelFromPoints(change.points);
-		const oldLevel = getLevelFromPoints(change.points - points);
+		const oldLevel = getLevelFromPoints(change.points - BigInt(points));
 		if (newLevel > oldLevel) {
 			await sendNotification(
 				{

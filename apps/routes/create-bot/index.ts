@@ -25,7 +25,7 @@ export default handleCreateBot(
 				live: false,
 				banned: false,
 				confirmed: true,
-				points: 0,
+				points: 0n,
 				groupLimit: 0,
 				slug: username.toLocaleLowerCase(),
 				staff: false,

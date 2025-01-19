@@ -12,7 +12,7 @@ export const hardTtfBot = {
 	postCount: 0n,
 	username: 'lykuHardTtfBot',
 	profilePicture: '/bots/anger-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'lykuhardttfbot',
 	staff: true,
 	groupLimit: 0,

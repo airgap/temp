@@ -12,7 +12,7 @@ export const easyTtfBot = {
 	postCount: 0n,
 	username: 'lykuEasyTtfBot',
 	profilePicture: '/bots/smile-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'lykueasyttfbot',
 	groupLimit: 0,
 	lastSuper: defaultDate,

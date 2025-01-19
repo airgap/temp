@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/place-piece",
+	"name": "@lyku/register-user",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,19 +7,19 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./scripts/build-route place-piece"
+				"command": "./scripts/build-route register-user"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route place-piece --push"
+				"command": "./scripts/dockerize-route register-user --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/deploy-route place-piece"
+				"command": "./scripts/deploy-route register-user"
 			}
 		}
 	}

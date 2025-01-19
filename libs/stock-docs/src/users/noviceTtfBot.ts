@@ -12,7 +12,7 @@ export const noviceTtfBot = {
 	postCount: 0n,
 	username: 'lykuNoviceTtfBot',
 	profilePicture: '/bots/cute-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'lykunovicettfbot',
 	staff: true,
 	groupLimit: 0,

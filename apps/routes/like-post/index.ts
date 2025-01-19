@@ -49,7 +49,7 @@ export default handleLikePost(async (postId, { requester, db }) => {
 	await db
 		.updateTable('users')
 		.set((eb) => ({
-			points: eb('points', '+', 1),
+			points: eb('points', '+', 1n),
 		}))
 		.where('id', 'in', [requester, post.author])
 		.executeTakeFirstOrThrow();

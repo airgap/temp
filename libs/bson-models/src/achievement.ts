@@ -12,7 +12,7 @@ export const achievement = {
 		id: { type: 'bigint' },
 		icon: { type: 'text', minLength: 1, maxLength: 100 },
 		name: { type: 'text', minLength: 1, maxLength: 100 },
-		points: { type: 'double precision' },
+		points: { type: 'integer' },
 		tier: achievementTier,
 		game: game.properties.id,
 	},

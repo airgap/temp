@@ -13,7 +13,7 @@ export const system = {
 	username: 'lykuSystem',
 	name: 'Lyku System',
 	profilePicture: '/bots/smile-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'system',
 	staff: true,
 	groupLimit: 0,

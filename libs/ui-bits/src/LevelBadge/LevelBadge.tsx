@@ -84,7 +84,7 @@ const sizes = {
 type Size = keyof typeof sizes;
 
 type Props = {
-	points: number;
+	points: bigint;
 	progress?: boolean;
 	size?: Size;
 };
@@ -107,7 +107,7 @@ export const LevelBadge = (props: Props) => {
 	const [__html, set__Html] = useState('');
 	useEffect(() => {
 		setLevel(getLevelFromPoints(props.points));
-		setProgress(Math.round(getProgressToNextLevel(props.points)));
+		setProgress(getProgressToNextLevel(props.points));
 	}, [props.points]);
 	useEffect(() => {
 		setText(

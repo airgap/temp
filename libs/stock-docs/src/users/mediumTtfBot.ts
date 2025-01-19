@@ -12,7 +12,7 @@ export const mediumTtfBot = {
 	postCount: 0n,
 	username: 'lykuMediumTtfBot',
 	profilePicture: '/bots/nonplussed-zoom.png',
-	points: 0,
+	points: 0n,
 	slug: 'lykumediumttfbot',
 	staff: true,
 	groupLimit: 0,
