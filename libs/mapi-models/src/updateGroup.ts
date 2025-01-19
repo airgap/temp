@@ -6,19 +6,13 @@ export const updateGroup = {
 	request: {
 		type: 'object',
 		properties: {
-			id: uid,
+			id: { type: 'bigint' },
 			name: groupName,
 			private: boolean,
 		},
 		minProperties: 2,
 		required: ['id'],
 	},
-	response: {
-		type: 'object',
-		properties: {
-			group,
-		},
-		required: ['group'],
-	},
+	response: group,
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

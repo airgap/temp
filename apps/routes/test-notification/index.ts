@@ -1,13 +1,9 @@
 import * as bcrypt from 'bcryptjs';
-import { Insertable, now, or } from 'rethinkdb';
-
-import { useContract } from '../Contract';
-import { createSessionForUser } from '../createSessionForUser';
-import { FromSchema } from 'from-schema';
-import { user, monolith } from 'models';
-import { cfAccountId, cfApiToken } from '../env';
+import { createSessionForUser } from '@lyku/route-helpers';
+import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import * as jdenticon from 'jdenticon';
 import { FormData } from 'formdata-node';
+import { handleRegisterUser } from '@lyku/handles';
 
 // Custom identicon style
 // https://jdenticon.com/icon-designer.html?config=652966ff0111303054545454
@@ -47,31 +43,25 @@ type UIURFailure = UIURBase & {
 
 type UrlImageUploadResponse = UIURSuccess | UIURFailure;
 
-export const registerUser = useContract(
-	monolith.registerUser,
-	async (
-		{ email, username, password },
-		{ tables, connection },
-		{ msg },
-		strings,
-		res
-	) => {
+export default handleRegisterUser(
+	async ({ email, username, password }, ctx) => {
+		const { db, requester, responseHeaders, strings } = ctx;
 		const lowerEmail = email.toLocaleLowerCase();
 		const lowerUsername = username.toLocaleLowerCase();
 		if (lowerUsername.includes('lyku'))
 			throw new Error('Usernames cannot contain "lyku"');
-		console.log('Checking for', lowerEmail, 'or', lowerUsername);
-		const existing = await tables.users
-			.filter<true>((doc) =>
-				or(
-					// doc('email').eq(lowerEmail),
-					doc('username').downcase().eq(lowerUsername)
-				)
-			)
-			.count()
-			.gt(0)
-			.run(connection);
-		if (existing) throw new Error(strings.emailTaken);
+		const existingUser = await db
+			.selectFrom('users')
+			.select(['id'])
+			.where('username', '=', lowerUsername)
+			.executeTakeFirst();
+		if (existingUser) throw new Error(strings.emailTaken);
+		const existingEmail = await db
+			.selectFrom('userHashes')
+			.select(['id'])
+			.where('email', '=', lowerEmail)
+			.executeTakeFirst();
+		if (existingEmail) throw new Error(strings.emailTaken);
 		console.log('Hashing password');
 		const passhash = await bcrypt.hash(password, 10);
 		console.log('Generating jdenticon');
@@ -100,39 +90,43 @@ export const registerUser = useContract(
 		);
 
 		const cfres = (await response.json()) as UrlImageUploadResponse;
-		const u: Insertable<FromSchema<typeof user>> = {
-			bot: false,
-			banned: false,
-			confirmed: false,
-			username,
-			chatColor: 'FFFFFF',
-			live: false,
-			lastLogin: now() as unknown as string,
-			joined: now() as unknown as string,
-			postCount: 0,
-			...(cfres.success ? { profilePicture: cfres.result.id } : {}),
-			points: 0,
-			slug: lowerUsername,
-		};
-		console.log('Inserting user', u);
-		const { generated_keys } = await tables.users.insert(u).run(connection);
-		if (!generated_keys.length) throw new Error(strings.unknownBackendError);
-		const [userId] = generated_keys;
-		await tables.userHashes
-			.insert({
+		const insertedUser = await db
+			.insertInto('users')
+			.values({
+				bot: false,
+				banned: false,
+				confirmed: false,
+				username,
+				chatColor: 'FFFFFF',
+				groupLimit: 0,
+				lastSuper: new Date(),
+				live: false,
+				lastLogin: new Date(),
+				joined: new Date(),
+				postCount: 0n,
+				...(cfres.success ? { profilePicture: cfres.result.id } : {}),
+				points: 0n,
+				slug: lowerUsername,
+				staff: false,
+			})
+			.returningAll()
+			.executeTakeFirst();
+		if (!insertedUser) throw new Error(strings.unknownBackendError);
+		const userId = insertedUser.id;
+		await db
+			.insertInto('userHashes')
+			.values({
 				email,
 				username,
 				id: userId,
 				hash: passhash,
 			})
-			.run(connection);
-		const sessionId = await createSessionForUser(
-			userId,
-			msg,
-			tables,
-			connection
+			.execute();
+		const sessionId = await createSessionForUser(userId, ctx);
+		(responseHeaders as Headers).set(
+			'Set-Cookie',
+			`sessionid=${sessionId}; Path=/;`
 		);
-		res.setHeader('Set-Cookie', `sessionid=${sessionId}; Path=/;`);
 		console.log('Logged user in', sessionId);
 		return sessionId;
 	}

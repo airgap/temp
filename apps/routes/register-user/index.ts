@@ -44,10 +44,8 @@ type UIURFailure = UIURBase & {
 type UrlImageUploadResponse = UIURSuccess | UIURFailure;
 
 export default handleRegisterUser(
-	async (
-		{ email, username, password },
-		{ db, requester, responseHeaders, strings }
-	) => {
+	async ({ email, username, password }, ctx) => {
+		const { db, requester, responseHeaders, strings } = ctx;
 		const lowerEmail = email.toLocaleLowerCase();
 		const lowerUsername = username.toLocaleLowerCase();
 		if (lowerUsername.includes('lyku'))
@@ -100,6 +98,9 @@ export default handleRegisterUser(
 				confirmed: false,
 				username,
 				chatColor: 'FFFFFF',
+				groupLimit: 0,
+				staff: false,
+				lastSuper: new Date(),
 				live: false,
 				lastLogin: new Date(),
 				joined: new Date(),
@@ -121,7 +122,7 @@ export default handleRegisterUser(
 				hash: passhash,
 			})
 			.execute();
-		const sessionId = await createSessionForUser(userId, db);
+		const sessionId = await createSessionForUser(userId, ctx);
 		(responseHeaders as Headers).set(
 			'Set-Cookie',
 			`sessionid=${sessionId}; Path=/;`

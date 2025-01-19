@@ -12,12 +12,7 @@ export const proposeMatch = {
 		},
 		required: ['user', 'game'],
 	},
-	response: {
-		type: 'object',
-		properties: {
-			proposalId: matchProposal.properties.id,
-		},
-		required: ['proposalId'],
-	},
+	response: matchProposal.properties.id,
+
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

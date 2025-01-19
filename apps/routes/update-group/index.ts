@@ -1,6 +1,6 @@
 import { handleUpdateGroup } from '@lyku/handles';
 
-export const updateGroup = handleUpdateGroup(async (params, ctx) => {
+export default handleUpdateGroup(async (params, ctx) => {
 	// First check if user owns the group
 	const group = await ctx.db
 		.selectFrom('groups')
@@ -25,5 +25,5 @@ export const updateGroup = handleUpdateGroup(async (params, ctx) => {
 		throw new Error(ctx.strings.unknownBackendError);
 	}
 
-	return { group: updatedGroup };
+	return updatedGroup;
 });

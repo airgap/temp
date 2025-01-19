@@ -1,5 +1,6 @@
 import { handleProposeMatch } from '@lyku/handles';
 import { bondIds } from '@lyku/helpers';
+import { MatchProposal } from '@lyku/json-models/index';
 
 export default handleProposeMatch(
 	async ({ user: oppId, game }, { db, requester }) => {
@@ -12,17 +13,17 @@ export default handleProposeMatch(
 				.executeTakeFirstOrThrow(),
 		]);
 
-		const [{ id: proposalId }] = await db
+		const { id } = await db
 			.insertInto('matchProposals')
 			.values({
 				created: new Date(),
 				from: requester,
 				to: oppId,
 				game,
-			})
+			} as MatchProposal)
 			.returning('id')
-			.execute();
+			.executeTakeFirstOrThrow();
 
-		return { proposalId };
+		return id;
 	}
 );
