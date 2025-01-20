@@ -1,5 +1,6 @@
 export * from './achievements';
 export * from './achievementGrants';
+export * from './btvStats';
 export * from './imageDrafts';
 export * from './videos';
 export * from './channels';

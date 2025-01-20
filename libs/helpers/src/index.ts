@@ -6,6 +6,7 @@ export * from './flagUnsafeTags';
 export * from './getLevelFromPoints';
 export * from './getPointsToNextLevel';
 export * from './getProgressToNextLevel';
+export * from './getSupertypeFromAttachmentId';
 export * from './getSupertypeFromMime';
 export * from './levelThresholds';
 export * from './bondIds';

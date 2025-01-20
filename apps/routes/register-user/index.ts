@@ -112,6 +112,22 @@ export default handleRegisterUser(
 			.returningAll()
 			.executeTakeFirst();
 		if (!insertedUser) throw new Error(strings.unknownBackendError);
+		await db
+			.insertInto('btvStats')
+			.values({
+				user: insertedUser.id,
+				totalTime: 0,
+				totalEdges: 0n,
+				totalCorners: 0n,
+				currentTime: 0,
+				currentEdges: 0n,
+				currentCorners: 0n,
+				highestTime: 0,
+				highestEdges: 0n,
+				highestCorners: 0n,
+				sessionCount: 0n,
+			})
+			.executeTakeFirstOrThrow();
 		const userId = insertedUser.id;
 		await db
 			.insertInto('userHashes')
