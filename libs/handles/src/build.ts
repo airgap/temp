@@ -5,6 +5,7 @@ import {
 	tsonToType,
 	postgresColumnToTson,
 	buildValidator,
+	stringifyBON,
 } from 'from-schema';
 import * as prettier from 'prettier';
 import * as models from '@lyku/mapi-models';
@@ -85,7 +86,7 @@ const jsonify = async () => {
 				${protocol === 'Websocket' ? 'onOpen' : 'execute'}: handler,
 				validator: ${validator},
 				${tweakValidator}
-				model: ${JSON.stringify(value)}
+				model: ${stringifyBON(value)}
 			} as const);`;
 		handles.push(handle);
 	}

@@ -1,4 +1,4 @@
-import { channel } from '@lyku/json-models';
+import { btvGameStats, channel } from '@lyku/json-models';
 import { TsonHandlerModel } from 'from-schema';
 
 export const bounced = {
@@ -15,17 +15,6 @@ export const bounced = {
 		},
 		required: [],
 	},
-	response: {
-		type: 'object',
-		properties: {
-			current: {
-				type: 'number',
-			},
-			total: {
-				type: 'number',
-			},
-		},
-		required: ['current', 'total'],
-	},
+	response: btvGameStats,
 	authenticated: true,
 } as const satisfies TsonHandlerModel;

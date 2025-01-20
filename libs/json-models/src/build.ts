@@ -7,6 +7,7 @@ import {
 	postgresColumnToTson,
 	postgresRecordToKysely,
 	postgresColumnToKysely,
+	stringifyBON,
 } from 'from-schema';
 import * as ts from 'typescript';
 import * as module from 'bson-models';
@@ -60,6 +61,7 @@ const pgColumnTypes = [
 	'uuid',
 	'xml',
 ];
+
 const jsonify = async () => {
 	const jsPath = path.join(
 		__dirname,
@@ -111,30 +113,10 @@ const jsonify = async () => {
 		const resolvedTypeString = tsonToType(tsonSchema as any);
 		// console.log('Resolved', key);
 
-		exports.push(
-			`export const ${key} = ${JSON.stringify(
-				tsonSchema,
-				(_, value) => {
-					if (typeof value === 'bigint') {
-						return value.toString() + 'n';
-					}
-					return value;
-				},
-				2
-			)};`
-		);
+		exports.push(`export const ${key} = ${stringifyBON(tsonSchema)};`);
 
 		dtsExports.push(
-			`export declare const ${key}: ${JSON.stringify(
-				tsonSchema,
-				(_, value) => {
-					if (typeof value === 'bigint') {
-						return value.toString() + 'n';
-					}
-					return value;
-				},
-				2
-			)};\n` +
+			`export declare const ${key}: ${stringifyBON(tsonSchema)};\n` +
 				`export type ${
 					key[0].toUpperCase() + key.slice(1)
 				} = ${resolvedTypeString};`

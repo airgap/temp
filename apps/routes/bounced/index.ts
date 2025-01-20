@@ -1,4 +1,5 @@
 import { handleBounced } from '@lyku/handles';
+import { BtvGameStats } from '@lyku/json-models/index';
 
 export default handleBounced(async ({ edge, corner }, { db, requester }) => {
 	const hit = edge || corner;
@@ -59,7 +60,7 @@ export default handleBounced(async ({ edge, corner }, { db, requester }) => {
 		highestEdges: newHighestEdges,
 		highestCorners: newHighestCorners,
 		sessionCount: oldStats.sessionCount,
-	};
+	} satisfies BtvGameStats;
 
 	// Update user stats
 	await db
@@ -68,14 +69,5 @@ export default handleBounced(async ({ edge, corner }, { db, requester }) => {
 		.where('user', '=', requester)
 		.executeTakeFirstOrThrow();
 
-	return {
-		current: {
-			edges: Number(newCurrentEdges),
-			corners: Number(newCurrentCorners),
-		},
-		total: {
-			edges: Number(newTotalEdges),
-			corners: Number(newTotalCorners),
-		},
-	};
+	return gameStats;
 });
