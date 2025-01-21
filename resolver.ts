@@ -17,10 +17,10 @@ export const plugins = [
 						alias.replace('/*', ''),
 						mapping.replace('/*', '')
 					);
-					console.log('Resolved path:', resolvedPath);
+					// console.log('Resolved path:', resolvedPath);
 					// Use absolute path to dist directory
 					const absolutePath = path.resolve(process.cwd(), resolvedPath);
-					console.log('Absolute path:', absolutePath);
+					// console.log('Absolute path:', absolutePath);
 					return { path: absolutePath };
 				}
 				return undefined;
