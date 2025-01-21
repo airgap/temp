@@ -31,9 +31,9 @@ fi
 docker build \
     --build-arg ROUTE_NAME=$ROUTE_NAME \
     -f docker/templates/route.Dockerfile \
-    --provenance=mode=max \
     -t $REGISTRY/$REPO:$ROUTE_NAME \
     .
+    # --provenance=mode=max \
 
 # Push the image
 if [ -n "$PUSH_FLAG" ]; then 

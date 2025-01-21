@@ -10,11 +10,11 @@ if [ "$#" -ne 1 ]; then
 fi
 
 export SERVICE_NAME=$1
-export IMAGE=nicolemuzzin/lyku:${SERVICE_NAME}
+export IMAGE=lyku/lyku:${SERVICE_NAME}
 
 echo "SERVICE_NAME: ${SERVICE_NAME}"
 
-configLocation=/mnt/c/Users/nickm/Downloads/lyk8s-kubeconfig.yaml
+configLocation=~/lyk8s-kubeconfig.yaml
 export config=--kubeconfig=${configLocation}
 
 echo "Deploying ${SERVICE_NAME} with image ${IMAGE}"
