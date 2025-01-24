@@ -23,7 +23,7 @@ function Donut(
 	cx: number,
 	cy: number,
 	radius: number,
-	data: { value: number }[]
+	data: { value: number }[],
 ) {
 	const floor = cfloor(4);
 	const f2 = cfloor(2);
@@ -100,7 +100,7 @@ export const LevelBadge = (props: Props) => {
 
 	const [level, setLevel] = useState<number>(getLevelFromPoints(props.points));
 	const [progress, setProgress] = useState<number>(
-		getProgressToNextLevel(props.points)
+		getProgressToNextLevel(props.points),
 	);
 	const [text, setText] = useState(``);
 	const [donut, setDonut] = useState('');
@@ -111,7 +111,7 @@ export const LevelBadge = (props: Props) => {
 	}, [props.points]);
 	useEffect(() => {
 		setText(
-			`<text x='${half}' y='${half}' text-anchor='middle' dy='.375em' fill='white' font-size='${half}'>${level}</text>`
+			`<text x='${half}' y='${half}' text-anchor='middle' dy='.375em' fill='white' font-size='${half}'>${level}</text>`,
 		);
 	}, [level, half]);
 	useEffect(() => {

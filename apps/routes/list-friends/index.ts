@@ -19,7 +19,7 @@ export default handleListFriends(async (_, { db, requester }) => {
 				.where('count', '>', 0) // Use materialized column
 				.as('friends'),
 			'users.id',
-			'friends.friendId'
+			'friends.friendId',
 		)
 		.execute();
 	return friends;

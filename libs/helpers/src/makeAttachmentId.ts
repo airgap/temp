@@ -1,7 +1,7 @@
 export const makeAttachmentId = (
 	postId: bigint,
 	orderNum: number,
-	supertype: number
+	supertype: number,
 ) => {
 	if (orderNum > 255 || orderNum < 0)
 		throw new Error('Order number must be 0-255');

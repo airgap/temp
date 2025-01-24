@@ -1,0 +1,13 @@
+#! /bin/bash
+
+# Get list of folders in apps/routes that don't start with _
+folders=$(find apps/routes -maxdepth 1 -type d -not -name "_*" -not -name "routes" -exec basename {} \;)
+
+# Delete deployments in parallel
+for folder in $folders; do
+    echo "Deleting deployment: $folder"
+    kubectl delete deployment $folder --ignore-not-found &
+done
+
+# Wait for all parallel deletions to complete
+wait

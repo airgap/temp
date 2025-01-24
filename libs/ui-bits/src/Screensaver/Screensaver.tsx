@@ -38,7 +38,7 @@ const useAnimationFrame = (callback: (deltaTime: number) => void) => {
 			previousTimeRef.current = time;
 			requestRef.current = requestAnimationFrame(animate);
 		},
-		[callback]
+		[callback],
 	);
 
 	useEffect(() => {
@@ -110,7 +110,7 @@ export const Screensaver = (props: {
 			{
 				backgroundColor: 'transparent',
 				duration: 1,
-			}
+			},
 		);
 	};
 	const click = () => {

@@ -27,7 +27,7 @@ export const Loading = (props: {
 					styles.s70,
 					styles.s80,
 					styles.s90,
-				][Math.floor(props.speed / 10)]
+				][Math.floor(props.speed / 10)],
 		)}
 	>
 		<div>

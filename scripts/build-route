@@ -5,4 +5,4 @@ if [ -z "$projectName" ]; then
   exit 1
 fi
 
-bun run ibuild.ts apps/routes/${projectName}/index.ts dist/apps/routes/${projectName}
+bun run ibuild.ts apps/routes/${projectName}/serve.ts dist/apps/routes/${projectName}

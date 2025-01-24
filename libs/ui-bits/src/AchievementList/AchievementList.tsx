@@ -44,7 +44,7 @@ export const AchievementList = ({ game }: { game?: number }) => {
 									key={ach.id}
 									achievement={ach}
 									granted={grants.some((g) =>
-										g.id.startsWith(ach.id.toString())
+										g.id.startsWith(ach.id.toString()),
 									)}
 								/>
 							))

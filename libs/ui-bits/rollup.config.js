@@ -34,5 +34,5 @@ export default withNx(
 		rollupOptions: {
 			cache: false,
 		},
-	}
+	},
 );

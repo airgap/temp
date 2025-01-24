@@ -32,7 +32,7 @@ export const MatchList = ({
 	}, [queried, user.id]);
 	const [users] = useCacheData(
 		'users',
-		matches.flatMap((m) => [m.X, m.O])
+		matches.flatMap((m) => [m.X, m.O]),
 	);
 	return (
 		<div className={styles.MatchList}>

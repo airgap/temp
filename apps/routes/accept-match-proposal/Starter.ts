@@ -3,5 +3,5 @@ import { AnySecureContext, SecureHttpContext } from '@lyku/route-helpers';
 
 export type Starter = (
 	proposal: MatchProposal,
-	context: AnySecureContext<any>
+	context: AnySecureContext<any>,
 ) => Promise<bigint>;

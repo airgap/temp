@@ -27,7 +27,7 @@ export default handleListGroups(
 			.where(
 				'group',
 				'in',
-				groups.map((g) => g.id)
+				groups.map((g) => g.id),
 			)
 			.execute();
 
@@ -35,5 +35,5 @@ export default handleListGroups(
 			memberships,
 			groups,
 		};
-	}
+	},
 );

@@ -1,10 +1,10 @@
 import { decode, encode } from '@msgpack/msgpack';
-import { SecureHttpContext } from './Contexts';
+import type { SecureHttpContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
-import { TsonHandlerModel } from 'from-schema';
 import * as nats from 'nats';
-import { Validator } from 'from-schema';
+import type { TsonHandlerModel, Validator } from 'from-schema';
+import { natsPort } from './env';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 
@@ -17,7 +17,12 @@ export const serveHttp = async ({
 	validator: Validator;
 	model: TsonHandlerModel;
 }) => {
-	const nc = await nats.connect();
+	console.log('Connecting to NATS');
+	const nc = await nats.connect({
+		servers: [natsPort],
+	});
+	console.log('Connected to NATS');
+	console.log('Starting HTTP server');
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
@@ -83,6 +88,6 @@ export const serveHttp = async ({
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['SERVICE_NAME']
+		process.env['HOSTNAME'],
 	);
 };

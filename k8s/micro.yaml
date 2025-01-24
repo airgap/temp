@@ -5,7 +5,7 @@ metadata:
   labels:
     app: ${SERVICE_NAME}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ${SERVICE_NAME}
@@ -14,16 +14,18 @@ spec:
       labels:
         app: ${SERVICE_NAME}
     spec:
-      # imagePullSecrets:
-      #   - name: registry-digitalocean
+      imagePullSecrets:
+        - name: lyku
       containers:
         - name: ${SERVICE_NAME}
           image: registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
           imagePullPolicy: Always
           command: ['bun']
           args:
-            - '--eval'
-            - "process.stdout.isTTY = true; console.log('Container starting...'); require('./index.js')"
+            - './serve.js'
+          envFrom:
+            - secretRef:
+                name: doppler-token-secret
           env:
             - name: NODE_ENV
               value: 'production'
@@ -38,9 +40,9 @@ spec:
           resources:
             requests:
               memory: '40Mi'
-              cpu: '20m'
+              cpu: '5m'
             limits:
-              memory: '256Mi'
+              memory: '160Mi'
               cpu: '200m'
           startupProbe:
             httpGet:
@@ -75,3 +77,14 @@ spec:
       port: 3000
       targetPort: 3000
   type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lyku
+  namespace: kube-system
+  annotations:
+    digitalocean.com/dosecret-identifier: lyku
+type: kubernetes.io/dockerconfigjson
+# data:
+#   .dockerconfigjson: ${DOCKER_CREDENTIALS}

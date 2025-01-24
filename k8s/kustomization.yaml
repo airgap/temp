@@ -11,4 +11,4 @@ patches:
     patch: |
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: lyku/lyku:${SERVICE_NAME}
+        value: registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}

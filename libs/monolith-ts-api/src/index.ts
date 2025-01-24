@@ -26,7 +26,7 @@ const onlyKey = (route: ContractName): string | void => {
 	if (!('request' in r)) return;
 	if (!('properties' in r.request)) return;
 	const keys = Object.keys(
-		r.request.properties // honestly just fuck my life at this point
+		r.request.properties, // honestly just fuck my life at this point
 	);
 	if (keys.length === 1) return keys[0];
 };
@@ -43,7 +43,7 @@ export const api = Object.fromEntries(
 			(
 				params: ThisRoute extends { request: TsonSchema }
 					? ThisRoute['request']
-					: never
+					: never,
 			) => {
 				const route = monolith[routeName] as TsonHandlerModel;
 				const key = onlyKey(routeName as ContractName);
@@ -103,14 +103,14 @@ export const api = Object.fromEntries(
 						});
 			},
 		];
-	})
+	}),
 ) as unknown as {
 	[K in keyof MonolithTypes]: 'request' extends keyof MonolithTypes[K]
 		? (
 				params: 'request' extends keyof MonolithTypes[K]
 					? MonolithTypes[K]['request']
-					: never
-		  ) => AsyncOrThicc<K>
+					: never,
+			) => AsyncOrThicc<K>
 		: () => AsyncOrThicc<K>;
 };
 export type ThiccSocket<K extends ContractName> = WebSocket & {
@@ -118,8 +118,8 @@ export type ThiccSocket<K extends ContractName> = WebSocket & {
 		listener: (
 			ev: MonolithTypes[K] extends { response: unknown }
 				? MonolithTypes[K]['response']
-				: never
-		) => void
+				: never,
+		) => void,
 	) => void;
 };
 export type AsinkResponse<K extends ContractName> = Promise<

@@ -41,7 +41,7 @@ export const Texticle = (props: TexticleProps) => {
 		return true;
 	};
 	const onInput: FormEventHandler<HTMLInputElement | HTMLTextAreaElement> = (
-		ev
+		ev,
 	) => {
 		const { value } = ev.currentTarget;
 		setValue(value);
