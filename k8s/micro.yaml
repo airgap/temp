@@ -19,7 +19,7 @@ spec:
       containers:
         - name: ${SERVICE_NAME}
           image: registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           command: ['bun']
           args:
             - './serve.js'
@@ -39,11 +39,11 @@ spec:
             - containerPort: 3000
           resources:
             requests:
-              memory: '40Mi'
+              memory: '160Mi'
               cpu: '5m'
             limits:
-              memory: '160Mi'
-              cpu: '200m'
+              memory: '200Mi'
+              cpu: '20m'
           startupProbe:
             httpGet:
               path: /health

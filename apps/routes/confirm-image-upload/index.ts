@@ -74,5 +74,5 @@ export default handleConfirmImageUpload(
 		}
 
 		return cfres.result.id;
-	},
+	}
 );

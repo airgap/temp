@@ -37,7 +37,7 @@ export type MaybeSecureHttpContext<Model extends TsonHandlerModel> =
 export type SecureHttpContext<Model extends TsonHandlerModel> =
 	SecureContext<Model> & HttpContextFragment;
 export type TweakHandler<TweakRequest, TweakResponse> = (
-	data: TweakRequest,
+	data: TweakRequest
 ) => TweakResponse;
 export type StreamTypes = {
 	request?: any;
@@ -55,7 +55,7 @@ export type HttpTypes = {
 };
 type SocketBase<
 	Model extends TsonStreamHandlerModel,
-	Types extends StreamTypes,
+	Types extends StreamTypes
 > = {
 	socket: ServerWebSocket<Model>;
 	emit: (data: Types['response'] | Uint8Array) => void;
@@ -69,8 +69,8 @@ type SocketBase<
 		Types['stream'] extends true
 			? never
 			: Types['stream'] extends { tweakResponse: any }
-				? Types['stream']['tweakResponse']
-				: never
+			? Types['stream']['tweakResponse']
+			: never
 	>;
 };
 export type Cock = {
@@ -79,29 +79,29 @@ export type Cock = {
 };
 export type MaybeSecureSocketContext<
 	Model extends TsonStreamHandlerModel,
-	Types extends StreamTypes,
+	Types extends StreamTypes
 > = MaybeSecureContext<Model> & SocketBase<Model, Types>;
 export type SecureSocketContext<
 	Model extends TsonStreamHandlerModel,
-	Types extends StreamTypes,
+	Types extends StreamTypes
 > = SecureContext<Model> & SocketBase<Model, Types>;
 export type AnyMaybeSecureContext<
 	Model extends TsonHandlerModel,
-	Types extends StreamTypes = never,
+	Types extends StreamTypes = never
 > = Model extends TsonHttpHandlerModel
 	? MaybeSecureHttpContext<Model>
 	: Model extends TsonStreamHandlerModel
-		? MaybeSecureSocketContext<Model, Types>
-		: never;
+	? MaybeSecureSocketContext<Model, Types>
+	: never;
 export type AnySecureContext<
 	Model extends TsonHandlerModel,
-	Types extends StreamTypes = never,
+	Types extends StreamTypes = never
 > = Model extends TsonHttpHandlerModel
 	? SecureHttpContext<Model>
 	: Model extends TsonStreamHandlerModel
-		? SecureSocketContext<Model, Types>
-		: never;
+	? SecureSocketContext<Model, Types>
+	: never;
 export type AnyContext<
 	Model extends TsonHandlerModel,
-	Types extends StreamTypes = never,
+	Types extends StreamTypes = never
 > = AnyMaybeSecureContext<Model, Types> | AnySecureContext<Model, Types>;

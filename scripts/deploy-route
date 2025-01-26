@@ -25,7 +25,7 @@ if envsubst < k8s/micro.yaml | kubectl get deployment ${SERVICE_NAME} ${config} 
     envsubst < k8s/micro.yaml | kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${IMAGE} ${config}
     echo "Deployment ${SERVICE_NAME} updated to image ${IMAGE}"
     # Force redeployment by triggering a rollout restart
-    kubectl rollout restart deployment/${SERVICE_NAME} ${config}
+    # kubectl rollout restart deployment/${SERVICE_NAME} ${config}
 else
     # Apply the micro.yaml to create the deployment if it does not exist
     envsubst < k8s/micro.yaml | kubectl apply -f - ${config}

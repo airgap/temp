@@ -6,9 +6,6 @@ export const privateKey = env['PRIVATE_KEY'];
 export const servicePort = env['SERVICE_PORT'] || apiPorts.http;
 export const cfAccountId = env['CF_ACCOUNT_ID'];
 export const cfApiToken = env['CF_API_TOKEN'];
-export const linkShortenerEndpoint =
-	env['LINK_SHORTENER_ENDPOINT'] || '127.0.0.1';
-export const linkShortenerToken = env['LINK_SHORTENER_TOKEN'] || 'dicknballs';
 
 export const webuiDomain = env['WEBUI_DOMAIN'] || 'localhost';
 export const dev = process.env['DOPPLER_ENVIRONMENT'] === 'dev';
@@ -18,3 +15,6 @@ export const shortlinkProtocol =
 export const shortlinkBasepath =
 	shortlinkProtocol + '://' + shortlinkDomain + '/';
 export const natsPort = env['NATS_PORT'] || 'nats://localhost:4222';
+export const dbConnectionString =
+	env['PG_CONNECTION_STRING'] || 'postgresql://localhost:5434/Lyku';
+console.log('dbConnectionString', dbConnectionString);

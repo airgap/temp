@@ -32,7 +32,7 @@ describe('SubmitButton', () => {
 					points: 0,
 					postCount: 0,
 				}}
-			/>,
+			/>
 		);
 		expect(baseElement).toBeTruthy();
 	});

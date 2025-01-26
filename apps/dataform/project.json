@@ -1,0 +1,15 @@
+{
+	"name": "@lyku/dataform",
+	"tags": [],
+	"targets": {
+		"form": {
+			"executor": "nx:run-script",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"script": "bun src/form.ts",
+				"runtime": "bun",
+				"outputPath": "dist/libs/handles"
+			}
+		}
+	}
+}

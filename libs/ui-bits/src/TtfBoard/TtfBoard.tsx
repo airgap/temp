@@ -25,7 +25,7 @@ const lines = {
 export const Line = (
 	props: {
 		orientation: keyof typeof lines;
-	} & ImgHTMLAttributes<HTMLImageElement>,
+	} & ImgHTMLAttributes<HTMLImageElement>
 ) => {
 	const l = lines[props.orientation];
 	return (
@@ -40,7 +40,7 @@ export const Line = (
 					[l.fit]: '100%',
 					transform: `translate${l.axis}(-50%)`,
 				},
-				props.style,
+				props.style
 			)}
 		/>
 	);

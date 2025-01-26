@@ -20,7 +20,7 @@ const showAuth = (form: ReactNode) => () => shout('showAuth', form);
 export const MobileNav = () => {
 	const user = useCurrentUser();
 	const [profile, setProfile] = useState<string | undefined>(
-		user?.profilePicture,
+		user?.profilePicture
 	);
 	useEffect(() => {
 		setProfile(user?.profilePicture);

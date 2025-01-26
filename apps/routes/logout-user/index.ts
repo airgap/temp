@@ -13,5 +13,5 @@ export default handleLogoutUser(
 					.deleteFrom('sessions')
 					.where('id', '=', session)
 					.executeTakeFirstOrThrow();
-	},
+	}
 );

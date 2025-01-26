@@ -34,7 +34,7 @@ describe('SubmitButton', () => {
 						replies: 666,
 					} as PostWithAuthor
 				}
-			/>,
+			/>
 		);
 		expect(baseElement).toBeTruthy();
 	});

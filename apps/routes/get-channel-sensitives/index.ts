@@ -13,5 +13,5 @@ export default handleGetChannelSensitives(
 		}
 		console.log('channel', channelBy);
 		return channelBy;
-	},
+	}
 );

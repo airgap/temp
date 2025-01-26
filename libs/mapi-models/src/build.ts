@@ -32,13 +32,13 @@ const types = Object.entries(src).map(([key, value]) => {
 		tweakReqKeys[key] = trk;
 		if ('tweakRequest' in value.stream)
 			fns += `export type ${trk} = ${tsonToType(
-				value.stream.tweakRequest as TsonSchemaOrPrimitive,
+				value.stream.tweakRequest as TsonSchemaOrPrimitive
 			)};\n`;
 		const reskey = upperKey + 'TweakResponse';
 		tweakResKeys[key] = reskey;
 		if ('tweakResponse' in value.stream)
 			fns += `export type ${reskey} = ${tsonToType(
-				value.stream.tweakResponse as TsonSchemaOrPrimitive,
+				value.stream.tweakResponse as TsonSchemaOrPrimitive
 			)};\n`;
 	}
 });
@@ -62,7 +62,7 @@ export type MonolithTypes = {
 										tweakResponse:
 											${'tweakResponse' in value.stream ? tweakResKeys[key] : 'never'},
 								  }`
-						},`
+					  },`
 					: ''
 			}}`;
 		})
@@ -71,5 +71,5 @@ export type MonolithTypes = {
 
 Bun.write(
 	'../../dist/libs/mapi-types.d.ts',
-	prettier.format(functions, { parser: 'typescript' }),
+	prettier.format(functions, { parser: 'typescript' })
 );

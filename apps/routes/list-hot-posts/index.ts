@@ -18,9 +18,9 @@ export default handleListHotPosts(
 		const posts = await postsQuery
 			.select((eb) => [
 				sql<number>`(${eb.ref('likes')} + ${eb.ref(
-					'loves',
+					'loves'
 				)} * 10.0) / NULLIF(${sql<number>`EXTRACT(EPOCH FROM (NOW() - published))`.as(
-					'age',
+					'age'
 				)}, 0)`.as('hotness'),
 			])
 			.orderBy('hotness', 'desc')
@@ -45,7 +45,7 @@ export default handleListHotPosts(
 					.where(
 						'postId',
 						'in',
-						posts.map((p) => p.id),
+						posts.map((p) => p.id)
 					)
 					.selectAll()
 					.execute()
@@ -60,5 +60,5 @@ export default handleListHotPosts(
 
 		console.log('Hot posts:', posts.length);
 		return response;
-	},
+	}
 );

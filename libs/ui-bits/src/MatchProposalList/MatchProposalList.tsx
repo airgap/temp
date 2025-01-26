@@ -33,7 +33,7 @@ export const MatchProposalList = ({
 	const userList = useMemo(() => {
 		return [
 			...new Set(
-				proposals.map((p) => p.from).concat(proposals.map((p) => p.to)),
+				proposals.map((p) => p.from).concat(proposals.map((p) => p.to))
 			),
 		];
 	}, [proposals]);

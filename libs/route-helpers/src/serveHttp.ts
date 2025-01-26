@@ -26,6 +26,7 @@ export const serveHttp = async ({
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
+			console.log('req', req);
 			const needsAuth = model.authenticated;
 			// HTTP handler
 			if (req.url.endsWith('/health')) {
@@ -88,6 +89,6 @@ export const serveHttp = async ({
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['HOSTNAME'],
+		process.env['HOSTNAME']
 	);
 };
