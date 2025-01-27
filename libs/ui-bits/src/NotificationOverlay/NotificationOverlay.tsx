@@ -96,7 +96,7 @@ export const NotificationOverlay = () => {
 					onClose={() => {
 						const i = notifications.indexOf(n);
 						setNotifications(
-							notifications.slice(0, i).concat(notifications.slice(i + 1))
+							notifications.slice(0, i).concat(notifications.slice(i + 1)),
 						);
 					}}
 				/>

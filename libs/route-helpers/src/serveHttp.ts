@@ -39,7 +39,8 @@ export const serveHttp = async ({
 				return new Response('Unauthorized', { status: 401 });
 
 			const sessionId = auth?.substring(7);
-			if (!sessionId) return new Response('Invalid sessionId', { status: 403 });
+			if (needsAuth && !sessionId)
+				return new Response('Invalid sessionId', { status: 403 });
 
 			const session = sessionId
 				? await db
@@ -89,6 +90,6 @@ export const serveHttp = async ({
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['HOSTNAME']
+		process.env['HOSTNAME'],
 	);
 };

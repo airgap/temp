@@ -26,7 +26,7 @@ type Point2d = { x: number; y: number };
 const dropGrid = (
 	rows: Grid<number | boolean>,
 	{ x, y }: Point2d,
-	board: Grid<number | boolean>
+	board: Grid<number | boolean>,
 ) => {
 	for (let dy = 0; dy < rows.length; dy++) {
 		for (let dx = 0; dx < rows[dy].length; dx++) {

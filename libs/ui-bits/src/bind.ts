@@ -2,12 +2,12 @@ type AddEventListenerSignature = {
 	addEventListener(
 		type: string,
 		listener: EventListenerOrEventListenerObject,
-		options?: boolean | AddEventListenerOptions
+		options?: boolean | AddEventListenerOptions,
 	): void;
 	removeEventListener(
 		type: string,
 		listener: EventListenerOrEventListenerObject,
-		options?: boolean | EventListenerOptions
+		options?: boolean | EventListenerOptions,
 	): void;
 };
 
@@ -25,18 +25,18 @@ type EventHandler<T> = (
 	element: T,
 	type: keyof EventMapFromElement<T>,
 	listener: EventMapFromElement<T>[keyof EventMapFromElement<T>],
-	options?: boolean | EventListenerOptions
+	options?: boolean | EventListenerOptions,
 ) => void;
 
 const eventHandler =
 	(
-		method: 'addEventListener' | 'removeEventListener'
+		method: 'addEventListener' | 'removeEventListener',
 	): EventHandler<AddEventListenerSignature> =>
 	(element, type, listener, options) =>
 		element[method](
 			type as string,
 			listener as EventListenerOrEventListenerObject,
-			options
+			options,
 		);
 
 export const bind = eventHandler('addEventListener');

@@ -2,7 +2,7 @@ import { generateSessionId, MaybeSecureHttpContext } from '@lyku/route-helpers';
 
 export const createSessionForUser = async (
 	userId: bigint,
-	ctx: MaybeSecureHttpContext<any>
+	ctx: MaybeSecureHttpContext<any>,
 ): Promise<string> => {
 	const id = generateSessionId();
 	const userLogin = {

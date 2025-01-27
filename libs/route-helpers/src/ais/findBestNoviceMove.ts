@@ -3,7 +3,7 @@ import { BoardWithCountdown, MaybeMove, Move, Player } from '../Player';
 type Combo = [Move, Move, Move];
 export function findBestNoviceMove(
 	board: BoardWithCountdown,
-	who: Player
+	who: Player,
 ): MaybeMove {
 	const winningCombos: Combo[] = [
 		[0, 1, 2],

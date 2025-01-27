@@ -37,7 +37,7 @@ export const MyChannel = () => {
 
 	useEffect(
 		() => void api.getMyChannel({ name }).then(setChannel).catch(console.error),
-		[name, channel]
+		[name, channel],
 	);
 
 	const saveChannel = async () => {

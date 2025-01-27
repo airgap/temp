@@ -17,7 +17,7 @@ export const PostList = ({ posts, inset, placeholder }: Props) => (
 		{posts?.length
 			? posts.map((post) => (
 					<DynamicPost post={post} key={post.id} autoplay={false} />
-			  ))
+				))
 			: placeholder}
 	</div>
 );

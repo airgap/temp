@@ -8,6 +8,6 @@ export const removeKeys = <T extends object, K extends keyof T>(
 	...keys: K[]
 ): Omit<T, K> => {
 	return Object.fromEntries(
-		Object.entries(o).filter(([key]) => !keys.includes(key as K))
+		Object.entries(o).filter(([key]) => !keys.includes(key as K)),
 	) as Omit<T, K>;
 };

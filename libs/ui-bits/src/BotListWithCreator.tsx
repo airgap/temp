@@ -20,7 +20,7 @@ export const BotListWithCreator = () => {
 				.createBot({ username: botName })
 				.then(() => window.location.reload())
 				.catch((error) => alert(error)),
-		[botName]
+		[botName],
 	);
 
 	return (

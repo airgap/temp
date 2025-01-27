@@ -30,7 +30,7 @@ export const Image = (props: ImageProps) => (
 				[styles.bot]: props.bot,
 				[styles.squircle]: props.shape === 'squircle',
 				[styles.circle]: props.shape === 'circle',
-			}
+			},
 		)}
 	>
 		<img
@@ -38,8 +38,8 @@ export const Image = (props: ImageProps) => (
 				'id' in props
 					? formImageUrl(props.id)
 					: 'url' in props
-					? props.url
-					: face
+						? props.url
+						: face
 			}
 			alt={'Profile'}
 		/>

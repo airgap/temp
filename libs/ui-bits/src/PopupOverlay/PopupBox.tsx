@@ -9,7 +9,7 @@ export const PopupBox = (props: {
 }) => {
 	const dismiss = useCallback(
 		() => window.dispatchEvent(new Event(`hide${props.overlay}`)),
-		[props.overlay]
+		[props.overlay],
 	);
 	return (
 		<div className={styles.WinBox}>

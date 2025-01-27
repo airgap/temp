@@ -30,7 +30,7 @@ const listeners: SonicListener[] = [];
 
 export const listen = <K extends SonicKey>(
 	event: K,
-	listener: (v: SonicEvents[K]) => void
+	listener: (v: SonicEvents[K]) => void,
 ): SonicListener => {
 	const listenerObj = {
 		event,
@@ -42,7 +42,7 @@ export const listen = <K extends SonicKey>(
 
 export const shout = <K extends SonicKey>(
 	eventName: K,
-	props: SonicEvents[K]
+	props: SonicEvents[K],
 ) => {
 	for (const listenerObj of listeners) {
 		if (listenerObj.event === eventName) {

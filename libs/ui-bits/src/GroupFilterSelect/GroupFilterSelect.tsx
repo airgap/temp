@@ -14,7 +14,7 @@ export const options = Object.entries(groupFilterOptionMap).map(
 	([value, label]) => ({
 		value: value as GroupFilter,
 		label,
-	})
+	}),
 );
 export const GroupFilterSelect = (props: Props<GroupFilterOption, false>) => (
 	<Select

@@ -15,7 +15,7 @@ const readdirRecursive = async (dir: string): Promise<string[]> => {
 		dirents.map(async (dirent) => {
 			const res = path.resolve(dir, dirent.name);
 			return dirent.isDirectory() ? await readdirRecursive(res) : res;
-		})
+		}),
 	);
 	return files.flat();
 };
@@ -53,7 +53,7 @@ const jsonify = async () => {
 			`export declare const ${key}: ${JSON.stringify(jsonSchema, null, 2)};\n` +
 				`export type ${
 					key[0].toUpperCase() + key.slice(1)
-				} = ${resolvedTypeString};`
+				} = ${resolvedTypeString};`,
 		);
 	}
 
@@ -67,7 +67,7 @@ const jsonify = async () => {
 			'libs',
 			'json-models',
 			'src',
-			`index.js`
+			`index.js`,
 		);
 		const dtsPath = path.join(
 			__dirname,
@@ -78,7 +78,7 @@ const jsonify = async () => {
 			'libs',
 			'json-models',
 			'src',
-			`index.d.ts`
+			`index.d.ts`,
 		);
 		const exportDir = path.dirname(jsPath);
 		await mkdir(exportDir, { recursive: true });

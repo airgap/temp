@@ -5,5 +5,5 @@ export default handleAmIFollowing((user, { db, requester }) =>
 		.selectFrom('userFollows')
 		.where('id', '=', bindIds(requester, user))
 		.executeTakeFirst()
-		.then((r) => r !== null)
+		.then((r) => r !== null),
 );

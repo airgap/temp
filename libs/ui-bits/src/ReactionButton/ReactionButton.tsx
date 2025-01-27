@@ -35,7 +35,7 @@ export const ReactionButton = ({
 					[styles.disabled]: disabled,
 					[styles.vertical]: orientation === 'Vertical',
 				},
-				className
+				className,
 			)}
 		>
 			<Link disabled={disabled} onClick={onClick}>

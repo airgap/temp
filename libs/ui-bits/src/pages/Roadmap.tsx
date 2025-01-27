@@ -86,7 +86,8 @@ const options = {
 };
 const findUnmetDependency = (row: Row, rows: Records<FieldSet>) =>
 	rows.find(
-		(r) => r.fields.Status !== 'Done' && row.fields.Dependencies?.includes(r.id)
+		(r) =>
+			r.fields.Status !== 'Done' && row.fields.Dependencies?.includes(r.id),
 	);
 const getCat = (row: Row, rows: Records<FieldSet>): Cat =>
 	({
@@ -94,7 +95,7 @@ const getCat = (row: Row, rows: Records<FieldSet>): Cat =>
 		Done: 'Done',
 		'In progress': 'Working',
 		Todo: findUnmetDependency(row, rows) ? 'Blocked' : 'Ready',
-	}[row.fields.Status as StatusType] as Cat);
+	})[row.fields.Status as StatusType] as Cat;
 const lengthOrZero = (thing?: unknown) =>
 	Array.isArray(thing) ? thing.length : 0;
 type SetNode = { id: string; label: string; group: string };
@@ -109,7 +110,7 @@ export const Roadmap = () => {
 				nodes: [],
 				edges: [],
 			},
-			options
+			options,
 		);
 		setNetwork(network);
 		void table
@@ -119,7 +120,7 @@ export const Roadmap = () => {
 			.then(() =>
 				network.once('stabilized', function () {
 					network.moveTo({ scale: 1 });
-				})
+				}),
 			);
 	}, []);
 	const [rows, setRows] = useState<Records<FieldSet>>();
@@ -131,7 +132,7 @@ export const Roadmap = () => {
 			.sort(
 				(a, b) =>
 					lengthOrZero(a.fields.Dependencies) -
-					lengthOrZero(b.fields.Dependencies)
+					lengthOrZero(b.fields.Dependencies),
 			)
 			.map((row) => ({
 				id: row.id,
@@ -149,12 +150,12 @@ export const Roadmap = () => {
 					to: row.id,
 					from: id,
 					// color: rows.find(({id, fields: {Status}}) => ),
-				}))
+				})),
 			)
 			.filter((a) => a);
 		console.log(edgettes);
 		const edges = new DataSet<{ id?: string; to: string; from: string }>(
-			edgettes
+			edgettes,
 		);
 		// Create a new graph
 		network.setData({ nodes, edges });

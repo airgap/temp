@@ -85,7 +85,7 @@ export const Pieces = ({ match }: { match: TtfMatch }) => {
 									i: i + 3,
 									key,
 								}))
-								.filter(({ i }) => i < 12)
+								.filter(({ i }) => i < 12),
 						);
 					}, 500);
 				} else {
@@ -118,9 +118,9 @@ export const Pieces = ({ match }: { match: TtfMatch }) => {
 								p,
 								i,
 								key: match.turn * 81 + i,
-							} as Piece)
+							} as Piece),
 					)
-					.filter((p) => p) as Piece[]
+					.filter((p) => p) as Piece[],
 			);
 		}
 		setLastBoard(match.board);
