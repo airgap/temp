@@ -14,13 +14,13 @@ esbuild
 		splitting: true, // Enable code splitting
 		target: 'esnext', // Use esnext for compatibility with Bun
 		platform: 'node',
-		minify: true, // Enables tree shaking
+		// minify: true, // Enables tree shaking
 		sourcemap: true, // Optional: Generate source maps for easier debugging
 		treeShaking: true, // Ensure tree shaking is enabled
 		metafile: true, // Generate a metafile for analysis
 	})
 	.then(() => {
-		console.log('Build completed successfully with tree shaking!');
+		console.log('Built');
 	})
 	.catch((err) => {
 		console.error('Build failed:', err);

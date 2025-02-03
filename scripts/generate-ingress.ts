@@ -51,7 +51,7 @@ routeDirs.forEach((route) => {
 		pathType: 'ImplementationSpecific',
 		backend: {
 			service: {
-				name: `${route}-service`,
+				name: `lyku-${route}-service`,
 				port: {
 					number: 3000,
 				},
@@ -62,7 +62,7 @@ routeDirs.forEach((route) => {
 
 // Sort paths alphabetically for consistency
 ingressTemplate.spec.rules[0].http.paths.sort((a, b) =>
-	a.path.localeCompare(b.path),
+	a.path.localeCompare(b.path)
 );
 
 // Write to k8s/base/ingress.yaml

@@ -5,8 +5,9 @@ folders=$(find apps/routes -maxdepth 1 -type d -not -name "_*" -not -name "route
 
 # Delete deployments in parallel
 for folder in $folders; do
-    echo "Deleting deployment: $folder"
-    kubectl delete deployment $folder --ignore-not-found &
+    deploymentName=lyku-${folder}
+    echo "Deleting deployment: $deploymentName"
+    kubectl delete deployment $deploymentName --ignore-not-found &
 done
 
 # Wait for all parallel deletions to complete

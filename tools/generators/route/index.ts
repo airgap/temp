@@ -10,6 +10,6 @@ export default async function (tree: Tree, schema: any) {
 		{
 			...routeName,
 			template: '',
-		},
+		}
 	);
 }

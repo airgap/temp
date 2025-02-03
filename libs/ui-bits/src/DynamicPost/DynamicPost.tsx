@@ -140,7 +140,7 @@ export const DynamicPost = ({
 								styles.eight,
 								styles.nine,
 								styles.ten,
-							][post.attachments.length - 1],
+							][post.attachments.length - 1]
 					)}
 				>
 					{post.attachments?.map((at) => {

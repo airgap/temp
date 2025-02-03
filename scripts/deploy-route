@@ -16,18 +16,19 @@ echo "SERVICE_NAME: ${SERVICE_NAME}"
 
 configLocation=~/lyk8s-kubeconfig.yaml
 export config=--kubeconfig=${configLocation}
+export DEPLOYMENT_NAME=lyku-${SERVICE_NAME}
 
 echo "Deploying ${SERVICE_NAME} with image ${IMAGE}"
 
 # Check if the deployment exists
-if envsubst < k8s/micro.yaml | kubectl get deployment ${SERVICE_NAME} ${config} >/dev/null 2>&1; then
+if envsubst < k8s/micro.yaml | kubectl get deployment ${DEPLOYMENT_NAME} ${config} >/dev/null 2>&1; then
     # Update the deployment with the new image
-    envsubst < k8s/micro.yaml | kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${IMAGE} ${config}
-    echo "Deployment ${SERVICE_NAME} updated to image ${IMAGE}"
+    envsubst < k8s/micro.yaml | kubectl set image deployment/${DEPLOYMENT_NAME} ${DEPLOYMENT_NAME}=${IMAGE} ${config}
+    echo "Deployment ${DEPLOYMENT_NAME} updated to image ${IMAGE}"
     # Force redeployment by triggering a rollout restart
     # kubectl rollout restart deployment/${SERVICE_NAME} ${config}
 else
     # Apply the micro.yaml to create the deployment if it does not exist
     envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
-    echo "Deployment ${SERVICE_NAME} created with image ${IMAGE}"
+    echo "Deployment ${DEPLOYMENT_NAME} created with image ${IMAGE}"
 fi

@@ -55,8 +55,8 @@ export const PostCreator = ({
 	const submitText = echoPost
 		? phrasebook.echo
 		: replyToPost
-			? phrasebook.reply
-			: phrasebook.post;
+		? phrasebook.reply
+		: phrasebook.post;
 	const clear = () => {
 		setId(undefined);
 		setBody('');
@@ -105,7 +105,7 @@ export const PostCreator = ({
 		console.log(
 			'ViewPost submitted successfully.',
 			imageDrafts ?? 'No images',
-			videoDrafts ?? 'No videos',
+			videoDrafts ?? 'No videos'
 		);
 	};
 	console.log('Files', files);
@@ -113,8 +113,8 @@ export const PostCreator = ({
 	const placeholder = echoPost
 		? phrasebook.postBodyEchoPlaceholder
 		: replyToPost
-			? phrasebook.postBodyReplyPlaceholder
-			: phrasebook.postBodyStandardPlaceholder;
+		? phrasebook.postBodyReplyPlaceholder
+		: phrasebook.postBodyStandardPlaceholder;
 	return (
 		<div className={styles.PostCreator}>
 			{showInset && replyToPost && (

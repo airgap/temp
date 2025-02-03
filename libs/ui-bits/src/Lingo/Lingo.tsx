@@ -23,7 +23,7 @@ const languages = Object.entries(langs).map(([code, name]) => ({
 
 export const Lingo = () => {
 	const [selectedLanguage, setSelectedLanguage] = useState<Lang>(
-		language in langs ? (language as Lang) : 'en-US',
+		language in langs ? (language as Lang) : 'en-US'
 	);
 	const [isOpen, setIsOpen] = useState(false);
 

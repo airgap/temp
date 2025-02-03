@@ -48,7 +48,7 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 				const decodedMessage = decode(
 					typeof message === 'string'
 						? JSON.parse(message)
-						: new Uint8Array(message),
+						: new Uint8Array(message)
 				);
 
 				// First message must be auth token
@@ -72,7 +72,7 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 
 					const sessionId = decodedMessage.auth.substring(7);
 					if (!sessionId) {
-						ws.close(1008, 'Invalid sessionId');
+						ws.close(1008, '[WS] Invalid sessionId');
 						return;
 					}
 					const hasRequest = 'request' in model;
@@ -94,7 +94,7 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 								encode({
 									authenticated: false,
 									error: 'Invalid request',
-								}),
+								})
 							);
 							return;
 						}

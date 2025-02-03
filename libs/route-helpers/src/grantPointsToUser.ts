@@ -28,7 +28,7 @@ const levelMap = {
 export const grantPointsToUser = async (
 	points: number,
 	userId: bigint,
-	db: Kysely<Database>,
+	db: Kysely<Database>
 ) => {
 	console.log('Granting', points, 'points to user', userId);
 	const change = await db
@@ -49,13 +49,13 @@ export const grantPointsToUser = async (
 					body: 'Reached level ' + newLevel,
 					title: 'Level up!',
 				},
-				db,
+				db
 			);
 			if (newLevel in levelMap)
 				await grantAchievementToUser(
 					levelMap[newLevel as keyof typeof levelMap],
 					userId,
-					db,
+					db
 				);
 		}
 	}

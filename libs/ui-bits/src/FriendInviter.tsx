@@ -19,7 +19,7 @@ export const FriendInviter = ({
 	const outgoing = invites?.filter((i) => i.from === user.id) ?? [];
 	const remaining =
 		friends?.filter(
-			(f) => !invites?.some((i) => [i.from, i.to].includes(f.id)),
+			(f) => !invites?.some((i) => [i.from, i.to].includes(f.id))
 		) ?? [];
 	const [friendsById, setFriendsById] = useState(new Map<bigint, User>());
 	useEffect(() => {

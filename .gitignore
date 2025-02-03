@@ -45,3 +45,5 @@ vite.config.*.timestamp*
 bin
 **/dist
 **/coverage
+
+k8s-prd-ca-cert.crt

@@ -36,7 +36,7 @@ export const form = async () => {
 		console.log('tableList', tableList, '/tableList');
 		const missingTables = tableList.filter(
 			([tableName]) =>
-				!existingTables.rows.some((table) => table.table_name === tableName),
+				!existingTables.rows.some((table) => table.table_name === tableName)
 		);
 
 		for (const [tableName, table] of missingTables) {
@@ -51,7 +51,7 @@ export const form = async () => {
 
 async function createTable<T extends PostgresTableModel<PostgresRecordModel>>(
 	tableName: string,
-	schema: T,
+	schema: T
 ) {
 	console.log('creating table', tableName, schema, 'tonka');
 	const columns =
@@ -71,14 +71,14 @@ async function createTable<T extends PostgresTableModel<PostgresRecordModel>>(
 
 export const mapIntegerType = (
 	name: string,
-	columnSchema: IntegerColumnModel,
+	columnSchema: IntegerColumnModel
 ): string => {
 	return 'INTEGER';
 };
 
 export const mapTextType = (
 	name: string,
-	columnSchema: TextColumnModel,
+	columnSchema: TextColumnModel
 ): string => {
 	console.log('mapping text', name, columnSchema, '/text');
 	const constraints: string[] = [];
@@ -93,7 +93,7 @@ export const mapTextType = (
 		constraints.push(
 			`GENERATED ALWAYS AS (${columnSchema.generated.as})${
 				columnSchema.generated.stored ? ' STORED' : ''
-			}`,
+			}`
 		);
 	}
 	if (columnSchema.checks) {
@@ -113,18 +113,18 @@ export const mapTextType = (
 
 export const mapArrayType = (
 	name: string,
-	columnSchema: ArrayColumnModel,
+	columnSchema: ArrayColumnModel
 ): string => {
 	const itemType = mapColumnType(name, columnSchema.items);
 	const constraints: string[] = [];
 	if (columnSchema.minItems !== undefined) {
 		constraints.push(
-			`CHECK (array_length("${name}", 1) >= ${columnSchema.minItems})`,
+			`CHECK (array_length("${name}", 1) >= ${columnSchema.minItems})`
 		);
 	}
 	if (columnSchema.maxItems !== undefined) {
 		constraints.push(
-			`CHECK (array_length("${name}", 1) <= ${columnSchema.maxItems})`,
+			`CHECK (array_length("${name}", 1) <= ${columnSchema.maxItems})`
 		);
 	}
 	return `${itemType}[]${
@@ -134,7 +134,7 @@ export const mapArrayType = (
 
 function mapColumnType(
 	name: string,
-	columnSchema: PostgresColumnModel,
+	columnSchema: PostgresColumnModel
 ): string {
 	console.log('switching', columnSchema.type);
 	switch (columnSchema.type) {

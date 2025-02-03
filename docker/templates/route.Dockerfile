@@ -12,6 +12,7 @@ ENV NODE_ENV=production \
 
 # Copy only the built files
 COPY /dist/apps/routes/${ROUTE_NAME} .
+COPY ./k8s-prd-ca-cert.crt .
 
 # Health check using Bun's native fetch
 HEALTHCHECK --interval=30s --timeout=3s \

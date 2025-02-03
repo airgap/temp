@@ -13,7 +13,7 @@ describe('MessageItem', () => {
 					channel: 'asdf',
 					sent: true,
 				}}
-			/>,
+			/>
 		);
 		expect(baseElement).toBeTruthy();
 	});

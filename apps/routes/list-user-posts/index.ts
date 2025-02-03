@@ -24,5 +24,5 @@ export default handleListUserPosts(
 		const res = await final.execute();
 		console.log('Listing', res.length, 'posts');
 		return res;
-	},
+	}
 );
