@@ -1,0 +1,143 @@
+@use '../symbols' as *
+//@import '../ReactionButton/ReactionButton.module'
+
+.DynamicPost
+	text-align: left
+	appearance: none
+	//border-left: 2px solid transparentize(white, .8)
+	//box-shadow: inset 0 0 10px 0 white
+	//border-radius: 20px
+	//cursor: pointer
+	background: transparent
+	font: inherit
+	color: inherit
+	display: block
+	width: 100%
+	padding-top: 10px
+	padding-bottom: 10px
+	//padding-left: 10px
+	//margin-top: 20px
+	transition: .25s
+	transition-delay: 0s
+	//user-select: none
+	//background: linear-gradient(90deg, transparentize(white, .9), transparent)
+	position: relative
+	box-shadow: inset 0 0 80px 0 transparent
+	&:not(:first-child)
+		border-top: 1px solid #FFFFFF33
+	.sep
+		margin-top: 10px
+		border-bottom: 1px solid #ffffff33
+	> span:first-child
+		margin-left: 5px
+	+ .DynamicPost
+		//margin-top: 5px
+	&[href]
+		cursor: pointer
+		&:hover:not(:has(button:hover))
+			box-shadow: inset 0 0 80px 0 #FFFFFF1A
+	//    text-shadow: 0 0 5px black
+	//&:disabled
+	//    pointer-events: none
+	//    opacity: .5
+	p
+		margin: 0
+		// top: -4px
+		display: block
+		position: relative
+		word-break: break-word
+		overflow: auto
+p.body
+	padding-top: 10px
+	a, span.fakelink
+		text-decoration: none
+		color: pink !important
+		font-weight: bold
+		transition: $transition-duration color
+		&:hover
+			color: hotpink
+
+.pp
+	vertical-align: top
+//h1
+//    font-size: 1.5em
+.text
+	display: inline-block
+	margin-left: 10px
+	width: calc(100% - 100px)
+	.username
+		margin-left: -5px
+		top: -7px
+
+.replied, .echoed
+	opacity: .4
+	pointer-events: none
+.hatchInset
+	//outline: 1px solid red
+	position: absolute
+	top: 0
+	left: 0
+	bottom: 0
+	div
+		//back
+.echoed
+	padding-left: 30px
+	//border-left: $border
+.brief
+	font-size: 2em
+	margin-top: -10px !important
+	font-weight: 400
+.attachments
+	margin-top: 5px
+	span
+		display: inline-block
+		img
+			border-radius: 10px
+			height: auto
+			max-height: calc(100vh - 200px)
+.two, .four, .three span +
+	span
+		width: calc(50% - 5px)
+		margin-top: 5px
+		+ span
+			margin-left: 10px
+.three
+	span
+.four span:nth-child(3)
+	margin-left: 0
+.five
+	span
+		width: calc(50% - 5px)
+		&:nth-child(2)
+			margin-left: 10px
+		+ span + span
+			margin-top: 5px
+			width: calc(33.33% - 6.66px)
+			+ span
+				margin-left: 10px
+.eight, .nine
+	span
+		margin-top: 10px
+		width: calc(33.33% - 6.66px)
+		&:not(:nth-child(3n+1))
+			margin-left: 10px
+
+.delete
+	position: absolute
+	display: inline-block
+	width: auto
+	top: 10px
+	right: 10px
+
+.PostStats
+	position: absolute
+	top: 5px
+	right: 0
+//float: right
+
+//@media screen and (max-width: 700px)
+.PostStats
+	position: relative
+	display: block
+	> span
+		width: 25%

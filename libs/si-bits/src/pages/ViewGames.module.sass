@@ -1,0 +1,40 @@
+.game
+	position: relative
+	*
+		pointer-events: none
+	> *:first-child, label
+		transition: .25s
+	&:hover
+		> *:first-child
+			opacity: .25
+		label
+			opacity: 1
+	label
+		opacity: 0
+		font-size: 20px
+		position: absolute
+		left: 0
+		top: 50%
+		transform: translateY(-50%)
+		right: 0
+		text-shadow: 0 0 10px black
+		color: white
+	div
+		font-size: .8em
+.planned, .maintenance, .wip
+	opacity: 0.5
+	&::after
+		display: block
+		position: absolute
+		bottom: 10px
+		right: 6px
+		border-radius: 5px
+		background: red
+		padding: 5px
+		font-weight: bold
+.planned::after
+	content: 'Planned'
+.maintenance::after
+	content: 'Maintenance'
+.wip::after
+	content: 'WIP'

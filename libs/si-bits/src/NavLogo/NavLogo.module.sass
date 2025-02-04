@@ -1,0 +1,37 @@
+@use '../symbols' as *
+
+.NavLogo
+	display: inline-block
+	//height: 1.5em
+	//float: left
+	filter: drop-shadow(0 0 5px black) drop-shadow(0 0 10px black)
+	margin-top: -3px
+	//padding: 4px
+	transition: .25s margin-left
+	//@media screen and (min-width: 660px)
+	//    margin-left: -15px
+	padding: 4px !important
+	img
+		filter: sepia(100%) saturate(1000%) hue-rotate(-70deg)
+		margin-top: -2px
+		height: 30px
+		width: 30px
+		transition-duration: $transition-duration
+		//height: 100%
+	&:hover img
+		filter: sepia(0%) saturate(1000%) hue-rotate(-70deg)
+
+@function oklab-rainbow($hue)
+	$hue: $hue % 360
+	$saturation: 15%
+	$lightness: 65%
+
+	@return hsl($hue, $saturation, $lightness)
+
+@keyframes rainbow-animation
+	@for $i from 0 through 100
+		#{$i}%
+			fill: oklab-rainbow($i * 3.6)
+
+.rainbow
+	animation: rainbow-animation 5s linear infinite

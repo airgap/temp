@@ -31,6 +31,7 @@
 			"@lyku/mapi-types": ["dist/libs/mapi-types.d.ts"],
 			"@lyku/phrasebooks": ["libs/phrasebooks/src/index.ts"],
 			"@lyku/route-helpers": ["libs/route-helpers/src/index.ts"],
+			"@lyku/si-bits": ["libs/si-bits/src/index.ts"],
 			"@lyku/stats": ["dist/libs/stats"],
 			"@lyku/stock-docs": ["libs/stock-docs/src/index.ts"],
 			"@lyku/strings": ["libs/strings/src/index.ts"],

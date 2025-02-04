@@ -1,0 +1,93 @@
+@use '../symbols' as *
+.DesktopNavContainer
+	z-index: 1
+	width: 100%
+	margin-bottom: 50px
+	text-align: center
+	position: fixed
+@media screen and (max-width: calc($nav-break - 1px))
+	.DesktopNavContainer
+		display: none
+.DesktopNavSpacer
+	height: 75px
+.InnerDesktopNav
+	top: 0
+	//font-family: Gumzilla
+	// z-index: 2
+	color: white
+	height: 2rem
+	width: 100%
+	max-width: max($ideal-width, $nav-break)
+	margin-left: auto
+	margin-right: auto
+	text-align: left
+	padding: 5px
+	transition: .25s margin-right
+	// overflow: hidden
+	//letter-spacing: .1em
+	//@media screen and (min-width: 660px)
+	//  margin-right: 0px
+	> div
+		overflow: hidden
+		// height: 45px
+		height: 80px
+		top: -20px
+		left: -20px
+		right: -20px
+
+		filter: blur(10px)
+		> img
+			height: calc(100vh + 20px)
+			position: relative
+			background-size: cover
+			background-position-y: top
+			filter: blur(0)
+			// top: -20px
+			object-fit: cover
+			margin-left: 0
+	> *
+		vertical-align: top
+	> a, button
+		vertical-align: top
+		padding: 8px
+	a
+		font-weight: 600 !important
+		span
+			vertical-align: bottom
+			img
+				//border-radius: 25%
+.cluster
+	float: right
+	display: inline-block
+	vertical-align: baseline
+	> *
+		vertical-align: baseline
+	span:last-of-type
+		a:last-of-type
+			padding-left: 0
+			padding-right: .5px
+.welcome
+	//padding: 2px
+	//display: inline-block
+	padding: 0
+	margin: 0
+	margin-left: 10px
+	align-content: center
+	a > span
+		//display: inline-block
+		margin-top: 3px
+		&:last-child
+			margin-bottom: -2px
+	*
+		vertical-align: center
+	a
+		//margin-top: -2px
+		padding-top: 2px !important
+		//background: red
+		align-content: center
+		+ *
+			margin-left: 5px
+.badgeHolder
+	display: inline-block
+	margin-top: -5px
+	vertical-align: middle

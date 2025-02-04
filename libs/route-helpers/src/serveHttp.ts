@@ -31,22 +31,45 @@ export const serveHttp = async ({
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
+			const responseHeaders = new Headers();
+			responseHeaders.set('Access-Control-Allow-Origin', '*');
+			responseHeaders.set('Content-Type', 'application/x-msgpack');
+			responseHeaders.set(
+				'Access-Control-Allow-Methods',
+				'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+			);
+			responseHeaders.set(
+				'Access-Control-Allow-Headers',
+				'Content-Type, Authorization'
+			);
+
+			if (req.method === 'OPTIONS') {
+				return new Response(null, {
+					status: 204,
+					headers: responseHeaders,
+				});
+			}
+
 			const needsAuth = model.authenticated;
 			// HTTP handler
 			if (req.url.endsWith('/health')) {
 				console.log('Health check');
-				return new Response(':D', { status: 200 });
+				return new Response(':D', { status: 200, headers: responseHeaders });
 			}
 			console.log('req', req.url);
 
 			const auth = req.headers.get('authorization');
 			if (needsAuth && !auth)
-				return new Response('Unauthorized', { status: 401 });
+				return new Response('Unauthorized', {
+					status: 401,
+					headers: responseHeaders,
+				});
 
 			const sessionId = auth?.substring(7);
 			if (needsAuth && !sessionId)
 				return new Response('SessionId required but not provided', {
 					status: 403,
+					headers: responseHeaders,
 				});
 
 			const session = sessionId
@@ -58,7 +81,10 @@ export const serveHttp = async ({
 				: null;
 
 			if (needsAuth && !session)
-				return new Response('Invalid session', { status: 403 });
+				return new Response('Invalid session', {
+					status: 403,
+					headers: responseHeaders,
+				});
 
 			const methodHasBody =
 				'method' in model && methodsWithBody.includes(model.method);
@@ -77,15 +103,11 @@ export const serveHttp = async ({
 						`Request "${stringifyBON(params)}" failed validation ${stringifyBON(
 							model.request
 						)} due to ${e}`,
-						{ status: 400 }
+						{ status: 400, headers: responseHeaders }
 					);
 				}
 			}
 			const phrasebook = getDictionary(req);
-
-			const responseHeaders = new Headers();
-			responseHeaders.set('Access-Control-Allow-Origin', '*');
-			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			try {
 				const output = (await execute(params ?? {}, {
 					db,

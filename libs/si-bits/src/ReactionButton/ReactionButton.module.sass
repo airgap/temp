@@ -1,0 +1,74 @@
+@use '../symbols' as *
+
+.Reaction
+	text-align: center
+	display: inline-block
+	vertical-align: middle
+	padding-left: 15px
+	padding-right: 20px
+	color: #FFFFFF80
+	transition: $transition-duration
+	button
+		&:disabled
+			opacity: .25
+			pointer-events: none
+		&:hover
+			//box-shadow: inset 0 0 80px 0 transparentize(white, .9)
+			svg
+				transform: scale(1.25)
+				//opacity: .75
+	svg
+		height: 1.5em
+		opacity: .75
+		margin-bottom: -4px
+		transition: $transition-duration
+		path
+			transition: $transition-duration
+	> *
+		display: inline-block
+		vertical-align: middle
+	span
+		margin-left: 12px
+	+ .Reaction
+		border-left: 1px solid $border-color
+	//button
+	//	display: block
+	//	font-family: inherit
+	//	font-size: inherit
+	//	color: transparentize(white, .25)
+	//	font-weight: bold
+	//	border: none
+	//	background: transparent
+	//	cursor: pointer
+//transform: scale(1.1)
+body.theme-term
+	.Reaction
+		button
+			&::before
+				content: '['
+				margin-right: 1px
+			&::after
+				content: ']'
+				margin-left: 1px
+			&:hover
+				&::before
+					margin-right: 3px
+					margin-left: -2px
+				&::after
+					margin-left: 3px
+					margin-right: -2px
+//.Vertical
+.like button:hover
+	filter: drop-shadow(0 0 10px #ffeded)
+	path
+		stroke: #ff6868 !important
+		fill: #ff6868 !important
+//.reply button:hover path
+//	stroke: #29cb92 !important
+//.echo button:hover path
+//	stroke: #9b79ff !important
+.reply, .echo, .share
+	button:hover
+		filter: drop-shadow(0 0 10px #ffffd2)
+		path
+			stroke: yellow !important

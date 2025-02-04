@@ -1,0 +1,57 @@
+$size: 64px
+.Loading
+  position: absolute
+  margin-top: calc(50% - 32px)
+  margin-left: calc(50% - 41px)
+  width: $size
+  height: $size
+  transition: .5s opacity
+  opacity: .5
+  &:not(.visible)
+    opacity: 0
+  div
+    width: $size
+    height: $size
+    mix-blend-mode: exclusion
+    animation: rotatron 5s linear infinite both
+    //background: black
+    outline: 16px solid white
+    border-radius: 4px
+    &.s10
+      animation-duration: 4.75s
+    &.s20
+      animation-duration: 4.5s
+    &.s30
+      animation-duration: 4.25s
+    &.s40
+      animation-duration: 4s
+    &.s50
+      animation-duration: 3.75s
+    &.s60
+      animation-duration: 3.5s
+    &.s70
+      animation-duration: 3.25s
+    &.s80
+      animation-duration: 3s
+    &.s90
+      animation-duration: 2.75s
+@keyframes rotatron
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(180deg)
+@keyframes revertatron
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(-180deg)
+.floating
+  //left: 50%
+  //transform: translate(-50%, -50%)
+  top: 10px
+  left: 10px
+  transform: scale(50%)
+  opacity: 1
+  filter: drop-shadow(0 0 20px black)
+// .reverse div
+//   animation: revertatron 5s linear infinite both !important

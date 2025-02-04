@@ -1,0 +1,90 @@
+@use '../symbols' as *
+
+.ImageUpload
+	display: inline-block
+	text-align: center
+	position: relative
+	.buttons
+		position: absolute
+		bottom: -3px
+		right: -4px
+	button, label
+		// box-shadow: 0 0 2px black, 0 0 5px black, 0 0 10px black, 0 0 20px black, 0 0 40px black, 0 0 60px black
+		color: white
+		opacity: 1
+		font-size: 0px
+		&:hover
+			opacity: 1
+		img
+			width: 25px
+			filter: drop-shadow(0 0 8px black) drop-shadow(0 0 16px black) drop-shadow(0 0 32px black)
+	&.working,
+	&.succeeded
+		img:not(.Success)
+			filter: blur(10px)
+	img, video
+		object-fit: cover
+		align-content: center
+		margin-left: 50%
+		transform: translate(-50%)
+.fileInput, input[type=submit]
+	display: none
+//label[for]
+//  display: block
+//  width: 200px
+.buttons
+	margin-top: -4px
+	//transform: translateY(-100%)
+	text-align: right
+	label[for], button
+		display: inline-block
+		text-align: center
+		border: none
+		box-shadow: none
+		//float: right
+		width: auto
+		margin-top: 0
+		text-shadow: 0 0 5px black, 0 0 10px black
+		font-size: .9em
+		padding: 5px
+		&:hover
+			text-shadow: 0 0 5px white, 0 0 10px black
+			box-shadow: none
+			transform: scale(1.1)
+.attachmentImage
+	margin-top: 10px
+	$s: 150px
+	width: $s
+	height: $s
+	background: #00000077
+	img
+		width: $s
+		height: $s
+		border-radius: 10px
+	overflow: hidden
+	position: relative
+	display: inline-block
+	-webkit-mask-box-image: $squircle
+	-webkit-mask-size: cover
+	&::after
+		top: 0
+		left: 0
+		position: absolute
+		width: $s
+		height: $s
+		content: ' '
+		display: inline-block
+		box-shadow: inset 0 0 30px black
+		border-radius: 10px
+
+	// margin: 10px
+	+ .attachmentImage
+		margin-left: 10px
+.Success
+	bottom: 0
+	left: 0
+	transform: scale(.25)
+	position: absolute
+	filter: drop-shadow(0 0 10px black) drop-shadow(0 0 20px black)
+	&:not(.visible)
+		transform: scale(0)
