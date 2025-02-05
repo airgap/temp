@@ -1,1 +1,1 @@
-export * from './MatchInfo';
+export * from './MatchInfo.svelte';

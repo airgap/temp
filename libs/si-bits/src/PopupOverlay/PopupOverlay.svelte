@@ -1,0 +1,28 @@
+<script lang="ts">
+  import styles from './PopupOverlay.module.sass';
+  import { PopupBox } from './PopupBox';
+  import { bind, unbind } from '../bind';
+  import { onMount, onDestroy } from 'svelte';
+
+  let shown = false;
+  const overlay = String(Math.random()).substring(2);
+
+  const showHandler = () => shown = true;
+  const hideHandler = () => shown = false;
+
+  onMount(() => {
+    bind(window, `show${overlay}`, showHandler);
+    bind(window, `hide${overlay}`, hideHandler);
+  });
+
+  onDestroy(() => {
+    unbind(window, `show${overlay}`, showHandler);
+    unbind(window, `hide${overlay}`, hideHandler);
+  });
+</script>
+
+<div class={`${styles.WinOverlay} ${shown ? 'shown' : ''}`}>
+  <PopupBox {overlay}>
+    <slot />
+  </PopupBox>
+</div> 

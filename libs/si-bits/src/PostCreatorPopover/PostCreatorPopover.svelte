@@ -1,0 +1,28 @@
+<script lang="ts">
+  import { Close } from '../Close';
+  import { PostCreator } from '../PostCreator';
+  import type { Post } from '@lyku/json-models';
+  import { listen, shout } from '../Sonic';
+  import styles from './PostCreatorPopover.module.sass';
+  import { useCurrentUser } from '../currentUserStore';
+
+  let echoing: Post | undefined;
+  const user = useCurrentUser();
+
+  listen('echo', (post) => {
+    echoing = post;
+  });
+</script>
+
+{#if user && echoing}
+  <div class={styles.PostCreatorPopover}>
+    <div>
+      <Close
+        on:click={() => {
+          shout('echo', undefined);
+        }}
+      />
+      <PostCreator showInset={true} user={user} echo={echoing?.id} />
+    </div>
+  </div>
+{/if} 

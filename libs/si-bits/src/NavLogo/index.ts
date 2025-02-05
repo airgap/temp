@@ -1,1 +1,1 @@
-export * from './NavLogo';
+export * from './NavLogo.svelte';

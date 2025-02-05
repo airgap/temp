@@ -1,1 +1,1 @@
-export * from './ReactionButton';
+export * from './ReactionButton.svelte';

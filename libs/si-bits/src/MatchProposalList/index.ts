@@ -1,1 +1,1 @@
-export * from './MatchProposalList';
+export * from './MatchProposalList.svelte';

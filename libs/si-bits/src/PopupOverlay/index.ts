@@ -1,1 +1,1 @@
-export * from './PopupOverlay';
+export * from './PopupOverlay.svelte';

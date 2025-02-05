@@ -1,1 +1,1 @@
-export * from './Tv';
+export * from './Tv.svelte';

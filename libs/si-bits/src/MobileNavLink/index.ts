@@ -1,1 +1,1 @@
-export * from './MobileNavLink';
+export * from './MobileNavLink.svelte';

@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@msgpack/msgpack": "^3.0.0-beta3",
 		"@nats-io/transport-node": "^3.0.0-35",
+		"@tinymce/tinymce-svelte": "^3.0.0",
 		"cheerio": "^1.0.0",
 		"cli-cursor": "^5.0.0",
 		"kysely": "^0.27.5",

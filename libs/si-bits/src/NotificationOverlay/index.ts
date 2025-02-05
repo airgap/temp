@@ -1,1 +1,1 @@
-export * from './NotificationOverlay';
+export * from './NotificationOverlay.svelte';

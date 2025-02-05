@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import classnames from 'classnames';
 
   export let disabled: boolean = false;
@@ -7,34 +6,39 @@
   export let href: string | undefined = undefined;
   export let target: string | undefined = undefined;
 
-  const dispatch = createEventDispatcher();
-
-  function handleClick(event: MouseEvent) {
-    dispatch('click', event);
-  }
-
   $: classes = classnames('link', className);
+
+  // Add security check for external links
+  $: rel = target === '_blank' ? 'noopener noreferrer' : undefined;
 </script>
 
 {#if href}
   <a
     {href}
     {target}
+    {rel}
     class={classes}
     aria-disabled={disabled}
-    on:click={handleClick}
+    on:click
     on:mouseover
     on:focus
+    on:mouseenter
+    on:mouseleave
+    on:keydown
   >
     <slot />
   </a>
 {:else}
   <button
+    type="button"
     class={classes}
     {disabled}
-    on:click={handleClick}
+    onclick
     on:mouseover
     on:focus
+    on:mouseenter
+    on:mouseleave
+    on:keydown
   >
     <slot />
   </button>
@@ -42,10 +46,16 @@
 
 <style lang="sass">
   .link
-    // Add your styles here, migrated from Link.module.sass
     cursor: pointer
     text-decoration: none
     
     &:disabled
       cursor: not-allowed
+    
+    &:hover:not(:disabled)
+      text-decoration: underline
+    
+    &:focus
+      outline: 2px solid currentColor
+      outline-offset: 2px
 </style> 

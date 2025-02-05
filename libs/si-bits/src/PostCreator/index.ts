@@ -1,1 +1,1 @@
-export * from './PostCreator';
+export * from './PostCreator.svelte';
