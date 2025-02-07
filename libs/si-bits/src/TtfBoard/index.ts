@@ -1,1 +1,1 @@
-export * from './TtfBoard';
+export { default as TtfBoard } from './TtfBoard.svelte';

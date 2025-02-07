@@ -1,1 +1,1 @@
-export * from './TvFrame.svelte';
+export { default as TvFrame } from './TvFrame.svelte';

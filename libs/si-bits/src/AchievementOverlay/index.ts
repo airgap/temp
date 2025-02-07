@@ -1,1 +1,1 @@
-export * from './AchievementOverlay';
+export { default as AchievementOverlay } from './AchievementOverlay.svelte';

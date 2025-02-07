@@ -1,14 +1,13 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { group } from '@lyku/json-models';
-const { integer, string } = jsonPrimitives;
 
 export const listGroupsUnauthenticated = {
 	request: {
 		type: 'object',
 		properties: {
-			substring: string,
-			skip: integer,
-			limit: integer,
+			substring: { type: 'string', maxLength: 100 },
+			skip: { type: 'integer', minimum: 0 },
+			limit: { type: 'integer', minimum: 1, maximum: 200 },
 		},
 		required: [],
 	},

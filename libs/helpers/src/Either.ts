@@ -1,3 +1,3 @@
-import { Only } from './Only';
+import type { Only } from './Only';
 
 export type Either<T, U> = Only<T, U> | Only<U, T>;

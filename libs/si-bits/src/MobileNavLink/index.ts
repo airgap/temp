@@ -1,1 +1,1 @@
-export * from './MobileNavLink.svelte';
+export { default as MobileNavLink } from './MobileNavLink.svelte';

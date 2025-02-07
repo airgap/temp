@@ -1,4 +1,4 @@
-import { TsonHandlerModel, BigIntTsonSchema } from 'from-schema';
+import type { TsonHandlerModel, BigIntTsonSchema } from 'from-schema';
 import { post } from '@lyku/json-models';
 
 const request = {

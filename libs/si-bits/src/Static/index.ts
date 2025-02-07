@@ -1,1 +1,1 @@
-export * from './Static';
+export { default as Static } from './Static.svelte';

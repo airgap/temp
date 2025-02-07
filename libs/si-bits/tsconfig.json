@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "ESNext",
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"importHelpers": true,
@@ -9,7 +9,8 @@
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true,
-		"types": ["svelte", "svelte/svelte-types", "./src/types.d.ts"]
+		"types": ["svelte"],
+		"verbatimModuleSyntax": true
 	},
 	"files": [],
 	"include": ["src"],

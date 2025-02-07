@@ -1,4 +1,4 @@
-import { Vector } from './Vector';
+import type { Vector } from './Vector';
 
 export const limitVectorMagnitude = (
 	vector: Vector,

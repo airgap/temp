@@ -1,1 +1,1 @@
-export * from './Aerial';
+export { default as Aerial } from './Aerial.svelte';

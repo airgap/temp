@@ -1,16 +1,15 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { game } from '@lyku/json-models';
-const { uid, boolean, string } = jsonPrimitives;
 
 export const listGames = {
 	request: {
 		type: 'object',
 		properties: {
-			internal: { ...boolean, description: 'Only games made internally' },
-			developer: uid,
-			hint: string,
-			mine: boolean,
-			publisher: uid,
+			internal: { type: 'boolean', description: 'Only games made internally' },
+			developer: { type: 'bigint' },
+			hint: { type: 'string', maxLength: 100 },
+			mine: { type: 'boolean' },
+			publisher: { type: 'bigint' },
 		},
 		required: [],
 	},

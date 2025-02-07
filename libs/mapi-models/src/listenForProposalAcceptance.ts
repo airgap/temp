@@ -1,12 +1,11 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { ttfMatch } from '@lyku/json-models';
-const { uid } = jsonPrimitives;
 
 export const listenForProposalAcceptance = {
 	request: {
 		type: 'object',
 		properties: {
-			id: uid,
+			id: { type: 'bigint' },
 		},
 		required: ['id'],
 	},

@@ -1,4 +1,4 @@
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { document } from '@lyku/json-models';
 
 export const getDocuments = {

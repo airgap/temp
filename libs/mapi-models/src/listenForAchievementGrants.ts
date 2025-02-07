@@ -1,6 +1,5 @@
-import { TsonHandlerModel } from 'from-schema';
-import { achievementGrant } from '@lyku/json-models';
-import { game } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import { achievementGrant, game } from '@lyku/json-models';
 
 export const listenForAchievementGrants = {
 	request: {

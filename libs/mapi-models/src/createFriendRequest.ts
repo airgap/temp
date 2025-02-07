@@ -1,6 +1,5 @@
-import { TsonHandlerModel } from 'from-schema';
-import { idBond } from '@lyku/json-models';
-import { user } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import { idBond, user } from '@lyku/json-models';
 
 export const createFriendRequest = {
 	request: user.properties.id,

@@ -1,1 +1,1 @@
-export * from './ShowTos';
+export { default as ShowTos } from './ShowTos.svelte';

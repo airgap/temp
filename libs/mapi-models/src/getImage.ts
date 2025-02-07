@@ -1,5 +1,5 @@
+import type { TsonHandlerModel } from 'from-schema';
 import { imageDoc } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
 
 export const getImage = {
 	request: { type: 'bigint' },

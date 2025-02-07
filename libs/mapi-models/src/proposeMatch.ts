@@ -1,7 +1,7 @@
 import { matchProposal } from '@lyku/json-models';
 import { user } from '@lyku/json-models';
 import { game } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 
 export const proposeMatch = {
 	request: {

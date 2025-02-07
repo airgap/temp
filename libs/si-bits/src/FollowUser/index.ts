@@ -1,1 +1,1 @@
-export * from './FollowUser';
+export { default as FollowUser } from './FollowUser.svelte';

@@ -6,7 +6,7 @@ import {
 	bio,
 	userId,
 } from '@lyku/json-models';
-import { TsonHandlerModel, ObjectTsonSchema } from 'from-schema';
+import type { TsonHandlerModel, ObjectTsonSchema } from 'from-schema';
 const properties = {
 	fgColor: hex,
 	bgColor: hex,

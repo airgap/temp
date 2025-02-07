@@ -47,7 +47,7 @@
         {@const theirId = toMe ? proposal.from : proposal.to}
         {@const them = users?.find((u) => u.id === theirId)}
         {#if !them}
-          <tr>They are absent</tr>
+          <tr><td>They are absent</td></tr>
         {:else}
           <tr>
             <td>
@@ -56,10 +56,12 @@
             <td style="vertical-align: top">
               <Divisio size="rs" layout="v">
                 <table style="font-size: .8em">
+                  <tbody>
                   <tr>
                     <td>You</td>
                     <td>{localizeUsername(them.username)}</td>
                   </tr>
+                </tbody>
                 </table>
                 {#if toMe}
                   <Divisio size="m" layout="h">

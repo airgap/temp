@@ -1,4 +1,4 @@
-import {
+import type {
 	FromTsonSchema,
 	TsonHandlerModel,
 	TsonSchema,
@@ -15,7 +15,7 @@ import { getCookie, setCookie } from './cookies';
 export { apiHost };
 export const protocol = local ? 'http' : 'https';
 
-import { MonolithTypes } from 'monolith-api-types';
+import type { MonolithTypes } from 'monolith-api-types';
 import { decode, encode } from '@msgpack/msgpack';
 
 type ContractName = keyof MonolithTypes;

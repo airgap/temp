@@ -8,7 +8,7 @@ import {
 	wa_GH,
 } from '@lyku/strings';
 import { blaze } from 'blazebook';
-import { PhrasebookMap } from 'blazebook/dist/Phrasebook';
+import type { PhrasebookMap } from 'blazebook/dist/Phrasebook';
 
 export const phrasebooks = {
 	'de-DE': de_DE_fallback,

@@ -1,6 +1,5 @@
-import { TsonHandlerModel } from 'from-schema';
-import { group } from '@lyku/json-models';
-import { groupMembership } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import { group, groupMembership } from '@lyku/json-models';
 
 export const getGroup = {
 	request: group.properties.id,

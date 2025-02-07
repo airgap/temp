@@ -1,1 +1,1 @@
-export * from './NotificationOverlay.svelte';
+export { default as NotificationOverlay } from './NotificationOverlay.svelte';

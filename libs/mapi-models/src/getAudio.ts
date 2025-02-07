@@ -1,5 +1,5 @@
+import type { TsonHandlerModel } from 'from-schema';
 import { audioDoc } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
 
 export const getAudio = {
 	request: { type: 'bigint' },

@@ -1,13 +1,11 @@
-import { user } from '@lyku/json-models';
 import { ttfMatch } from '@lyku/json-models';
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-const { boolean } = jsonPrimitives;
+import type { TsonHandlerModel } from 'from-schema';
 
 export const listTtfMatches = {
 	request: {
 		type: 'object',
 		properties: {
-			finished: boolean,
+			finished: { type: 'boolean' },
 		},
 		required: ['finished'],
 	},

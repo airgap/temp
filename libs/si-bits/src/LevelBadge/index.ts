@@ -1,1 +1,1 @@
-export * from './LevelBadge';
+export { default as LevelBadge } from './LevelBadge.svelte';

@@ -1,6 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { post } from '@lyku/json-models';
-const { uid, number } = jsonPrimitives;
 
 const listFeedFilter = {
 	enum: ['users', 'groups', 'all'],
@@ -31,7 +30,7 @@ export const listFeedPosts = {
 				type: 'array',
 				items: { type: 'string' },
 			},
-			before: number,
+			before: { type: 'date' },
 			count: {
 				type: 'integer',
 				minimum: 1,

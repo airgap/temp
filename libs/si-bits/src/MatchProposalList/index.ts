@@ -1,1 +1,1 @@
-export * from './MatchProposalList.svelte';
+export { default as MatchProposalList } from './MatchProposalList.svelte';

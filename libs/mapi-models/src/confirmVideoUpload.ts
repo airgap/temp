@@ -1,4 +1,4 @@
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 
 export const confirmVideoUpload = {
 	request: { type: 'string' },

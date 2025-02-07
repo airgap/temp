@@ -1,7 +1,6 @@
-import { ReactNode } from 'react';
-import { Post, SessionId } from '@lyku/json-models';
+import type { Post, SessionId } from '@lyku/json-models';
 
-export type ShowAuthEvent = ReactNode;
+export type ShowAuthEvent = 'login' | 'register';
 export type SubmitClicked = Record<string, never>;
 export type ShowTosEvent = Record<string, never>;
 export type ProfilePictureChanged = string;

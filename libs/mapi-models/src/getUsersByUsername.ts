@@ -1,6 +1,5 @@
-import { username } from '@lyku/json-models';
-import { user } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
+import { username, user } from '@lyku/json-models';
 
 export const getUsersByUsername = {
 	request: {

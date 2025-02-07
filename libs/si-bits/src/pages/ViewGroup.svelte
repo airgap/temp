@@ -1,0 +1,30 @@
+<script lang="ts">
+    import { api, sessionId } from 'monolith-ts-api';
+    import { PostList } from '../PostList.svelte';
+    import { getContext } from 'svelte';
+    import { Await } from 'awaitx';
+
+    // Get groupId from URL path
+    const groupId = window.location.pathname.split('/g/')?.[1];
+    
+    // Get cache from context
+    const cache: any = getContext('cache');
+    $: group = $cache?.groups?.[groupId];
+
+    // Create posts promise
+    const postsPromise = sessionId
+        ? api.listFeedPosts({ groups: [BigInt(groupId)] })
+        : api.listFeedPostsUnauthenticated({ groups: [BigInt(groupId)]});
+</script>
+
+{#if group}
+    <h2>{group.name}</h2>
+{/if}
+
+{#await postsPromise}
+    <p>Loading posts...</p>
+{:then posts}
+    <PostList {posts} />
+{:catch error}
+    <p>Error loading posts: {error.message}</p>
+{/await} 

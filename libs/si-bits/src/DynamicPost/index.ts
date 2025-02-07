@@ -1,1 +1,1 @@
-export * from './DynamicPost';
+export { default as DynamicPost } from './DynamicPost.svelte';

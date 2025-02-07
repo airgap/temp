@@ -1,5 +1,5 @@
 import { ttfMatch } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 
 export const listenForTtfPlays = {
 	request: ttfMatch.properties.id,

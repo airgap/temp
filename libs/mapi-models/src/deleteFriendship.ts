@@ -1,5 +1,4 @@
-import { TsonHandlerModel } from 'from-schema';
-import { friendshipStatus } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
 import { user } from '@lyku/json-models';
 
 export const deleteFriendship = {

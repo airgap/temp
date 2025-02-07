@@ -5,6 +5,7 @@ import * as path from 'path';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import preprocess from 'svelte-preprocess';
 
 export default defineConfig({
 	root: __dirname,
@@ -16,7 +17,9 @@ export default defineConfig({
 			entryRoot: 'src',
 			tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
 		}),
-		svelte(),
+		svelte({
+			preprocess: preprocess(),
+		}),
 	],
 	// Uncomment this if you are using workers.
 	// worker: {

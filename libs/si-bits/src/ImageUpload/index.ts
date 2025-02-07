@@ -1,1 +1,1 @@
-export * from './ImageUpload';
+export { default as ImageUpload } from './ImageUpload.svelte';

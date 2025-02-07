@@ -1,1 +1,1 @@
-export * from './Screensaver';
+export { default as Screensaver } from './Screensaver.svelte';

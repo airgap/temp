@@ -1,13 +1,12 @@
 import { channel } from '@lyku/json-models';
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-const { string, uid } = jsonPrimitives;
+import type { TsonHandlerModel } from 'from-schema';
 
 export const setChannelLogo = {
 	request: {
 		type: 'object',
 		properties: {
-			data: string,
-			channel: uid,
+			data: { type: 'string' },
+			channel: { type: 'bigint' },
 		},
 		required: ['data', 'channel'],
 	},

@@ -1,1 +1,1 @@
-export * from './TvBox.svelte';
+export { default as TvBox } from './TvBox.svelte';

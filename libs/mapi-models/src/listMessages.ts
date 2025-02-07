@@ -1,6 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { message } from '@lyku/json-models';
-const { uid } = jsonPrimitives;
 
 export const listMessages = {
 	request: {

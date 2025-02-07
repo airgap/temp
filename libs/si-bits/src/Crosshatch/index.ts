@@ -1,1 +1,1 @@
-export * from './Crosshatch';
+export { default as Crosshatch } from './Crosshatch.svelte';

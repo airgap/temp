@@ -1,7 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-import { sessionId } from '@lyku/json-models';
-import { password } from '@lyku/json-models';
-const { email } = jsonPrimitives;
+import type { TsonHandlerModel } from 'from-schema';
+import { sessionId, email, password } from '@lyku/json-models';
 
 export const loginUser = {
 	request: {

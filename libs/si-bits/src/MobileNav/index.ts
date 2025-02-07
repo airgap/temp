@@ -1,1 +1,1 @@
-export * from './MobileNav.svelte';
+export { default as MobileNav } from './MobileNav.svelte';

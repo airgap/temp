@@ -1,0 +1,45 @@
+<script lang="ts">
+  import { api } from 'monolith-ts-api';
+  import type { GameStatus } from '@lyku/json-models';
+  import { Thumbnail } from '../Thumbnail';
+  import { phrasebook } from '../phrasebook';
+  import styles from './ViewGames.module.sass';
+  import classNames from 'classnames';
+  import { sortGamesByPrecedence } from '../sortGamesByPrecedence';
+
+  // CSS classes for various game statuses
+  const statusClasses = {
+    planned: styles.planned,
+    wip: styles.wip,
+    ea: styles.ea,
+    ga: styles.ga,
+    maintenance: styles.maintenance,
+  } satisfies Record<GameStatus, string>;
+
+  let gamesPromise = api.listGames({}).then(sortGamesByPrecedence);
+</script>
+
+<div style="text-align: center">
+  {#await gamesPromise}
+    <p>Loading...</p>
+  {:then games}
+    {#each games as { id, homepage, title, status, thumbnail }}
+      <a
+        class={classNames(styles.game, statusClasses[status])}
+        {id}
+        style="display: inline-block; margin: 10px"
+        href={homepage}
+      >
+        <Thumbnail alt={title} url={thumbnail} />
+        <label for={id.toString()}>
+          {title}
+          {#if status !== 'ga'}
+            <div>[ {phrasebook[status]} ]</div>
+          {/if}
+        </label>
+      </a>
+    {/each}
+  {:catch error}
+    {String(error)}
+  {/await}
+</div> 

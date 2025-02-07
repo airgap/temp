@@ -1,5 +1,5 @@
 import { apiPorts } from '@lyku/defaults';
-import { FromBsonSchema } from 'from-schema';
+import type { FromBsonSchema } from 'from-schema';
 import { shortcode } from '@lyku/json-models';
 
 const { hostname } = window.location;

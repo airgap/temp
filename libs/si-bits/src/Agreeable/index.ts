@@ -1,1 +1,1 @@
-export * from './Agreeable';
+export { default as Agreeable } from './Agreeable.svelte';

@@ -1,1 +1,1 @@
-export * from './PopupOverlay.svelte';
+export { default as PopupOverlay } from './PopupOverlay.svelte';

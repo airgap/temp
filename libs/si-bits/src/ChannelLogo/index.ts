@@ -1,1 +1,1 @@
-export * from './ChannelLogo';
+export { default as ChannelLogo } from './ChannelLogo.svelte';

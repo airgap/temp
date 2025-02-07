@@ -1,1 +1,1 @@
-export * from './AuthOverlay';
+export { default as AuthOverlay } from './AuthOverlay.svelte';

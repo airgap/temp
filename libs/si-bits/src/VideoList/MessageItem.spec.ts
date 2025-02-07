@@ -11,8 +11,8 @@ describe('MessageItem', () => {
 				author: 1n,
 				channel: 1n,
 				created: new Date(),
-				}}
-		);
+			},
+		});
 		expect(baseElement).toBeTruthy();
 	});
 });

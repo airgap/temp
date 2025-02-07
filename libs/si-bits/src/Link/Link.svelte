@@ -33,7 +33,7 @@
     type="button"
     class={classes}
     {disabled}
-    onclick
+    on:click
     on:mouseover
     on:focus
     on:mouseenter

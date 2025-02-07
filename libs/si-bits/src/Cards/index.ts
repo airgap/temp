@@ -1,1 +1,1 @@
-export * from './Cards';
+export { default as Cards } from './Cards.svelte';

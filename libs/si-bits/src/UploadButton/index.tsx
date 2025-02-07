@@ -1,1 +1,1 @@
-export * from './UploadButton';
+export { default as UploadButton } from './UploadButton.svelte';

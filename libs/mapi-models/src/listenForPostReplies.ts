@@ -1,18 +1,16 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { post } from '@lyku/json-models';
-
-const { uid, number } = jsonPrimitives;
 
 export const listenForPostReplies = {
 	request: {
 		type: 'object',
 		properties: {
-			id: uid,
+			id: { type: 'bigint' },
 			tags: {
 				type: 'array',
-				items: uid,
+				items: { type: 'bigint' },
 			},
-			before: number,
+			before: { type: 'date' },
 		},
 		required: ['id'],
 	},

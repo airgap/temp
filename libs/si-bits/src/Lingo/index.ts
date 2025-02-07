@@ -1,1 +1,1 @@
-export * from './Lingo';
+export { default as Lingo } from './Lingo.svelte';

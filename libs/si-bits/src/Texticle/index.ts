@@ -1,1 +1,1 @@
-export * from './Texticle';
+export { default as Texticle } from './Texticle.svelte';

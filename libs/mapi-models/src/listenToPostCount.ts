@@ -1,8 +1,7 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-const { number } = jsonPrimitives;
+import type { TsonHandlerModel } from 'from-schema';
 
 export const listenToPostCount = {
-	response: number,
+	response: { type: 'bigint' },
 	stream: true,
 	authenticated: false,
 } as const satisfies TsonHandlerModel;

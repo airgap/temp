@@ -1,6 +1,5 @@
 // Sort games by how playable they are
-import { GameStatus } from '@lyku/json-models';
-import { Game } from '@lyku/json-models';
+import type { GameStatus, Game } from '@lyku/json-models';
 
 const statusPrecedence = {
 	ga: 1,

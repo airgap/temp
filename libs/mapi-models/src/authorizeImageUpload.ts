@@ -1,6 +1,5 @@
-import { TsonHandlerModel } from 'from-schema';
-import { imageDraft, imageUploadReason } from '@lyku/json-models';
-import { sessionId } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import { imageDraft, imageUploadReason, sessionId } from '@lyku/json-models';
 
 const request = {
 	// title: 'Image Upload Authorization Request',

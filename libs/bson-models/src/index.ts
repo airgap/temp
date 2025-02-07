@@ -15,6 +15,7 @@ export * from './channelId';
 // export * from './cloudflareVideoWatermark';
 export * from './developer';
 export * from './document';
+export * from './email';
 export * from './emptyResponse';
 export * from './error';
 export * from './expiration';

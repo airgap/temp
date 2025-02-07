@@ -1,1 +1,1 @@
-export * from './DesktopNav.svelte';
+export { default as DesktopNav } from './DesktopNav.svelte';

@@ -1,8 +1,12 @@
-import { attachmentMime, imageDraft, videoDraft } from '@lyku/json-models';
-import { error } from '@lyku/json-models';
-import { post } from '@lyku/json-models';
-import { postDraft } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
+import {
+	attachmentMime,
+	imageDraft,
+	videoDraft,
+	error,
+	post,
+	postDraft,
+} from '@lyku/json-models';
 
 export const draftPost = {
 	request: {

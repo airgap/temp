@@ -1,6 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { like, user, post } from '@lyku/json-models';
-const { number, uid } = jsonPrimitives;
 
 export const listHotPosts = {
 	request: {
@@ -8,13 +7,13 @@ export const listHotPosts = {
 		properties: {
 			groups: {
 				type: 'array',
-				items: uid,
+				items: { type: 'bigint' },
 			},
 			tags: {
 				type: 'array',
-				items: uid,
+				items: { type: 'bigint' },
 			},
-			before: number,
+			before: { type: 'date' },
 			limit: {
 				type: 'integer',
 				minimum: 1,

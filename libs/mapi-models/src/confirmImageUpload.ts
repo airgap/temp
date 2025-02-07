@@ -1,4 +1,4 @@
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { imageDraft } from '@lyku/json-models';
 
 export const confirmImageUpload = {

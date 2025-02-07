@@ -1,7 +1,10 @@
-import { TsonHandlerModel } from 'from-schema';
-import { game, matchProposalFilter } from '@lyku/json-models';
-import { matchProposal } from '@lyku/json-models';
-import { user } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import {
+	game,
+	matchProposalFilter,
+	matchProposal,
+	user,
+} from '@lyku/json-models';
 
 export const listMatchProposals = {
 	request: {

@@ -1,1 +1,1 @@
-export * from './Fof';
+export { default as Fof } from './Fof.svelte';

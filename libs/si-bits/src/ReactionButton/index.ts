@@ -1,1 +1,1 @@
-export * from './ReactionButton.svelte';
+export { default as ReactionButton } from './ReactionButton.svelte';

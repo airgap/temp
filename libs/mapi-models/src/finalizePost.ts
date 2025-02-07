@@ -1,14 +1,12 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { post } from '@lyku/json-models';
-
-const { string } = jsonPrimitives;
 
 export const finalizePost = {
 	request: {
 		type: 'object',
 		properties: {
 			id: { type: 'bigint' },
-			body: string,
+			body: { type: 'string', maxLength: post.properties.body.maxLength },
 		},
 		required: ['id'],
 	},

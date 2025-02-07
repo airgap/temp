@@ -10,25 +10,25 @@ describe('SubmitButton', () => {
 				username: 'fuck',
 				live: true,
 				chatColor: '#ff0099',
-					gameStats: {
-						total: {
-							time: 0,
-							edges: 0,
-							corners: 0,
-						},
-						current: {
-							time: 0,
-							edges: 0,
-							corners: 0,
-						},
-						highest: {
-							time: 0,
-							edges: 0,
-							corners: 0,
-						},
-						sessionCount: 0,
+				gameStats: {
+					total: {
+						time: 0,
+						edges: 0,
+						corners: 0,
 					},
-					points: 0n,
+					current: {
+						time: 0,
+						edges: 0,
+						corners: 0,
+					},
+					highest: {
+						time: 0,
+						edges: 0,
+						corners: 0,
+					},
+					sessionCount: 0,
+				},
+				points: 0n,
 				postCount: 0n,
 			},
 		});

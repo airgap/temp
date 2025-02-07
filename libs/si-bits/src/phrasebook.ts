@@ -1,4 +1,17 @@
-import { CompactedPhrasebook } from '@lyku/phrasebooks';
+import { type CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
+import { en_US } from '@lyku/strings';
+import { getCookie } from 'monolith-ts-api';
+
+export let language = getCookie('lang');
+let pb: CompactedPhrasebook | undefined;
+if (language) pb = getPhrasebook(language);
+else {
+	for (language of navigator.languages) {
+		pb = getPhrasebook(language);
+		if (pb) break;
+	}
+}
+if (!pb) pb = en_US;
 
 type Rule = [RegExp, (match: RegExpExecArray) => string];
 

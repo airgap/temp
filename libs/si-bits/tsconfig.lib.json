@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"outDir": "../../dist/out-tsc",
 		"declaration": true,
-		"types": ["node", "vite/client", "./src/types.d.ts"]
+		"types": ["node", "vite/client", "svelte"]
 	},
 	"include": ["src/**/*.ts", "src/**/*.svelte"],
 	"exclude": [

@@ -1,4 +1,4 @@
-import { Vector } from './Vector';
+import type { Vector } from './Vector';
 
 export const sumVectors = (v1: Vector, v2: Vector): Vector => {
 	// Convert polar coordinates to Cartesian coordinates

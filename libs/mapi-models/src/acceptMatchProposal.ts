@@ -1,6 +1,5 @@
-import { TsonHandlerModel } from 'from-schema';
-import { matchProposal } from '@lyku/json-models';
-import { ttfMatch } from '@lyku/json-models';
+import type { TsonHandlerModel } from 'from-schema';
+import { matchProposal, ttfMatch } from '@lyku/json-models';
 
 export const acceptMatchProposal = {
 	request: matchProposal.properties.id,

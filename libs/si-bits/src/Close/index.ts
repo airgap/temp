@@ -1,1 +1,1 @@
-export * from './Close';
+export { default as Close } from './Close.svelte';

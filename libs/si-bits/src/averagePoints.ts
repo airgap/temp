@@ -1,4 +1,4 @@
-import { Point2D } from './Point2D';
+import type { Point2D } from './Point2D';
 
 export const averagePoints = (
 	point1: Point2D,

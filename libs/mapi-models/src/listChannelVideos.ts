@@ -1,5 +1,5 @@
+import type { TsonHandlerModel } from 'from-schema';
 import { cloudflareVideoDoc, channelId } from '@lyku/json-models';
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
 
 export const listChannelVideos = {
 	request: {

@@ -1,1 +1,1 @@
-export * from './PostCreator.svelte';
+export { default as PostCreator } from './PostCreator.svelte';

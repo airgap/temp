@@ -1,1 +1,1 @@
-export * from './NavLogo.svelte';
+export { default as NavLogo } from './NavLogo.svelte';

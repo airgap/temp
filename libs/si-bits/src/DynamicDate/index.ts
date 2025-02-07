@@ -1,1 +1,1 @@
-export * from './DynamicDate';
+export { default as DynamicDate } from './DynamicDate.svelte';

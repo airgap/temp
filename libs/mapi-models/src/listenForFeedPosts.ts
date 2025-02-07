@@ -1,4 +1,4 @@
-import { EnumTsonSchema, TsonHandlerModel } from 'from-schema';
+import type { EnumTsonSchema, TsonHandlerModel } from 'from-schema';
 import { jsonPrimitives } from 'from-schema';
 import { post } from '@lyku/json-models';
 const { number, uid } = jsonPrimitives;

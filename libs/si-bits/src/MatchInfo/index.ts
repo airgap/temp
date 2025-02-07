@@ -1,1 +1,1 @@
-export * from './MatchInfo.svelte';
+export { default as MatchInfo } from './MatchInfo.svelte';

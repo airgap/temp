@@ -1,1 +1,1 @@
-export * from './Template';
+export { default as Template } from './Template.svelte';

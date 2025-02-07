@@ -48,7 +48,7 @@
 >
 	<div
 		class={styles.dropHeader}
-		on:click={() => dropped = !dropped}
+		onclick={() => dropped = !dropped}
 	>
 		<h2>Achievements</h2>
 		<label class={styles.dropper}>
@@ -68,4 +68,4 @@
 	{:else}
 		<h3>This game has no achievements yet -- check back soon!</h3>
 	{/if}
-</div>
+</button>

@@ -1,6 +1,5 @@
-import { channelName } from '@lyku/json-models';
-import { channel } from '@lyku/json-models';
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
+import { channelName, channel } from '@lyku/json-models';
 
 export const getMyChannel = {
 	request: {

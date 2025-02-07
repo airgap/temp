@@ -9,7 +9,7 @@ export const developer = {
 	properties: {
 		id: { type: 'bigint' },
 		homepage: { type: 'text' },
-		name: { type: 'text' },
+		name: { type: 'text', maxLength: 100 },
 		thumbnail: { type: 'text' },
 	},
 	required: ['id', 'name', 'homepage'],

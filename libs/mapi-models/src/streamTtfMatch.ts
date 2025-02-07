@@ -1,12 +1,11 @@
 import { ttfMatch } from '@lyku/json-models';
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
-const { uid } = jsonPrimitives;
+import type { TsonHandlerModel } from 'from-schema';
 
 export const streamTtfMatch = {
 	request: {
 		type: 'object',
 		properties: {
-			id: uid,
+			id: { type: 'bigint' },
 		},
 		required: ['id'],
 	},

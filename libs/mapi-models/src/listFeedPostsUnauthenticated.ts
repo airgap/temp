@@ -1,6 +1,5 @@
-import { TsonHandlerModel, jsonPrimitives } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { post } from '@lyku/json-models';
-const { uid, number } = jsonPrimitives;
 
 export const listFeedPostsUnauthenticated = {
 	request: {
@@ -16,9 +15,9 @@ export const listFeedPostsUnauthenticated = {
 			},
 			tags: {
 				type: 'array',
-				items: uid,
+				items: { type: 'string' },
 			},
-			before: number,
+			before: { type: 'date' },
 			count: {
 				type: 'integer',
 				minimum: 1,

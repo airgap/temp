@@ -7,37 +7,38 @@
   import hidden from '../hidden.module.sass';
   import styles from './AuthOverlay.module.sass';
 
-  const $state = {
+  let { form, loading } = $state({
     form: null as ComponentType | null,
     loading: false
-  };
+  });
 
   onMount(() => {
-    listen('showAuth', (newForm) => $state.form = newForm);
-    listen('submitClicked', () => $state.loading = true);
-    listen('formReplied', () => $state.loading = false);
+    listen('showAuth', (newForm) => form = newForm);
+    listen('submitClicked', () => loading = true);
+    listen('formReplied', () => loading = false);
   });
 </script>
 
 <div 
   class={classnames(styles.AuthOverlay, {
-    [hidden.hidden]: !$state.form
+    [hidden.hidden]: !form
   })}
 >
   <div class={styles.AuthForm}>
     <div 
       class={classnames(styles.interactives, {
-        [hidden.hidden]: $state.loading
+        [hidden.hidden]: loading
       })}
     >
       <button 
         class={styles.Close}
-        on:click={() => $state.form = null}
-      />
-      {#if $state.form}
-        <svelte:component this={$state.form} />
+        onclick={() => form = null}
+        aria-label="Close"
+      ></button>
+      {#if form}
+        {form}
       {/if}
     </div>
-    <LoadingOverlay shown={$state.loading} />
+    <LoadingOverlay shown={loading} />
   </div>
 </div> 

@@ -1,4 +1,4 @@
-import { TsonHandlerModel } from 'from-schema';
+import type { TsonHandlerModel } from 'from-schema';
 import { removeKeys } from '@lyku/helpers';
 import { notification } from '@lyku/json-models';
 const genericNotification = removeKeys(notification.properties, 'id', 'user');
