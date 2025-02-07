@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card } from '../Card/Card.svelte';
+  import { Card } from '../Card';
   import { Cardless } from '../Cardless';
   import styles from './Cards.module.sass';
 

@@ -14,9 +14,9 @@
   import { PostList } from '../PostList';
   import { ProfilePicture } from '../ProfilePicture';
   import { formImageUrl } from '../formImageUrl';
-  import { useCacheData, useCacheSingleton } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider';
   import { PostCreator } from '../PostCreator';
-  import { useCurrentUser } from '../currentUserStore';
+  // import { useCurrentUser } from '../currentUserStore';
   import { LikeButton } from '../LikeButton';
   import { EchoButton } from '../EchoButton';
   import { ReplyButton } from '../ReplyButton';
@@ -35,13 +35,13 @@
   let queriedReplies = false;
   let error: string | undefined;
   let showReplyer = false;
-  let me = useCurrentUser();
+  let me = cacheStore.currentUser;
 
   const urlRegex = /(?:(?:http|ftp|https):\/\/)?(?:[\w-]+(?:(?:\.[\w-]+)+))(?::\d{2,5})?[^ "]*/g;
   const stripLink = (url: string) => url.split(/:\/\//)[1].replace(/:[0-9]{2,5}/, '');
   const stripLinks = (body: string) => body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
-  $: [author] = useCacheSingleton('users', post.author);
+  $: [author] = cacheStore.users.get(post.author);
 
   $: {
     const [imageIds, videoIds, audioIds, documentIds] = 
@@ -153,7 +153,7 @@
   {/if}
 
   {#if showReplies && replies.length > 0}
-    <div class={styles.sep} />
+    <div class={styles.sep}></div>
     <PostList posts={replies} inset={1} />
   {/if}
 </span> 

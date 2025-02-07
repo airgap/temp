@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Editor } from '@tinymce/tinymce-svelte';
+  import { default as Editor } from '@tinymce/tinymce-svelte';
   import { safeTags } from '@lyku/helpers';
   import { api } from 'monolith-ts-api';
   import type {
@@ -20,37 +20,59 @@
   import chevvy from '../assets/chevvy.svg';
   import { phrasebook } from '../phrasebook';
   import styles from './PostCreator.module.sass';
-  import { useCacheSingleton } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider';
 
-  export let user: User;
-  export let reply: bigint | undefined = undefined;
-  export let echo: bigint | undefined = undefined;
-  export let showInset: boolean | undefined = undefined;
+  const { user, reply = undefined, echo = undefined, showInset = undefined } = $props<{
+    user: User;
+    reply?: bigint;
+    echo?: bigint; 
+    showInset?: boolean;
+  }>();
 
   let id: bigint | undefined;
   let body = '';
   let error: string | undefined;
-  let postable = false;
   let files: File[] = [];
   let imageDrafts: ImageDraft[] | undefined;
   let videoDrafts: VideoDraft[] | undefined;
   let pending = 0;
   let finalizing = false;
 
-  const [replyToPost] = useCacheSingleton('posts', reply);
-  const [echoPost] = useCacheSingleton('posts', echo);
+  const replyToPost = $derived(() => {
+    if (!reply) return undefined;
+    return cacheStore.caches.posts.get(reply);
+  });
 
-  $: submitText = echoPost
-    ? phrasebook.echo
-    : replyToPost
-    ? phrasebook.reply
-    : phrasebook.post;
+  const echoPost = $derived(() => {
+    if (!echo) return undefined;
+    return cacheStore.caches.posts.get(echo);
+  });
+
+  $effect(() => {
+    if (reply && !replyToPost) {
+      cacheStore.posts.fetch(reply);
+    }
+  });
+
+  $effect(() => {
+    if (echo && !echoPost) {
+      cacheStore.posts.fetch(echo);
+    }
+  });
+
+  const submitText = $derived(() => {
+    return echoPost
+      ? phrasebook.echo
+      : replyToPost
+      ? phrasebook.reply
+      : phrasebook.post;
+  });
 
   function clear() {
     id = undefined;
     body = '';
     error = undefined;
-    postable = false;
+    // postable = false;
     files = [];
     imageDrafts = [];
     videoDrafts = [];
@@ -58,7 +80,7 @@
     finalizing = false;
   }
 
-  $: {
+  $effect(() => {
     if (!pending && !finalizing && id) {
       console.log('Finalizing post', id);
       finalizing = true;
@@ -69,9 +91,11 @@
         clear();
       });
     }
-  }
+  });
 
-  $: postable = (files.length || body?.length > 0) && !error;
+  const postable = $derived(() => {
+    return (files.length || body?.length > 0) && !error;
+  });
 
   async function post() {
     console.log('submitting', body);
@@ -105,11 +129,13 @@
     pending -= 1;
   }
 
-  $: placeholder = echoPost
-    ? phrasebook.postBodyEchoPlaceholder
-    : replyToPost
-    ? phrasebook.postBodyReplyPlaceholder
-    : phrasebook.postBodyStandardPlaceholder;
+  const placeholder = $derived(() => {
+    return echoPost
+      ? phrasebook.postBodyEchoPlaceholder
+      : replyToPost
+      ? phrasebook.postBodyReplyPlaceholder
+      : phrasebook.postBodyStandardPlaceholder;
+  });
 
   function handleFileChange(e: Event) {
     const target = e.currentTarget as HTMLInputElement;

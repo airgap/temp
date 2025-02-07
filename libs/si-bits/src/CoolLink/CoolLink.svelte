@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Link from './Link.svelte';
+  import Link from '../Link/Link.svelte';
   import classNames from 'classnames';
   import styles from './CoolLink.module.sass';
   

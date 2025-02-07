@@ -1,7 +1,7 @@
 <script lang="ts">
   import { username } from '@lyku/json-models';
-  import Texticle from './Texticle.svelte';
-  import { phrasebook } from './phrasebook';
+  import {Texticle} from '../Texticle';
+  import { phrasebook } from '../phrasebook';
 
   export let props = {};
 </script>

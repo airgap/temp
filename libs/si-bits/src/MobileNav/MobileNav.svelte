@@ -10,10 +10,10 @@
   import play from '../assets/play.svg';
   import styles from './MobileNav.module.sass';
   import { ProfilePicture } from '../ProfilePicture';
-  import { useCurrentUser } from '../currentUserStore';
+  import { cacheStore } from '../CacheProvider';
 
   const showAuth = (form: any) => () => shout('showAuth', form);
-  const user = useCurrentUser();
+  const user = cacheStore.currentUser;
   let profile = user?.profilePicture;
 
   $: if (user) {

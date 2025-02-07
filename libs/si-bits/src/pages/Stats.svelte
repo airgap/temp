@@ -1,7 +1,7 @@
 <script lang="ts">
   import { pipe, components, revisions, cloc } from '@lyku/stats';
-  import { Center } from '../Center.svelte';
-  import { Divisio } from '../Divisio.svelte';
+  import { Center } from '../Center';
+  import { Divisio } from '../Divisio';
   import * as monolith from '@lyku/mapi-models';
   import { dbConfig } from '@lyku/db-config';
   import { phrasebook } from '../phrasebook';

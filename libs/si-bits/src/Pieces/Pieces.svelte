@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import O from './assets/o.png';
-  import X from './assets/x.png';
+  import O from '../assets/o.png';
+  import X from '../assets/x.png';
   import type { TtfMatch } from '@lyku/json-models';
 
   const images = { O, X };

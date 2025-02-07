@@ -1,6 +1,6 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
-  import { PostList } from '../PostList.svelte';
+  import { PostList } from '../PostList';
   import styles from './Feed.module.sass';
 
   let postsPromise = api.listHotPosts({});

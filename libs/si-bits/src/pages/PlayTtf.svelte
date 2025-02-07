@@ -44,6 +44,38 @@
 
     const hashchange = () => matchId = getMatchId();
 
+    $: overlay = matchId
+        ? (match?.winner 
+            ? WinPanel 
+            : () => ({}))
+        : user
+            ? showMatches
+                ? MatchList
+                : showInvites
+                    ? MatchProposalList
+                    : showFriends
+                        ? FriendInviter
+                        : showBots
+                            ? TtfBotList
+                            : () => ({
+                                $$render: () => `
+                                    <h1>Tic Tac Flow</h1>
+                                    <Button on:click={() => showMatches = true}>Continue</Button>
+                                    <Button on:click={() => showInvites = true}>Match invites</Button>
+                                    <Button on:click={() => showFriends = true}>Challenge friend</Button>
+                                    <Button on:click={() => showBots = true}>Challenge bot</Button>
+                                `
+                            })
+            : showBots
+                ? TtfBotList
+                : () => ({
+                    $$render: () => `
+                        <h1>Tic Tac Flow</h1>
+                        Create an account to play with friends!
+                        <Button on:click={() => showBots = true}>Challenge bot</Button>
+                    `
+                });
+
     onMount(() => {
         document.body.className = styles.ttf;
         window.addEventListener('hashchange', hashchange);
@@ -62,44 +94,7 @@
         <TtfBoard
             {user}
             {match}
-            overlay={#if matchId}
-                {#if match?.winner}
-                    <WinPanel {user} {match} />
-                {:else}
-                    <></>
-                {/if}
-            {:else if user}
-                {#if showMatches}
-                    <MatchList {user} onClose={() => showMatches = false} />
-                {:else if showInvites}
-                    <MatchProposalList
-                        onClose={() => showInvites = false}
-                        {user}
-                    />
-                {:else if showFriends}
-                    <FriendInviter
-                        game={id}
-                        {user}
-                        onClose={() => showFriends = false}
-                    />
-                {:else if showBots}
-                    <TtfBotList onClose={() => showBots = false} />
-                {:else}
-                    <h1>Tic Tac Flow</h1>
-                    <Button on:click={() => showMatches = true}>Continue</Button>
-                    <Button on:click={() => showInvites = true}>Match invites</Button>
-                    <Button on:click={() => showFriends = true}>Challenge friend</Button>
-                    <Button on:click={() => showBots = true}>Challenge bot</Button>
-                {/if}
-            {:else}
-                <h1>Tic Tac Flow</h1>
-                Create an account to play with friends!
-                {#if showBots}
-                    <TtfBotList onClose={() => showBots = false} />
-                {:else}
-                    <Button on:click={() => showBots = true}>Challenge bot</Button>
-                {/if}
-            {/if}
+            {overlay}
         />
     </div>
     <AchievementList game={id} />

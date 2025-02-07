@@ -1,7 +1,7 @@
 <script lang="ts">
     import { jsonPrimitives } from 'from-schema';
-    import { Texticle } from './Texticle.svelte';
-    import { phrasebook } from './phrasebook';
+    import { Texticle } from '../Texticle';
+    import { phrasebook } from '../phrasebook';
 
     const { email } = jsonPrimitives;
 

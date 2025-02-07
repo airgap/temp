@@ -48,6 +48,18 @@ export default defineConfig({
 			external: [],
 		},
 	},
+	// Add resolve configuration for SVG files
+	resolve: {
+		alias: {
+			'@assets': path.resolve(__dirname, 'src/assets'),
+		},
+	},
+	// Add SVG handling configuration
+	assetsInclude: ['**/*.svg', '**/*.png', '**/*.wav', '**/*.mp3'],
+	// Add optimizeDeps configuration
+	optimizeDeps: {
+		include: [],
+	},
 	test: {
 		watch: false,
 		globals: true,

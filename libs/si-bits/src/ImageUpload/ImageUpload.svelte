@@ -7,7 +7,7 @@
   import { ImageDraft, ImageUploadReason, VideoDraft } from '@lyku/json-models';
   import styles from './ImageUpload.module.sass';
   
-  import times from '../../times.svg';
+  import times from '../times.svg?raw';
   import bg from '../Backdrop/blu.jpg';
   import { Button } from '../Button';
   import buttonStyles from '../Button/Button.module.sass';
@@ -17,7 +17,6 @@
   import replace from '../assets/replace.svg';
   import check from '../assets/squircle-check.svg';
   import x from '../assets/x.svg';
-  import smile from '../smile.png';
 
   // Props
   export let disabled = false;
@@ -46,11 +45,6 @@
   let pack: { url: string; id: string } | undefined = undefined;
   let submitting = false;
   let succeeded = false;
-
-  export const defaultImages: Partial<Record<ImageUploadReason, string>> = {
-    ProfilePicture: smile,
-    PostAttachment: '33d9691d-d3cf-49ef-3c85-7b3571dd4e00',
-  };
 
   const readFile = (file: File): Promise<string> =>
     new Promise((r, j) => {

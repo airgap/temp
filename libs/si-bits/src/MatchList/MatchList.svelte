@@ -7,7 +7,7 @@
   import { localizeUsername } from '../localizeUsername';
   import styles from './MatchList.module.sass';
   import { Divisio } from '../Divisio';
-  import { useCacheData } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider';
 
   export let user: User;
   export let onClose: () => void;
@@ -30,7 +30,7 @@
 
   $: {
     const userIds = matches.flatMap((m) => [m.X, m.O]);
-    users = useCacheData('users', userIds)[0];
+    users = cacheStore.users.get(userIds);
   }
 </script>
 

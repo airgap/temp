@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { TtfMatch, User } from '@lyku/json-models';
-  import { Link } from './Link.svelte';
+  import { Link } from '../Link';
 
   export let user: User | undefined = undefined;
   export let match: TtfMatch;

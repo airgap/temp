@@ -1,1 +1,1 @@
-export { default } from './Wave.svelte';
+export { default as Wave } from './Wave.svelte';

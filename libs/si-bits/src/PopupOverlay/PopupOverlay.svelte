@@ -1,6 +1,6 @@
 <script lang="ts">
   import styles from './PopupOverlay.module.sass';
-  import { PopupBox } from './PopupBox';
+  import { PopupBox } from './PopupBox.svelte';
   import { bind, unbind } from '../bind';
   import { onMount, onDestroy } from 'svelte';
 

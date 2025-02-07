@@ -1,7 +1,7 @@
 <script lang="ts">
     import { api } from 'monolith-ts-api';
     import type { MatchProposal, User } from '@lyku/json-models';
-    import { Button } from './Button.svelte';
+    import { Button } from '../Button';
 
     export let game: number;
     export let user: User;

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { api } from 'monolith-ts-api';
     import styles from './ChatBox.module.sass';
-    import { MessageItem } from './MessageItem.svelte';
+    import MessageItem from './MessageItem.svelte';
     import type { Channel, Message } from '@lyku/json-models';
 
     export let channel: Channel | undefined = undefined;

@@ -10,10 +10,10 @@
   import { phrasebook } from '../phrasebook';
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
-  import { useCurrentUser } from '../currentUserStore';
+  import { cacheStore } from '../CacheProvider';
   import { sessionId } from 'monolith-ts-api';
 
-  let user = useCurrentUser();
+  let user = cacheStore.currentUser;
 
   const showAuth = (form: any) => () => shout('showAuth', form);
 </script>

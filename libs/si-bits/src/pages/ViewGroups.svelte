@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from '../Button.svelte';
-	import { GroupList } from '../GroupList.svelte';
+	import { Button } from '../Button';
+	import { GroupList } from '../GroupList';
 	import type { GroupFilter } from '@lyku/json-models';
 
 	let substring = '';
@@ -13,7 +13,7 @@
 
 <div style="margin: auto; width: 800px; max-width: 100%">
 	<h2 style="display: flex">
-		Groups <Button on:click={handleAddClick}>+</Button>
+		Groups <Button onclick={handleAddClick}>+</Button>
 	</h2>
 	<br />
 	<!--

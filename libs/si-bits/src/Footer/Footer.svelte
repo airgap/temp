@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Divisio } from './Divisio.svelte';
+    import { Divisio } from '../Divisio';
     import { pipe } from '@lyku/stats';
-    import { Center } from './Center.svelte';
-    import { Link, phrasebook } from './';
+    import { Center } from '../Center';
+    import { Link, phrasebook } from '../';
 </script>
 
 <div style="opacity: 0.5; margin-top: auto; padding: 5px;">

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
   import { ttfFlowMode } from '@lyku/json-models';
-  import { Button } from './Button.svelte';
-  import { phrasebook } from './phrasebook';
+  import { Button } from '../Button';
+  import { phrasebook } from '../phrasebook';
 
   export let onClose: (() => void) | undefined = undefined;
 

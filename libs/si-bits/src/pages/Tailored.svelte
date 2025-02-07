@@ -1,10 +1,10 @@
 <script lang="ts">
   import { api, sessionId } from 'monolith-ts-api';
-  import PostCreator from '../PostCreator.svelte';
-  import PostList from '../PostList.svelte';
+  import {PostCreator} from '../PostCreator';
+  import {PostList} from '../PostList';
   import { phrasebook } from '../phrasebook';
   import { currentUser } from '../currentUserStore';
-  import Crosshatch from '../Crosshatch.svelte';
+  import {Crosshatch} from '../Crosshatch';
   import styles from './Feed.module.sass';
 
   let postsPromise = sessionId

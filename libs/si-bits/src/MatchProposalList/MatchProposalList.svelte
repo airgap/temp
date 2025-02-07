@@ -7,7 +7,7 @@
   import { localizeUsername } from '../localizeUsername';
   import styles from './MatchProposalList.module.sass';
   import { Divisio } from '../Divisio';
-  import { useCacheData } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider';
 
   export let user: User;
   export let onClose: () => void;
@@ -29,7 +29,7 @@
   }
 
   $: userList = [...new Set(proposals.map((p) => p.from).concat(proposals.map((p) => p.to)))];
-  $: users = useCacheData('users', userList)[0];
+  $: users = cacheStore.users.get(userList);
 </script>
 
 <div class={styles.MatchList}>
