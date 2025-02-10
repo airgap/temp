@@ -29,7 +29,6 @@ export * from './DynamicPost';
 export * from './Fof';
 export * from './FollowUser';
 export * from './Footer';
-export * from './FuckButton';
 export * from './getHomepage';
 export * from './Gol';
 export * from './GroupList';

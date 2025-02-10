@@ -53,7 +53,7 @@ export default handlePlacePiece(
 			'place a piece at',
 			square
 		);
-		if (!canPlace) throw new Error('You Fucknut you cant do that haha');
+		if (!canPlace) throw new Error("You can't do that");
 		placePieceInMatch(iAm, square, match);
 		if (checkWin(match.board, iAm)) {
 			match.winner = requester;

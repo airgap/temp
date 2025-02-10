@@ -1,15 +1,15 @@
 {
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"jsx": "react-jsx",
 		"allowJs": false,
 		"esModuleInterop": false,
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"target": "ESNext",
-		"module": "ESNext"
+		"module": "ESNext",
+		"moduleResolution": "bundler"
 	},
-	"files": [],
-	"include": [],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.svelte"],
 	"references": [
 		{
 			"path": "./tsconfig.app.json"
@@ -17,6 +17,5 @@
 		{
 			"path": "./tsconfig.spec.json"
 		}
-	],
-	"extends": "../../tsconfig.base.json"
+	]
 }

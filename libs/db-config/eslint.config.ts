@@ -1,4 +1,4 @@
-import baseConfig from '../../eslint.config.js';
+import baseConfig from '../../eslint.config.ts';
 import jsoncParser from 'jsonc-eslint-parser';
 
 export default [

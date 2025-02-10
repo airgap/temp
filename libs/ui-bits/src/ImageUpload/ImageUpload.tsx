@@ -113,7 +113,6 @@ export const ImageUpload = (props: Props) => {
 	const confirmClicked = async () => {
 		if (!file) return;
 		setWorking(true);
-		// if (!this.state.channel) throw "You're fuckin stupid";
 		const res = await api.authorizeImageUpload({
 			channelId: props.channelId,
 			reason: props.reason,
@@ -130,7 +129,7 @@ export const ImageUpload = (props: Props) => {
 		setSubmitting(true);
 		// if (!formRef.current) throw "Form doesn't exist";
 		const data = new FormData();
-		data.append('file', file); // lol fuck it
+		data.append('file', file);
 		console.log('Submitting', file);
 		if (file.type.startsWith('video/')) {
 			const upload = new tus.Upload(file, {

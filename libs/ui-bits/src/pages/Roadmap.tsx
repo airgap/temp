@@ -102,7 +102,7 @@ export const Roadmap = () => {
 	const netref = useRef<HTMLDivElement>(null);
 	const [network, setNetwork] = useState<Network>();
 	useEffect(() => {
-		if (!netref.current) throw new Error('Fuck');
+		if (!netref.current) throw new Error('500');
 		const network = new Network(
 			netref.current,
 			{

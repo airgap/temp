@@ -5,4 +5,4 @@ if [ -z "$projectName" ]; then
   exit 1
 fi
 kubectl delete deployment lyku-${projectName} --ignore-not-found
-node ibuild.ts apps/routes/${projectName}/serve.ts dist/apps/routes/${projectName}
+bun ibuild.ts apps/routes/${projectName}/serve.ts dist/apps/routes/${projectName}

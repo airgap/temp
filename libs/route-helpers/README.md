@@ -1,4 +1,5 @@
- ##### Note: this README is mostly LLM generated from the source code as this project is not even closed to finished yet and I'm not manually maintaining a README until everything's somewhat stable.
+##### Note: this README is mostly LLM generated from the source code as this project is not even closed to finished yet and I'm not manually maintaining a README until everything's somewhat stable.
+
 # Route Helpers
 
 A collection of utility functions and types for building HTTP and WebSocket servers in TypeScript, with a focus on type safety and real-time communication.
@@ -24,17 +25,17 @@ import { serveHttp, serveWebsocket } from '@lyku/route-helpers';
 
 // HTTP Server
 serveHttp({
-  execute: handler,
-  validator: myValidator,
-  model: myModel
+	execute: handler,
+	validator: myValidator,
+	model: myModel,
 });
 
 // WebSocket Server
 serveWebsocket({
-  onOpen: wsHandler,
-  validator: myValidator,
-  tweakValidator: myTweakValidator,
-  model: myModel
+	onOpen: wsHandler,
+	validator: myValidator,
+	tweakValidator: myTweakValidator,
+	model: myModel,
 });
 ```
 
@@ -57,7 +58,7 @@ const sessionId = await createSessionForUser(userId, context);
 
 // Validate session ID
 if (isSessionId(token)) {
-  // Process authenticated request
+	// Process authenticated request
 }
 ```
 
@@ -67,11 +68,7 @@ if (isSessionId(token)) {
 import { db } from '@lyku/route-helpers';
 
 // Query example
-const result = await db
-  .selectFrom('users')
-  .selectAll()
-  .where('id', '=', userId)
-  .executeTakeFirst();
+const result = await db.selectFrom('users').selectAll().where('id', '=', userId).executeTakeFirst();
 ```
 
 ### Notifications
@@ -79,12 +76,15 @@ const result = await db
 ```typescript
 import { sendNotification } from '@lyku/route-helpers';
 
-await sendNotification({
-  user: userId,
-  title: 'Achievement Unlocked!',
-  body: 'You reached level 10',
-  icon: '/achievements/level10.png'
-}, db);
+await sendNotification(
+	{
+		user: userId,
+		title: 'Achievement Unlocked!',
+		body: 'You reached level 10',
+		icon: '/achievements/level10.png',
+	},
+	db
+);
 ```
 
 ### Game Helpers

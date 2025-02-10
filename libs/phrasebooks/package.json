@@ -6,7 +6,7 @@
 		"@lyku/strings": "workspace:*",
 		"@lyku/defaults": "workspace:*"
 	},
-	"type": "commonjs",
+	"type": "module",
 	"main": "./src/index.js",
 	"typings": "./src/index.d.ts",
 	"private": true

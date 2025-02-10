@@ -1,11 +1,11 @@
- ##### Note: this README is mostly LLM generated from the source code as this project is not even closed to finished yet and I'm not manually maintaining a README until everything's somewhat stable.
+##### Note: this README is mostly LLM generated from the source code as this project is not even closed to finished yet and I'm not manually maintaining a README until everything's somewhat stable.
 
 # @lyku/json-models
 
 A TypeScript library for converting TSON-PG models to TSON models and TypeScript types.
 This ensures that any changes to the database models (TSON-PG) are always reflected in the API models (TSON) and TypeScript types (TS).
 TSON models are similar to JSON schemas but have support for both bigint and date types.
-TSON-PG models describe Postgres data types and tables. 
+TSON-PG models describe Postgres data types and tables.
 
 ## Features
 
@@ -43,7 +43,7 @@ console.log(yourModel);
 
 // Use the TypeScript type
 const data: YourModel = {
-  // Your typed data here
+	// Your typed data here
 };
 ```
 
@@ -60,6 +60,7 @@ nx build tson-models
 ```
 
 The build process:
+
 1. Converts models to TSON schemas
 2. Generates TypeScript types
 3. Creates both `.js` and `.d.ts` files
@@ -78,6 +79,7 @@ Tests are executed using [Vitest](https://vitest.dev/).
 ## Configuration
 
 The library uses SWC for compilation with the following key configurations:
+
 - Target: ES2017
 - Module type: CommonJS
 - TypeScript decorators enabled

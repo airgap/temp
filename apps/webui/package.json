@@ -2,6 +2,7 @@
 	"name": "@lyku/webui",
 	"version": "0.0.1",
 	"private": true,
+	"type": "module",
 	"devDependencies": {
 		"@lyku/phrasebooks": "workspace:*",
 		"@lyku/strings": "workspace:*"

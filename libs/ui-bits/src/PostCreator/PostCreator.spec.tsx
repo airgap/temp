@@ -7,8 +7,8 @@ describe('SubmitButton', () => {
 		const { baseElement } = render(
 			<PostCreator
 				user={{
-					id: 'a',
-					username: 'fuck',
+					id: 0n,
+					username: 'd',
 					live: true,
 					chatColor: '#ff0099',
 					gameStats: {

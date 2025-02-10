@@ -31,7 +31,7 @@ export default handleAuthorizeImageUpload(
 				throw new Error(strings.youHaveNoChannelByThatId);
 		}
 
-		const command = `curl --request POST --url https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload --header 'Content-Type: multipart/form-data' --header 'Authorization: Bearer ${cfApiToken}' --form 'requireSignedURLs=false' --form 'metadata={"eatAss": "smokeGrass"}'`;
+		const command = `curl --request POST --url https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload --header 'Content-Type: multipart/form-data' --header 'Authorization: Bearer ${cfApiToken}' --form 'requireSignedURLs=false' --form 'metadata={"testKey": "testValue"}'`;
 		const { stdout } = await run(command);
 		const cfres = JSON.parse(stdout);
 		if (!cfres.success) throw new Error(strings.imageUploadAuthorizationError);

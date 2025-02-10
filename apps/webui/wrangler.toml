@@ -1,0 +1,27 @@
+[env.production]
+name = "lyku-webui"
+compatibility_date = "2024-02-10"
+
+[site]
+bucket = "./dist/apps/webui/"
+
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "modules"
+dir = "./dist/apps/webui/"
+
+# Optional: Configure environment variables
+# [vars]
+# MY_VARIABLE = "production_value"
+
+# Optional: Configure KV Namespaces
+# [[kv_namespaces]]
+# binding = "MY_KV"
+# id = "xxx"
+
+# Optional: Configure Durable Objects
+# [[durable_objects.bindings]]
+# name = "MY_DURABLE_OBJECT"
+# class_name = "MyDurableObject" 

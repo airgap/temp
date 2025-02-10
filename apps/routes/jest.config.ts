@@ -14,7 +14,7 @@ if (swcJestConfig.swcrc === undefined) {
 
 export default {
 	displayName: '@lyku/routes',
-	preset: '../../jest.preset.js',
+	preset: '../../jest.preset.ts',
 	transform: {
 		'^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
 	},

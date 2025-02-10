@@ -26,9 +26,7 @@ const onlyKey = (route: ContractName): string | void => {
 	const r = monolith[route];
 	if (!('request' in r)) return;
 	if (!('properties' in r.request)) return;
-	const keys = Object.keys(
-		r.request.properties // honestly just fuck my life at this point
-	);
+	const keys = Object.keys(r.request.properties);
 	if (keys.length === 1) return keys[0];
 };
 

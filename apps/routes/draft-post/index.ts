@@ -178,7 +178,7 @@ const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 	const uploadURL = stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1];
 	const id = stdout.match(/^stream-media-id: ([a-z0-9]{32})$/m)?.[1];
 	console.log('CFRES', id, uploadURL);
-	if (!(uploadURL && id)) throw new Error('FUCK');
+	if (!(uploadURL && id)) throw new Error('500');
 	console.log('VIDEO VIDEO');
 	return {
 		id,

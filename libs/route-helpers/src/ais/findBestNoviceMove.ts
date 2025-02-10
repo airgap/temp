@@ -41,5 +41,5 @@ export function findBestNoviceMove(
 	for (const i of [...corners, ...sides]) {
 		if (board[i] === '-') return i as Move;
 	}
-	throw 'Fuck'; // No moves available
+	throw 'No moves available';
 }

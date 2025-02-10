@@ -75,7 +75,7 @@ export default handleRegisterUser(
 		console.log('B');
 		formData.set('requireSignedURLs', 'false');
 		console.log('C');
-		formData.set('metadata', JSON.stringify({ eatAss: 'smokeGrass' }));
+		formData.set('metadata', JSON.stringify({ testKey: 'testValue' }));
 		console.log('Uploading jdenticon');
 		console.log('cf', cfAccountId, 'bear', cfApiToken);
 		const response = await fetch(

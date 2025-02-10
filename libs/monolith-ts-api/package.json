@@ -6,7 +6,7 @@
 		"defaults": "workspace:*",
 		"@lyku/mapi-models": "workspace:*"
 	},
-	"type": "commonjs",
+	"type": "module",
 	"main": "./src/index.js",
 	"typings": "./src/index.d.ts",
 	"private": true

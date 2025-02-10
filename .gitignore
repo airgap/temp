@@ -47,3 +47,4 @@ bin
 **/coverage
 
 k8s-prd-ca-cert.crt
+.svelte-kit/

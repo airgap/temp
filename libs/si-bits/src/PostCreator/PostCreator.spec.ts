@@ -7,29 +7,10 @@ describe('SubmitButton', () => {
 		const { baseElement } = render(PostCreator, {
 			user: {
 				id: 1n,
-				username: 'fuck',
+				username: 'a',
 				live: true,
 				chatColor: '#ff0099',
-				gameStats: {
-					total: {
-						time: 0,
-						edges: 0,
-						corners: 0,
-					},
-					current: {
-						time: 0,
-						edges: 0,
-						corners: 0,
-					},
-					highest: {
-						time: 0,
-						edges: 0,
-						corners: 0,
-					},
-					sessionCount: 0,
-				},
-				points: 0n,
-				postCount: 0n,
+				points: 100n,
 			},
 		});
 		expect(baseElement).toBeTruthy();

@@ -16,7 +16,7 @@ export const en_US = {
 		"You've created, like, a lot of groups already. Maybe slow down?",
 	unknownBackendError:
 		"Somethin ain't right on my end. Hopefully i'll fix it soon",
-	unknownFrontendError: 'idk lol something fucked up',
+	unknownFrontendError: 'Unknown frontend error',
 	streamCreationError:
 		"Unable to create your stream. Looks like the issue's on my end.",
 	sessionNotFound:
