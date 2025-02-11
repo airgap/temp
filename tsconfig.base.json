@@ -37,8 +37,7 @@
 			"@lyku/strings": ["libs/strings/src/index.ts"],
 			"bson-models": ["libs/bson-models/src/index.ts"],
 			"monolith-api-types": ["dist/libs/mapi-types.d.ts"],
-			"monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"],
-			"ui-bits": ["libs/ui-bits/src/index.ts"]
+			"monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

@@ -1,5 +1,5 @@
+import type { EnumColumnModel } from 'from-schema';
 import { imageMimeList } from '@lyku/defaults';
-import { EnumColumnModel } from 'from-schema';
 
 export const imageMime = {
 	type: 'enum',

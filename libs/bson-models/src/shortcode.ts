@@ -1,4 +1,4 @@
-import { VarcharColumnModel } from 'from-schema';
+import type { VarcharColumnModel } from 'from-schema';
 
 // Example: qmZ1H5oO7sh9zvhgyJETR1
 export const shortcode = {

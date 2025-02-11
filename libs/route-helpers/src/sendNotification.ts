@@ -1,6 +1,6 @@
-import { Notification } from '@lyku/json-models';
-import { Kysely } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
+import type { Notification } from '@lyku/json-models';
+import type { Kysely } from 'kysely';
+import type { Database } from '@lyku/db-config/kysely';
 
 export const sendNotification = async (
 	notification: Omit<Notification, 'posted' | 'id'>,

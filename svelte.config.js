@@ -4,21 +4,24 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			// Ensure routes are properly handled
+			routes: {
+				include: ['/*'],
+				exclude: [],
+			},
+			// Ensure proper function binding
+			functionPerRoute: true,
+		}),
 		files: {
 			appTemplate: 'apps/webui/src/app.html',
+			routes: 'apps/webui/src/routes',
+			assets: 'apps/webui/static',
 		},
 		outDir: 'dist/apps/webui',
-		// routes: {
-		//     include: ['/*'],
-		//     exclude: ['<all>']
-		// },
-		// platformProxy: {
-		//     configPath: 'wrangler.toml',
-		//     environment: undefined,
-		//     experimentalJsonConfig: false,
-		//     persist: false
-		// }
+		csrf: {
+			checkOrigin: false,
+		},
 	},
 	preprocess: vitePreprocess(),
 };

@@ -1,5 +1,5 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { groupName } from './groupName';
-import { PostgresRecordModel } from 'from-schema';
 
 export const group = {
 	properties: {

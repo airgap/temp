@@ -3,7 +3,7 @@
   import * as tus from 'tus-js-client';
   import classnames from 'classnames';
   import { imageAndVideoMimes, imageMimes } from '@lyku/defaults';
-  import { api, apiHost, protocol } from 'monolith-ts-api';
+  import { api, currentPlatform } from 'monolith-ts-api';
   import { ImageDraft, ImageUploadReason, VideoDraft } from '@lyku/json-models';
   import styles from './ImageUpload.module.sass';
   
@@ -120,7 +120,7 @@
 
       if (fileState.type.startsWith('video/')) {
         const upload = new tus.Upload(fileState, {
-          endpoint: `${protocol}://${apiHost}/getTusEndpoint/${pack.id}`,
+          endpoint: `://${apiHost}/getTusEndpoint/${pack.id}`,
           onSuccess: () =>
             api.confirmVideoUpload(pack.id).then(() => {
               onFinished?.();

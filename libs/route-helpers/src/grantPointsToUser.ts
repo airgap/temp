@@ -1,11 +1,11 @@
 import { getLevelFromPoints } from '@lyku/helpers';
 import { achievements } from '@lyku/stock-docs';
-import { Achievement } from '@lyku/json-models';
+import type { Achievement } from '@lyku/json-models';
 import { grantAchievementToUser } from './grantAchievementToUser';
 import { sendNotification } from './sendNotification';
 import { sql } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
-import { Kysely } from 'kysely';
+import type { Database } from '@lyku/db-config/kysely';
+import type { Kysely } from 'kysely';
 const {
 	reachLevel10,
 	reachLevel20,

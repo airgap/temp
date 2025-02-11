@@ -1,4 +1,4 @@
-import { Game } from '@lyku/json-models';
+import type { Game } from '@lyku/json-models';
 export const ticTacFlow = {
 	id: 1,
 	title: 'Tic Tac Flow',

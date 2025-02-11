@@ -1,3 +1,3 @@
-import { sessionId } from 'monolith-ts-api';
+import { getSessionId } from 'monolith-ts-api';
 
-export const getHomepage = () => (sessionId ? '/tail' : '/hot');
+export const getHomepage = () => (getSessionId() ? '/tail' : '/hot');

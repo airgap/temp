@@ -1,1 +1,1 @@
-export * from './CacheProvider';
+export * from './CacheProvider.svelte';

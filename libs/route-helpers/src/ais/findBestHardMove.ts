@@ -1,4 +1,10 @@
-import { BoardWithCountdown, MaybeMove, Move, Player, Square } from '../Player';
+import type {
+	BoardWithCountdown,
+	MaybeMove,
+	Move,
+	Player,
+	Square,
+} from '../Player';
 
 export function findBestHardMove(
 	board: BoardWithCountdown,

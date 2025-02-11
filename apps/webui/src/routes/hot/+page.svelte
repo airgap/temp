@@ -1,12 +1,11 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
   import { PostList } from '@lyku/si-bits';
-  import styles from '../../Feed.module.sass';
-
+  import { FeedPage } from '@lyku/si-bits';
   let postsPromise = api.listHotPosts({});
 </script>
 
-<div class={styles.FeedPage}>
+<FeedPage>
   {#await postsPromise}
     <p>Loading posts...</p>
   {:then response}
@@ -16,4 +15,4 @@
   {:catch error}
     <h3>{String(error)}</h3>
   {/await}
-</div> 
+</FeedPage> 

@@ -7,9 +7,22 @@
 		"strict": true,
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "bundler"
+		"moduleResolution": "bundler",
+		"types": ["vite/client", "svelte"],
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"lib": ["ESNext", "DOM", "DOM.Iterable"]
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.svelte"],
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.svelte",
+		".svelte-kit/types/**/$types.d.ts",
+		"vite.config.ts"
+	],
+	"exclude": ["node_modules"],
 	"references": [
 		{
 			"path": "./tsconfig.app.json"

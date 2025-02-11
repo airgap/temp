@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { BotListWithCreator } from '../BotListWithCreator';
-    import { Center } from '../Center';
-    import { ChannelListWithCreator } from '../ChannelListWithCreator';
-    import { Divisio } from '../Divisio';
-    import { ImageUpload } from '../ImageUpload';
-    import { phrasebook } from '../phrasebook';
-    import { shout } from '../Sonic';
-    import { currentUser } from '../currentUserStore';
+    import { BotListWithCreator } from '@lyku/si-bits';
+    import { Center } from '@lyku/si-bits';
+    import { ChannelListWithCreator } from '@lyku/si-bits';
+    import { Divisio } from '@lyku/si-bits';
+    import { ImageUpload } from '@lyku/si-bits';
+    import { phrasebook } from '@lyku/si-bits';
+    import { shout } from '@lyku/si-bits';
+    import { currentUser } from '@lyku/si-bits';
     
     import styles from './Profile.module.sass';
   

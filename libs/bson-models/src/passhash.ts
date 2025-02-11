@@ -1,4 +1,4 @@
-import { CharColumnModel, StringBsonSchema } from 'from-schema';
+import type { CharColumnModel } from 'from-schema';
 
 export const passhash = {
 	type: 'character',

@@ -1,4 +1,4 @@
-import { BoardWithCountdown, MaybeMove, Move, Player } from '../Player';
+import type { BoardWithCountdown, MaybeMove, Move, Player } from '../Player';
 
 type Combo = [Move, Move, Move];
 export function findBestNoviceMove(

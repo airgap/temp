@@ -1,5 +1,5 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { idBond } from './idBond';
-import { PostgresRecordModel } from 'from-schema';
 
 export const friendship = {
 	properties: {

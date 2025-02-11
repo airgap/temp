@@ -1,4 +1,4 @@
-import { EnumBsonSchema, EnumColumnModel, FromBsonSchema } from 'from-schema';
+import type { EnumColumnModel } from 'from-schema';
 
 export const friendshipStatus = {
 	type: 'enum',

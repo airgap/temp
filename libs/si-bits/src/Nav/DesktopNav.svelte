@@ -11,7 +11,7 @@
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
   import { cacheStore } from '../CacheProvider';
-  import { sessionId } from 'monolith-ts-api';
+  import { getSessionId } from 'monolith-ts-api';
 
   let user = cacheStore.currentUser;
 
@@ -23,7 +23,7 @@
     <div class={styles.InnerDesktopNav}>
       <Backdrop />
       <NavLogo />
-      {#if user && sessionId}
+      {#if user && getSessionId()}
         <CoolLink href="/tail">{phrasebook.navTailored}</CoolLink>
       {/if}
       <CoolLink href="/hot">{phrasebook.navHot}</CoolLink>

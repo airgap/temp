@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { useCacheSingleton } from 'ui-bits';
+	import { cacheStore } from '../CacheProvider';
   import styles from './MessageItem.module.sass';
   import type { Message } from '@lyku/json-models';
 
   export let src: Message;
 
-  const [author] = useCacheSingleton('users', src.author);
+  const [author] = cacheStore.users.fetch(src.author);
 </script>
 
 <li class={styles.MessageItem}>

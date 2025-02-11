@@ -1,5 +1,5 @@
 import { getPhrasebook } from '@lyku/phrasebooks';
-import { CompactedPhrasebook } from '@lyku/phrasebooks';
+import type { CompactedPhrasebook } from '@lyku/phrasebooks';
 import { getCookie } from './getCookie';
 import { en_US } from '@lyku/strings';
 

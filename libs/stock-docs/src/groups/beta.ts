@@ -1,4 +1,4 @@
-import { Group } from '@lyku/json-models';
+import type { Group } from '@lyku/json-models';
 import { system } from '../users';
 
 export const beta = {

@@ -1,6 +1,5 @@
 import { writable, derived, type Writable } from 'svelte/store';
 import type { User } from '@lyku/json-models';
-import { sessionId } from 'monolith-ts-api';
 
 // Initialize the store with data from localStorage
 const storedUser = localStorage.getItem('currentUser');

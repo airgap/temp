@@ -1,6 +1,5 @@
-import { bsonPrimitives, PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 import { ttmBoard } from './ttmBoard';
-import { user } from './user';
 import { game } from './game';
 
 export const ttmMatch = {

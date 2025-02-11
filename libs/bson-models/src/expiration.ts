@@ -1,4 +1,4 @@
-import { DateColumnModel } from 'from-schema';
+import type { DateColumnModel } from 'from-schema';
 
 export const expiration = {
 	type: 'date',

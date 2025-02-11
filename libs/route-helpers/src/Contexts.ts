@@ -1,9 +1,8 @@
-import { Database } from '@lyku/db-config/kysely';
-import { CompactedPhrasebook } from '@lyku/phrasebooks';
-import { ServerWebSocket, Server } from 'bun';
-import {
+import type { Database } from '@lyku/db-config/kysely';
+import type { CompactedPhrasebook } from '@lyku/phrasebooks';
+import type { ServerWebSocket, Server } from 'bun';
+import type {
 	TsonHttpHandlerModel,
-	StreamConfig,
 	TsonStreamHandlerModel,
 	TsonHandlerModel,
 } from 'from-schema';

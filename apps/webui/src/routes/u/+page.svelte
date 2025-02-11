@@ -1,12 +1,12 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
-  import { PostList } from '../PostList';
-  import { ProfilePicture } from '../ProfilePicture';
-  import { phrasebook } from '../phrasebook';
-  import { Divisio } from '../Divisio';
-  import { Center } from '../Center';
-  import { BefriendUser } from '../BefriendUser';
-  import { FollowUser } from '../FollowUser';
+  import { PostList } from '@lyku/si-bits';
+  import { ProfilePicture } from '@lyku/si-bits';
+  import { phrasebook } from '@lyku/si-bits';
+  import { Divisio } from '@lyku/si-bits';
+  import { Center } from '@lyku/si-bits';
+  import { BefriendUser } from '@lyku/si-bits';
+  import { FollowUser } from '@lyku/si-bits';
   
   const pathWithUsernameOrIdRegex = new RegExp(`^/u(?:ser)?/([^/]+)$`);
   const getUsernameOrIdFromUrl = () =>

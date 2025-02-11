@@ -1,8 +1,7 @@
 import type { Insertable, Kysely } from 'kysely';
 import { join } from 'path';
 import { shortlinkBasepath } from './env';
-import { Database } from '@lyku/db-config/kysely';
-import { ShortlinkRow } from '@lyku/json-models';
+import type { Database } from '@lyku/db-config/kysely';
 const urlRegex = new RegExp(
 	'((http|ftp|https):\\/\\/)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])',
 	'g'

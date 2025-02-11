@@ -1,4 +1,4 @@
-import { PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 import { idBond } from './idBond';
 
 export const friendRequest = {

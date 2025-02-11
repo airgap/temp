@@ -1,8 +1,8 @@
-import { BoardWithCountdown, MaybeMove, Player } from './Player';
+import type { BoardWithCountdown, MaybeMove, Player } from './Player';
 import { findBestNoviceMove } from './ais/findBestNoviceMove';
 import * as ais from './ais';
 import { findBestHardMove } from './ais/findBestHardMove';
-import { TtfFlowMode, User } from '@lyku/json-models';
+import type { TtfFlowMode, User } from '@lyku/json-models';
 import { users } from '@lyku/stock-docs';
 
 export const ttfBots: Record<

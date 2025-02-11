@@ -1,6 +1,6 @@
 <script>
-    import { Gol } from '../Gol';
-    import { TvFrame } from '../TvFrame';
+    import { Gol } from '@lyku/si-bits';
+    import { TvFrame } from '@lyku/si-bits';
   </script>
   
   <div class="PlayGol">

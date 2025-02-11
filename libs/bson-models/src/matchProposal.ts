@@ -1,4 +1,4 @@
-import { bsonPrimitives, PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 
 export const matchProposal = {
 	properties: {

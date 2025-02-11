@@ -1,6 +1,6 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { sessionId } from './sessionId';
 import { userLogin } from './userLogin';
-import { DateBsonSchema, PostgresRecordModel } from 'from-schema';
 export const session = {
 	properties: {
 		...userLogin.properties,

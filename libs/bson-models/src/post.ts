@@ -1,6 +1,6 @@
 import { postBody } from './postBody';
 import { postTitle } from './postTitle';
-import {
+import type {
 	ArrayJsonSchema,
 	BigIntColumnModel,
 	BigSerialColumnModel,

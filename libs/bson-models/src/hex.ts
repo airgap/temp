@@ -1,4 +1,4 @@
-import { CharColumnModel } from 'from-schema';
+import type { CharColumnModel } from 'from-schema';
 export const hex = {
 	type: 'char',
 	length: 6,

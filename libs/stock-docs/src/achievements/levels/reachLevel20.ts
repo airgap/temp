@@ -1,4 +1,4 @@
-import { Achievement } from '@lyku/json-models';
+import type { Achievement } from '@lyku/json-models';
 
 export const reachLevel20 = {
 	points: 0,

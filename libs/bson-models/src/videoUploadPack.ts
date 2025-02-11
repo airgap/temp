@@ -1,4 +1,4 @@
-import { ObjectJsonSchema } from 'from-schema';
+import type { ObjectTsonSchema } from 'from-schema';
 
 // export const videoUploadPack = {
 //   description: 'The information you need to upload a video attachment',

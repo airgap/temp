@@ -1,4 +1,4 @@
-import { EnumColumnModel } from 'from-schema';
+import type { EnumColumnModel } from 'from-schema';
 
 export const groupFilter = {
 	type: 'enum',

@@ -1,6 +1,6 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { hex } from './hex';
 import { username } from './username';
-import { PostgresRecordModel } from 'from-schema';
 
 export const userSummary = {
 	properties: {

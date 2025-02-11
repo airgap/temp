@@ -1,4 +1,4 @@
-import { bsonPrimitives, PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 import { ttfBoard } from './ttfBoard';
 
 export const ttfMatch = {

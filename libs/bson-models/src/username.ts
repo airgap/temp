@@ -1,4 +1,4 @@
-import { VarcharColumnModel } from 'from-schema';
+import type { VarcharColumnModel } from 'from-schema';
 
 export const username = {
 	type: 'varchar',

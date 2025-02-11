@@ -1,9 +1,9 @@
-import { Achievement } from '@lyku/json-models';
+import type { Achievement } from '@lyku/json-models';
 import { grantPointsToUser } from './grantPointsToUser';
 import { sendNotification } from './sendNotification';
-import { Kysely } from 'kysely';
+import type { Kysely } from 'kysely';
 import { bindIds } from '@lyku/helpers';
-import { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-config/kysely';
 
 export const grantAchievementToUser = async (
 	achievement: bigint | Achievement,

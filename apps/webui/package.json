@@ -5,6 +5,7 @@
 	"type": "module",
 	"devDependencies": {
 		"@lyku/phrasebooks": "workspace:*",
-		"@lyku/strings": "workspace:*"
+		"@lyku/strings": "workspace:*",
+		"@lyku/si-bits": "workspace:*"
 	}
 }

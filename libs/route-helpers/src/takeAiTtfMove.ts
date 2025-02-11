@@ -1,9 +1,9 @@
-import { BoardWithCountdown, Player } from './Player';
+import type { TtfMatch } from '@lyku/json-models';
+import type { BoardWithCountdown, Player } from './Player';
 import { placePieceInMatch } from './placePieceInMatch';
 import { checkWin } from './checkWin';
 import { dropIfNecessary } from './dropIfNecessary';
 import { ttfBotsById } from './internalUsers';
-import { TtfMatch } from '@lyku/json-models';
 
 export const takeAiTtfMove = (match: TtfMatch) => {
 	const iAm = 'XO'[(match.turn + 1) % 2] as Player;

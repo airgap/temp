@@ -1,5 +1,5 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { imageUploadReason } from './imageUploadReason';
-import { PostgresRecordModel } from 'from-schema';
 
 export const imageDraft = {
 	description:

@@ -1,4 +1,4 @@
-import { Achievement } from '@lyku/json-models';
+import type { Achievement } from '@lyku/json-models';
 import { bouncingTv } from '../../games';
 
 export const edge1 = {

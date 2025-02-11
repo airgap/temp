@@ -1,4 +1,4 @@
-import { TtfBoard } from '@lyku/json-models';
+import type { TtfBoard } from '@lyku/json-models';
 
 const winCombos = [
 	[0, 1, 2], // Top row

@@ -1,8 +1,7 @@
+import type { BigSerialColumnModel, PostgresRecordModel } from 'from-schema';
 import { hex } from './hex';
 import { username } from './username';
 import { userSlug } from './userSlug';
-import { BigSerialColumnModel, PostgresRecordModel } from 'from-schema';
-import { uuidv4 } from './uuid';
 
 export const userId = {
 	type: 'bigserial',

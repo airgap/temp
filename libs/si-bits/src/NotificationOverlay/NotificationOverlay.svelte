@@ -4,7 +4,7 @@
   import { Divisio } from '../Divisio';
   import { Image } from '../Image';
   import { shout } from '../Sonic';
-  import { api, sessionId, type ThiccSocket } from 'monolith-ts-api';
+  import { api, getSessionId, type ThiccSocket } from 'monolith-ts-api';
   import { onMount } from 'svelte';
 
   let notifications: Notification[] = [];
@@ -25,7 +25,7 @@
   }
 
   onMount(() => {
-    if (sessionId && !listener) {
+    if (getSessionId() && !listener) {
       const list = api.listenForNotifications();
       listener = list;
       list.listen((noti) => {

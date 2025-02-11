@@ -1,5 +1,5 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { messageContent } from './messageContent';
-import { PostgresRecordModel } from 'from-schema';
 
 export const message = {
 	properties: {

@@ -5,17 +5,16 @@
   import { phrasebook } from '../phrasebook';
   import { currentUser } from '../currentUserStore';
   import {Crosshatch} from '../Crosshatch';
-  import styles from './Feed.module.sass';
+  import { FeedPage } from '../FeedPage';
 
   let postsPromise = sessionId
     ? api.listFeedPosts({})
     : api.listFeedPostsUnauthenticated({});
 </script>
 
-<div class={styles.FeedPage}>
-  <div class={styles.Feed}>
-    {#if $currentUser.loading}
-      Loading user...
+<FeedPage>
+  {#if $currentUser.loading}
+    Loading user...
     {:else if $currentUser.error}
       Failed to load user
     {:else if $currentUser.data}
@@ -45,5 +44,4 @@
     {:catch error}
       <h1>{String(error)}</h1>
     {/await}
-  </div>
-</div> 
+</FeedPage> 

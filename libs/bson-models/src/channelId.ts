@@ -1,4 +1,4 @@
-import { BigIntColumnModel } from 'from-schema';
+import type { BigIntColumnModel } from 'from-schema';
 
 export const channelId = {
 	type: 'bigint',

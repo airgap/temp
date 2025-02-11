@@ -1,4 +1,4 @@
-import { PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 import { username } from './username';
 import { user } from './user';
 

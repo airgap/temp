@@ -1,7 +1,7 @@
 import { takeAiTtfMove } from './takeAiTtfMove';
 import { delay } from '@lyku/helpers';
-import { Database } from '@lyku/db-config/kysely';
-import { Kysely } from 'kysely';
+import type { Database } from '@lyku/db-config/kysely';
+import type { Kysely } from 'kysely';
 
 export const delayAttack = async (matchId: bigint, db: Kysely<Database>) => {
 	const match = await db

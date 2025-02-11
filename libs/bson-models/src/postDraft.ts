@@ -1,5 +1,5 @@
+import type { PostgresRecordModel } from 'from-schema';
 import { postBody } from './postBody';
-import { PostgresRecordModel } from 'from-schema';
 
 export const postDraft = {
 	description: 'A draft of a post containing text, images, or videos',

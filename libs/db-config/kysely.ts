@@ -5,10 +5,7 @@ import { join } from 'path';
 
 const kyselyExports: [string, any][] = [];
 for (const [key, value] of Object.entries(dbConfig.tables)) {
-	console.log('Resolved', key);
-
 	const kyselySchema = postgresRecordToKysely(value.schema);
-	console.log('Kysely', kyselySchema);
 	kyselyExports.push([key, kyselySchema]);
 }
 const kimports = `import {

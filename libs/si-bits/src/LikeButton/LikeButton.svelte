@@ -5,7 +5,7 @@
   import emptyHeart from '../assets/heart.svg';
   import { shout } from '../Sonic';
   import { UserRegistrationForm } from '../authForms';
-  import { api, sessionId } from 'monolith-ts-api';
+  import { api, getSessionId } from 'monolith-ts-api';
   import type { Post } from '@lyku/json-models';
 
   export let post: Post;
@@ -13,7 +13,7 @@
   $: liked = cacheStore.myLikes.get(post.id)?.liked;
 
   function handleClick() {
-    if (!sessionId) {
+    if (!getSessionId()) {
       shout('showAuth', UserRegistrationForm);
       return;
     }

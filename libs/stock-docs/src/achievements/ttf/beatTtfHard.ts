@@ -1,5 +1,5 @@
+import type { Achievement } from '@lyku/json-models';
 import { hardTtfBot } from '../../users';
-import { Achievement } from '@lyku/json-models';
 import { ticTacFlow } from '../../games';
 
 export const beatTtfHard = {

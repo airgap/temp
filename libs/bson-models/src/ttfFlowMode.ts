@@ -1,4 +1,4 @@
-import { EnumBsonSchema, EnumColumnModel } from 'from-schema';
+import type { EnumColumnModel } from 'from-schema';
 
 export const ttfFlowMode = {
 	type: 'enum',

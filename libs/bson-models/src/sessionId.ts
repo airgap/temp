@@ -1,4 +1,4 @@
-import { CharColumnModel, FromBsonSchema } from 'from-schema';
+import type { CharColumnModel } from 'from-schema';
 
 export const sessionId = {
 	description: "User's session ID",

@@ -1,4 +1,7 @@
-import { generateSessionId, MaybeSecureHttpContext } from '@lyku/route-helpers';
+import {
+	generateSessionId,
+	type MaybeSecureHttpContext,
+} from '@lyku/route-helpers';
 
 export const createSessionForUser = async (
 	userId: bigint,

@@ -1,4 +1,4 @@
-import { VarcharColumnModel } from 'from-schema';
+import type { VarcharColumnModel } from 'from-schema';
 
 export const postTitle = {
 	description: 'A post containing text, images, or videos',

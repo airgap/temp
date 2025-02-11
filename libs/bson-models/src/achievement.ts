@@ -1,4 +1,4 @@
-import { PostgresRecordModel, EnumColumnModel } from 'from-schema';
+import type { EnumColumnModel, PostgresRecordModel } from 'from-schema';
 import { game } from './game';
 
 export const achievementTier = {

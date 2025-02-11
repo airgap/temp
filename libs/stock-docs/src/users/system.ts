@@ -1,4 +1,4 @@
-import { User } from '@lyku/json-models';
+import type { User } from '@lyku/json-models';
 import { defaultDate } from '../defaultDate';
 export const system = {
 	banned: false,

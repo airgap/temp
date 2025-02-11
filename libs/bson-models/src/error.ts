@@ -1,4 +1,4 @@
-import { TextColumnModel } from 'from-schema';
+import type { TextColumnModel } from 'from-schema';
 
 export const error = {
 	type: 'text',

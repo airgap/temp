@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from '../Button';
-	import { GroupList } from '../GroupList';
+	import { Button } from '@lyku/si-bits';
+	import { GroupList } from '@lyku/si-bits';
 	import type { GroupFilter } from '@lyku/json-models';
 
 	let substring = '';

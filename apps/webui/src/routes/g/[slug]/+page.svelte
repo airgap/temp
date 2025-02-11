@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { api, sessionId } from 'monolith-ts-api';
-    import { PostList } from '../PostList.svelte';
+    import { api, getSessionId } from 'monolith-ts-api';
+    import { PostList } from '@lyku/si-bits';
     import { getContext } from 'svelte';
     import { Await } from 'awaitx';
 
@@ -12,7 +12,7 @@
     $: group = $cache?.groups?.[groupId];
 
     // Create posts promise
-    const postsPromise = sessionId
+    const postsPromise = getSessionId()
         ? api.listFeedPosts({ groups: [BigInt(groupId)] })
         : api.listFeedPostsUnauthenticated({ groups: [BigInt(groupId)]});
 </script>

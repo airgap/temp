@@ -6,14 +6,13 @@
   import { currentUser } from '../currentUserStore';
   import {Crosshatch} from '../Crosshatch';
   import styles from './Feed.module.sass';
-
+  import { FeedPage } from 'si-bits';
   let postsPromise = sessionId
     ? api.listFeedPosts({})
     : api.listFeedPostsUnauthenticated({});
 </script>
 
-<div class={styles.FeedPage}>
-  <div class={styles.Feed}>
+<FeedPage>
     {#if $currentUser.loading}
       Loading user...
     {:else if $currentUser.error}
@@ -45,5 +44,4 @@
     {:catch error}
       <h1>{String(error)}</h1>
     {/await}
-  </div>
-</div> 
+</FeedPage> 

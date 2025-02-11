@@ -8,19 +8,79 @@ import type {
 
 import { sessionId as sId } from '@lyku/json-models';
 import * as monolith from '@lyku/mapi-models';
+export function getDocumentCookie(cookies: string, cname: string) {
+	const name = cname + '=';
+	const ca = cookies.split(';');
+	for (const element of ca) {
+		let c = element;
+		while (c.charAt(0) === ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) === 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return '';
+}
 
-import { apiHost, local, socketPrefix } from './apiHost';
-import { getCookie, setCookie } from './cookies';
+import { local, socketPrefix, updateHostname } from './apiHost';
 
-export { apiHost };
-export const protocol = local ? 'http' : 'https';
+// Platform interface for SSR compatibility
+interface Platform {
+	browser: boolean;
+	hostname: string;
+	apiHostname: string;
+	cookies: {
+		get(name: string): string | undefined;
+		set(
+			name: string,
+			value: string,
+			options?: { maxAge?: number; path?: string }
+		): void;
+	};
+	reload?: () => void;
+}
+
+const isLocalhost =
+	typeof window !== 'undefined'
+		? window.location.hostname === 'localhost'
+		: false;
+
+let currentPlatform: Platform = {
+	browser: typeof window !== 'undefined',
+	hostname: isLocalhost ? 'localhost' : window.location.hostname,
+	apiHostname: isLocalhost
+		? 'localhost:3000'
+		: 'api.' + window.location.hostname,
+	cookies: {
+		get: (name) => {
+			if (typeof window === 'undefined') return undefined;
+			return getDocumentCookie(document.cookie, name);
+		},
+		set: (name, value, options) => {
+			if (typeof window === 'undefined') return;
+			const expires = options?.maxAge
+				? new Date(Date.now() + options.maxAge * 1000).toUTCString()
+				: '';
+			document.cookie = `${name}=${value}${
+				expires ? `;expires=${expires}` : ''
+			};path=${options?.path || '/'}`;
+		},
+	},
+	reload:
+		typeof window !== 'undefined' ? () => window.location.reload() : undefined,
+};
+
+// Allow applications to provide their own platform implementation
+export const setPlatform = (platform: Platform) => {
+	currentPlatform = platform;
+	updateHostname(platform.hostname);
+};
 
 import type { MonolithTypes } from 'monolith-api-types';
 import { decode, encode } from '@msgpack/msgpack';
 
 type ContractName = keyof MonolithTypes;
-
-export * from './cookies';
 
 const onlyKey = (route: ContractName): string | void => {
 	const r = monolith[route];
@@ -33,6 +93,58 @@ const onlyKey = (route: ContractName): string | void => {
 function toQueryString(obj?: Record<string, string>) {
 	return obj ? '?' + new URLSearchParams(obj).toString() : '';
 }
+
+// Cookie adapter interface
+interface CookieAdapter {
+	get(name: string): string | undefined;
+	set?(name: string, value: string, options?: { expires?: number }): void;
+}
+
+// Cookie utility functions that use the platform
+export function getCookie(name: string): string {
+	return currentPlatform.cookies.get(name) || '';
+}
+
+export function setCookie(name: string, value: string, days: number) {
+	currentPlatform.cookies.set(name, value, {
+		path: '/',
+		maxAge: days * 24 * 60 * 60,
+	});
+}
+
+// Default adapter using platform-aware cookie functions
+const defaultAdapter: CookieAdapter = {
+	get: getCookie,
+	set: (name: string, value: string, options?: { expires?: number }) => {
+		setCookie(name, value, options?.expires || 0);
+	},
+};
+
+let cookieAdapter: CookieAdapter = defaultAdapter;
+
+// Allow consumers to set their own adapter
+export const setCookieAdapter = (adapter: CookieAdapter) => {
+	cookieAdapter = adapter;
+};
+
+let _sessionId: FromTsonSchema<typeof sId> | undefined;
+
+export const getSessionId = () => {
+	return cookieAdapter.get('sessionId') || '';
+};
+
+export const initSession = (serverSessionId?: string) => {
+	const cookie = getSessionId() || serverSessionId;
+	if (cookie && cookie.length) _sessionId = cookie;
+	return _sessionId;
+};
+
+// Remove immediate initialization - let components handle it
+// if (browser) {
+//     initSession();
+// }
+
+export const getActiveSession = () => _sessionId;
 
 export const api = Object.fromEntries(
 	(Object.entries(monolith) as [ContractName, TsonHandlerModel][]).map(
@@ -51,13 +163,15 @@ export const api = Object.fromEntries(
 					const body = encode(data);
 					const stream = 'stream' in route && route.stream;
 					const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
-					let path = `//${apiHost}/${snakeName}`;
-					if (stream) {
-						path += toQueryString(data);
+					let path = `//${currentPlatform.apiHostname}/${snakeName}`;
+
+					// Don't create WebSocket connections during SSR
+					if (stream && currentPlatform.browser) {
 						type Listener = (ev: (typeof route)['response']) => void;
 						const listeners: Listener[] = [];
 						const ws = new WebSocket(`${socketPrefix}:${path}`);
-						ws.onopen = () => ws.send(JSON.stringify({ sessionId }));
+						ws.onopen = () =>
+							ws.send(JSON.stringify({ sessionId: getActiveSession() }));
 						ws.onmessage = (ev) => {
 							console.log('ws data', ev.data);
 							const json = JSON.parse(ev.data);
@@ -67,16 +181,19 @@ export const api = Object.fromEntries(
 						return Object.assign(ws, {
 							listen: (listener: Listener) => listeners.push(listener) && ws,
 						});
-					} else
-						return fetch(path, {
+					} else {
+						const fetchOptions: RequestInit = {
 							method: 'method' in model ? model.method : 'POST',
 							...(body ? { body } : {}),
-							// credentials: 'include',
 							headers: {
 								'Content-Type': 'application/x-msgpack',
-								...(sessionId ? { Authorization: `Bearer ${sessionId}` } : {}),
+								...(getActiveSession()
+									? { Authorization: `Bearer ${getActiveSession()}` }
+									: {}),
 							},
-						} as RequestInit)
+						};
+
+						return fetch(path, fetchOptions)
 							.then((res) => {
 								if (res.status !== 200) console.log('Fetch code:', res.status);
 								if (!res.ok) {
@@ -84,11 +201,8 @@ export const api = Object.fromEntries(
 										case 498:
 											console.log('Deleting expired token due to 498');
 											setCookie('sessionId', '', 0);
-											window.location.reload();
+											currentPlatform.reload?.();
 									}
-									// console.log('getting error text');
-									// const text = await res.text();
-									// console.log('Got error text', text);
 									throw new Error(res.statusText ?? 'No status text in error');
 								}
 								if (!('response' in route && route.response)) return;
@@ -104,6 +218,7 @@ export const api = Object.fromEntries(
 								console.log('Err:', err);
 								throw err;
 							});
+					}
 				},
 			];
 		}
@@ -135,9 +250,3 @@ export type AsyncOrThicc<K extends ContractName> =
 	'stream' extends keyof MonolithTypes[K] ? ThiccSocket<K> : AsinkResponse<K>;
 
 export { buildShortlink } from './apiHost';
-
-export let sessionId: FromTsonSchema<typeof sId> | undefined;
-
-export const cookie = getCookie('sessionId');
-if (cookie && cookie.length) sessionId = cookie;
-console.log('sessionId', sessionId);

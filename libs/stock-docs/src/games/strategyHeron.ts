@@ -1,4 +1,4 @@
-import { Game } from '@lyku/json-models';
+import type { Game } from '@lyku/json-models';
 export const strategyHeron = {
 	id: 3,
 	title: 'Strategy Heron',

@@ -1,4 +1,4 @@
-import { PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 import { bio } from './bio';
 import { channelName } from './channelName';
 import { channelSlug } from './channelSlug';

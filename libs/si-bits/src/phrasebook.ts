@@ -1,17 +1,16 @@
 import { type CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
 import { en_US } from '@lyku/strings';
-import { getCookie } from 'monolith-ts-api';
+import { get } from 'svelte/store';
+import { languageStore } from './stores/language';
 
-export let language = getCookie('lang');
-let pb: CompactedPhrasebook | undefined;
-if (language) pb = getPhrasebook(language);
-else {
-	for (language of navigator.languages) {
-		pb = getPhrasebook(language);
-		if (pb) break;
-	}
-}
-if (!pb) pb = en_US;
+export let language = get(languageStore);
+let pb: CompactedPhrasebook = en_US;
+
+// Subscribe to language changes
+languageStore.subscribe((lang) => {
+	const newPb = getPhrasebook(lang);
+	if (newPb) pb = newPb;
+});
 
 type Rule = [RegExp, (match: RegExpExecArray) => string];
 

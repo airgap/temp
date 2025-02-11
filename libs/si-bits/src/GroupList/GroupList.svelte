@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { api, sessionId } from 'monolith-ts-api';
+  import { api, getSessionId } from 'monolith-ts-api';
   import { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
   import { Button } from '../Button';
   import { currentUser } from '../currentUserStore';
@@ -12,7 +12,7 @@
   let memberships: GroupMembership[] = [];
   let queriedGroups = false;
 
-  $: if (!queriedGroups && sessionId) {
+  $: if (!queriedGroups && getSessionId()) {
     queriedGroups = true;
     api.listGroups({ filter, substring }).then(({ groups: g, memberships: m }) => {
       groups = g;

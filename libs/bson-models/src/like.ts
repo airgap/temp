@@ -1,7 +1,7 @@
 import { user } from './user';
 import { post } from './post';
 import { idBond } from './idBond';
-import { PostgresRecordModel } from 'from-schema';
+import type { PostgresRecordModel } from 'from-schema';
 
 export const like = {
 	properties: {
