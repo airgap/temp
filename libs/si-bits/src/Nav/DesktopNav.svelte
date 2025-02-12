@@ -14,6 +14,7 @@
   import { getSessionId } from 'monolith-ts-api';
 
   let user = cacheStore.currentUser;
+  export let url: URL;
 
   const showAuth = (form: any) => () => shout('showAuth', form);
 </script>
@@ -24,10 +25,10 @@
       <Backdrop />
       <NavLogo />
       {#if user && getSessionId()}
-        <CoolLink href="/tail">{phrasebook.navTailored}</CoolLink>
+        <CoolLink href="/tail" isActive={url.pathname.startsWith('/tail')}>{phrasebook.navTailored}</CoolLink>
       {/if}
-      <CoolLink href="/hot">{phrasebook.navHot}</CoolLink>
-      <CoolLink href="/play">{phrasebook.navPlay}</CoolLink>
+      <CoolLink href="/hot" isActive={url.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
+      <CoolLink href="/play" isActive={url.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
       
       <span class={styles.cluster}>
         {#if user && sessionId}

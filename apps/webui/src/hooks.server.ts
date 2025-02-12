@@ -2,6 +2,7 @@ import { setCookieAdapter } from 'monolith-ts-api';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
+	event.locals.cookies = event.cookies;
 	// Set up server-side adapter
 	setCookieAdapter({
 		get: (name: string) => event.cookies.get(name),

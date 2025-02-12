@@ -1,14 +1,8 @@
 import { writable, derived, type Writable } from 'svelte/store';
 import type { User } from '@lyku/json-models';
 
-// Initialize the store with data from localStorage
-const storedUser = localStorage.getItem('currentUser');
-const initialUser: User | undefined = storedUser
-	? JSON.parse(storedUser)
-	: undefined;
-
-// Create the base store
-const currentUserStore: Writable<User | undefined> = writable(initialUser);
+// Create the base store without localStorage initialization
+const currentUserStore: Writable<User | undefined> = writable(undefined);
 
 // Export the store getter/setter functions
 export const getCurrentUser = () => {
@@ -20,11 +14,6 @@ export const getCurrentUser = () => {
 };
 
 export const setCurrentUser = (user?: User) => {
-	if (user) {
-		localStorage.setItem('currentUser', JSON.stringify(user));
-	} else {
-		localStorage.removeItem('currentUser');
-	}
 	currentUserStore.set(user);
 };
 

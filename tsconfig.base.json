@@ -23,9 +23,9 @@
 			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely.d.ts"],
 			"@lyku/defaults": ["libs/defaults/src/index.ts"],
 			"@lyku/get-current-user": ["libs/routes/getCurrentUser/src/index.ts"],
-			"@lyku/handles": ["dist/libs/handles/src/index.ts"],
+			"@lyku/handles": ["dist/libs/handles"],
 			"@lyku/helpers": ["libs/helpers/src/index.ts"],
-			"@lyku/json-models": ["dist/libs/json-models"],
+			"@lyku/json-models": ["dist/libs/json-models/src/index.js"],
 			"@lyku/json-models/*": ["dist/libs/json-models/src/*"],
 			"@lyku/mapi-models": ["libs/mapi-models/src/index.ts"],
 			"@lyku/mapi-types": ["dist/libs/mapi-types.d.ts"],
@@ -36,7 +36,6 @@
 			"@lyku/stock-docs": ["libs/stock-docs/src/index.ts"],
 			"@lyku/strings": ["libs/strings/src/index.ts"],
 			"bson-models": ["libs/bson-models/src/index.ts"],
-			"monolith-api-types": ["dist/libs/mapi-types.d.ts"],
 			"monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"]
 		}
 	},

@@ -1,5 +1,5 @@
 {
-	"name": "mapi-models",
+	"name": "@lyku/mapi-models",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "libs/mapi-models/src",
 	"projectType": "library",
@@ -20,17 +20,11 @@
 				"outputPath": "dist/libs/mapi-models",
 				"main": "libs/mapi-models/src/index.ts",
 				"tsConfig": "libs/mapi-models/tsconfig.lib.json",
-				"assets": ["libs/mapi-models/*.md"]
-			}
-		},
-		"generate-types": {
-			"dependsOn": ["build"],
-			"executor": "nx:run-script",
-			"outputs": ["{options.outputPath}"],
-			"options": {
-				"script": "src/build.ts",
-				"runtime": "bun",
-				"outputPath": "dist/libs/mapi-types.d.ts"
+				"assets": [
+					"libs/mapi-models/*.md",
+					"libs/mapi-models/tsconfig.json",
+					"libs/mapi-models/tsconfig.lib.json"
+				]
 			}
 		},
 		"nx-release-publish": {

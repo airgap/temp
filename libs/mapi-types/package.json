@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/mapi-models",
+	"name": "@lyku/mapi-types",
 	"version": "0.0.1",
 	"devDependencies": {
 		"tslib": "^2.3.0",

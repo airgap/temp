@@ -147,8 +147,20 @@ const jsonify = async () => {
 };
 
 await jsonify();
+const assets = ['package.json', 'README.md', 'tsconfig.json'];
 // Copy package.json to dist
-await Bun.write(
-	'../../dist/libs/json-models/package.json',
-	await Bun.file('package.json').text()
-);
+for (const asset of assets) {
+	await Bun.write(
+		path.join(
+			__dirname,
+			'..',
+			'..',
+			'..',
+			'dist',
+			'libs',
+			'json-models',
+			asset
+		),
+		await Bun.file(path.join(__dirname, '..', asset)).text()
+	);
+}

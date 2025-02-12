@@ -7,11 +7,12 @@
   export let href: string | undefined = undefined;
   export let className: string | undefined = undefined;
   export let style: string | undefined = undefined;
+  export let isActive: boolean = false; // New prop to control the active state
   // ... export other props as needed
   
-  $: classes = (classNames(styles.CoolLink, {
-    [styles.depressed]: href && window.location.pathname.startsWith(href)
-  }, className));
+  $: classes = classNames(styles.CoolLink, {
+    [styles.depressed]: isActive
+  }, className);
 </script>
 
 <Link

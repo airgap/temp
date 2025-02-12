@@ -16,6 +16,8 @@
   const user = cacheStore.currentUser;
   let profile = user?.profilePicture;
 
+  export let url: URL;
+
   $: if (user) {
     profile = user.profilePicture;
   }
@@ -28,14 +30,14 @@
     <Backdrop />
     <!--<Link href="/leaderboards"><img src={gold} alt='Leaderboards'/></Link>-->
     <!--<Link href="/hot"><img src={fire} alt='Hot'/></Link>-->
-    <MobileNavLink href="/live">
+    <MobileNavLink isActive={url.pathname.startsWith('/live')} href="/live">
       <img src={live} alt="Live" />
     </MobileNavLink>
-    <MobileNavLink href="/g">
+    <MobileNavLink isActive={url.pathname.startsWith('/g')} href="/g">
       <img src={groups} alt="ViewGroups" />
     </MobileNavLink>
     <NavLogo class={styles.mainIcon} />
-    <MobileNavLink href="/play">
+    <MobileNavLink isActive={url.pathname.startsWith('/play')} href="/play">
       <img src={play} alt="Play" />
     </MobileNavLink>
     <!--<Link href="/search">-->

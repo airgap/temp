@@ -5,3 +5,8 @@
 /.nx/workspace-data
 **/dist
 **/*.template
+.nx
+.svelte-kit
+/tmp
+/.git
+node_modules

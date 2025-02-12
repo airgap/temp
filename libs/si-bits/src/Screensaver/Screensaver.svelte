@@ -124,7 +124,7 @@
   });
 </script>
 
-<div class={styles.ScreenSaver} on:mousedown={click}>
+<div class={styles.ScreenSaver} on:mousedown={click} aria-role="button" aria-label="Catch the edge">
   <div class={styles.SaverScorebox}>
     <div class={styles.SaverScoreText}>
       {#if showTut}

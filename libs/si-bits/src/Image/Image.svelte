@@ -23,7 +23,7 @@
   export let id: $$Props['id'] = undefined;
   export let className: string = '';
 
-  $: imgSrc = id !== undefined 
+  $: src = id !== undefined 
     ? formImageUrl(id) 
     : url !== undefined 
     ? url 

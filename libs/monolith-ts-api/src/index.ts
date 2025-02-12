@@ -45,16 +45,19 @@ const isLocalhost =
 	typeof window !== 'undefined'
 		? window.location.hostname === 'localhost'
 		: false;
-
+const browser = typeof window !== 'undefined';
+const hostname = isLocalhost
+	? 'localhost'
+	: browser
+	? window.location.hostname
+	: '';
 let currentPlatform: Platform = {
-	browser: typeof window !== 'undefined',
-	hostname: isLocalhost ? 'localhost' : window.location.hostname,
-	apiHostname: isLocalhost
-		? 'localhost:3000'
-		: 'api.' + window.location.hostname,
+	browser,
+	hostname,
+	apiHostname: isLocalhost ? 'localhost:3000' : 'api.' + hostname,
 	cookies: {
 		get: (name) => {
-			if (typeof window === 'undefined') return undefined;
+			if (!browser) return undefined;
 			return getDocumentCookie(document.cookie, name);
 		},
 		set: (name, value, options) => {
@@ -77,7 +80,7 @@ export const setPlatform = (platform: Platform) => {
 	updateHostname(platform.hostname);
 };
 
-import type { MonolithTypes } from 'monolith-api-types';
+import type { MonolithTypes } from '@lyku/mapi-types';
 import { decode, encode } from '@msgpack/msgpack';
 
 type ContractName = keyof MonolithTypes;

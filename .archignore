@@ -1,0 +1,11 @@
+.nx
+.svelte-kit
+./tmp
+./.git
+node_modules
+.verdaccio
+.wrangler
+./heap
+./k8s-prd-ca-cert.crt
+./dist
+./coverage

@@ -7,6 +7,12 @@
 	},
 	"type": "module",
 	"main": "./src/index.js",
-	"typings": "./src/index.d.ts",
-	"private": true
+	"module": "./src/index.js",
+	"types": "./src/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.d.ts",
+			"import": "./src/index.js"
+		}
+	}
 }

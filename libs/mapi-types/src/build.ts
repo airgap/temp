@@ -1,15 +1,15 @@
 import { TsonSchemaOrPrimitive, tsonToType } from 'from-schema';
-import * as src from './';
+import * as src from '@lyku/mapi-models';
 import * as prettier from 'prettier';
-
-const reqKeys = {} as Record<string, string>;
-const resKeys = {} as Record<string, string>;
-const reqTypes = {} as Record<string, string>;
-const resTypes = {} as Record<string, string>;
-const tweakReqKeys = {} as Record<string, string>;
-const tweakResKeys = {} as Record<string, string>;
-const tweakReqTypes = {} as Record<string, string>;
-const tweakResTypes = {} as Record<string, string>;
+import fs from 'fs';
+const reqKeys = {};
+const resKeys = {};
+const reqTypes = {};
+const resTypes = {};
+const tweakReqKeys = {};
+const tweakResKeys = {};
+const tweakReqTypes = {};
+const tweakResTypes = {};
 
 let unformatted = '';
 let fns = '';
@@ -31,14 +31,12 @@ const types = Object.entries(src).map(([key, value]) => {
 		const trk = upperKey + 'TweakRequest';
 		tweakReqKeys[key] = trk;
 		if ('tweakRequest' in value.stream)
-			fns += `export type ${trk} = ${tsonToType(
-				value.stream.tweakRequest as TsonSchemaOrPrimitive
-			)};\n`;
+			fns += `export type ${trk} = ${tsonToType(value.stream.tweakRequest)};\n`;
 		const reskey = upperKey + 'TweakResponse';
 		tweakResKeys[key] = reskey;
 		if ('tweakResponse' in value.stream)
 			fns += `export type ${reskey} = ${tsonToType(
-				value.stream.tweakResponse as TsonSchemaOrPrimitive
+				value.stream.tweakResponse
 			)};\n`;
 	}
 });
@@ -69,7 +67,7 @@ export type MonolithTypes = {
 		.join(',\n')}
 }`;
 
-Bun.write(
+fs.writeFileSync(
 	'../../dist/libs/mapi-types.d.ts',
 	prettier.format(functions, { parser: 'typescript' })
 );
