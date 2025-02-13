@@ -66,8 +66,9 @@ export type MonolithTypes = {
 		})
 		.join(',\n')}
 }`;
-
+fs.mkdirSync('../../dist/libs/mapi-types', { recursive: true });
+fs.copyFileSync('package.json', '../../dist/libs/mapi-types/package.json');
 fs.writeFileSync(
-	'../../dist/libs/mapi-types.d.ts',
+	'../../dist/libs/mapi-types/index.d.ts',
 	prettier.format(functions, { parser: 'typescript' })
 );

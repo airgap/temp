@@ -20,7 +20,7 @@ esbuild
 		metafile: true, // Generate a metafile for analysis
 	})
 	.then(() => {
-		console.log('Built');
+		// console.log('Built');
 	})
 	.catch((err) => {
 		console.error('Build failed:', err);

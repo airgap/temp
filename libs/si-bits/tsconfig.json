@@ -10,7 +10,15 @@
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"types": ["svelte"],
-		"verbatimModuleSyntax": true
+		"verbatimModuleSyntax": true,
+		"paths": {
+			"@lyku/defaults": ["dist/libs/defaults"],
+			"@lyku/strings": ["dist/libs/strings"],
+			"@lyku/json-models": ["dist/libs/json-models"],
+			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
+			"monolith-ts-api": ["dist/libs/monolith-ts-api"],
+			"@lyku/mapi-types": ["dist/libs/mapi-types/index.d.ts"]
+		}
 	},
 	"files": [],
 	"include": ["src"],
