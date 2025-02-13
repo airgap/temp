@@ -13,7 +13,13 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"skipLibCheck": true,
-		"lib": ["ESNext", "DOM", "DOM.Iterable"]
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"paths": {
+			"@lyku/json-models": ["dist/libs/json-models"],
+			"monolith-ts-api": ["dist/libs/monolith-ts-api"],
+			"@lyku/strings": ["dist/libs/strings"],
+			"@lyku/phrasebooks": ["dist/libs/phrasebooks"]
+		}
 	},
 	"include": [
 		"src/**/*.ts",
