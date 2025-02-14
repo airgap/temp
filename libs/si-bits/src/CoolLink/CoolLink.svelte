@@ -16,10 +16,10 @@
 </script>
 
 <Link
-  {href}
-  class={classes}
-  {style}
   {...$$restProps}
+  {href}
+  className={classes}
+  {style}
 >
   <slot />
 </Link>

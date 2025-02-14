@@ -1,12 +1,12 @@
 <script lang="ts">
   import classnames from 'classnames';
-
+  import styles from './Link.module.sass';
   export let disabled: boolean = false;
   export let className: string = '';
   export let href: string | undefined = undefined;
   export let target: string | undefined = undefined;
 
-  $: classes = classnames('link', className);
+  $: classes = classnames(styles.Link, className);
 
   // Add security check for external links
   $: rel = target === '_blank' ? 'noopener noreferrer' : undefined;

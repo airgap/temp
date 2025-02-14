@@ -3,9 +3,10 @@
   import { language } from '../phrasebook';
   import { setCookie } from 'monolith-ts-api';
   import { Link } from '../Link';
-  import lingo from '../assets/lingo.svg';
+  import Svg from '../assets/lingo.svelte';
   import type { Lang } from '@lyku/phrasebooks';
-
+	import Button from '../Button/Button.svelte';
+  console.log('svg', Svg);
   const langs: Partial<Record<Lang, string>> = {
     'en-US': 'English',
     'ru-RU': 'Русский',
@@ -33,21 +34,21 @@
 
 <div class={styles.languageSelector}>
   <Link 
-    class={styles.languageSelectorButton} 
+    className={styles.languageSelectorButton} 
     on:click={() => isOpen = !isOpen}
   >
-    <img src={lingo} class={styles.globe} alt="Language selector" />
+    <Svg />
   </Link>
   
   {#if isOpen}
     <ul class={styles.languageOptions}>
       {#each languages as language (language.code)}
-        <li><button
+        <li><Button
           onclick={() => handleLanguageChange(language.code)}
-          class:selected={styles.selected && selectedLanguage === language.code}
+          class={selectedLanguage === language.code?styles.selected:''}
         >
           {language.name}
-          </button>
+        </Button>
         </li>
       {/each}
     </ul>

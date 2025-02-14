@@ -28,7 +28,8 @@
 			"executor": "@nx/vite:dev-server",
 			"defaultConfiguration": "development",
 			"options": {
-				"buildTarget": "webui:build"
+				"buildTarget": "webui:build",
+				"maxMemory": 8192
 			},
 			"configurations": {
 				"development": {
@@ -60,7 +61,7 @@
 			"options": {
 				"commands": [
 					// "./copydocs.sh",
-					"wrangler pages publish dist/apps/webui --project-name bouncing-tv"
+					"wrangler pages publish dist/apps/webui/cloudflare --project-name lyku"
 				]
 			}
 		}

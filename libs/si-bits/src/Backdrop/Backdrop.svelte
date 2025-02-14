@@ -8,6 +8,5 @@
   }>();
 </script>
 
-<div class={styles.Backdrop}>
-  <img src={image ? formImageUrl(image) : drop} alt="Backdrop" />
+<div class={styles.Backdrop} style={`background-image: url('${image ? formImageUrl(image) : drop}')`}>
 </div> 
