@@ -1,6 +1,6 @@
 <script lang="ts">
   import Select from 'svelte-select';
-  import { GroupFilter } from '@lyku/json-models';
+  import type { GroupFilter } from '@lyku/json-models';
   import styles from './GroupFilterSelect.module.sass';
 
   export let value: GroupFilter | undefined = undefined;

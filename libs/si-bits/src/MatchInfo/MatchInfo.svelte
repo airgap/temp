@@ -5,7 +5,6 @@
   import { localizeUsername } from '../localizeUsername';
 
   export let match: TtfMatch | undefined = undefined;
-  export let user: User | undefined = undefined;
 
   let xUser: User | undefined;
   let oUser: User | undefined;

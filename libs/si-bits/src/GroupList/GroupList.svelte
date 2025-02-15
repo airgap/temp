@@ -1,6 +1,6 @@
 <script lang="ts">
   import { api, getSessionId } from 'monolith-ts-api';
-  import { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
+  import type { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
   import { Button } from '../Button';
   import { currentUser } from '../currentUserStore';
   import styles from './GroupList.module.sass';

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Achievement } from '@lyku/json-models';
+    import type { Achievement } from '@lyku/json-models';
     import classNames from 'classnames';
     import styles from './AchievementTile.module.sass';
     import { Image } from '../Image';

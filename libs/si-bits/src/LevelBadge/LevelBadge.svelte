@@ -4,7 +4,7 @@
 
   // Props
   export let points: bigint;
-  export let progress: boolean = false;
+  // export let progress: boolean = false;
   export let size: 's' | 'm' | 'l' = 's';
 
   const sizes = {

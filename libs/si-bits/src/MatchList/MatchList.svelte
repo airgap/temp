@@ -81,9 +81,11 @@
         {/if}
       {/each}
     {:else}
-      <i style="opacity: 0.5; margin-top: 31%; display: block">
-        Active matches will appear here
-      </i>
+      <tr><td colspan="99">
+        <i style="opacity: 0.5; margin-top: 31%; display: block">
+          Active matches will appear here
+        </i>
+      </td></tr>
     {/if}</tbody>
   </table>
 </div> 

@@ -2,8 +2,8 @@
   import classnames from 'classnames';
   import { api } from 'monolith-ts-api';
   import { Stream } from '@cloudflare/stream-react';
-  import { Post, User } from '@lyku/json-models';
-  import { AttachmentType } from '@lyku/helpers';
+  import type { Post, User } from '@lyku/json-models';
+  import type { AttachmentType } from '@lyku/helpers';
   import { getSupertypeFromAttachmentId, parseAttachmentId } from '@lyku/helpers';
   
   import { Button } from '../Button';

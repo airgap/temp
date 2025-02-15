@@ -12,7 +12,7 @@
 
 <Link
   href={getHomepage()}
-  class={`${className} ${styles.NavLogo}`}
+  className={`${className} ${styles.NavLogo}`}
 >
   <svg width="30px" height="30px">
     <defs>

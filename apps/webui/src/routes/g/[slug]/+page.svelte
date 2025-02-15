@@ -2,7 +2,6 @@
     import { api, getSessionId } from 'monolith-ts-api';
     import { PostList } from '@lyku/si-bits';
     import { getContext } from 'svelte';
-    import { Await } from 'awaitx';
 
     // Get groupId from URL path
     const groupId = window.location.pathname.split('/g/')?.[1];

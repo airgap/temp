@@ -47,11 +47,20 @@
 	onclick={() => !dropped && (dropped = true)}
 >
 	<div
+		tabindex="0"
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				dropped = !dropped;
+			}
+		}}
+		role="button"
+		aria-label="Toggle achievements"
 		class={styles.dropHeader}
 		onclick={() => dropped = !dropped}
+		id="dropper"
 	>
 		<h2>Achievements</h2>
-		<label class={styles.dropper}>
+		<label class={styles.dropper} for="dropper">
 			<span>▼</span>
 		</label>
 	</div>

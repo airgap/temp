@@ -68,7 +68,7 @@
 <div class={styles.Gol}>
   {#each Array(rows) as _, y}
     {#each Array(cols) as _, x}
-      <div class={classnames(styles.piece, { [styles.alive]: board[y][x] })} />
+      <div class={classnames(styles.piece, { [styles.alive]: board[y][x] })} ></div>
     {/each}
   {/each}
 </div> 

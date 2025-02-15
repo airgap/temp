@@ -10,7 +10,6 @@
   import type { Bounce, Channel } from '@lyku/json-models';
 
   export let channel: Channel | undefined = undefined;
-  export let ready: boolean;
   let children: any = $$slots.default;
 
   const tick = new Audio(tickPath);
@@ -124,7 +123,7 @@
   });
 </script>
 
-<div class={styles.ScreenSaver} on:mousedown={click} aria-role="button" aria-label="Catch the edge">
+<div class={styles.ScreenSaver} on:mousedown={click} tabindex="0" role="button" aria-label="Catch the edge">
   <div class={styles.SaverScorebox}>
     <div class={styles.SaverScoreText}>
       {#if showTut}

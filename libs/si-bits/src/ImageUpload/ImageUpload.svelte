@@ -4,7 +4,7 @@
   import classnames from 'classnames';
   import { imageAndVideoMimes, imageMimes } from '@lyku/defaults';
   import { api, currentPlatform } from 'monolith-ts-api';
-  import { ImageDraft, ImageUploadReason, VideoDraft } from '@lyku/json-models';
+  import type { ImageDraft, ImageUploadReason, VideoDraft } from '@lyku/json-models';
   import styles from './ImageUpload.module.sass';
   
   import times from '../times.svg?raw';
@@ -25,7 +25,7 @@
   export let channelId: bigint | undefined = undefined;
   export let reason: ImageUploadReason;
   export let working = false;
-  export let reverse = false;
+  // export let reverse = false;
   export let shape: Shape | undefined = undefined;
   export let allowVideo = false;
   export let image: string | undefined = undefined;
@@ -182,7 +182,8 @@
   {:else}
     <span class={styles.attachmentImage}>
       {#if fileState?.type.startsWith('video/')}
-        <video src={base64} />
+        <!-- svelte-ignore a11y_media_has_caption -->
+        <video src={base64} ></video>
       {:else}
         <img src={base64} alt="Attachment" />
       {/if}

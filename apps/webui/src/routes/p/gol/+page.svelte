@@ -1,14 +1,11 @@
 <script>
     import { Gol } from '@lyku/si-bits';
     import { TvFrame } from '@lyku/si-bits';
+    import styles from './PlayGol.module.sass';
   </script>
   
-  <div class="PlayGol">
+  <div class={styles.PlayGol}>
     <TvFrame size="auto">
       <Gol />
     </TvFrame>
   </div>
-  
-  <style lang="sass">
-    @import './PlayGol.module.sass'
-  </style> 

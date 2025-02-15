@@ -12,4 +12,4 @@
   class={classnames(styles.Static, {
     [styles.hidden]: hidden,
   })}
-/> 
+></div> 

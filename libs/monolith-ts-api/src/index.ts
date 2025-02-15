@@ -51,7 +51,7 @@ const hostname = isLocalhost
 	: browser
 	? window.location.hostname
 	: '';
-let currentPlatform: Platform = {
+export let currentPlatform: Platform = {
 	browser,
 	hostname,
 	apiHostname: isLocalhost ? 'localhost:3000' : 'api.' + hostname,

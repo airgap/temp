@@ -13,7 +13,7 @@
   import { cacheStore } from '../CacheProvider';
   import { getSessionId } from 'monolith-ts-api';
 
-  let user = cacheStore.currentUser;
+  const user = cacheStore.currentUser;
   export let url: URL;
 
   const showAuth = (form: any) => () => shout('showAuth', form);

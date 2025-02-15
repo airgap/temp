@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Property } from 'csstype';
     import type { CSSProperties } from 'react';
-    import { Size, sizes } from '../sizes';
+    import { type Size, sizes } from '../sizes';
 
     const layouts = { h: 'row', v: 'column' } as const;
     type Layout = keyof typeof layouts;

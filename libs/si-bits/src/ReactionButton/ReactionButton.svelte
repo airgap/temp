@@ -1,6 +1,5 @@
 <script lang="ts">
   import classnames from 'classnames';
-  import SVG from 'react-inlinesvg';
   import { Link } from '../Link';
   import styles from './ReactionButton.module.sass';
 

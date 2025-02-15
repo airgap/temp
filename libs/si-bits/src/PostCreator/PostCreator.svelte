@@ -29,14 +29,16 @@
     showInset?: boolean;
   }>();
 
-  let id: bigint | undefined;
-  let body = '';
-  let error: string | undefined;
-  let files: File[] = [];
-  let imageDrafts: ImageDraft[] | undefined;
-  let videoDrafts: VideoDraft[] | undefined;
-  let pending = 0;
-  let finalizing = false;
+  let { id, body, error, files, imageDrafts, videoDrafts, pending, finalizing } = $state({
+    id: undefined as bigint | undefined,
+    body: '',
+    error: undefined as string | undefined,
+    files: [] as File[],
+    imageDrafts: undefined as ImageDraft[] | undefined,
+    videoDrafts: undefined as VideoDraft[] | undefined,
+    pending: 0,
+    finalizing: false
+  });
 
   const replyToPost = $derived(() => {
     if (!reply) return undefined;

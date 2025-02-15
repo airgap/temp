@@ -2,7 +2,7 @@
   import { Image, type ImageProps } from '../Image';
   import styles from './Thumbnail.module.sass';
 
-  export let {...props}: ImageProps = {};
+  export const props = $props<ImageProps>();
 </script>
 
 <span class={styles.Thumbnail}>

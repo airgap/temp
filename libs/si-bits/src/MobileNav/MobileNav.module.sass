@@ -1,14 +1,14 @@
 @use '../symbols' as *
 
 .MobileNavContainer
-	@media screen and (min-width: $nav-break)
-		display: none
 	position: fixed
 	width: 100%
 	// backdrop-filter: blur(2px)
 	z-index: 1
 	bottom: 0
 	height: 50px
+	@media screen and (min-width: $nav-break)
+		display: none
 .MobileNav
 	//font-family: Gumzilla
 	// z-index: 2

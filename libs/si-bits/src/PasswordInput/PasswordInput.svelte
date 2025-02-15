@@ -3,7 +3,7 @@
   import { Texticle, type TexticleProps } from '../Texticle';
   import { phrasebook } from '../phrasebook';
 
-  export let {...props}: TexticleProps = {};
+  export const props = $props<TexticleProps>();
 </script>
 
 <Texticle

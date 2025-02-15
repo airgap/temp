@@ -82,9 +82,9 @@
         {/if}
       {/each}
     {:else}
-      <i style="opacity: 0.5; margin-top: 31%; display: block">
+      <tr><td colspan="99"><i style="opacity: 0.5; margin-top: 31%; display: block">
         Invites from friends will appear here
-      </i>
+      </i></td></tr>
     {/if}</tbody>
   </table>
 </div> 
