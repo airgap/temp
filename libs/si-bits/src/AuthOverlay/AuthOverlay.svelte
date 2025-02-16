@@ -6,22 +6,16 @@
   import type { ComponentType } from 'svelte';
   import hidden from '../hidden.module.sass';
   import styles from './AuthOverlay.module.sass';
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
 
-  let { form, loading } = $state({
-    form: null as ComponentType | null,
-    loading: false
-  });
-
-  onMount(() => {
-    listen('showAuth', (newForm) => form = newForm);
-    listen('submitClicked', () => loading = true);
-    listen('formReplied', () => loading = false);
-  });
+  $: loading = false;
+  export let visible = false;
 </script>
 
 <div 
   class={classnames(styles.AuthOverlay, {
-    [hidden.hidden]: !form
+    [hidden.hidden]: !visible
   })}
 >
   <div class={styles.AuthForm}>
@@ -32,13 +26,11 @@
     >
       <button 
         class={styles.Close}
-        onclick={() => form = null}
+        onclick={() => dispatch('dismiss')}
         aria-label="Close"
       ></button>
-      {#if form}
-        {form}
-      {/if}
+      <slot />
     </div>
-    <LoadingOverlay shown={loading} />
+    <LoadingOverlay visible={loading} />
   </div>
 </div> 

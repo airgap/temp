@@ -72,7 +72,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.js`
+		`index.js`,
 	);
 	const dtsPath = path.join(
 		__dirname,
@@ -83,7 +83,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.d.ts`
+		`index.d.ts`,
 	);
 	const exportDir = path.dirname(jsPath);
 	await mkdir(exportDir, { recursive: true });
@@ -107,8 +107,8 @@ const jsonify = async () => {
 				? postgresColumnToTson(value as any)
 				: value
 			: hasProperties
-			? postgresRecordToTson(value as any)
-			: value;
+				? postgresRecordToTson(value as any)
+				: value;
 		// console.log('Typing', tsonSchema);
 		const resolvedTypeString = tsonToType(tsonSchema as any);
 		// console.log('Resolved', key);
@@ -119,7 +119,7 @@ const jsonify = async () => {
 			`export declare const ${key}: ${stringifyBON(tsonSchema)};\n` +
 				`export type ${
 					key[0].toUpperCase() + key.slice(1)
-				} = ${resolvedTypeString};`
+				} = ${resolvedTypeString};`,
 		);
 	}
 
@@ -159,8 +159,8 @@ for (const asset of assets) {
 			'dist',
 			'libs',
 			'json-models',
-			asset
+			asset,
 		),
-		await Bun.file(path.join(__dirname, '..', asset)).text()
+		await Bun.file(path.join(__dirname, '..', asset)).text(),
 	);
 }

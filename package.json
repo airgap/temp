@@ -15,7 +15,8 @@
 		"clean": "npm run clean-artifacts && npm run clean-modules",
 		"generate-ingress": "bun scripts/generate-ingress.ts",
 		"apply-ingress": "kubectl apply -f tmp/ingress.yaml",
-		"deploy-ingress": "bun run generate-ingress && bun run apply-ingress"
+		"deploy-ingress": "bun run generate-ingress && bun run apply-ingress",
+		"cloc": "cloc --vcs=git --exclude-list-file=cloc-exclude"
 	},
 	"private": true,
 	"dependencies": {

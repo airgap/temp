@@ -29,7 +29,7 @@ const clocResult = Bun.spawn(
 	],
 	{
 		stdout: 'pipe',
-	}
+	},
 );
 
 const clocOutput = await new Response(clocResult.stdout).text();
@@ -56,5 +56,5 @@ await Bun.write('../../dist/libs/stats/index.ts', ts);
 
 await Bun.write(
 	'../../dist/libs/stats/package.json',
-	await Bun.file('package.json').text()
+	await Bun.file('package.json').text(),
 );

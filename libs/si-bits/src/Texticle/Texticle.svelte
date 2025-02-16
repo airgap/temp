@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { StringJsonSchema } from 'from-schema';
   import styles from './Texticle.module.sass';
+  import classNames from 'classnames';
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
   
   type Type = 'text' | 'email' | 'password';
   
@@ -8,8 +11,6 @@
   export let empty: string = '';
   export let valid: string | undefined = undefined;
   export let invalid: string | undefined = undefined;
-  export let onInput: ((text: string) => void) | undefined = undefined;
-  export let onValidation: ((valid: boolean) => void | boolean) | undefined = undefined;
   export let pattern: string | undefined = undefined;
   export let type: Type = 'text';
   export let minLength: number | undefined = undefined;
@@ -35,7 +36,7 @@
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     value = target.value;
-    onInput?.(value);
+    dispatch('input', value);
     updatePlaceholder();
   }
 
@@ -48,7 +49,7 @@
         : invalid ?? empty
       : empty;
     label = label ?? empty ?? ' ';
-    onValidation?.(isValid);
+    dispatch('validation', isValid);
   }
 
   $: value, empty, updatePlaceholder();
@@ -59,14 +60,14 @@
     <textarea
       {id}
       on:input={handleInput}
-      placeholder="-"
+      placeholder=""
       bind:value
     ></textarea>
   {:else}
     <input
       {id}
       on:input={handleInput}
-      placeholder="-"
+      placeholder=""
       {type}
       bind:value
     />

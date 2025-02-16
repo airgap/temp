@@ -11,10 +11,11 @@
   import styles from './MobileNav.module.sass';
   import { ProfilePicture } from '../ProfilePicture';
   import { cacheStore } from '../CacheProvider';
-
-  const showAuth = (form: any) => () => shout('showAuth', form);
   const user = cacheStore.currentUser;
   let profile = user?.profilePicture;
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
+  const joinOrLogin = () => dispatch('joinOrLogin');
 
   export let url: URL;
 
@@ -45,7 +46,7 @@
     <!--</Link>-->
     <MobileNavLink
       href={user ? '/profile' : undefined}
-      on:click={!user ? showAuth(UserRegistrationForm) : undefined}
+      on:click={!user ? joinOrLogin : undefined}
     >
       <ProfilePicture url={profile ?? profileBlank} />
     </MobileNavLink>

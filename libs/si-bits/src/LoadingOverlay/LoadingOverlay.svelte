@@ -2,10 +2,13 @@
   import Loading from './Loading.svelte';
   import h from '../hidden.module.sass';
   import styles from './LoadingOverlay.module.sass';
+	import classNames from 'classnames';
   
-  export let shown: boolean = false;
+  export let visible: boolean = false;
 </script>
 
-<div class={styles.LoadingOverlay} class:{h.hidden}={!shown}>
+<div class={classNames(styles.LoadingOverlay, {
+  [h.hidden]: !visible
+})}>
   <Loading />
 </div>

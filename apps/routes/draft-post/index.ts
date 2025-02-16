@@ -18,7 +18,7 @@ type AttachmentDraft = ImageDraft | VideoDraft;
 export default handleDraftPost(
 	async (
 		{ attachments, body, replyTo, echoing },
-		{ db, requester, strings }
+		{ db, requester, strings },
 	) => {
 		if (!cfApiToken && attachments?.length)
 			throw new Error('We forgot to enter our Cloudflare password');
@@ -44,7 +44,7 @@ export default handleDraftPost(
 		const atAts: AttachmentDraft[] = [];
 		const attachmentIds: bigint[] =
 			attachments?.map((a, i) =>
-				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type))
+				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type)),
 			) ?? [];
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
@@ -77,7 +77,7 @@ export default handleDraftPost(
 				imageDrafts.length,
 				'images and',
 				videoDrafts.length,
-				'videos drafted'
+				'videos drafted',
 			);
 			atAts.push(...imageDrafts, ...videoDrafts);
 		}
@@ -101,7 +101,7 @@ export default handleDraftPost(
 			// userId,
 			id: draft.id,
 		};
-	}
+	},
 );
 type AttachmentInitializerProps = {
 	id: bigint;
@@ -111,7 +111,7 @@ type AttachmentInitializerProps = {
 	size?: number;
 };
 type AttachmentInitializer<Return> = (
-	props: AttachmentInitializerProps
+	props: AttachmentInitializerProps,
 ) => Promise<Return>;
 // Example usage
 // const html = '<div><p>Some <b>bold</b> text</p><script>alert("no!");</script></div>';
@@ -173,7 +173,7 @@ const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 		'stdout',
 		stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1],
 		'stderr',
-		stderr
+		stderr,
 	);
 	const uploadURL = stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1];
 	const id = stdout.match(/^stream-media-id: ([a-z0-9]{32})$/m)?.[1];

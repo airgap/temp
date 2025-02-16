@@ -21,7 +21,7 @@ interface LetterInfo {
 export const wordbender = (dom = document) => {
 	const timeline = gsap.timeline();
 	const letters: HTMLElement[] = Array.from(
-		document.getElementsByClassName('live')
+		document.getElementsByClassName('live'),
 	) as HTMLElement[];
 	const letterInfo: WeakMap<HTMLElement, LetterInfo> = new WeakMap();
 
@@ -83,7 +83,7 @@ export const wordbender = (dom = document) => {
 			};
 			const distance = Math.max(
 				0,
-				Math.sqrt(delta.x * delta.x + delta.y * delta.y) + 20
+				Math.sqrt(delta.x * delta.x + delta.y * delta.y) + 20,
 			);
 			// if(distance > 100) return;
 			info.moved = {

@@ -8,14 +8,14 @@ export default handleListMatchProposals(
 			filter === 'received'
 				? query.where('to', '=', requester)
 				: filter === 'sent'
-				? query.where('from', '=', requester)
-				: query.where('to', '=', requester).where('from', '=', requester);
+					? query.where('from', '=', requester)
+					: query.where('to', '=', requester).where('from', '=', requester);
 		const proposals = await query.selectAll().execute();
 		const userIds = [
 			...new Set(
 				proposals.map((proposal) =>
-					proposal.to === requester ? proposal.from : proposal.to
-				)
+					proposal.to === requester ? proposal.from : proposal.to,
+				),
 			),
 		];
 		const users = await db
@@ -24,5 +24,5 @@ export default handleListMatchProposals(
 			.selectAll()
 			.execute();
 		return { proposals, users };
-	}
+	},
 );

@@ -4,13 +4,13 @@ import { shortlinkBasepath } from './env';
 import type { Database } from '@lyku/db-config/kysely';
 const urlRegex = new RegExp(
 	'((http|ftp|https):\\/\\/)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])',
-	'g'
+	'g',
 );
 export const shortenLinksInBody = async (
 	body: string,
 	post: bigint,
 	author: bigint,
-	db: Kysely<Database>
+	db: Kysely<Database>,
 ) => {
 	const matches = body.match(urlRegex);
 	if (!matches?.length) return body;
@@ -24,11 +24,11 @@ export const shortenLinksInBody = async (
 						url,
 						author,
 						post,
-					}))
+					})),
 				)
 				.returning(['id', 'url'])
 				.execute()
-		).map(({ id, url }) => [url, join(shortlinkBasepath, id.toString())])
+		).map(({ id, url }) => [url, join(shortlinkBasepath, id.toString())]),
 	);
 	console.log('matches', matches, 'shortlinks', shortlinks);
 	for (const match of matches) body = body.replace(match, shortlinks[match]);

@@ -55,7 +55,7 @@ const jsonify = async () => {
 		typeImports.push(request);
 		const responseImport = response.endsWith('void') ? '' : `, ${response}`;
 		output.push(
-			`import type { ${request}${responseImport} } from '@lyku/mapi-types';`
+			`import type { ${request}${responseImport} } from '@lyku/mapi-types';`,
 		);
 		if (!response.endsWith('void')) typeImports.push(response);
 		if (tweakRequest !== undefined) typeImports.push(tweakRequest);
@@ -67,17 +67,17 @@ const jsonify = async () => {
 					? `SecureSocketContext<typeof ${key}, MonolithTypes['${key}']>`
 					: `MaybeSecureSocketContext<typeof ${key}, MonolithTypes['${key}']>`
 				: authenticated
-				? `SecureHttpContext<typeof ${key}>`
-				: `MaybeSecureHttpContext<typeof ${key}>`;
+					? `SecureHttpContext<typeof ${key}>`
+					: `MaybeSecureHttpContext<typeof ${key}>`;
 		output.push(
-			`import type {${context.split('<')[0]}} from '@lyku/route-helpers';`
+			`import type {${context.split('<')[0]}} from '@lyku/route-helpers';`,
 		);
 		const validator =
 			'request' in value
 				? (() => {
 						const validator = buildValidator('request', value.request);
 						return `{ "validate": (request: unknown): string[] => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (request: unknown): void => {${validator.validateOrThrow.toString()}}, "isValid": (request: unknown): string | true => {${validator.isValid.toString()}; return true as const } }`;
-				  })()
+					})()
 				: '{ validate: (): string[] => [], validateOrThrow: (): void => {}, isValid: (): true => true as const }';
 		// console.log('validator', validator);
 		const tweakValidator =
@@ -87,13 +87,13 @@ const jsonify = async () => {
 				? `tweakValidator: ${(() => {
 						const validator = buildValidator(
 							'tweakRequest',
-							value.stream.tweakRequest
+							value.stream.tweakRequest,
 						);
 						return `{ "validate": (tweakRequest: unknown): string[] => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (tweakRequest: unknown): void => {${validator.validateOrThrow.toString()}}, "isValid": (tweakRequest: unknown): string | true => {${validator.isValid.toString()}; return true as const } },`;
-				  })()}`
+					})()}`
 				: '';
 		const handle = `export const handle${key[0].toUpperCase()}${key.slice(
-			1
+			1,
 		)} = (handler:  (request: ${request}, context: ${context}) => ${response} | Promise<${response}>) => ({
 				${protocol === 'Websocket' ? 'onOpen' : 'execute'}: handler,
 				validator: ${validator},
@@ -113,9 +113,9 @@ const jsonify = async () => {
 				'libs',
 				'handles',
 				'src',
-				`${key}.ts`
+				`${key}.ts`,
 			),
-			output.join('\n')
+			output.join('\n'),
 		);
 		handles.push(handle);
 	}
@@ -130,7 +130,7 @@ const jsonify = async () => {
 			'libs',
 			'handles',
 			'src',
-			`index.ts`
+			`index.ts`,
 		);
 		const tmpDir = path.dirname(tmpPath);
 		await mkdir(tmpDir, { recursive: true });
@@ -155,5 +155,5 @@ jsonify();
 // Copy package.json to dist
 await Bun.write(
 	'../../dist/libs/handles/package.json',
-	await Bun.file('package.json').text()
+	await Bun.file('package.json').text(),
 );

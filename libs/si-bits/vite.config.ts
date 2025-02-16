@@ -43,6 +43,7 @@ export default defineConfig({
 			// Don't forget to update your package.json as well.
 			formats: ['es', 'cjs'],
 		},
+		minify: false,
 		rollupOptions: {
 			// External packages that should not be bundled into your library.
 			external: [],

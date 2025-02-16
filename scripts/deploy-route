@@ -18,6 +18,9 @@ configLocation=~/lyk8s-kubeconfig.yaml
 export config=--kubeconfig=${configLocation}
 export DEPLOYMENT_NAME=lyku-${SERVICE_NAME}
 
+echo "Deleting deployment ${DEPLOYMENT_NAME}"
+kubectl delete deployment ${DEPLOYMENT_NAME} --ignore-not-found ${config}
+
 echo "Deploying ${SERVICE_NAME} with image ${IMAGE}"
 
 # Check if the deployment exists

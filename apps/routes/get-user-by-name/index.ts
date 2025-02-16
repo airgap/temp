@@ -5,5 +5,5 @@ export default handleGetUserByName(async (username, { db }) =>
 		.selectFrom('users')
 		.selectAll()
 		.where('username', '=', username)
-		.executeTakeFirstOrThrow()
+		.executeTakeFirstOrThrow(),
 );

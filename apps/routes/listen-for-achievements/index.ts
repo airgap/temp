@@ -6,5 +6,5 @@ export default handleListenForAchievements(
 		const sub = nats.subscribe(`achievementGrants.${requester}`);
 		onEach(sub, ({ data }) => emit(data));
 		return sub.unsubscribe;
-	}
+	},
 );

@@ -17,6 +17,10 @@
   export let url: URL;
 
   const showAuth = (form: any) => () => shout('showAuth', form);
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
+  const join = () => dispatch('join');
+  const login = () => dispatch('login');
 </script>
 
 <div class={styles.DesktopNav}>
@@ -47,10 +51,10 @@
             </span>
           </span>
         {:else}
-          <Link on:click={showAuth(UserRegistrationForm)}>
+          <Link on:click={join}>
             {phrasebook.navRegister}
           </Link>
-          <Link on:click={showAuth(UserLoginForm)}>
+          <Link on:click={login}>
             {phrasebook.navLogin}
           </Link>
         {/if}

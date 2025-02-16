@@ -8,18 +8,33 @@
   import { SubmitButton } from '../SubmitButton';
   import { UsernameInput } from '../UsernameInput';
   import { phrasebook } from '../phrasebook';
-
-  let email = '';
-  let username = '';
-  let password = '';
-  let emailValid = false;
-  let usernameValid = false;
-  let passwordValid = false;
-  let agreed = false;
-  let error: any = undefined;
-
+  import { createEventDispatcher } from 'svelte';
+  import { AuthOverlay } from '../AuthOverlay';
+  const dispatch = createEventDispatcher();
+  let {email, username, password, emailValid, usernameValid, passwordValid, agreed, error} = $state({
+    email: '',
+    username: '',
+    password: '',
+    emailValid: false,
+    usernameValid: false,
+    passwordValid: false,
+    agreed: false,
+    error: undefined
+  });
+  let valid = $derived( emailValid && usernameValid && passwordValid && agreed);
+  
+  const { visible } = $props<{ visible?: boolean }>();
+  $effect(() => {
+    console.log('email', email);
+    console.log('username', username);
+    console.log('password', password);
+    console.log('emailValid', emailValid);
+    console.log('usernameValid', usernameValid);
+    console.log('passwordValid', passwordValid);
+    console.log('agreed', agreed);
+  });
   function handleSubmit() {
-    shout('submitClicked', {});
+    dispatch('submit');
     api.registerUser({
       email,
       username,
@@ -28,40 +43,47 @@
     })
     .then((sessionId) => {
       setCookie('sessionId', sessionId, 365);
+      dispatch('success');
       window.location.reload();
     })
-    .catch((e) => error = e);
+    .catch((e) => {
+      dispatch('error', e);
+      error = e;
+    });
   }
 </script>
-
+<AuthOverlay {visible}>
 <h2>{phrasebook.regFormTitle}</h2>
 
 <EmailInput 
-  oninput={(e) => email = e.detail}
-  onvalidation={(e) => emailValid = e.detail}
+  on:input={(e) => email = e.detail}
+  on:validation={(e) => emailValid = e.detail}
 />
 
 <UsernameInput
-  oninput={(e) => username = e.detail}
-  onvalidation={(e) => usernameValid = e.detail}
+  on:input={(e) => username = e.detail}
+  on:validation={(e) => usernameValid = e.detail}
 />
 
 <PasswordInput
-  oninput={(e) => password = e.detail}
-  onvalidation={(e) => passwordValid = e.detail}
+  on:input={(e) => password = e.detail}
+  on:validation={(e) => {passwordValid = e.detail; console.log(passwordValid)}}
 />
 
-<Agreeable onchange={(e) => agreed = e.detail}>
+<Agreeable on:input={(e) => {
+  agreed = e.detail;
+  console.log('agreed', agreed);
+}}>
   {phrasebook.termsLabel} <ShowTos>{phrasebook.termsLink}</ShowTos>
 </Agreeable>
 
 <SubmitButton
-  disabled={!(emailValid && usernameValid && passwordValid && agreed)}
+  disabled={!valid}
   onclick={handleSubmit}
 >
-  Register
+  {phrasebook.regFormTitle}
 </SubmitButton>
 
 {#if error}
   <h3>{error}</h3>
-{/if} 
+{/if} </AuthOverlay>

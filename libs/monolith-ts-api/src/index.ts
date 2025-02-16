@@ -35,7 +35,7 @@ interface Platform {
 		set(
 			name: string,
 			value: string,
-			options?: { maxAge?: number; path?: string }
+			options?: { maxAge?: number; path?: string },
 		): void;
 	};
 	reload?: () => void;
@@ -49,8 +49,8 @@ const browser = typeof window !== 'undefined';
 const hostname = isLocalhost
 	? 'localhost'
 	: browser
-	? window.location.hostname
-	: '';
+		? window.location.hostname
+		: '';
 export let currentPlatform: Platform = {
 	browser,
 	hostname,
@@ -158,7 +158,7 @@ export const api = Object.fromEntries(
 				(
 					params: ThisRoute extends { request: TsonSchema }
 						? ThisRoute['request']
-						: never
+						: never,
 				) => {
 					const route = monolith[routeName] as TsonHandlerModel;
 					const key = onlyKey(routeName as ContractName);
@@ -224,15 +224,15 @@ export const api = Object.fromEntries(
 					}
 				},
 			];
-		}
-	)
+		},
+	),
 ) as unknown as {
 	[K in keyof MonolithTypes]: 'request' extends keyof MonolithTypes[K]
 		? (
 				params: 'request' extends keyof MonolithTypes[K]
 					? MonolithTypes[K]['request']
-					: never
-		  ) => AsyncOrThicc<K>
+					: never,
+			) => AsyncOrThicc<K>
 		: () => AsyncOrThicc<K>;
 };
 export type ThiccSocket<K extends ContractName> = WebSocket & {
@@ -240,8 +240,8 @@ export type ThiccSocket<K extends ContractName> = WebSocket & {
 		listener: (
 			ev: MonolithTypes[K] extends { response: unknown }
 				? MonolithTypes[K]['response']
-				: never
-		) => void
+				: never,
+		) => void,
 	) => void;
 };
 export type AsinkResponse<K extends ContractName> = Promise<

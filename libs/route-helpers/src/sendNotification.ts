@@ -4,7 +4,7 @@ import type { Database } from '@lyku/db-config/kysely';
 
 export const sendNotification = async (
 	notification: Omit<Notification, 'posted' | 'id'>,
-	db: Kysely<Database>
+	db: Kysely<Database>,
 ): Promise<Notification> =>
 	db
 		.insertInto('notifications')

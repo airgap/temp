@@ -1,9 +1,10 @@
 <script lang="ts">
   import styles from './Agreeable.module.sass';
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
 
 
-  let { onChange, slots } = $props<{
-    onChange?: (agreed: boolean) => void | boolean;
+  let { slots } = $props<{
     slots: {
       default?: () => any;
     }
@@ -16,9 +17,9 @@
   <input
     type="checkbox"
     {id}
-    oninput={(e) => onChange?.(e.currentTarget.checked)}
+    oninput={e => dispatch('input', e.currentTarget.checked)}
   />
   <label {id}>
-    {@render slots.default?.()}
+    {@render slots?.default?.()}
   </label>
 </div> 
