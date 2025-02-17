@@ -6,7 +6,7 @@ export const ttmMatch = {
 	// primaryKey: 'id',
 	properties: {
 		// Game ID
-		id: game.properties.id,
+		id: { type: 'bigserial', primaryKey: true },
 		// Player X's ID
 		X: { type: 'bigint' },
 		// Player O's ID

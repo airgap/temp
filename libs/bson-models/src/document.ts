@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const document = {
 	properties: {
-		id: { type: 'bigint' },
+		id: { type: 'bigint', primaryKey: true },
 		url: { type: 'text' },
 		title: { type: 'text', maxLength: 50 },
 		description: { type: 'text', maxLength: 1000 },

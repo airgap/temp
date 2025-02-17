@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const channelSensitives = {
 	properties: {
-		id: { type: 'bigint' },
+		id: { type: 'bigint', primaryKey: true },
 		owner: { type: 'bigint' },
 		// Live Input ID - system only - NOT visible
 		inputId: { type: 'text' },

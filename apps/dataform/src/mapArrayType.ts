@@ -7,6 +7,13 @@ export const mapArrayType = (
 ): string => {
 	const itemType = mapColumnType(name, columnSchema.items);
 	const constraints: string[] = [];
+
+	if (columnSchema.primaryKey) {
+		constraints.push('PRIMARY KEY');
+	}
+	if (columnSchema.unique) {
+		constraints.push('UNIQUE');
+	}
 	if (columnSchema.minItems !== undefined) {
 		constraints.push(
 			`CHECK (array_length("${name}", 1) >= ${columnSchema.minItems})`

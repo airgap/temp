@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const cloudflareVideoDoc = {
 	properties: {
-		id: { type: 'bigserial' },
+		id: { type: 'bigint', primaryKey: true },
 		allowedOrigins: {
 			type: 'array',
 			items: { type: 'text' },

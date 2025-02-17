@@ -5,12 +5,14 @@ export async function createTable<
 	T extends PostgresTableModel<PostgresRecordModel>
 >(tableName: string, schema: T) {
 	// console.log('creating table', tableName, schema, 'tonka');
+	const required = 'required' in schema ? (schema.required as string[]) : [];
 	const columns =
 		'properties' in schema && schema.properties
 			? Object.entries(schema.properties)
 					.map(([columnName, columnSchema]) => {
 						const columnType = mapColumnType(columnName, columnSchema);
-						return `"${columnName}" ${columnType}`;
+						const notNull = required.includes(columnName) ? ' NOT NULL' : '';
+						return `"${columnName}" ${columnType}${notNull}`;
 					})
 					.join(', ')
 			: '';

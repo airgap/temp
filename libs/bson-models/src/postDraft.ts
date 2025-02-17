@@ -4,7 +4,7 @@ import { postBody } from './postBody';
 export const postDraft = {
 	description: 'A draft of a post containing text, images, or videos',
 	properties: {
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 		author: { type: 'bigint' },
 		body: postBody,
 		replyTo: { type: 'bigint' },

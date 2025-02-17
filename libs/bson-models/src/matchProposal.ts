@@ -9,7 +9,7 @@ export const matchProposal = {
 		// Game ID of the game being proposed
 		game: { type: 'integer' },
 		// Proposal ID
-		id: { type: 'bigint', generated: { as: 'gen_snowflake()' } },
+		id: { type: 'bigserial', primaryKey: true },
 		// User ID of the user being proposed to
 		to: { type: 'bigint' },
 	},

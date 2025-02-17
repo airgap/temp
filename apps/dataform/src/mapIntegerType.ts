@@ -6,5 +6,12 @@ export const mapIntegerType = (
 	columnSchema: IntegerColumnModel
 ): string => {
 	const constraints = numberChecks(name, columnSchema);
+
+	if (columnSchema.primaryKey) {
+		constraints.push('PRIMARY KEY');
+	}
+	if (columnSchema.unique) {
+		constraints.push('UNIQUE');
+	}
 	return `INTEGER${constraints.length ? ' ' + constraints.join(' ') : ''}`;
 };

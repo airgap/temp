@@ -7,7 +7,7 @@ export const game = {
 		developer: { type: 'text' },
 		homepage: { type: 'text' },
 		icon: { type: 'text' },
-		id: { type: 'integer' },
+		id: { type: 'integer', primaryKey: true },
 		publisher: { type: 'text' },
 		thumbnail: { type: 'text' },
 		title: { type: 'text' },

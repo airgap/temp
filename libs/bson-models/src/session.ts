@@ -4,7 +4,7 @@ import { userLogin } from './userLogin';
 export const session = {
 	properties: {
 		...userLogin.properties,
-		id: sessionId,
+		id: { ...sessionId, primaryKey: true },
 		expiration: { type: 'timestamp' },
 	},
 	required: [...userLogin.required, 'expiration'],

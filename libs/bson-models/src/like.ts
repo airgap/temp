@@ -5,7 +5,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const like = {
 	properties: {
-		id: idBond,
+		id: { ...idBond, primaryKey: true },
 		userId: { type: 'bigint' },
 		postId: { type: 'bigint' },
 		created: { type: 'timestamp' },

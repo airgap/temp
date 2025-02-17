@@ -2,8 +2,8 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const shortlinkRow = {
 	properties: {
-		id: { type: 'bigserial' },
-		url: { type: 'character', length: 255 },
+		id: { type: 'bigserial', primaryKey: true },
+		url: { type: 'text', maxLength: 255 },
 		author: { type: 'bigint' },
 		post: { type: 'bigint' },
 	},

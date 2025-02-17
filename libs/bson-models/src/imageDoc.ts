@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const imageDoc = {
 	properties: {
-		id: { type: 'bigint' },
+		id: { type: 'bigint', primaryKey: true },
 		// metadata: {
 		// 	type: 'object',
 		// 	properties: {},

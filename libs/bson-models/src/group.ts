@@ -4,11 +4,8 @@ import { groupName } from './groupName';
 export const group = {
 	properties: {
 		id: {
-			type: 'bigint',
+			type: 'bigserial',
 			primaryKey: true,
-			generated: {
-				as: 'gen_snowflake()',
-			},
 		},
 		slug: {
 			type: 'varchar',

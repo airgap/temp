@@ -5,7 +5,10 @@ export const leaderboard = {
 	properties: {
 		game: { type: 'bigint' },
 		owner: { type: 'bigint' },
-		id: idBond,
+		id: {
+			type: 'bigserial',
+			primaryKey: true,
+		},
 		creator: { type: 'bigint' },
 	},
 	required: ['id', 'game', 'owner', 'creator'],

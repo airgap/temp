@@ -5,7 +5,7 @@ export const friendRequest = {
 	properties: {
 		created: { type: 'timestamp' },
 		from: { type: 'bigint' },
-		id: idBond,
+		id: { ...idBond, primaryKey: true },
 		to: { type: 'bigint' },
 	},
 	required: ['created', 'from', 'id', 'to'],

@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const userLogin = {
 	properties: {
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 		userId: { type: 'bigint' },
 		ip: { type: 'text' },
 		created: { type: 'timestamp' },

@@ -7,7 +7,7 @@ export const message = {
 		content: messageContent,
 		channel: { type: 'bigint' },
 		created: { type: 'timestamp' },
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 	},
 	required: ['author', 'content', 'channel', 'created', 'id'],
 } as const satisfies PostgresRecordModel;

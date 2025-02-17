@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const btvGameStats = {
 	properties: {
-		user: { type: 'bigint' },
+		user: { type: 'bigint', primaryKey: true },
 		totalTime: {
 			type: 'double precision',
 			minimum: 0,

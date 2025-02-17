@@ -9,12 +9,12 @@ export const achievementTier = {
 export const achievement = {
 	properties: {
 		description: { type: 'text' },
-		id: { type: 'bigint' },
+		id: { type: 'bigint', primaryKey: true },
 		icon: { type: 'text', minLength: 1, maxLength: 100 },
 		name: { type: 'text', minLength: 1, maxLength: 100 },
 		points: { type: 'integer' },
 		tier: achievementTier,
-		game: game.properties.id,
+		game: { type: 'integer' },
 	},
 	required: ['id', 'name', 'points', 'icon'],
 } as const satisfies PostgresRecordModel;

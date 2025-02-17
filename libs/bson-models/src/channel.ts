@@ -11,7 +11,7 @@ export const channel = {
 		fgColor: hex,
 		bgColor: hex,
 		tvColor: hex,
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 		owner: userId,
 		logo: { type: 'varchar', minLength: 5, maxLength: 50 },
 		created: { type: 'timestamp' },

@@ -1,11 +1,15 @@
-import type { BigSerialColumnModel, PostgresRecordModel } from 'from-schema';
+import type {
+	BigIntColumnModel,
+	BigSerialColumnModel,
+	PostgresRecordModel,
+} from 'from-schema';
 import { hex } from './hex';
 import { username } from './username';
 import { userSlug } from './userSlug';
 
 export const userId = {
-	type: 'bigserial',
-} as const satisfies BigSerialColumnModel;
+	type: 'bigint',
+} as const satisfies BigIntColumnModel;
 
 export const user = {
 	properties: {
@@ -25,7 +29,11 @@ export const user = {
 			description: 'Maximum number of groups this user can create',
 		},
 		chatColor: hex,
-		id: userId,
+		id: {
+			...userId,
+			primaryKey: true,
+			type: 'bigserial',
+		},
 		joined: { type: 'timestamp' },
 		live: { type: 'boolean' },
 		profilePicture: { type: 'text' },
@@ -33,7 +41,10 @@ export const user = {
 			type: 'boolean',
 			description: 'Whether the user is a member of Lyku staff',
 		},
-		username,
+		username: {
+			...username,
+			unique: true,
+		},
 		channelLimit: { type: 'integer' },
 		slug: userSlug,
 		points: { type: 'bigint' },

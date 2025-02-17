@@ -10,7 +10,7 @@ export const userSummary = {
 		},
 		chatColor: hex,
 		channel: { type: 'bigint' },
-		id: { type: 'bigint' },
+		id: { type: 'bigint', primaryKey: true },
 		joined: { type: 'timestamp' },
 		lastLogin: { type: 'timestamp' },
 	},

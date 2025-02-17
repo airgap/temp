@@ -2,7 +2,7 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const notification = {
 	properties: {
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 		user: { type: 'bigint' },
 		title: { type: 'varchar', minLength: 5, maxLength: 50 },
 		subtitle: { type: 'varchar', minLength: 5, maxLength: 50 },

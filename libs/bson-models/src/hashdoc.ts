@@ -1,13 +1,11 @@
 import type { PostgresRecordModel } from 'from-schema';
 import { username } from './username';
-import { user } from './user';
 
 export const hashdoc = {
 	properties: {
-		email: { type: 'text' },
-		hash: { type: 'text' },
-		id: { type: 'bigint' },
-		username,
+		email: { type: 'text', maxLength: 50 },
+		hash: { type: 'text', maxLength: 50 },
+		id: { type: 'bigint', primaryKey: true },
 	},
-	required: ['email', 'hash', 'id', 'username'],
+	required: ['email', 'hash', 'id'],
 } as const satisfies PostgresRecordModel;

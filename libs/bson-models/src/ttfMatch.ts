@@ -4,7 +4,7 @@ import { ttfBoard } from './ttfBoard';
 export const ttfMatch = {
 	properties: {
 		// Game ID
-		id: { type: 'bigserial' },
+		id: { type: 'bigserial', primaryKey: true },
 		// Player X's ID
 		X: { type: 'bigint' },
 		// Player O's ID

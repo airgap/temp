@@ -5,7 +5,7 @@ export const userBlock = {
 		blockee: { type: 'bigint' },
 		blocker: { type: 'bigint' },
 		created: { type: 'timestamp' },
-		id: idBond,
+		id: { ...idBond, primaryKey: true },
 	},
 	required: ['blockee', 'blocker', 'created', 'id'],
 } as const;

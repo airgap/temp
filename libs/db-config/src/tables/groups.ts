@@ -4,5 +4,13 @@ import { groups as docs } from '@lyku/stock-docs';
 export const groups = {
 	indexes: ['name', 'owner', 'creator', 'created', 'private'],
 	schema: group,
+	// foreignKeys: {
+	// 	owner: {
+	// 		users: 'id',
+	// 	},
+	// 	creator: {
+	// 		users: 'id',
+	// 	},
+	// },
 	docs: Object.values(docs),
-} satisfies PostgresTableModel<typeof group>;
+} as const satisfies PostgresTableModel<typeof group>;

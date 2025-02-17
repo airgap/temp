@@ -5,7 +5,7 @@ export const userFollow = {
 	properties: {
 		follower: { type: 'bigint' },
 		followee: { type: 'bigint' },
-		id: idBond,
+		id: { ...idBond, primaryKey: true },
 		created: { type: 'timestamp' },
 	},
 	required: ['created', 'follower', 'followee', 'id'],

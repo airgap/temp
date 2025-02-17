@@ -20,11 +20,11 @@ export const postId = {
 export const post = {
 	description: 'A post containing text, images, or videos',
 	properties: {
-		id: postId,
+		id: { type: 'bigserial', primaryKey: true },
 		body: postBody,
 		bodyType,
 		echoes: { type: 'bigint' },
-		group: group.properties.id,
+		group: { type: 'bigint' },
 		hashtags: { type: 'array', items: { type: 'bigint' } },
 		author: { type: 'bigint' },
 		likes: { type: 'bigint' },
