@@ -87,7 +87,7 @@ export default handleRegisterUser(async (params, ctx) => {
 				Authorization: `Bearer ${cfApiToken}`,
 			},
 			body: blob,
-		},
+		}
 	);
 
 	const cfres = (await response.json()) as UrlImageUploadResponse;
@@ -142,7 +142,7 @@ export default handleRegisterUser(async (params, ctx) => {
 	const sessionId = await createSessionForUser(userId, ctx);
 	(responseHeaders as Headers).set(
 		'Set-Cookie',
-		`sessionid=${sessionId}; Path=/;`,
+		`sessionid=${sessionId}; Path=/;`
 	);
 	console.log('Logged user in', sessionId);
 	return sessionId;

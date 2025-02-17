@@ -36,11 +36,11 @@ export const serveHttp = async ({
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
 				'Access-Control-Allow-Methods',
-				'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+				'GET, POST, PUT, DELETE, PATCH, OPTIONS'
 			);
 			responseHeaders.set(
 				'Access-Control-Allow-Headers',
-				'Content-Type, Authorization',
+				'Content-Type, Authorization'
 			);
 
 			if (req.method === 'OPTIONS') {
@@ -87,7 +87,9 @@ export const serveHttp = async ({
 				});
 
 			const methodHasBody =
-				'method' in model && methodsWithBody.includes(model.method);
+				('method' in model &&
+					methodsWithBody.includes(model.method.toLocaleUpperCase())) ||
+				'request' in model;
 			// Parse params from MessagePack
 			console.log('methodHasBody', methodHasBody);
 			const arrayBuffer = methodHasBody ? await req.arrayBuffer() : undefined;
@@ -102,9 +104,9 @@ export const serveHttp = async ({
 				} catch (e) {
 					return new Response(
 						`Request "${stringifyBON(params)}" failed validation ${stringifyBON(
-							model.request,
+							model.request
 						)} due to ${e}`,
-						{ status: 400, headers: responseHeaders },
+						{ status: 400, headers: responseHeaders }
 					);
 				}
 			}
@@ -139,6 +141,6 @@ export const serveHttp = async ({
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['HOSTNAME'],
+		process.env['HOSTNAME']
 	);
 };

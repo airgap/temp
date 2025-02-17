@@ -83,7 +83,7 @@ await sendNotification(
 		body: 'You reached level 10',
 		icon: '/achievements/level10.png',
 	},
-	db,
+	db
 );
 ```
 

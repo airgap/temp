@@ -32,7 +32,7 @@ export const flagUnsafeTags = (inputHtml: string): boolean =>
 			const res = !fullSafeTags.includes(tag.toLowerCase());
 			console.log('tag', tag, 'res', res);
 			return res;
-		}),
+		})
 	);
 export const flagAttributes = (inputHtml: string): boolean =>
 	/<[a-z][a-z0-9]*\s+[^>]+>/i.test(inputHtml);

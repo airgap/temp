@@ -8,7 +8,7 @@ import type { Database } from '@lyku/db-config/kysely';
 export const grantAchievementToUser = async (
 	achievement: bigint | Achievement,
 	user: bigint,
-	db: Kysely<Database>,
+	db: Kysely<Database>
 ) => {
 	const ach =
 		typeof achievement === 'bigint'
@@ -42,6 +42,6 @@ export const grantAchievementToUser = async (
 				icon: ach.icon,
 				href: `/achievements/${ach.id}`,
 			},
-			db,
+			db
 		);
 };

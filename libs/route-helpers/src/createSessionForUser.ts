@@ -5,7 +5,7 @@ import {
 
 export const createSessionForUser = async (
 	userId: bigint,
-	ctx: MaybeSecureHttpContext<any>,
+	ctx: MaybeSecureHttpContext<any>
 ): Promise<string> => {
 	const id = generateSessionId();
 	const userLogin = {

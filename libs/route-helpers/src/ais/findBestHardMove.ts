@@ -8,7 +8,7 @@ import type {
 
 export function findBestHardMove(
 	board: BoardWithCountdown,
-	who: Player,
+	who: Player
 ): MaybeMove {
 	// Parse the board and turn count
 	const parsedBoard = board
@@ -22,7 +22,7 @@ export function findBestHardMove(
 		board: Square[],
 		turnsUntilDrop: number,
 		depth: number,
-		isMaximizing: boolean,
+		isMaximizing: boolean
 	): number {
 		const winner = checkWinner(board, turnsUntilDrop);
 		if (winner !== null) {

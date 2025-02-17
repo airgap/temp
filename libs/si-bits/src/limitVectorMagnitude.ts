@@ -2,13 +2,13 @@ import type { Vector } from './Vector';
 
 export const limitVectorMagnitude = (
 	vector: Vector,
-	magnitude: number,
+	magnitude: number
 ): Vector => ({
 	angle: vector.angle,
 	magnitude:
 		vector.magnitude > magnitude
 			? magnitude
 			: vector.magnitude < 0.1
-				? 0
-				: vector.magnitude,
+			? 0
+			: vector.magnitude,
 });

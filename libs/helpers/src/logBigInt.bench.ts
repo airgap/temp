@@ -11,13 +11,13 @@ const benchmark = (base: number, exponent: bigint, iterations: number) => {
 			console.log(
 				`Result: ${result.toString().slice(0, 50)}... (length: ${
 					result.toString().length
-				})`,
+				})`
 			);
 		}
 	}
 	const end = performance.now();
 	console.log(
-		`Time taken for ${iterations} iterations: ${(end - start).toFixed(4)} ms`,
+		`Time taken for ${iterations} iterations: ${(end - start).toFixed(4)} ms`
 	);
 };
 

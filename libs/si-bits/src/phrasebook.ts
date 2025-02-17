@@ -69,7 +69,7 @@ const hydrate = (book: CompactedPhrasebook) =>
 		Object.entries(book).map(([k, v]) => [
 			k,
 			typeof v === 'string' ? v : convertTextToHtml(v.md),
-		]),
+		])
 	);
 
 export type HydratedPhrasebook = {

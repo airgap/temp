@@ -22,7 +22,7 @@ export const phrasebooks = {
 } as const satisfies PhrasebookMap;
 export const { getPhrasebook, compactedPhrasebooks } = blaze(
 	phrasebooks,
-	'en-US',
+	'en-US'
 );
 export type CompactedPhrasebooks = typeof compactedPhrasebooks;
 export type Lang = keyof CompactedPhrasebooks;

@@ -50,5 +50,5 @@ export default handleConfirmVideoUpload(
 		if (!dbres) throw new Error(strings.unknownBackendError);
 
 		// return dbres.id;
-	},
+	}
 );

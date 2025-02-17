@@ -36,5 +36,5 @@ export const currentUserStatus = derived(
 		user: undefined as User | undefined,
 		loading: true,
 		error: null as Error | null,
-	},
+	}
 );
