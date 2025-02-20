@@ -11,8 +11,8 @@ export const userSummary = {
 		chatColor: hex,
 		channel: { type: 'bigint' },
 		id: { type: 'bigint', primaryKey: true },
-		joined: { type: 'timestamp' },
-		lastLogin: { type: 'timestamp' },
+		joined: { type: 'timestamptz' },
+		lastLogin: { type: 'timestamptz' },
 	},
 	required: ['channel', 'id', 'chatColor', 'live', 'joined', 'lastLogin'],
 } as const satisfies PostgresRecordModel;

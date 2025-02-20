@@ -1,6 +1,6 @@
-import type { CharColumnModel } from 'from-schema';
+import type { VarcharColumnModel } from 'from-schema';
 
 export const passhash = {
-	type: 'character',
-	length: 64,
-} as const satisfies CharColumnModel;
+	type: 'varchar',
+	maxLength: 64,
+} as const satisfies VarcharColumnModel;

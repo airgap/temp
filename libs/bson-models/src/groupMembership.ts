@@ -8,7 +8,7 @@ export const groupMembership = {
 		id: { ...idBond, primaryKey: true },
 		group: { type: 'bigint' },
 		user: { type: 'bigint' },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 	},
 	required: ['group', 'user', 'id', 'created'],
 } as const satisfies PostgresRecordModel;

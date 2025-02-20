@@ -1,13 +1,12 @@
 import { handleAcceptMatchProposal } from '@lyku/handles';
 import { gameStarters } from './internalGames';
-import { MatchProposal } from '@lyku/json-models';
 
 export default handleAcceptMatchProposal(async (id, ctx) => {
-	const proposal = (await ctx.db
+	const proposal = await ctx.db
 		.selectFrom('matchProposals')
 		.where('id', '=', id)
 		.selectAll()
-		.executeTakeFirst()) as MatchProposal | undefined;
+		.executeTakeFirst();
 
 	if (!proposal) throw new Error('404');
 

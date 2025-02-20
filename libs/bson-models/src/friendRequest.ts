@@ -3,7 +3,7 @@ import { idBond } from './idBond';
 
 export const friendRequest = {
 	properties: {
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		from: { type: 'bigint' },
 		id: { ...idBond, primaryKey: true },
 		to: { type: 'bigint' },

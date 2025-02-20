@@ -10,4 +10,6 @@ export const beta = {
 	creator: system.id,
 	owner: system.id,
 	created: new Date('2024-01-20T05:36:36.888Z'),
+	updated: new Date('2024-01-20T05:36:36.888Z'),
+	members: 0n,
 } as const satisfies Group;

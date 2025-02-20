@@ -14,7 +14,7 @@ export const channel = {
 		id: { type: 'bigserial', primaryKey: true },
 		owner: userId,
 		logo: { type: 'varchar', minLength: 5, maxLength: 50 },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		name: channelName,
 		slug: channelSlug,
 		tagline,

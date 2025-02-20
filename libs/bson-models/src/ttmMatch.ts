@@ -16,9 +16,9 @@ export const ttmMatch = {
 		// Turn counter
 		turn: { type: 'int' },
 		// Timestamp the game was created
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		// Timestamp last piece was placed
-		lastTurn: { type: 'timestamp' },
+		lastTurn: { type: 'timestamptz' },
 		winner: { type: 'bigint' },
 	},
 	required: ['id', 'X', 'O', 'board', 'turn', 'created'],

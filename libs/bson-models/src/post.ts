@@ -29,7 +29,7 @@ export const post = {
 		author: { type: 'bigint' },
 		likes: { type: 'bigint' },
 		loves: { type: 'bigint' },
-		published: { type: 'timestamp' },
+		published: { type: 'timestamptz' },
 		replies: { type: 'bigint' },
 		title: postTitle,
 		thread: {

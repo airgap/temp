@@ -6,7 +6,7 @@ export const message = {
 		author: { type: 'bigint' },
 		content: messageContent,
 		channel: { type: 'bigint' },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		id: { type: 'bigserial', primaryKey: true },
 	},
 	required: ['author', 'content', 'channel', 'created', 'id'],

@@ -5,7 +5,7 @@ export const userLogin = {
 		id: { type: 'bigserial', primaryKey: true },
 		userId: { type: 'bigint' },
 		ip: { type: 'text' },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 	},
 	required: ['id', 'userId', 'ip', 'created'],
 } as const satisfies PostgresRecordModel;

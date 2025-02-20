@@ -8,7 +8,7 @@ export const hashtagUsage = {
 		group: { type: 'bigint' },
 		originalText: { type: 'text' },
 		lowerText: { type: 'text' },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		author: { type: 'bigint' },
 	},
 	required: [

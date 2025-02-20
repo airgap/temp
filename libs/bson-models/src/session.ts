@@ -5,7 +5,7 @@ export const session = {
 	properties: {
 		...userLogin.properties,
 		id: { ...sessionId, primaryKey: true },
-		expiration: { type: 'timestamp' },
+		expiration: { type: 'timestamptz' },
 	},
 	required: [...userLogin.required, 'expiration'],
 } as const satisfies PostgresRecordModel;

@@ -14,6 +14,8 @@ export const game = {
 		description: { type: 'text' },
 		status: gameStatus,
 		nsfw: { type: 'boolean' },
+		created: { type: 'timestamptz' },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'title', 'status', 'nsfw'],
+	required: ['id', 'title', 'status', 'nsfw', 'created', 'updated'],
 } as const satisfies PostgresRecordModel;

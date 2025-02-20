@@ -9,6 +9,7 @@ import {
 	type Validator,
 } from 'from-schema';
 import { natsPort } from './env';
+import { Err } from '@lyku/helpers';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
@@ -133,6 +134,9 @@ export const serveHttp = async ({
 				});
 			} catch (e) {
 				console.error('Error executing route', e);
+				if (e instanceof Err) {
+					return new Response(e.message, { status: e.code });
+				}
 				return new Response('Internal server error', { status: 500 });
 			}
 		},

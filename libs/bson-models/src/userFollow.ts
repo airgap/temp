@@ -6,7 +6,7 @@ export const userFollow = {
 		follower: { type: 'bigint' },
 		followee: { type: 'bigint' },
 		id: { ...idBond, primaryKey: true },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 	},
 	required: ['created', 'follower', 'followee', 'id'],
 } as const satisfies PostgresRecordModel;

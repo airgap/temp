@@ -3,7 +3,7 @@ import { idBond } from './idBond';
 
 export const friendship = {
 	properties: {
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		id: { ...idBond, primaryKey: true },
 		users: {
 			type: 'array',

@@ -3,7 +3,7 @@ import type { PostgresRecordModel } from 'from-schema';
 export const score = {
 	properties: {
 		id: { type: 'bigserial', primaryKey: true },
-		posted: { type: 'timestamp' },
+		posted: { type: 'timestamptz' },
 		user: { type: 'bigint' },
 		channel: { type: 'bigint' },
 		reports: { type: 'int' },

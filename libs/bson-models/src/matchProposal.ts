@@ -3,7 +3,7 @@ import type { PostgresRecordModel } from 'from-schema';
 export const matchProposal = {
 	properties: {
 		// Timestamp the game was created
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		// User ID of the user proposing the match
 		from: { type: 'bigint' },
 		// Game ID of the game being proposed

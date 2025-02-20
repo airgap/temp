@@ -37,6 +37,8 @@ export function mapColumnType(
 			return mapVarcharType(name, columnSchema);
 		case 'timestamp':
 			return 'TIMESTAMP';
+		case 'timestamptz':
+			return 'TIMESTAMPTZ';
 		case 'jsonb':
 			return 'JSONB';
 		case 'enum':

@@ -52,6 +52,7 @@ const pgColumnTypes = [
 	'time',
 	'timestamp',
 	'timestamp with time zone',
+	'timestamptz',
 	'timestamp without time zone',
 	'time with time zone',
 	'time without time zone',

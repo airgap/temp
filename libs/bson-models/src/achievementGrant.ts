@@ -6,7 +6,7 @@ export const achievementGrant = {
 		id: { ...idBond, primaryKey: true },
 		achievement: { type: 'bigint' },
 		user: { type: 'bigint' },
-		granted: { type: 'timestamp' },
+		granted: { type: 'timestamptz' },
 		game: { type: 'int' },
 	},
 	required: ['id', 'achievement', 'user', 'granted'],

@@ -10,7 +10,7 @@ export const videoDraft = {
 		id: { type: 'bigint', primaryKey: true },
 		uid: { type: 'text', maxLength: 32 },
 		uploadURL: { type: 'text' },
-		created: { type: 'timestamp' },
+		created: { type: 'timestamptz' },
 		filename: { type: 'text', maxLength: 100 },
 	},
 	required: ['id', 'user', 'post', 'uid', 'uploadURL', 'created'],

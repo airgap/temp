@@ -2,6 +2,7 @@ export * from './base58SnowflakeRegex';
 export * from './convertBases';
 export * from './delay';
 export * from './Either';
+export * from './Err';
 export * from './flagUnsafeTags';
 export * from './getLevelFromPoints';
 export * from './getPointsToNextLevel';
