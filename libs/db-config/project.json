@@ -15,7 +15,8 @@
 				"project": "libs/db-config/package.json",
 				"format": ["esm"],
 				"compiler": "tsc",
-				"external": ["bson-models", "@lyku/stock-docs"]
+				"external": ["bson-models", "@lyku/stock-docs"],
+				"rollupConfig": "libs/db-config/rollup.config.ts"
 			}
 		},
 		"generate-types": {

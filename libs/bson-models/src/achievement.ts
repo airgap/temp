@@ -15,6 +15,8 @@ export const achievement = {
 		points: { type: 'integer' },
 		tier: achievementTier,
 		game: { type: 'integer' },
+		created: { type: 'timestamptz' },
+		updated: { type: 'timestamptz' },
 	},
 	required: ['id', 'name', 'points', 'icon'],
 } as const satisfies PostgresRecordModel;
