@@ -2,7 +2,7 @@ import { Client } from 'pg';
 import { dbConfig } from '@lyku/db-config';
 import { dbConnectionString } from '@lyku/route-helpers';
 import { readFileSync } from 'fs';
-import { createTable } from './createTable';
+import { setupTable } from './setupTable';
 // const ca = readFileSync('./k8s-prd-ca-cert.crt', 'utf8');
 // const client = new Client({
 // 	connectionString: dbConnectionString,
@@ -39,7 +39,7 @@ export const form = async () => {
 
 		for (const [tableName, table] of tableList) {
 			// console.log(tableName, table, '/table');
-			await createTable(tableName, table);
+			await setupTable(tableName, table);
 		}
 	} finally {
 		// await disconnect();

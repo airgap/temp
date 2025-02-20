@@ -1,12 +1,21 @@
 import { RollupOptions } from 'rollup';
-import string from 'rollup-plugin-string-import';
+import { readFileSync } from 'fs';
 
 const config: RollupOptions = {
 	plugins: [
-		string({
-			include: '**/*.sql',
-		}),
-	],
+		{
+			name: 'sql',
+			transform(code, id) {
+				if (!id.endsWith('.sql')) return null;
+				
+				const content = readFileSync(id, 'utf8');
+				return {
+					code: `export default ${JSON.stringify(content)};`,
+					map: null
+				};
+			}
+		}
+	]
 };
 
 export default config;
