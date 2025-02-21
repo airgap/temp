@@ -6,7 +6,7 @@
 			"executor": "nx:run-script",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"script": "bun --config $(pwd)/bunfig.toml src/form.ts > ../../sql/create_tables.sql",
+				"script": "bun src/form.ts > ../../sql/create_tables.sql",
 				"runtime": "bun",
 				"outputPath": "../../sql/create_tables.sql"
 			}
