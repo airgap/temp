@@ -18,6 +18,7 @@ export const score = {
 		deleted: { type: 'timestamptz' },
 		verified: { type: 'timestamptz' },
 		verifiers: { type: 'array', items: { type: 'bigint' } },
+		stream: { type: 'text', maxLength: 100 },
 	},
 	required: [
 		'posted',

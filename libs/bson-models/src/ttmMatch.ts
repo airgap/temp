@@ -18,7 +18,7 @@ export const ttmMatch = {
 		// Timestamp the game was created
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		// Timestamp last piece was placed
-		lastTurn: { type: 'timestamptz' },
+		updated: { type: 'timestamptz' },
 		winner: { type: 'bigint' },
 	},
 	required: ['id', 'X', 'O', 'board', 'turn', 'created'],

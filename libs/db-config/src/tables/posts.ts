@@ -1,9 +1,9 @@
 import { PostgresTableModel } from 'from-schema';
 import { post } from 'bson-models';
-
+import { updateUpdated } from '../updateUpdated';
 export const posts = {
 	indexes: [
-		'published',
+		'publish',
 		'author',
 		'likes',
 		'loves',
@@ -14,4 +14,5 @@ export const posts = {
 		'echoes',
 	],
 	schema: post,
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof post>;

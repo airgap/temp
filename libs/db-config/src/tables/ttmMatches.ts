@@ -1,7 +1,8 @@
 import { PostgresTableModel } from 'from-schema';
 import { ttmMatch } from 'bson-models';
-
+import { updateUpdated } from '../updateUpdated';
 export const ttmMatches = {
-	indexes: ['X', 'O', 'board', 'created', 'lastTurn', 'winner'],
+	indexes: ['X', 'O', 'board', 'created', 'updated', 'winner'],
 	schema: ttmMatch,
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof ttmMatch>;

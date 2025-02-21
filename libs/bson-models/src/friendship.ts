@@ -11,6 +11,7 @@ export const friendship = {
 			maxItems: 2,
 			items: { type: 'bigint' },
 		},
+		deleted: { type: 'timestamptz' },
 	},
 	required: ['created', 'id', 'users'],
 } as const satisfies PostgresRecordModel;

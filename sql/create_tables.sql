@@ -356,6 +356,24 @@ CREATE INDEX IF NOT EXISTS "idx_friendRequests_to" ON "friendRequests" ("to");
 
 
 CREATE INDEX IF NOT EXISTS "idx_friendRequests_created" ON "friendRequests" ("created");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION friendRequests_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS friendRequests_trigger_1 ON friendRequests;
+
+
+CREATE TRIGGER friendRequests_trigger_1 BEFORE
+UPDATE ON friendRequests FOR EACH ROW
+EXECUTE FUNCTION friendRequests_trigger_1_fn ();
 -----------------------------
 -------  friendships  -------
 -----------------------------
@@ -363,7 +381,8 @@ CREATE INDEX IF NOT EXISTS "idx_friendRequests_created" ON "friendRequests" ("cr
 CREATE TABLE IF NOT EXISTS "friendships" (
   "created" TIMESTAMPTZ NOT NULL,
   "id" TEXT PRIMARY KEY NOT NULL,
-  "users" BIGINT[] CHECK (array_length("users", 1) >= 2) CHECK (array_length("users", 1) <= 2) NOT NULL
+  "users" BIGINT[] CHECK (array_length("users", 1) >= 2) CHECK (array_length("users", 1) <= 2) NOT NULL,
+  "deleted" TIMESTAMPTZ
 );
 
 
@@ -659,24 +678,6 @@ CREATE INDEX IF NOT EXISTS "idx_images_draft" ON "images" ("draft");
 
 
 CREATE INDEX IF NOT EXISTS "idx_images_channel" ON "images" ("channel");
-
-
----- Create triggers
-CREATE OR REPLACE FUNCTION images_trigger_1_fn () RETURNS TRIGGER AS $$
-BEGIN
-NEW.updated = CURRENT_TIMESTAMP;
-RETURN NEW;
-
-END;
-$$ LANGUAGE plpgsql;
-
-
-DROP TRIGGER IF EXISTS images_trigger_1 ON images;
-
-
-CREATE TRIGGER images_trigger_1 BEFORE
-UPDATE ON images FOR EACH ROW
-EXECUTE FUNCTION images_trigger_1_fn ();
 ------------------------------
 -------  leaderboards  -------
 ------------------------------
@@ -810,6 +811,24 @@ CREATE INDEX IF NOT EXISTS "idx_membershipLists_count" ON "membershipLists" ("co
 
 
 CREATE INDEX IF NOT EXISTS "idx_membershipLists_updated" ON "membershipLists" ("updated");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION membershipLists_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS membershipLists_trigger_1 ON membershipLists;
+
+
+CREATE TRIGGER membershipLists_trigger_1 BEFORE
+UPDATE ON membershipLists FOR EACH ROW
+EXECUTE FUNCTION membershipLists_trigger_1_fn ();
 ------------------------------
 ---------  messages  ---------
 ------------------------------
@@ -832,6 +851,24 @@ CREATE INDEX IF NOT EXISTS "idx_messages_channel" ON "messages" ("channel");
 
 
 CREATE INDEX IF NOT EXISTS "idx_messages_created" ON "messages" ("created");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION messages_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS messages_trigger_1 ON messages;
+
+
+CREATE TRIGGER messages_trigger_1 BEFORE
+UPDATE ON messages FOR EACH ROW
+EXECUTE FUNCTION messages_trigger_1_fn ();
 -----------------------------
 ------  notifications  ------
 -----------------------------
@@ -845,7 +882,7 @@ CREATE TABLE IF NOT EXISTS "notifications" (
   "icon" VARCHAR CHECK (length("icon") <= 50) CHECK (length("icon") >= 5) NOT NULL,
   "href" VARCHAR CHECK (length("href") <= 50) CHECK (length("href") >= 5),
   "posted" TIMESTAMPTZ NOT NULL,
-  "read" TIMESTAMPTZ NOT NULL
+  "read" TIMESTAMPTZ
 );
 
 
@@ -869,6 +906,24 @@ CREATE INDEX IF NOT EXISTS "idx_notifications_href" ON "notifications" ("href");
 
 
 CREATE INDEX IF NOT EXISTS "idx_notifications_posted" ON "notifications" ("posted");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION notifications_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS notifications_trigger_1 ON notifications;
+
+
+CREATE TRIGGER notifications_trigger_1 BEFORE
+UPDATE ON notifications FOR EACH ROW
+EXECUTE FUNCTION notifications_trigger_1_fn ();
 ------------------------------
 --------  postDrafts  --------
 ------------------------------
@@ -887,6 +942,24 @@ CREATE TABLE IF NOT EXISTS "postDrafts" (
 
 ---- Create indexes
 CREATE INDEX IF NOT EXISTS "idx_postDrafts_author" ON "postDrafts" ("author");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION postDrafts_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS postDrafts_trigger_1 ON postDrafts;
+
+
+CREATE TRIGGER postDrafts_trigger_1 BEFORE
+UPDATE ON postDrafts FOR EACH ROW
+EXECUTE FUNCTION postDrafts_trigger_1_fn ();
 -----------------------------
 ----------  posts  ----------
 -----------------------------
@@ -915,7 +988,7 @@ CREATE TABLE IF NOT EXISTS "posts" (
 
 
 ---- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_posts_published" ON "posts" ("published");
+CREATE INDEX IF NOT EXISTS "idx_posts_publish" ON "posts" ("publish");
 
 
 CREATE INDEX IF NOT EXISTS "idx_posts_author" ON "posts" ("author");
@@ -940,6 +1013,24 @@ CREATE INDEX IF NOT EXISTS "idx_posts_echoing" ON "posts" ("echoing");
 
 
 CREATE INDEX IF NOT EXISTS "idx_posts_echoes" ON "posts" ("echoes");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION posts_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS posts_trigger_1 ON posts;
+
+
+CREATE TRIGGER posts_trigger_1 BEFORE
+UPDATE ON posts FOR EACH ROW
+EXECUTE FUNCTION posts_trigger_1_fn ();
 ------------------------------
 --------  publishers  --------
 ------------------------------
@@ -955,6 +1046,24 @@ CREATE TABLE IF NOT EXISTS "publishers" (
 
 ---- Create indexes
 CREATE INDEX IF NOT EXISTS "idx_publishers_name" ON "publishers" ("name");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION publishers_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS publishers_trigger_1 ON publishers;
+
+
+CREATE TRIGGER publishers_trigger_1 BEFORE
+UPDATE ON publishers FOR EACH ROW
+EXECUTE FUNCTION publishers_trigger_1_fn ();
 ------------------------------
 ----------  scores  ----------
 ------------------------------
@@ -972,7 +1081,8 @@ CREATE TABLE IF NOT EXISTS "scores" (
   "updated" TIMESTAMPTZ NOT NULL,
   "deleted" TIMESTAMPTZ,
   "verified" TIMESTAMPTZ,
-  "verifiers" BIGINT[]
+  "verifiers" BIGINT[],
+  "stream" TEXT CHECK (length("stream") <= 100)
 );
 
 
@@ -996,6 +1106,24 @@ CREATE INDEX IF NOT EXISTS "idx_scores_leaderboard" ON "scores" ("leaderboard");
 
 
 CREATE INDEX IF NOT EXISTS "idx_scores_game" ON "scores" ("game");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION scores_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS scores_trigger_1 ON scores;
+
+
+CREATE TRIGGER scores_trigger_1 BEFORE
+UPDATE ON scores FOR EACH ROW
+EXECUTE FUNCTION scores_trigger_1_fn ();
 ------------------------------
 ---------  sessions  ---------
 ------------------------------
@@ -1015,6 +1143,24 @@ CREATE INDEX IF NOT EXISTS "idx_sessions_created" ON "sessions" ("created");
 
 
 CREATE INDEX IF NOT EXISTS "idx_sessions_userId" ON "sessions" ("userId");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION sessions_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS sessions_trigger_1 ON sessions;
+
+
+CREATE TRIGGER sessions_trigger_1 BEFORE
+UPDATE ON sessions FOR EACH ROW
+EXECUTE FUNCTION sessions_trigger_1_fn ();
 ------------------------------
 --------  shortlinks  --------
 ------------------------------
@@ -1037,6 +1183,24 @@ CREATE INDEX IF NOT EXISTS "idx_shortlinks_author" ON "shortlinks" ("author");
 
 
 CREATE INDEX IF NOT EXISTS "idx_shortlinks_post" ON "shortlinks" ("post");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION shortlinks_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS shortlinks_trigger_1 ON shortlinks;
+
+
+CREATE TRIGGER shortlinks_trigger_1 BEFORE
+UPDATE ON shortlinks FOR EACH ROW
+EXECUTE FUNCTION shortlinks_trigger_1_fn ();
 ------------------------------
 --------  ttfMatches  --------
 ------------------------------
@@ -1049,7 +1213,7 @@ CREATE TABLE IF NOT EXISTS "ttfMatches" (
   "turn" INTEGER NOT NULL,
   "whoseTurn" BIGINT,
   "created" TIMESTAMPTZ NOT NULL,
-  "lastTurn" TIMESTAMPTZ,
+  "updated" TIMESTAMPTZ,
   "winner" BIGINT
 );
 
@@ -1067,10 +1231,28 @@ CREATE INDEX IF NOT EXISTS "idx_ttfMatches_board" ON "ttfMatches" ("board");
 CREATE INDEX IF NOT EXISTS "idx_ttfMatches_created" ON "ttfMatches" ("created");
 
 
-CREATE INDEX IF NOT EXISTS "idx_ttfMatches_lastTurn" ON "ttfMatches" ("lastTurn");
+CREATE INDEX IF NOT EXISTS "idx_ttfMatches_updated" ON "ttfMatches" ("updated");
 
 
 CREATE INDEX IF NOT EXISTS "idx_ttfMatches_winner" ON "ttfMatches" ("winner");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION ttfMatches_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS ttfMatches_trigger_1 ON ttfMatches;
+
+
+CREATE TRIGGER ttfMatches_trigger_1 BEFORE
+UPDATE ON ttfMatches FOR EACH ROW
+EXECUTE FUNCTION ttfMatches_trigger_1_fn ();
 ------------------------------
 --------  ttmMatches  --------
 ------------------------------
@@ -1082,7 +1264,7 @@ CREATE TABLE IF NOT EXISTS "ttmMatches" (
   "board" CHAR(25) NOT NULL,
   "turn" INTEGER NOT NULL,
   "created" TIMESTAMPTZ NOT NULL,
-  "lastTurn" TIMESTAMPTZ,
+  "updated" TIMESTAMPTZ,
   "winner" BIGINT
 );
 
@@ -1100,10 +1282,28 @@ CREATE INDEX IF NOT EXISTS "idx_ttmMatches_board" ON "ttmMatches" ("board");
 CREATE INDEX IF NOT EXISTS "idx_ttmMatches_created" ON "ttmMatches" ("created");
 
 
-CREATE INDEX IF NOT EXISTS "idx_ttmMatches_lastTurn" ON "ttmMatches" ("lastTurn");
+CREATE INDEX IF NOT EXISTS "idx_ttmMatches_updated" ON "ttmMatches" ("updated");
 
 
 CREATE INDEX IF NOT EXISTS "idx_ttmMatches_winner" ON "ttmMatches" ("winner");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION ttmMatches_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS ttmMatches_trigger_1 ON ttmMatches;
+
+
+CREATE TRIGGER ttmMatches_trigger_1 BEFORE
+UPDATE ON ttmMatches FOR EACH ROW
+EXECUTE FUNCTION ttmMatches_trigger_1_fn ();
 -----------------------------
 -------  userFollows  -------
 -----------------------------
@@ -1125,6 +1325,24 @@ CREATE INDEX IF NOT EXISTS "idx_userFollows_followee" ON "userFollows" ("followe
 
 
 CREATE INDEX IF NOT EXISTS "idx_userFollows_follower_followee" ON "userFollows" ("follower", "followee");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION userFollows_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS userFollows_trigger_1 ON userFollows;
+
+
+CREATE TRIGGER userFollows_trigger_1 BEFORE
+UPDATE ON userFollows FOR EACH ROW
+EXECUTE FUNCTION userFollows_trigger_1_fn ();
 ------------------------------
 --------  userHashes  --------
 ------------------------------

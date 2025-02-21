@@ -9,5 +9,5 @@ export const userFollow = {
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
 	},
-	required: ['created', 'follower', 'followee', 'id', 'created'],
+	required: ['created', 'follower', 'followee', 'id'],
 } as const satisfies PostgresRecordModel;

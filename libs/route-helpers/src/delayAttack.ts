@@ -13,11 +13,10 @@ export const delayAttack = async (matchId: bigint, db: Kysely<Database>) => {
 	console.log('Finished waiting. Taking AI move...');
 	takeAiTtfMove(match);
 	console.log('Stamping date...');
-	match.lastTurn = new Date();
 	console.log('Committing attack...');
 	await db
 		.updateTable('ttfMatches')
-		.set({ lastTurn: match.lastTurn })
+		.set(match)
 		.where('id', '=', matchId)
 		.execute();
 	console.log('AI attacked.');
