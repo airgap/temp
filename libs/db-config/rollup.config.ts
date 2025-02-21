@@ -2,6 +2,7 @@ import { RollupOptions } from 'rollup';
 import { readFileSync } from 'fs';
 
 const config: RollupOptions = {
+	external: [],
 	plugins: [
 		{
 			name: 'sql',

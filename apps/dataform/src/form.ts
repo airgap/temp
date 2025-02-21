@@ -39,7 +39,8 @@ export const form = async () => {
 
 		for (const [tableName, table] of tableList) {
 			// console.log(tableName, table, '/table');
-			await setupTable(tableName, table);
+			const output = setupTable(tableName, table);
+			console.log(output);
 		}
 	} finally {
 		// await disconnect();
