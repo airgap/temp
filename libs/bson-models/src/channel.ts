@@ -25,6 +25,6 @@ export const channel = {
 		// Derived from WebRTC (WHEP) Playback URL
 		// - include with channel summary for stream player
 		whepKey: { type: 'varchar', minLength: 5, maxLength: 50 },
-	},
+		updated: { type: 'timestamptz' },
 	required: ['id', 'name', 'slug', 'owner', 'live', 'input', 'created'],
 } as const satisfies PostgresRecordModel;

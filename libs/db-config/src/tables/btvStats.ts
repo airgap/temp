@@ -1,5 +1,6 @@
 import { PostgresTableModel } from 'from-schema';
 import { btvGameStats } from 'bson-models';
+import { updateUpdated } from '../updateUpdated';
 
 export const btvStats = {
 	indexes: [
@@ -17,4 +18,7 @@ export const btvStats = {
 	],
 	primaryKey: ['user'],
 	schema: btvGameStats,
+	triggers: [
+		updateUpdated,
+	],
 } satisfies PostgresTableModel<typeof btvGameStats>;

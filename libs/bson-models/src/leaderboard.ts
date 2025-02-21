@@ -10,6 +10,8 @@ export const leaderboard = {
 			primaryKey: true,
 		},
 		creator: { type: 'bigint' },
+		created: { type: 'timestamptz' },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'game', 'owner', 'creator'],
+	required: ['id', 'game', 'owner', 'creator', 'created', 'updated'],
 } as const satisfies PostgresRecordModel;
