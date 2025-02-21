@@ -8,4 +8,5 @@ export const bounceStreak50 = {
 	description: 'Get 50 bounces without missing',
 	game: bouncingTv.id,
 	icon: '/btv/streak-50.png',
+	created: new Date('2024-01-01'),
 } as const satisfies Achievement;

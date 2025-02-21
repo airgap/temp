@@ -6,8 +6,9 @@ export const achievementGrant = {
 		id: { ...idBond, primaryKey: true },
 		achievement: { type: 'bigint' },
 		user: { type: 'bigint' },
-		granted: { type: 'timestamptz' },
-		game: { type: 'int' },
+		granted: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		game: { type: 'integer' },
+		updated: { type: 'timestamptz' },
 	},
 	required: ['id', 'achievement', 'user', 'granted'],
 } as const satisfies PostgresRecordModel;

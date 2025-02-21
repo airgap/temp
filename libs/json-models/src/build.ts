@@ -108,12 +108,10 @@ const jsonify = async () => {
 				? postgresColumnToTson(value as any)
 				: value
 			: hasProperties
-			? postgresRecordToTson(value as any)
+			? postgresRecordToTson(value as any, false)
 			: value;
 		// console.log('Typing', tsonSchema);
 		const resolvedTypeString = tsonToType(tsonSchema as any);
-		// console.log('Resolved', key);
-
 		exports.push(`export const ${key} = ${stringifyBON(tsonSchema)};`);
 
 		dtsExports.push(
@@ -122,6 +120,23 @@ const jsonify = async () => {
 					key[0].toUpperCase() + key.slice(1)
 				} = ${resolvedTypeString};`
 		);
+
+		if (hasProperties) {
+			const insertableTsonSchema = postgresRecordToTson(value as any, true);
+			// console.log('Typing', tsonSchema);
+			const resolvedInsertableTypeString = tsonToType(
+				insertableTsonSchema as any
+			);
+
+			// exports.push(`export const ${key} = ${stringifyBON(insertableTsonSchema)};`);
+
+			dtsExports.push(
+				// `export declare const ${key}: ${stringifyBON(insertableTsonSchema)};\n` +
+				`export type ${
+					'Insertable' + key[0].toUpperCase() + key.slice(1)
+				} = ${resolvedInsertableTypeString};`
+			);
+		}
 	}
 
 	if (exports.length > 0) {

@@ -9,7 +9,8 @@ export const notification = {
 		body: { type: 'text', maxLength: 1000 },
 		icon: { type: 'varchar', minLength: 5, maxLength: 50 },
 		href: { type: 'varchar', minLength: 5, maxLength: 50 },
-		posted: { type: 'timestamptz' },
+		posted: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		read: { type: 'timestamptz' },
 	},
 	required: ['id', 'user', 'title', 'body', 'icon', 'posted'],
 } as const satisfies PostgresRecordModel;

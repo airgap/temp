@@ -14,7 +14,5 @@ export const groups = {
 	// 	},
 	// },
 	docs: Object.values(docs),
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof group>;

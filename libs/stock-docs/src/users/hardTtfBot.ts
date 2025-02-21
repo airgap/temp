@@ -17,4 +17,5 @@ export const hardTtfBot = {
 	staff: true,
 	groupLimit: 0,
 	lastSuper: defaultDate,
+	created: defaultDate,
 } as const satisfies User;

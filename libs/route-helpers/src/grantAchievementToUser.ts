@@ -1,4 +1,4 @@
-import type { Achievement } from '@lyku/json-models';
+import type { Achievement, AchievementGrant } from '@lyku/json-models';
 import { grantPointsToUser } from './grantPointsToUser';
 import { sendNotification } from './sendNotification';
 import type { Kysely } from 'kysely';
@@ -27,7 +27,7 @@ export const grantAchievementToUser = async (
 			user,
 			id,
 			...(ach.game ? { game: ach.game } : {}),
-		})
+		} as AchievementGrant)
 		.onConflict((oc) => oc.column('id').doNothing())
 		.returningAll()
 		.executeTakeFirst();

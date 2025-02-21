@@ -11,7 +11,7 @@ export const imageDraft = {
 		reason: imageUploadReason,
 		id: { type: 'bigint', primaryKey: true },
 		uploadURL: { type: 'text' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		filename: { type: 'text', maxLength: 100 },
 	},
 	required: ['id', 'user', 'reason', 'uploadURL', 'created'],

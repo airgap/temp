@@ -20,12 +20,13 @@ export const group = {
 		name: groupName,
 		creator: { type: 'bigint' },
 		owner: { type: 'bigint' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		private: { type: 'boolean' },
 		thumbnail: { type: 'varchar', maxLength: 30 },
 		background: { type: 'varchar', maxLength: 30 },
 		updated: { type: 'timestamptz' },
 		members: { type: 'bigint' },
+		isolated: { type: 'timestamptz' },
 	},
 	required: [
 		'id',
@@ -36,7 +37,6 @@ export const group = {
 		'creator',
 		'created',
 		'private',
-		'updated',
 		'members',
 	],
 } as const satisfies PostgresRecordModel;

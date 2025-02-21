@@ -53,6 +53,8 @@ export const user = {
 		lastSuper: { type: 'timestamptz' },
 		owner: { type: 'bigint' },
 		name: { type: 'text', maxLength: 30, minLength: 3 },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
 	required: [
 		'banned',
@@ -71,5 +73,6 @@ export const user = {
 		'groupLimit',
 		'lastSuper',
 		'postCount',
+		'created',
 	],
 } as const satisfies PostgresRecordModel;

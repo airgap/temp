@@ -18,5 +18,5 @@ export const achievement = {
 		created: { type: 'timestamptz' },
 		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'name', 'points', 'icon'],
+	required: ['id', 'name', 'points', 'icon', 'created'],
 } as const satisfies PostgresRecordModel;

@@ -9,6 +9,7 @@ export const audioDoc = {
 		duration: { type: 'double precision' },
 		created: { type: 'date' },
 		author: { type: 'bigint' },
+		updated: { type: 'timestamptz' },
 	},
 	required: [
 		'id',

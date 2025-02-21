@@ -6,6 +6,8 @@ export const shortlinkRow = {
 		url: { type: 'text', maxLength: 255 },
 		author: { type: 'bigint' },
 		post: { type: 'bigint' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'url'],
+	required: ['id', 'url', 'created'],
 } as const satisfies PostgresRecordModel;

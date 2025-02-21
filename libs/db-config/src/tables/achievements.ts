@@ -6,7 +6,5 @@ export const achievements = {
 	indexes: ['name', 'points', 'game', 'tier'],
 	schema: achievement,
 	docs: Object.values(docs),
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } satisfies PostgresTableModel<typeof achievement>;

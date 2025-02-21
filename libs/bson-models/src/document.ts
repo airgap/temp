@@ -9,7 +9,7 @@ export const document = {
 		mimeType: { type: 'text', maxLength: 50 },
 		size: { type: 'bigint' },
 		length: { type: 'bigint' },
-		created: { type: 'date' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		author: { type: 'bigint' },
 	},
 	required: [

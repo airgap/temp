@@ -14,7 +14,7 @@ export const channel = {
 		id: { type: 'bigserial', primaryKey: true },
 		owner: userId,
 		logo: { type: 'varchar', minLength: 5, maxLength: 50 },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		name: channelName,
 		slug: channelSlug,
 		tagline,
@@ -26,5 +26,6 @@ export const channel = {
 		// - include with channel summary for stream player
 		whepKey: { type: 'varchar', minLength: 5, maxLength: 50 },
 		updated: { type: 'timestamptz' },
+	},
 	required: ['id', 'name', 'slug', 'owner', 'live', 'input', 'created'],
 } as const satisfies PostgresRecordModel;

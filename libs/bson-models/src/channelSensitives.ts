@@ -12,7 +12,7 @@ export const channelSensitives = {
 		srtUrl: { type: 'text' },
 		// WebRTC (WHIP) URL - visible ONLY to owning user
 		whipUrl: { type: 'text' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
 	},
 	required: [
@@ -24,6 +24,5 @@ export const channelSensitives = {
 		'whipUrl',
 		'whepKey',
 		'created',
-		'updated',
 	],
 } as const satisfies PostgresRecordModel;

@@ -14,6 +14,8 @@ export const gameSession = {
 			type: 'bigint',
 			minimum: 0n,
 		},
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['time', 'edges', 'corners'],
+	required: ['time', 'edges', 'corners', 'created'],
 } as const satisfies PostgresRecordModel;

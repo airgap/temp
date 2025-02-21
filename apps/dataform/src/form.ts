@@ -3,6 +3,7 @@ import { dbConfig } from '@lyku/db-config';
 import { dbConnectionString } from '@lyku/route-helpers';
 import { readFileSync } from 'fs';
 import { setupTable } from './setupTable';
+import { format } from 'sql-formatter';
 // const ca = readFileSync('./k8s-prd-ca-cert.crt', 'utf8');
 // const client = new Client({
 // 	connectionString: dbConnectionString,
@@ -40,7 +41,12 @@ export const form = async () => {
 		for (const [tableName, table] of tableList) {
 			// console.log(tableName, table, '/table');
 			const output = setupTable(tableName, table);
-			console.log(output);
+			const formatted = format(output, {
+				language: 'postgresql',
+				// uppercase: true,
+				linesBetweenQueries: 2,
+			});
+			console.log(formatted);
 		}
 	} finally {
 		// await disconnect();

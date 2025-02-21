@@ -10,7 +10,7 @@ export const leaderboard = {
 			primaryKey: true,
 		},
 		creator: { type: 'bigint' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
 	},
 	required: ['id', 'game', 'owner', 'creator', 'created', 'updated'],

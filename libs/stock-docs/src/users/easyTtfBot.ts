@@ -17,5 +17,6 @@ export const easyTtfBot = {
 	groupLimit: 0,
 	lastSuper: defaultDate,
 	staff: true,
+	created: defaultDate,
 	// channelLimit: 0,
 } as const satisfies User;

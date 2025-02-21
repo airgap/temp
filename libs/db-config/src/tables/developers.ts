@@ -3,9 +3,7 @@ import { developer } from 'bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const developers = {
-	indexes: ['name', 'homepage', 'updated'],
+	indexes: ['name', 'homepage', 'updated', 'created'],
 	schema: developer,
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof developer>;

@@ -5,7 +5,5 @@ export const friendLists = {
 	schema: friendList,
 	indexes: ['user', 'friends', 'count', 'created', 'updated'],
 	primaryKey: 'user',
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof friendList>;

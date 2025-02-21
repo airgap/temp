@@ -5,6 +5,8 @@ export const publisher = {
 		id: { type: 'bigint', primaryKey: true },
 		homepage: { type: 'text', minLength: 1, maxLength: 50 },
 		name: { type: 'text', minLength: 1, maxLength: 50 },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'name', 'homepage'],
+	required: ['id', 'name', 'homepage', 'created'],
 } as const satisfies PostgresRecordModel;

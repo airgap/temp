@@ -7,7 +7,6 @@ export const cloudflareVideoDoc = {
 			type: 'array',
 			items: { type: 'text' },
 		},
-		created: { type: 'timestamptz' },
 		duration: { type: 'double precision' },
 		width: { type: 'integer' },
 		height: { type: 'integer' },
@@ -31,6 +30,8 @@ export const cloudflareVideoDoc = {
 		uid: { type: 'varchar', maxLength: 32, pattern: '^[a-f0-9]{32}$' },
 		author: { type: 'bigint' },
 		post: { type: 'bigint' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
 	required: [
 		'author',
@@ -63,6 +64,7 @@ export const cloudflareVideoDoc = {
 		'uid',
 		'id',
 		'uploaded',
+		'created',
 	],
 } as const satisfies PostgresRecordModel;
 // console.log('videoDoc', videoDoc);

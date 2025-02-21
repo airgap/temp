@@ -10,7 +10,7 @@ export const listPostReplies = {
 				type: 'array',
 				items: post.properties.hashtags,
 			},
-			before: post.properties.published,
+			before: post.properties.publish,
 		},
 		required: ['id'],
 	},

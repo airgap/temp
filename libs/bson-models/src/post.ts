@@ -29,7 +29,7 @@ export const post = {
 		author: { type: 'bigint' },
 		likes: { type: 'bigint' },
 		loves: { type: 'bigint' },
-		published: { type: 'timestamptz' },
+		publish: { type: 'timestamptz' },
 		replies: { type: 'bigint' },
 		title: postTitle,
 		thread: {
@@ -40,6 +40,16 @@ export const post = {
 		replyTo: { type: 'bigint' },
 		echoing: { type: 'bigint' },
 		attachments: { type: 'array', items: { type: 'bigint' }, maxItems: 256 },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'author', 'published', 'likes', 'echoes', 'replies'],
+	required: [
+		'id',
+		'author',
+		'published',
+		'likes',
+		'echoes',
+		'replies',
+		'created',
+	],
 } as const satisfies PostgresRecordModel;

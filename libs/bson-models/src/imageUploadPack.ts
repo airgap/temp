@@ -6,6 +6,7 @@ export const imageUploadPack = {
 	properties: {
 		id: { type: 'text', primaryKey: true },
 		uploadURL: { type: 'text' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
-	required: ['id', 'uploadURL'],
+	required: ['id', 'uploadURL', 'created'],
 } as const satisfies PostgresRecordModel;

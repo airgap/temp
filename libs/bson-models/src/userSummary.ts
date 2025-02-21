@@ -13,6 +13,17 @@ export const userSummary = {
 		id: { type: 'bigint', primaryKey: true },
 		joined: { type: 'timestamptz' },
 		lastLogin: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['channel', 'id', 'chatColor', 'live', 'joined', 'lastLogin'],
+	required: [
+		'channel',
+		'id',
+		'chatColor',
+		'live',
+		'joined',
+		'lastLogin',
+		'username',
+		'created',
+	],
 } as const satisfies PostgresRecordModel;

@@ -8,7 +8,7 @@ export const hashtagUsage = {
 		group: { type: 'bigint' },
 		originalText: { type: 'text' },
 		lowerText: { type: 'text' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		author: { type: 'bigint' },
 	},
 	required: [

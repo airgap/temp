@@ -10,6 +10,8 @@ export const postDraft = {
 		replyTo: { type: 'bigint' },
 		echoing: { type: 'bigint' },
 		attachments: { type: 'array', items: { type: 'bigint' } },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['id', 'author', 'uploadURL', 'authorId'],
+	required: ['id', 'author', 'uploadURL', 'authorId', 'created'],
 } as const satisfies PostgresRecordModel;

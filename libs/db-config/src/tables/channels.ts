@@ -12,7 +12,5 @@ export const channels = {
 		'totalStreamTime',
 	],
 	schema: channel,
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof channel>;

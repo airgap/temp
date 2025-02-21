@@ -4,7 +4,5 @@ import { updateUpdated } from '../updateUpdated';
 export const leaderboards = {
 	indexes: ['game', 'owner', 'created', 'updated', 'creator'],
 	schema: leaderboard,
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof leaderboard>;

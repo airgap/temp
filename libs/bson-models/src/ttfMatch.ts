@@ -16,7 +16,7 @@ export const ttfMatch = {
 		// ID of the user whose turn it is
 		whoseTurn: { type: 'bigint' },
 		// Timestamp the game was created
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		// Timestamp last piece was placed
 		lastTurn: { type: 'timestamptz' },
 		winner: { type: 'bigint' },

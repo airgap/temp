@@ -7,6 +7,8 @@ export const hashdoc = {
 		hash: { type: 'text', maxLength: 64 },
 		id: { type: 'bigint', primaryKey: true },
 		username: { ...username, unique: true },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
-	required: ['email', 'hash', 'id', 'username'],
+	required: ['email', 'hash', 'id', 'username', 'created'],
 } as const satisfies PostgresRecordModel;

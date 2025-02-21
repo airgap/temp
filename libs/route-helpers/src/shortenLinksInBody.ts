@@ -2,6 +2,7 @@ import type { Insertable, Kysely } from 'kysely';
 import { join } from 'path';
 import { shortlinkBasepath } from './env';
 import type { Database } from '@lyku/db-config/kysely';
+import type { ShortlinkRow } from '@lyku/json-models';
 const urlRegex = new RegExp(
 	'((http|ftp|https):\\/\\/)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])',
 	'g'
@@ -20,11 +21,14 @@ export const shortenLinksInBody = async (
 			await db
 				.insertInto('shortlinks')
 				.values(
-					unique.map((url) => ({
-						url,
-						author,
-						post,
-					}))
+					unique.map(
+						(url) =>
+							({
+								url,
+								author,
+								post,
+							} as ShortlinkRow)
+					)
 				)
 				.returning(['id', 'url'])
 				.execute()

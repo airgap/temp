@@ -1,4 +1,5 @@
 import type { Game } from '@lyku/json-models';
+import { defaultDate } from '../defaultDate';
 export const strategyHeron = {
 	id: 3,
 	title: 'Strategy Heron',
@@ -6,6 +7,5 @@ export const strategyHeron = {
 	status: 'planned',
 	nsfw: false,
 	thumbnail: '/heron.png',
-	created: new Date('2024-01-20T05:36:36.888Z'),
-	updated: new Date('2024-01-20T05:36:36.888Z'),
+	created: defaultDate,
 } as const satisfies Game;

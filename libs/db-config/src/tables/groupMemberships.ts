@@ -4,7 +4,5 @@ import { updateUpdated } from '../updateUpdated';
 export const groupMemberships = {
 	indexes: ['user', 'group', ['user', 'group']],
 	schema: groupMembership,
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof groupMembership>;

@@ -6,7 +6,5 @@ export const games = {
 	indexes: ['developer', 'publisher', 'title', 'created', 'updated'],
 	schema: game,
 	docs: Object.values(docs),
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof game>;

@@ -5,7 +5,5 @@ import { updateUpdated } from '../updateUpdated';
 export const images = {
 	indexes: ['uploader', 'uploaded', 'variants', 'draft', 'channel'],
 	schema: imageDoc,
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } satisfies PostgresTableModel<typeof imageDoc>;

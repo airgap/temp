@@ -16,7 +16,7 @@ export const imageDoc = {
 		draft: { type: 'boolean' },
 		channel: { type: 'text' },
 		uploader: { type: 'bigint' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
 	required: ['id', 'uploaded', 'requireSignedURLs', 'variants', 'created'],
 } as const satisfies PostgresRecordModel;

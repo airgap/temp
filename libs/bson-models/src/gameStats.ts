@@ -43,6 +43,8 @@ export const btvGameStats = {
 			type: 'bigint',
 			minimum: 0n,
 		},
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
 	},
 	required: [
 		'totalTime',
@@ -55,5 +57,6 @@ export const btvGameStats = {
 		'highestEdges',
 		'highestCorners',
 		'sessionCount',
+		'created',
 	],
 } as const satisfies PostgresRecordModel;

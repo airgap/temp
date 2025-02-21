@@ -6,7 +6,5 @@ export const hashtags = {
 	indexes: ['id', 'lowerText', 'created', 'updated', 'usages'],
 	schema: hashtag,
 	// docs: Object.values(docs),
-	triggers: [
-		updateUpdated,
-	],
+	triggers: [updateUpdated],
 } satisfies PostgresTableModel<typeof hashtag>;

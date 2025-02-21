@@ -13,6 +13,11 @@ export const score = {
 		},
 		leaderboard: { type: 'bigint' },
 		game: { type: 'bigint' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
+		updated: { type: 'timestamptz' },
+		deleted: { type: 'timestamptz' },
+		verified: { type: 'timestamptz' },
+		verifiers: { type: 'array', items: { type: 'bigint' } },
 	},
 	required: [
 		'posted',
@@ -22,5 +27,7 @@ export const score = {
 		'columns',
 		'leaderboard',
 		'game',
+		'created',
+		'updated',
 	],
 } as const satisfies PostgresRecordModel;

@@ -8,7 +8,7 @@ export const like = {
 		id: { ...idBond, primaryKey: true },
 		userId: { type: 'bigint' },
 		postId: { type: 'bigint' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
 	required: ['id', 'userId', 'postId', 'created'],
 } as const satisfies PostgresRecordModel;

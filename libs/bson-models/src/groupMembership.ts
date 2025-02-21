@@ -6,7 +6,7 @@ export const groupMembership = {
 		id: { ...idBond, primaryKey: true },
 		group: { type: 'bigint' },
 		user: { type: 'bigint' },
-		created: { type: 'timestamptz' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
 	},
 	required: ['group', 'user', 'id', 'created', 'updated'],
