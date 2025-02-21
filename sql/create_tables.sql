@@ -65,11 +65,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS achievements_trigger_1 ON achievements;
+DROP TRIGGER IF EXISTS achievements_trigger_1 ON "achievements";
 
 
 CREATE TRIGGER achievements_trigger_1 BEFORE
-UPDATE ON achievements FOR EACH ROW
+UPDATE ON "achievements" FOR EACH ROW
 EXECUTE FUNCTION achievements_trigger_1_fn ();
 ------------------------------
 ---------  btvStats  ---------
@@ -136,11 +136,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS btvStats_trigger_1 ON btvStats;
+DROP TRIGGER IF EXISTS btvStats_trigger_1 ON "btvStats";
 
 
 CREATE TRIGGER btvStats_trigger_1 BEFORE
-UPDATE ON btvStats FOR EACH ROW
+UPDATE ON "btvStats" FOR EACH ROW
 EXECUTE FUNCTION btvStats_trigger_1_fn ();
 -----------------------------
 ----  channelSensitives  ----
@@ -178,11 +178,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS channelSensitives_trigger_1 ON channelSensitives;
+DROP TRIGGER IF EXISTS channelSensitives_trigger_1 ON "channelSensitives";
 
 
 CREATE TRIGGER channelSensitives_trigger_1 BEFORE
-UPDATE ON channelSensitives FOR EACH ROW
+UPDATE ON "channelSensitives" FOR EACH ROW
 EXECUTE FUNCTION channelSensitives_trigger_1_fn ();
 ------------------------------
 ---------  channels  ---------
@@ -241,11 +241,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS channels_trigger_1 ON channels;
+DROP TRIGGER IF EXISTS channels_trigger_1 ON "channels";
 
 
 CREATE TRIGGER channels_trigger_1 BEFORE
-UPDATE ON channels FOR EACH ROW
+UPDATE ON "channels" FOR EACH ROW
 EXECUTE FUNCTION channels_trigger_1_fn ();
 ------------------------------
 --------  developers  --------
@@ -284,11 +284,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS developers_trigger_1 ON developers;
+DROP TRIGGER IF EXISTS developers_trigger_1 ON "developers";
 
 
 CREATE TRIGGER developers_trigger_1 BEFORE
-UPDATE ON developers FOR EACH ROW
+UPDATE ON "developers" FOR EACH ROW
 EXECUTE FUNCTION developers_trigger_1_fn ();
 -----------------------------
 -------  friendLists  -------
@@ -329,11 +329,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS friendLists_trigger_1 ON friendLists;
+DROP TRIGGER IF EXISTS friendLists_trigger_1 ON "friendLists";
 
 
 CREATE TRIGGER friendLists_trigger_1 BEFORE
-UPDATE ON friendLists FOR EACH ROW
+UPDATE ON "friendLists" FOR EACH ROW
 EXECUTE FUNCTION friendLists_trigger_1_fn ();
 ------------------------------
 ------  friendRequests  ------
@@ -368,11 +368,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS friendRequests_trigger_1 ON friendRequests;
+DROP TRIGGER IF EXISTS friendRequests_trigger_1 ON "friendRequests";
 
 
 CREATE TRIGGER friendRequests_trigger_1 BEFORE
-UPDATE ON friendRequests FOR EACH ROW
+UPDATE ON "friendRequests" FOR EACH ROW
 EXECUTE FUNCTION friendRequests_trigger_1_fn ();
 -----------------------------
 -------  friendships  -------
@@ -440,11 +440,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS games_trigger_1 ON games;
+DROP TRIGGER IF EXISTS games_trigger_1 ON "games";
 
 
 CREATE TRIGGER games_trigger_1 BEFORE
-UPDATE ON games FOR EACH ROW
+UPDATE ON "games" FOR EACH ROW
 EXECUTE FUNCTION games_trigger_1_fn ();
 ------------------------------
 -----  groupMemberships  -----
@@ -479,11 +479,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS groupMemberships_trigger_1 ON groupMemberships;
+DROP TRIGGER IF EXISTS groupMemberships_trigger_1 ON "groupMemberships";
 
 
 CREATE TRIGGER groupMemberships_trigger_1 BEFORE
-UPDATE ON groupMemberships FOR EACH ROW
+UPDATE ON "groupMemberships" FOR EACH ROW
 EXECUTE FUNCTION groupMemberships_trigger_1_fn ();
 ------------------------------
 ----------  groups  ----------
@@ -535,11 +535,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS groups_trigger_1 ON groups;
+DROP TRIGGER IF EXISTS groups_trigger_1 ON "groups";
 
 
 CREATE TRIGGER groups_trigger_1 BEFORE
-UPDATE ON groups FOR EACH ROW
+UPDATE ON "groups" FOR EACH ROW
 EXECUTE FUNCTION groups_trigger_1_fn ();
 -----------------------------
 ------  hashtagUsages  ------
@@ -616,11 +616,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS hashtags_trigger_1 ON hashtags;
+DROP TRIGGER IF EXISTS hashtags_trigger_1 ON "hashtags";
 
 
 CREATE TRIGGER hashtags_trigger_1 BEFORE
-UPDATE ON hashtags FOR EACH ROW
+UPDATE ON "hashtags" FOR EACH ROW
 EXECUTE FUNCTION hashtags_trigger_1_fn ();
 -----------------------------
 -------  imageDrafts  -------
@@ -718,11 +718,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS leaderboards_trigger_1 ON leaderboards;
+DROP TRIGGER IF EXISTS leaderboards_trigger_1 ON "leaderboards";
 
 
 CREATE TRIGGER leaderboards_trigger_1 BEFORE
-UPDATE ON leaderboards FOR EACH ROW
+UPDATE ON "leaderboards" FOR EACH ROW
 EXECUTE FUNCTION leaderboards_trigger_1_fn ();
 -----------------------------
 ----------  likes  ----------
@@ -823,11 +823,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS membershipLists_trigger_1 ON membershipLists;
+DROP TRIGGER IF EXISTS membershipLists_trigger_1 ON "membershipLists";
 
 
 CREATE TRIGGER membershipLists_trigger_1 BEFORE
-UPDATE ON membershipLists FOR EACH ROW
+UPDATE ON "membershipLists" FOR EACH ROW
 EXECUTE FUNCTION membershipLists_trigger_1_fn ();
 ------------------------------
 ---------  messages  ---------
@@ -863,11 +863,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS messages_trigger_1 ON messages;
+DROP TRIGGER IF EXISTS messages_trigger_1 ON "messages";
 
 
 CREATE TRIGGER messages_trigger_1 BEFORE
-UPDATE ON messages FOR EACH ROW
+UPDATE ON "messages" FOR EACH ROW
 EXECUTE FUNCTION messages_trigger_1_fn ();
 -----------------------------
 ------  notifications  ------
@@ -918,11 +918,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS notifications_trigger_1 ON notifications;
+DROP TRIGGER IF EXISTS notifications_trigger_1 ON "notifications";
 
 
 CREATE TRIGGER notifications_trigger_1 BEFORE
-UPDATE ON notifications FOR EACH ROW
+UPDATE ON "notifications" FOR EACH ROW
 EXECUTE FUNCTION notifications_trigger_1_fn ();
 ------------------------------
 --------  postDrafts  --------
@@ -954,11 +954,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS postDrafts_trigger_1 ON postDrafts;
+DROP TRIGGER IF EXISTS postDrafts_trigger_1 ON "postDrafts";
 
 
 CREATE TRIGGER postDrafts_trigger_1 BEFORE
-UPDATE ON postDrafts FOR EACH ROW
+UPDATE ON "postDrafts" FOR EACH ROW
 EXECUTE FUNCTION postDrafts_trigger_1_fn ();
 -----------------------------
 ----------  posts  ----------
@@ -1025,11 +1025,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS posts_trigger_1 ON posts;
+DROP TRIGGER IF EXISTS posts_trigger_1 ON "posts";
 
 
 CREATE TRIGGER posts_trigger_1 BEFORE
-UPDATE ON posts FOR EACH ROW
+UPDATE ON "posts" FOR EACH ROW
 EXECUTE FUNCTION posts_trigger_1_fn ();
 ------------------------------
 --------  publishers  --------
@@ -1058,11 +1058,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS publishers_trigger_1 ON publishers;
+DROP TRIGGER IF EXISTS publishers_trigger_1 ON "publishers";
 
 
 CREATE TRIGGER publishers_trigger_1 BEFORE
-UPDATE ON publishers FOR EACH ROW
+UPDATE ON "publishers" FOR EACH ROW
 EXECUTE FUNCTION publishers_trigger_1_fn ();
 ------------------------------
 ----------  scores  ----------
@@ -1118,11 +1118,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS scores_trigger_1 ON scores;
+DROP TRIGGER IF EXISTS scores_trigger_1 ON "scores";
 
 
 CREATE TRIGGER scores_trigger_1 BEFORE
-UPDATE ON scores FOR EACH ROW
+UPDATE ON "scores" FOR EACH ROW
 EXECUTE FUNCTION scores_trigger_1_fn ();
 ------------------------------
 ---------  sessions  ---------
@@ -1155,11 +1155,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS sessions_trigger_1 ON sessions;
+DROP TRIGGER IF EXISTS sessions_trigger_1 ON "sessions";
 
 
 CREATE TRIGGER sessions_trigger_1 BEFORE
-UPDATE ON sessions FOR EACH ROW
+UPDATE ON "sessions" FOR EACH ROW
 EXECUTE FUNCTION sessions_trigger_1_fn ();
 ------------------------------
 --------  shortlinks  --------
@@ -1195,11 +1195,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS shortlinks_trigger_1 ON shortlinks;
+DROP TRIGGER IF EXISTS shortlinks_trigger_1 ON "shortlinks";
 
 
 CREATE TRIGGER shortlinks_trigger_1 BEFORE
-UPDATE ON shortlinks FOR EACH ROW
+UPDATE ON "shortlinks" FOR EACH ROW
 EXECUTE FUNCTION shortlinks_trigger_1_fn ();
 ------------------------------
 --------  ttfMatches  --------
@@ -1247,11 +1247,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS ttfMatches_trigger_1 ON ttfMatches;
+DROP TRIGGER IF EXISTS ttfMatches_trigger_1 ON "ttfMatches";
 
 
 CREATE TRIGGER ttfMatches_trigger_1 BEFORE
-UPDATE ON ttfMatches FOR EACH ROW
+UPDATE ON "ttfMatches" FOR EACH ROW
 EXECUTE FUNCTION ttfMatches_trigger_1_fn ();
 ------------------------------
 --------  ttmMatches  --------
@@ -1298,11 +1298,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS ttmMatches_trigger_1 ON ttmMatches;
+DROP TRIGGER IF EXISTS ttmMatches_trigger_1 ON "ttmMatches";
 
 
 CREATE TRIGGER ttmMatches_trigger_1 BEFORE
-UPDATE ON ttmMatches FOR EACH ROW
+UPDATE ON "ttmMatches" FOR EACH ROW
 EXECUTE FUNCTION ttmMatches_trigger_1_fn ();
 -----------------------------
 -------  userFollows  -------
@@ -1337,11 +1337,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP TRIGGER IF EXISTS userFollows_trigger_1 ON userFollows;
+DROP TRIGGER IF EXISTS userFollows_trigger_1 ON "userFollows";
 
 
 CREATE TRIGGER userFollows_trigger_1 BEFORE
-UPDATE ON userFollows FOR EACH ROW
+UPDATE ON "userFollows" FOR EACH ROW
 EXECUTE FUNCTION userFollows_trigger_1_fn ();
 ------------------------------
 --------  userHashes  --------
@@ -1405,6 +1405,24 @@ CREATE INDEX IF NOT EXISTS "idx_users_bot" ON "users" ("bot");
 
 
 CREATE INDEX IF NOT EXISTS "idx_users_staff" ON "users" ("staff");
+
+
+---- Create triggers
+CREATE OR REPLACE FUNCTION users_trigger_1_fn () RETURNS TRIGGER AS $$
+BEGIN
+NEW.updated = CURRENT_TIMESTAMP;
+RETURN NEW;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS users_trigger_1 ON "users";
+
+
+CREATE TRIGGER users_trigger_1 BEFORE
+UPDATE ON "users" FOR EACH ROW
+EXECUTE FUNCTION users_trigger_1_fn ();
 -----------------------------
 -------  videoDrafts  -------
 -----------------------------

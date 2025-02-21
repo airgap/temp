@@ -2,7 +2,7 @@ import { PostgresRecordModel, PostgresTableModel } from 'from-schema';
 import { mapColumnType } from './mapColumnType';
 import { buildTableCreationCommand } from './createTable';
 import { buildTableIndexCommands } from './buildTableIndexCommand';
-import { buildTableTriggerCommands } from './buildTaberTriggerCommands';
+import { buildTableTriggerCommands } from './buildTableTriggerCommands';
 
 export function setupTable<T extends PostgresTableModel<PostgresRecordModel>>(
 	tableName: string,

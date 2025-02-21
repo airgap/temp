@@ -1,6 +1,7 @@
 import { PostgresTableModel } from 'from-schema';
 import { user } from 'bson-models';
 import { users as docs } from '@lyku/stock-docs';
+import { updateUpdated } from '../updateUpdated';
 
 export const users = {
 	indexes: [
@@ -15,4 +16,5 @@ export const users = {
 	docs: Object.values(docs),
 	schema: user,
 	primaryKey: 'id',
+	triggers: [updateUpdated],
 } as const satisfies PostgresTableModel<typeof user>;

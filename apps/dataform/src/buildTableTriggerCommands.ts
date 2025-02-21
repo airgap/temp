@@ -19,10 +19,10 @@ export function buildTableTriggerCommands<
 					`END;\n` +
 					`$$ LANGUAGE plpgsql;\n`,
 
-				`DROP TRIGGER IF EXISTS ${triggerName} ON ${tableName};\n` +
+				`DROP TRIGGER IF EXISTS ${triggerName} ON "${tableName}";\n` +
 					`CREATE TRIGGER ${triggerName}\n` +
 					`${timing} ${event.toUpperCase()}\n` +
-					`ON ${tableName}\n` +
+					`ON "${tableName}"\n` +
 					`FOR EACH ROW\n` +
 					`EXECUTE FUNCTION ${triggerName}_fn();`
 			);
