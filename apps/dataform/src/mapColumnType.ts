@@ -4,6 +4,7 @@ import { mapBigintType } from './mapBigintType';
 import { mapIntegerType } from './mapIntegerType';
 import { mapVarcharType } from './mapVarcharType';
 import { mapTextType } from './mapTextType';
+import { mapTimestamptzType } from './mapTimestamptzType';
 import { PostgresColumnModel } from 'from-schema';
 
 import { mapCharType } from './mapCharType';
@@ -38,7 +39,7 @@ export function mapColumnType(
 		case 'timestamp':
 			return 'TIMESTAMP';
 		case 'timestamptz':
-			return 'TIMESTAMPTZ';
+			return mapTimestamptzType(name, columnSchema);
 		case 'jsonb':
 			return 'JSONB';
 		case 'enum':
