@@ -1,5 +1,5 @@
 import { TimestamptzColumnModel } from 'from-schema';
-import { timestampChecks } from './numberChecks';
+import { timestampChecks } from './timestampChecks';
 import { dateToPostgresString } from './dateToPostgresString';
 export const mapTimestamptzType = (
 	name: string,
