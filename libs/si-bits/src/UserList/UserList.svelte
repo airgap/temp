@@ -5,8 +5,7 @@
   import { phrasebook } from '../phrasebook';
   import styles from './UserList.module.sass';
 
-  export let users: User[] | undefined = undefined;
-  export let mine: boolean | undefined = undefined;
+  const { users, mine } = $props<{ users: User[] | undefined; mine: boolean | undefined }>();
 </script>
 
 <ul class={styles.UserList}>

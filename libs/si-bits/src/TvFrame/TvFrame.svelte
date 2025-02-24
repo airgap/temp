@@ -2,8 +2,7 @@
   import classnames from 'classnames';
   import styles from './TvFrame.module.sass';
 
-  export let size: 'auto' | undefined = undefined;
-  export let height: number | undefined = undefined;
+  const { size, height } = $props<{ size?: 'auto'; height?: number }>();
 </script>
 
 <div

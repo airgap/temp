@@ -6,12 +6,7 @@
     const layouts = { h: 'row', v: 'column' } as const;
     type Layout = keyof typeof layouts;
 
-    export let size: Size;
-    export let layout: Layout;
-    export let fill: boolean = false;
-    export let hang: any = undefined;
-    export let alignItems: Property.AlignItems | undefined = undefined;
-    export let style: CSSProperties = {};
+    const { size, layout, fill, hang, alignItems, style } = $props<{ size: Size; layout: Layout; fill: boolean; hang: any; alignItems: Property.AlignItems | undefined; style: CSSProperties }>();
 </script>
 
 <div

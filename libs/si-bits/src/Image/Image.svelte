@@ -16,18 +16,13 @@
     id?: bigint;
   }
 
-  export let size: $$Props['size'] = undefined;
-  export let bot: $$Props['bot'] = false;
-  export let shape: $$Props['shape'] = undefined;
-  export let url: $$Props['url'] = undefined;
-  export let id: $$Props['id'] = undefined;
-  export let className: string = '';
+  const { size, bot, shape, url, id, className } = $props<$$Props>();
 
-  $: src = id !== undefined 
+  const src = $derived(id !== undefined 
     ? formImageUrl(id) 
     : url !== undefined 
     ? url 
-    : face;
+    : face);
 </script>
 
 <span

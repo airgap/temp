@@ -4,7 +4,7 @@
     import { shout } from '../Sonic';
     import { ReactionButton } from '../ReactionButton';
 
-    export let post: Post;
+    const { post } = $props<{ post: Post }>();
 </script>
 
 <ReactionButton glyph={echo} onclick={() => shout('echo', post)} /> 

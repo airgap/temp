@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Select from 'svelte-select';
   import type { GroupFilter } from '@lyku/json-models';
   import styles from './GroupFilterSelect.module.sass';
 
@@ -41,11 +40,14 @@
   };
 </script>
 
-<Select
+<select
   {value}
-  {options}
   {customStyles}
   unstyled={true}
   class={styles.GroupFilterSelect}
-  on:change={(e) => value = e.detail?.value}
-/> 
+  onchange={(e) => value = e.detail?.value}
+> 
+  {#each options as option}
+    <option value={option.value}>{option.label}</option>
+  {/each}
+</select>

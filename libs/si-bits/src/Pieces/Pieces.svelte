@@ -13,13 +13,13 @@
     key: number;
   };
 
-  export let match: TtfMatch;
+  const { match } = $props<{ match: TtfMatch }>();
   
   let lastTurn: number | undefined;
   let lastBoard: string | undefined;
   let pieces: Piece[] = [];
   
-  $: {
+  $effect(() => {
     if (lastTurn) {
       if (match.turn !== lastTurn && lastBoard) {
         console.log('blah blah');
@@ -85,7 +85,7 @@
     }
     lastBoard = match.board;
     lastTurn = match.turn;
-  }
+  });
 </script>
 
 <div class="board-pieces">

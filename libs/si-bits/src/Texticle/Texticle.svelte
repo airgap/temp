@@ -7,16 +7,7 @@
   
   type Type = 'text' | 'email' | 'password';
   
-  export let schema: StringJsonSchema | undefined = undefined;
-  export let empty: string = '';
-  export let valid: string | undefined = undefined;
-  export let invalid: string | undefined = undefined;
-  export let pattern: string | undefined = undefined;
-  export let type: Type = 'text';
-  export let minLength: number | undefined = undefined;
-  export let maxLength: number | undefined = undefined;
-  export let multiline: boolean = false;
-  export let value: string = '';
+  let { schema, empty, valid, invalid, pattern, type, minLength, maxLength, multiline, value } = $props<{ schema?: StringJsonSchema; empty?: string; valid?: string; invalid?: string; pattern?: string; type?: Type; minLength?: number; maxLength?: number; multiline?: boolean; value?: string }>();
 
   let label = empty;
   let isValid = false;
@@ -52,21 +43,21 @@
     dispatch('validation', isValid);
   }
 
-  $: value, empty, updatePlaceholder();
+  $effect(updatePlaceholder);
 </script>
 
 <div class={styles.Texticle} class:valid={isValid} class:invalid={isInvalid}>
   {#if multiline}
     <textarea
       {id}
-      on:input={handleInput}
+      oninput={handleInput}
       placeholder=""
       bind:value
     ></textarea>
   {:else}
     <input
       {id}
-      on:input={handleInput}
+      oninput={handleInput}
       placeholder=""
       {type}
       bind:value

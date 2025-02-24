@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { TtfMatch } from '@lyku/json-models';
 
-  export let match: TtfMatch;
-  export let onClick: (i: number) => void;
+  const { match, onClick } = $props<{ match: TtfMatch; onClick: (i: number) => void }>();
 </script>
 
 <div

@@ -8,8 +8,7 @@
   import { TvFrame } from '../TvFrame';
   import styles from './Tv.module.sass';
 
-  export let channel: Channel | undefined = undefined;
-  export let showStatic: boolean | undefined = undefined;
+  const { channel, showStatic } = $props<{ channel: Channel | undefined; showStatic: boolean }>();
 
   let frameRef: HTMLDivElement;
   let ready = false;

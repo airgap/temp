@@ -10,9 +10,6 @@
   import { phrasebook } from '../phrasebook';
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
-
-  export let url: URL;
-  export let sessionId: string;
   
 
   const showAuth = (form: any) => () => shout('showAuth', form);
@@ -24,7 +21,7 @@
   const join = () => dispatch('join');
   const login = () => dispatch('login');
 // const user = $currentUser;
-export let user: User;
+  const { user, sessionId, url } = $props<{ user: User; sessionId: string; url: URL }>();
   console.log('user', user);
 </script>
 

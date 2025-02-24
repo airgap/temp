@@ -5,9 +5,7 @@
 
     const { email } = jsonPrimitives;
 
-    export let value = '';
-    export let disabled = false;
-    export let autofocus = false;
+    const { value, disabled, autofocus } = $props<{ value: string; disabled: boolean; autofocus: boolean }>();
 </script>
 
 <Texticle

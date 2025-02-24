@@ -4,7 +4,7 @@
   import styles from './NavLogo.module.sass';
   import logo from './gifmaker_me.gif';
 
-  export let className: string = '';
+  const { className } = $props<{ className: string }>();
 
   // Generate unique ID for mask
   const maskId = crypto.randomUUID().replace(/-/g, '');

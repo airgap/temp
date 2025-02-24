@@ -3,9 +3,7 @@
   import styles from '../Image/Image.module.sass';
   import smile from '../smile.png';
   
-  export let url = smile;
-  export let alt: string | undefined = undefined;
-  export let size: number | undefined = undefined;
+  const { url, alt, size } = $props<{ url: string; alt?: string; size?: number }>();
 </script>
 
 <span class={styles.ProfilePicture}>

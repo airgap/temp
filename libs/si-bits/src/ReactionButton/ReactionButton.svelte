@@ -8,12 +8,7 @@
   export type Orientation = 'Horizontal' | 'Vertical';
   export type PostReactionHandler = () => void;
 
-  export let disabled: boolean | undefined = undefined;
-  export let onClick: PostReactionHandler | undefined = undefined;
-  export let orientation: Orientation | undefined = undefined;
-  export let glyph: string;
-  export let value: number | undefined = undefined;
-  export let className: string | undefined = undefined;
+  const { disabled, onClick, orientation, glyph, value, className } = $props<{ disabled?: boolean; onClick?: PostReactionHandler; orientation?: Orientation; glyph: string; value?: number; className?: string }>();
 </script>
 
 <span

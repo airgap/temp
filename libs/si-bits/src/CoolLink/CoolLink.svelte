@@ -4,22 +4,18 @@
   import styles from './CoolLink.module.sass';
   
   // Export all props that can be passed to the Link component
-  export let href: string | undefined = undefined;
-  export let className: string | undefined = undefined;
-  export let style: string | undefined = undefined;
-  export let isActive: boolean = false; // New prop to control the active state
-  // ... export other props as needed
-  
-  $: classes = classNames(styles.CoolLink, {
+  const p = $props<{ href: string | undefined; className: string | undefined; style: string | undefined; isActive: boolean } & any>();
+  const { href, className, style, isActive, ...rest } = p;
+  const classes = $derived(classNames(styles.CoolLink, {
     [styles.depressed]: isActive
-  }, className);
+  }, className));
 </script>
 
 <Link
-  {...$$restProps}
+  {...rest}
   {href}
   className={classes}
   {style}
 >
-  <slot />
+  {children}
 </Link>

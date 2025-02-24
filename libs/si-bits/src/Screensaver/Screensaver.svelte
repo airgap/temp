@@ -9,7 +9,7 @@
   import tickPath from './tick.wav';
   import type { Bounce, Channel } from '@lyku/json-models';
 
-  export let channel: Channel | undefined = undefined;
+  const { channel } = $props<{ channel: Channel | undefined }>();
   let children: any = $$slots.default;
 
   const tick = new Audio(tickPath);

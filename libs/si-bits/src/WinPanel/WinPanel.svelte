@@ -2,8 +2,7 @@
   import type { TtfMatch, User } from '@lyku/json-models';
   import { Link } from '../Link';
 
-  export let user: User | undefined = undefined;
-  export let match: TtfMatch;
+  const { user, match } = $props<{ user: User | undefined; match: TtfMatch }>();
 </script>
 
 {#if user?.id === match.winner}

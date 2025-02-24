@@ -1,6 +1,5 @@
 <script lang="ts">
   import { ReactionButton } from '../ReactionButton';
-  // import { useCacheSingleton } from '../CacheProvider';
   import filledHeart from '../assets/filledheart.svg';
   import emptyHeart from '../assets/heart.svg';
   import { shout } from '../Sonic';
@@ -8,9 +7,9 @@
   import { api, getSessionId } from 'monolith-ts-api';
   import type { Post } from '@lyku/json-models';
 
-  export let post: Post;
+  const { post } = $props<{ post: Post }>();
 
-  $: liked = cacheStore.myLikes.get(post.id)?.liked;
+  const liked = $derived(cacheStore.myLikes.get(post.id)?.liked);
 
   function handleClick() {
     if (!getSessionId()) {

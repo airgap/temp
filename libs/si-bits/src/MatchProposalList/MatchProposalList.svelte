@@ -9,27 +9,26 @@
   import { Divisio } from '../Divisio';
   import { cacheStore } from '../CacheProvider';
 
-  export let user: User;
-  export let onClose: () => void;
+  const { user, onClose } = $props<{ user: User; onClose: () => void }>();
 
   let proposals: MatchProposal[] = [];
   let queried = false;
-  let users: User[] | undefined;
 
-  $: if (!queried) {
-    queried = true;
-    api.listMatchProposals({}).then(({ proposals: proposalList }) => {
-      const mine: MatchProposal[] = [];
-      const theirs: MatchProposal[] = [];
-      for (const proposal of proposalList) {
+  $effect(() => {
+    if (!queried) {
+      queried = true;
+      api.listMatchProposals({}).then(({ proposals: proposalList }) => {
+        const mine: MatchProposal[] = [];
+        const theirs: MatchProposal[] = [];
+        for (const proposal of proposalList) {
         (proposal.to === user.id ? mine : theirs).push(proposal);
       }
       proposals = [...mine, ...theirs];
     });
-  }
+  }});
 
-  $: userList = [...new Set(proposals.map((p) => p.from).concat(proposals.map((p) => p.to)))];
-  $: users = cacheStore.users.get(userList);
+  const userList = $derived([...new Set(proposals.map((p) => p.from).concat(proposals.map((p) => p.to)))]);
+  const users = $derived(cacheStore.users.get(userList));
 </script>
 
 <div class={styles.MatchList}>

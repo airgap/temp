@@ -2,26 +2,20 @@
   import { api } from 'monolith-ts-api';
   import { phrasebook } from '../phrasebook';
   import styles from './VideoList.module.sass';
-  import type { Channel } from '@lyku/json-models';
+  import type { Channel, ListChannelVideosResponse } from '@lyku/json-models';
 
-  export let channel: Channel;
+  const { channel } = $props<{ channel: Channel }>();
 
-  async function loadVideos() {
-    try {
-      return await api.listChannelVideos({ channelId: channel.id });
-    } catch (error) {
-      throw new Error(String(error));
-    }
-  }
-
-  let videosPromise = loadVideos();
+  const loadVideos = () => api.listChannelVideos({ channelId: channel.id });
   
-  // Reactive statement to reload videos when channel.id changes
-  $: {
+
+  let videosPromise: ListChannelVideosResponse | undefined = $state(undefined);
+  
+  $effect(() => {
     if (channel.id) {
       videosPromise = loadVideos();
     }
-  }
+  });
 </script>
 
 <div>
