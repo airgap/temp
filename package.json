@@ -7,7 +7,7 @@
 		"build": "nx run-many --target=build --skip-nx-cache --parallel=99 --output-style=stream",
 		"lint": "nx run-many --target=lint --skip-nx-cache --parallel=99 --output-style=stream",
 		"test": "nx run-many --target=test --skip-nx-cache --parallel=99 --output-style=stream",
-		"dockerize": "doppler run -- nx run-many --target=dockerize --skip-nx-cache --parallel=12 --output-style=stream",
+		"dockerize": "doppler run -- nx run-many --target=dockerize --parallel=12 --output-style=stream",
 		"kubernetize": "doppler run -- nx run-many --target=kubernetize --parallel=11 --output-style=stream",
 		"format": "prettier -w .",
 		"clean-artifacts": "rimraf -g dist tmp .nx/cache ./**/.svelte-kit .nx",

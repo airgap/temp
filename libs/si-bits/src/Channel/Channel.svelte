@@ -1,8 +1,10 @@
 <script lang="ts">
   import styles from './Channel.module.sass';
 
-  export let channel: number;
-  export let selected: boolean;
+  const { channel, selected } = $props<{
+    channel: number;
+    selected: boolean;
+  }>();
 </script>
 
 <a

@@ -7,43 +7,84 @@
   import { phrasebook } from '../phrasebook';
   import { AuthOverlay } from '../AuthOverlay';
   import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
-  let email = '';
-  let password = '';
-  let emailValid = false;
-  let passwordValid = false;
-  export let visible = false;
 
-  function handleSubmit() {
-    dispatch('submit');
-    api.loginUser({
-      email,
-      password,
-    })
-    .then(({ sessionId }) => {
+  const dispatch = createEventDispatcher();
+  
+  // Props
+  const props = $props<{ visible: boolean }>();
+
+  // Form state
+  let email = $state('');
+  let password = $state('');
+  let emailValid = $state(false);
+  let passwordValid = $state(false);
+  let error = $state<Error | null>(null);
+
+  // Computed form validity
+  const isFormValid = $derived(emailValid && passwordValid);
+
+  // Event handlers
+  function handleEmailInput(e: CustomEvent<string>) {
+    email = e.detail;
+  }
+
+  function handlePasswordInput(e: CustomEvent<string>) {
+    password = e.detail;
+  }
+
+  function handleEmailValidation(e: CustomEvent<boolean>) {
+    emailValid = e.detail;
+  }
+
+  function handlePasswordValidation(e: CustomEvent<boolean>) {
+    passwordValid = e.detail;
+  }
+
+  async function handleSubmit() {
+    try {
+      dispatch('submit');
+      error = null;
+
+      const { sessionId } = await api.loginUser({ email, password });
       setCookie('sessionId', sessionId, 365);
       dispatch('success');
       window.location.reload();
-    })
-    .catch((e) => {
-      dispatch('error', e);
-      error = e;
-    });
+    } catch (e) {
+      error = e instanceof Error ? e : new Error(String(e));
+      dispatch('error', error);
+    }
   }
 </script>
-<AuthOverlay visible={visible}>
-<h2>{phrasebook.loginFormTitle}</h2>
-<EmailInput 
-  oninput={(e) => email = e.detail} 
-  on:validation={(e) => emailValid = e} 
-/>
-<PasswordInput 
-  oninput={(e) => password = e.detail} 
-  on:validation={(e) => passwordValid = e} 
-/>
-<SubmitButton
-  disabled={!(emailValid && passwordValid)}
-  onclick={handleSubmit}
->
-  {@html phrasebook.loginFormSubmit}
-</SubmitButton> </AuthOverlay>
+
+<AuthOverlay visible={props.visible}>
+  <h2>{phrasebook.loginFormTitle}</h2>
+  
+  <EmailInput 
+    on:input={handleEmailInput}
+    on:validation={handleEmailValidation}
+  />
+
+  <PasswordInput 
+    on:input={handlePasswordInput}
+    on:validation={handlePasswordValidation}
+  />
+
+  {#if error}
+    <div class="error">
+      {error.message}
+    </div>
+  {/if}
+
+  <SubmitButton
+    disabled={!isFormValid}
+    on:click={handleSubmit}
+  >
+    {@html phrasebook.loginFormSubmit}
+  </SubmitButton>
+</AuthOverlay>
+
+<style lang="sass">
+  .error
+    color: red
+    margin: 1rem 0
+</style>

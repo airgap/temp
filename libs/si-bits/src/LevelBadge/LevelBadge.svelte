@@ -3,9 +3,10 @@
   import styles from './LevelBadge.module.sass';
 
   // Props
-  export let points: bigint;
+  const { points, progress = false, size = 's' } = $props<{ points: bigint; progress?: boolean; size?: 's' | 'm' | 'l' }>();
+  console.log('b', points);
   // export let progress: boolean = false;
-  export let size: 's' | 'm' | 'l' = 's';
+  // export let size: 's' | 'm' | 'l' = 's';
 
   const sizes = {
     s: 25,
@@ -75,14 +76,15 @@
   }
 
   // Reactive declarations
-  $: sizeValue = sizes[size];
-  $: half = sizeValue / 2;
-  $: level = getLevelFromPoints(points);
-  $: progressValue = getProgressToNextLevel(points);
+  const sizeValue = sizes[size];
+  const half = sizeValue / 2;
+  const level = getLevelFromPoints(points);
+  console.log('a', points);
+  const progressValue = getProgressToNextLevel(points);
   
-  $: text = `<text x='${half}' y='${half}' text-anchor='middle' dy='.375em' fill='white' font-size='${half}'>${level}</text>`;
+  const text = `<text x='${half}' y='${half}' text-anchor='middle' dy='.375em' fill='white' font-size='${half}'>${level}</text>`;
   
-  $: donut = (() => {
+  const donut = (() => {
     const bg = '#ffffff55';
     const data = [{ value: 100 - progressValue }, { value: progressValue || 1 }];
     const color = progressValue ? [bg, 'white'] : [bg, 'transparent'];
@@ -95,7 +97,7 @@
     ).join('');
   })();
 
-  $: html = donut + text;
+  const html = donut + text;
 </script>
 
 <svg 

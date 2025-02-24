@@ -2,28 +2,51 @@
     import { api, getSessionId } from 'monolith-ts-api';
     import { PostList } from '@lyku/si-bits';
     import { getContext } from 'svelte';
+    import { page } from '$app/stores';
 
-    // Get groupId from URL path
-    const groupId = window.location.pathname.split('/g/')?.[1];
+    // Get groupId from route params instead of window.location
+    const groupId = $derived($page.params.slug);
     
-    // Get cache from context
+    // Get cache from context and derive group data
     const cache: any = getContext('cache');
-    $: group = $cache?.groups?.[groupId];
+    const group = $derived($cache?.groups?.[groupId]);
 
-    // Create posts promise
-    const postsPromise = getSessionId()
-        ? api.listFeedPosts({ groups: [BigInt(groupId)] })
-        : api.listFeedPostsUnauthenticated({ groups: [BigInt(groupId)]});
+    // Create posts promise based on auth state
+    const postsPromise = $derived(
+        getSessionId()
+            ? api.listFeedPosts({ groups: [BigInt(groupId)] })
+            : api.listFeedPostsUnauthenticated({ groups: [BigInt(groupId)]})
+    );
+
+    let error = $state<Error | null>(null);
+    let loading = $state(true);
+    let posts = $state<any[]>([]);
+
+    // Effect to handle promise
+    $effect(() => {
+        loading = true;
+        error = null;
+        
+        postsPromise
+            .then(result => {
+                posts = result;
+                loading = false;
+            })
+            .catch(e => {
+                error = e;
+                loading = false;
+            });
+    });
 </script>
 
 {#if group}
     <h2>{group.name}</h2>
 {/if}
 
-{#await postsPromise}
+{#if loading}
     <p>Loading posts...</p>
-{:then posts}
-    <PostList {posts} />
-{:catch error}
+{:else if error}
     <p>Error loading posts: {error.message}</p>
-{/await} 
+{:else}
+    <PostList {posts} />
+{/if} 

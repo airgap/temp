@@ -11,7 +11,5 @@ export const registerUser = {
 		},
 		required: ['email', 'password', 'username', 'agreed'],
 	},
-
-	response: session.properties.id,
 	authenticated: false,
 } as const satisfies TsonHandlerModel;

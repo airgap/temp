@@ -2,10 +2,12 @@
   import classnames from 'classnames';
   import styles from './Crosshatch.module.sass';
 
-  export let width: string | undefined = undefined;
-  export let height: string | undefined = undefined;
-  export let style: Record<string, string> = {};
-  export let bright: boolean = false;
+  const { width = undefined, height = undefined, style = {}, bright = false } = $props<{
+    width?: string;
+    height?: string;
+    style?: Record<string, string>;
+    bright?: boolean;
+  }>();
 </script>
 
 <div

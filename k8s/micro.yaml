@@ -37,6 +37,14 @@ spec:
               value: '1'
             - name: PG_CONNECTION_STRING
               value: '${PG_CONNECTION_STRING}'
+            - name: CLOUDFLARE_API_TOKEN
+              value: '${CLOUDFLARE_API_TOKEN}'
+            - name: CLOUDFLARE_ACCOUNT_ID
+              value: '${CLOUDFLARE_ACCOUNT_ID}'
+            - name: WEBUI_DOMAIN
+              value: '${WEBUI_DOMAIN}'
+            - name: SERVICE_DOMAIN
+              value: '${SERVICE_DOMAIN}'
           ports:
             - containerPort: 3000
           resources:
@@ -45,7 +53,7 @@ spec:
               cpu: '5m'
             limits:
               memory: '200Mi'
-              cpu: '20m'
+              cpu: '200m'
           startupProbe:
             httpGet:
               path: /health

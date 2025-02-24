@@ -9,8 +9,8 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  $: loading = false;
-  export let visible = false;
+  const loading = $derived(false);
+  const { visible = false } = $props();
 </script>
 
 <div 

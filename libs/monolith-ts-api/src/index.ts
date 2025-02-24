@@ -51,10 +51,14 @@ const hostname = isLocalhost
 	: browser
 	? window.location.hostname
 	: '';
+let stupidSessionId: string | undefined;
+export const setStupidSessionId = (sessionId?: string) => {
+	stupidSessionId = sessionId;
+};
 export let currentPlatform: Platform = {
 	browser,
 	hostname,
-	apiHostname: isLocalhost ? 'localhost:3000' : 'api.' + hostname,
+	apiHostname: 'api.lyku.org', //isLocalhost ? 'localhost:3000' : 'api.' + hostname,
 	cookies: {
 		get: (name) => {
 			if (!browser) return undefined;
@@ -100,7 +104,7 @@ function toQueryString(obj?: Record<string, string>) {
 // Cookie adapter interface
 interface CookieAdapter {
 	get(name: string): string | undefined;
-	set?(name: string, value: string, options?: { expires?: number }): void;
+	set?(name: string, value?: string, options?: { expires?: number }): void;
 }
 
 // Cookie utility functions that use the platform
@@ -123,7 +127,7 @@ const defaultAdapter: CookieAdapter = {
 	},
 };
 
-let cookieAdapter: CookieAdapter = defaultAdapter;
+export let cookieAdapter: CookieAdapter = defaultAdapter;
 
 // Allow consumers to set their own adapter
 export const setCookieAdapter = (adapter: CookieAdapter) => {
@@ -166,7 +170,8 @@ export const api = Object.fromEntries(
 					const body = encode(data);
 					const stream = 'stream' in route && route.stream;
 					const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
-					let path = `//${currentPlatform.apiHostname}/${snakeName}`;
+					let path = `https://api.lyku.org/${snakeName}`;
+					// let path = `//${currentPlatform.apiHostname}/${snakeName}`;
 
 					// Don't create WebSocket connections during SSR
 					if (stream && currentPlatform.browser) {
@@ -174,7 +179,9 @@ export const api = Object.fromEntries(
 						const listeners: Listener[] = [];
 						const ws = new WebSocket(`${socketPrefix}:${path}`);
 						ws.onopen = () =>
-							ws.send(JSON.stringify({ sessionId: getActiveSession() }));
+							ws.send(
+								JSON.stringify({ sessionId: cookieAdapter.get('sessionId') })
+							);
 						ws.onmessage = (ev) => {
 							console.log('ws data', ev.data);
 							const json = JSON.parse(ev.data);
@@ -185,17 +192,22 @@ export const api = Object.fromEntries(
 							listen: (listener: Listener) => listeners.push(listener) && ws,
 						});
 					} else {
+						console.log('fetching', path);
+						const bearer = stupidSessionId || cookieAdapter.get('sessionId');
+						console.log('bearer', bearer);
 						const fetchOptions: RequestInit = {
 							method: 'method' in model ? model.method : 'POST',
+							// Only include credentials if it's supported in the environment
+							...(typeof window !== 'undefined'
+								? { credentials: 'include' }
+								: {}),
 							...(body ? { body } : {}),
 							headers: {
 								'Content-Type': 'application/x-msgpack',
-								...(getActiveSession()
-									? { Authorization: `Bearer ${getActiveSession()}` }
-									: {}),
+								...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
 							},
 						};
-
+						console.log('fetchOptions', fetchOptions);
 						return fetch(path, fetchOptions)
 							.then((res) => {
 								if (res.status !== 200) console.log('Fetch code:', res.status);

@@ -5,25 +5,26 @@
   import { currentUser } from '../currentUserStore';
   import styles from './GroupList.module.sass';
 
-  export let substring: string | undefined = undefined;
-  export let filter: GroupFilter | undefined = undefined;
+  const { substring, filter } = $props<{ substring?: string; filter?: GroupFilter }>();
 
   let groups: Group[] = [];
   let memberships: GroupMembership[] = [];
   let queriedGroups = false;
 
-  $: if (!queriedGroups && getSessionId()) {
-    queriedGroups = true;
-    api.listGroups({ filter, substring }).then(({ groups: g, memberships: m }) => {
-      groups = g;
+  $effect(() => {
+    if (!queriedGroups && getSessionId()) {
+      queriedGroups = true;
+      api.listGroups({ filter, substring }).then(({ groups: g, memberships: m }) => {
+        groups = g;
       memberships = m;
     });
   } else if (!queriedGroups) {
     queriedGroups = true;
-    api.listGroupsUnauthenticated({ substring }).then(g => {
-      groups = g;
-    });
-  }
+      api.listGroupsUnauthenticated({ substring }).then(g => {
+        groups = g;
+      });
+    }
+  });
 </script>
 
 {#if groups.length}

@@ -3,31 +3,35 @@
     import type { MatchProposal, User } from '@lyku/json-models';
     import { Button } from '../Button';
 
-    export let game: number;
-    export let user: User;
-    export let onClose: (() => void) | undefined = undefined;
+    const { game, user, onClose } = $props<{
+        game: number;
+        user: User;
+        onClose: (() => void) | undefined;
+    }>();
 
     let friends: User[] = [];
     let invites: MatchProposal[] = [];
     let friendsById = new Map<bigint, User>();
     let queried = false;
 
-    $: incoming = invites?.filter((i) => i.to === user.id) ?? [];
-    $: outgoing = invites?.filter((i) => i.from === user.id) ?? [];
-    $: remaining = friends?.filter(
+    const incoming = $derived(invites?.filter((i) => i.to === user.id) ?? []);
+    const outgoing = $derived(invites?.filter((i) => i.from === user.id) ?? []);
+    const remaining = $derived(friends?.filter(
         (f) => !invites?.some((i) => [i.from, i.to].includes(f.id))
-    ) ?? [];
+    ) ?? []);
 
     // Fetch data on mount if not already queried
-    $: if (!queried) {
-        queried = true;
-        api.listFriends().then((friendsList) => {
-            friends = friendsList;
+    $effect(() => {
+        if (!queried) {
+            queried = true;
+            api.listFriends().then((friendsList) => {
+                friends = friendsList;
             friendsById = new Map(friendsList.map((f) => [f.id, f]));
         });
         api.listMatchProposals({ game })
             .then(({ proposals }) => invites = proposals);
     }
+    });
 </script>
 
 <div>

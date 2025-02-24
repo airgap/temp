@@ -1,10 +1,12 @@
 <script lang="ts">
   import styles from './Button.module.sass';
   
-  export let disabled = false;
-  export let className = '';
-  export let type: 'button' | 'submit' | 'reset' = 'button';
-  export let style: Record<string, string> = {};
+  let { 
+    disabled = false,
+    className = '',
+    type = 'button' as 'button' | 'submit' | 'reset',
+    style = {} as Record<string, string>
+  } = $props();
 </script>
 
 <button
@@ -14,5 +16,5 @@
   {style}
   on:click
 >
-  <slot />
+  {@render children?.()}
 </button> 

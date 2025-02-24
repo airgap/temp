@@ -5,7 +5,8 @@ export const membershipList = {
 		user: { type: 'bigint', primaryKey: true },
 		groups: { type: 'array', items: { type: 'bigint' } },
 		count: { type: 'integer' },
+		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
-	required: ['user', 'groups', 'count'],
+	required: ['user', 'groups', 'created', 'count'],
 } as const satisfies PostgresRecordModel;

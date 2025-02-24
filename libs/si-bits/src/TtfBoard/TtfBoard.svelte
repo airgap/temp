@@ -10,11 +10,13 @@
   import type { TtfMatch, User } from '@lyku/json-models';
   import styles from './TtfBoard.module.sass';
 
-  export let match: TtfMatch | undefined = undefined;
-  export let overlay: any | undefined = undefined;
-  export let user: User | undefined = undefined;
+  const { match = undefined, overlay = undefined, user = undefined } = $props<{
+    match?: TtfMatch;
+    overlay?: any;
+    user?: User;
+  }>();
 
-  let pending = false;
+  let pending = $state(false);
 
   const lines = {
     h: {
@@ -29,14 +31,16 @@
     },
   } as const;
 
-  $: amX = match?.X === user?.id;
-  $: xTurn = Boolean(match && match.turn % 2);
-  $: myTurn = amX === xTurn;
+  const amX = $derived(match?.X === user?.id);
+  const xTurn = $derived(Boolean(match && match.turn % 2));
+  const myTurn = $derived(amX === xTurn);
 
-  $: if (match) {
-    pending = false;
-    console.log(match);
-  }
+  $effect(() => {
+    if (match) {
+      pending = false;
+      console.log(match);
+    }
+  });
 
   function handlePiecePlacement(i: number) {
     if (!match) return;

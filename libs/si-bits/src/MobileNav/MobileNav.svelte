@@ -17,11 +17,13 @@
   const dispatch = createEventDispatcher();
   const joinOrLogin = () => dispatch('joinOrLogin');
 
-  export let url: URL;
+  const { url } = $props<{ url: URL }>();
 
-  $: if (user) {
-    profile = user.profilePicture;
-  }
+  $effect(() => {
+    if (user) {
+      profile = user.profilePicture;
+    }
+  });
 
   listen('profilePictureChanged', (id) => profile = id);
 </script>

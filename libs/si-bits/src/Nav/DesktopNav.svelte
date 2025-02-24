@@ -10,17 +10,22 @@
   import { phrasebook } from '../phrasebook';
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
-  import { cacheStore } from '../CacheProvider';
-  import { getSessionId } from 'monolith-ts-api';
 
-  const user = cacheStore.currentUser;
   export let url: URL;
+  export let sessionId: string;
+  
 
   const showAuth = (form: any) => () => shout('showAuth', form);
   import { createEventDispatcher } from 'svelte';
+	import type { string } from '../../../../../from-schema/dist/bson/primitives';
+	import type { User } from '@lyku/json-models';
+	// import { currentUser } from '../currentUserStore';
   const dispatch = createEventDispatcher();
   const join = () => dispatch('join');
   const login = () => dispatch('login');
+// const user = $currentUser;
+export let user: User;
+  console.log('user', user);
 </script>
 
 <div class={styles.DesktopNav}>
@@ -28,14 +33,14 @@
     <div class={styles.InnerDesktopNav}>
       <Backdrop />
       <NavLogo />
-      {#if user && getSessionId()}
+      {#if $user}
         <CoolLink href="/tail" isActive={url.pathname.startsWith('/tail')}>{phrasebook.navTailored}</CoolLink>
       {/if}
       <CoolLink href="/hot" isActive={url.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
       <CoolLink href="/play" isActive={url.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
       
       <span class={styles.cluster}>
-        {#if user && sessionId}
+        {#if $user}
           <span class={styles.welcome}>
             {phrasebook.navWelcome}
             <Link href="/profile">
@@ -47,7 +52,7 @@
               />
             </Link>
             <span class={styles.badgeHolder}>
-              <LevelBadge points={user.points ?? 0} progress={true} />
+              <LevelBadge points={user.points ?? 0n} progress={true} />
             </span>
           </span>
         {:else}

@@ -4,10 +4,10 @@
   import styles from './Cards.module.sass';
 
   type Props = {
-    children?: any[];  // Svelte doesn't use ReactElement, we'll handle components differently
+    children?: any[];
   };
 
-  export let children: Props['children'] = [];
+  const { children = [] } = $props();
 </script>
 
 <div class={styles.Cards}>

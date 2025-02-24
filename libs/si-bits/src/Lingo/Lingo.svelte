@@ -6,7 +6,7 @@
   import Svg from '../assets/lingo.svelte';
   import type { Lang } from '@lyku/phrasebooks';
 	import Button from '../Button/Button.svelte';
-  console.log('svg', Svg);
+
   const langs: Partial<Record<Lang, string>> = {
     'en-US': 'English',
     'ru-RU': 'Русский',

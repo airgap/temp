@@ -3,9 +3,7 @@
   import { DynamicPost } from '../DynamicPost';
   import styles from './PostList.module.sass';
 
-  export let posts: Post[];
-  export let inset: number | undefined = undefined;
-  export let placeholder: any = undefined;
+  const { posts, inset = false, placeholder } = $props<{ posts: Post[]; inset?: boolean; placeholder?: any }>();
 </script>
 
 <div class={`${styles.PostList} ${inset ? styles.inset : ''}`}>

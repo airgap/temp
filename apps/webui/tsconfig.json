@@ -18,7 +18,9 @@
 			"@lyku/json-models": ["dist/libs/json-models"],
 			"monolith-ts-api": ["dist/libs/monolith-ts-api"],
 			"@lyku/strings": ["dist/libs/strings"],
-			"@lyku/phrasebooks": ["dist/libs/phrasebooks"]
+			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
+			"@lyku/db-config": ["dist/libs/db-config"],
+			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"]
 		}
 	},
 	"include": [

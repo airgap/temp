@@ -19,20 +19,7 @@
   import x from '../assets/x.svg';
 
   // Props
-  export let disabled = false;
-  export let className = '';
-  export let onUpload: ((id: string) => void) | undefined = undefined;
-  export let channelId: bigint | undefined = undefined;
-  export let reason: ImageUploadReason;
-  export let working = false;
-  // export let reverse = false;
-  export let shape: Shape | undefined = undefined;
-  export let allowVideo = false;
-  export let image: string | undefined = undefined;
-  export let file: File | undefined = undefined;
-  export let removeClicked: (() => void) | undefined = undefined;
-  export let attachmentUploadPack: ImageDraft | VideoDraft | undefined = undefined;
-  export let onFinished: (() => void) | undefined = undefined;
+  const { disabled = false, className = '', onUpload, channelId, reason, working = false, shape, allowVideo = false, image, file, removeClicked, attachmentUploadPack, onFinished } = $props<{ disabled?: boolean; className?: string; onUpload?: (id: string) => void; channelId?: bigint; reason: ImageUploadReason; working?: boolean; shape?: Shape; allowVideo?: boolean; image?: string; file?: File; removeClicked?: () => void; attachmentUploadPack?: ImageDraft | VideoDraft; onFinished?: () => void }>();
 
   // State
   let imageState: string | undefined = undefined;
@@ -54,11 +41,11 @@
     });
 
   // Reactive statements
-  $: {
+  $effect(() => {
     workingState = working;
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (attachmentUploadPack) {
       pack = {
         id: attachmentUploadPack.id,
@@ -66,15 +53,15 @@
       };
       workingState = true;
     }
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (file && file !== fileState) {
       fileState = file;
     }
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (fileState) {
       workingState = true;
       readFile(fileState).then((logo) => {
@@ -82,7 +69,7 @@
         workingState = false;
       });
     }
-  }
+  });
 
   // Methods
   const imageSelected = async (input: HTMLInputElement) => {
@@ -112,7 +99,7 @@
   };
 
   // Handle upload
-  $: {
+  $effect(() => {
     if (pack && fileState && !submitting && !succeeded) {
       submitting = true;
       const data = new FormData();
@@ -147,14 +134,14 @@
         );
       }
     }
-  }
+  });
 
-  $: {
+  $effect(() => {
     if (succeeded) {
       workingState = false;
       reset();
     }
-  }
+  });
 
   const logoUrl = () => {
     const id = imageState || image;

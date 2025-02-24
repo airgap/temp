@@ -5,6 +5,13 @@ import * as jdenticon from 'jdenticon';
 import { FormData } from 'formdata-node';
 import { handleRegisterUser } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
+import {
+	InsertableUser,
+	InsertableBtvStats,
+	InsertableUserHash,
+	InsertableFriendList,
+	InsertableMembershipList,
+} from '@lyku/json-models';
 
 // Custom identicon style
 // https://jdenticon.com/icon-designer.html?config=652966ff0111303054545454
@@ -84,6 +91,8 @@ export default handleRegisterUser(async (params, ctx) => {
 
 	const cfres = (await response.json()) as UrlImageUploadResponse;
 
+	console.log('Uploaded jdenticon', cfres);
+
 	// Start transaction for all database operations
 	const result = await db.transaction().execute(async (trx) => {
 		const insertedUser = await trx
@@ -104,7 +113,7 @@ export default handleRegisterUser(async (params, ctx) => {
 				...(cfres.success ? { profilePicture: cfres.result.id } : {}),
 				points: 0n,
 				slug: lowerUsername,
-			})
+			} satisfies InsertableUser)
 			.returningAll()
 			.executeTakeFirst();
 
@@ -124,7 +133,7 @@ export default handleRegisterUser(async (params, ctx) => {
 				highestEdges: 0n,
 				highestCorners: 0n,
 				sessionCount: 0n,
-			})
+			} satisfies InsertableBtvStats)
 			.executeTakeFirstOrThrow();
 
 		await trx
@@ -134,17 +143,38 @@ export default handleRegisterUser(async (params, ctx) => {
 				username,
 				id: insertedUser.id,
 				hash: passhash,
-			})
+				created: new Date(),
+			} satisfies InsertableUserHash)
 			.execute();
 
-		return insertedUser.id;
-	});
+		await trx
+			.insertInto('friendLists')
+			.values({
+				user: insertedUser.id,
+				friends: [],
+				count: 0,
+				created: new Date(),
+			} satisfies InsertableFriendList)
+			.execute();
 
-	const sessionId = await createSessionForUser(result, ctx);
-	(responseHeaders as Headers).set(
-		'Set-Cookie',
-		`sessionid=${sessionId}; Path=/;`
-	);
-	console.log('Logged user in', sessionId);
-	return sessionId;
+		await trx
+			.insertInto('membershipLists')
+			.values({
+				user: insertedUser.id,
+				groups: [],
+				count: 0,
+				created: new Date(),
+			} satisfies InsertableMembershipList)
+			.execute();
+
+		const sessionId = await createSessionForUser(insertedUser.id, ctx);
+		(responseHeaders as Headers).set(
+			'Set-Cookie',
+			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; Domain=lyku.org; Max-Age=31536000`
+		);
+		console.log('Logged user in', sessionId);
+
+		return sessionId;
+	});
+	return result;
 });

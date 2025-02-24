@@ -2,7 +2,7 @@
   import styles from './ChannelLogo.module.sass';
   import face from './face.png';
 
-  export let url: string | undefined = undefined;
+  const { url = undefined } = $props();
 </script>
 
 <span class={styles.ChannelLogo}>

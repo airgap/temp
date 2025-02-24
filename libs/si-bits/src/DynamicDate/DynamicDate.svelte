@@ -2,7 +2,9 @@
   import { prettyTime } from '@lyku/helpers';
   import styles from './DynamicDate.module.sass';
 
-  export let time: Date;
+  const { time } = $props<{
+    time: Date;
+  }>();
 </script>
 
 <span class={styles.DynamicDate}>{prettyTime(time)}</span> 

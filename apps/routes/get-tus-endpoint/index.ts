@@ -13,7 +13,7 @@ export default handleGetTusEndpoint(
 		const location = draft.uploadURL;
 		Object.assign(responseHeaders, {
 			Location: location,
-			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Origin': 'https://lyku.org',
 			'Access-Control-Allow-Methods':
 				'GET, POST, HEAD, OPTIONS, PUT, DELETE, PATCH',
 			'Access-Control-Allow-Headers':

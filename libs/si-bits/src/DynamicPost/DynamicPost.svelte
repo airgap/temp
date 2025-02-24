@@ -25,11 +25,15 @@
 
   const insets = { reply: styles.replied, echo: styles.echoed } as const;
   
-  export let post: Post;
-  export let inset: keyof typeof insets | false = false;
-  export let showReplies = false;
-  export let autoplay = false;
-  export let author: User | undefined = undefined;
+  const { post, inset = false, showReplies = false, autoplay = false, 
+    // author = undefined 
+  } = $props<{
+    post: Post;
+    inset?: keyof typeof insets | false;
+    showReplies?: boolean;
+    autoplay?: boolean;
+    // author?: User | undefined;
+  }>();
 
   let replies: Post[] = [];
   let queriedReplies = false;
@@ -41,29 +45,28 @@
   const stripLink = (url: string) => url.split(/:\/\//)[1].replace(/:[0-9]{2,5}/, '');
   const stripLinks = (body: string) => body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
-  $: [author] = cacheStore.users.get(post.author);
-
-  $: {
-    const [imageIds, videoIds, audioIds, documentIds] = 
-      post.attachments?.reduce((acc, id) => {
+  const author = $derived(cacheStore.users.get(post.author));
+  const [imageIds, videoIds, audioIds, documentIds] = 
+      $derived(post.attachments?.reduce((acc, id) => {
         const { supertype } = parseAttachmentId(id);
         if (!acc[supertype]) acc[supertype] = [];
         acc[supertype].push(id);
         return acc;
-      }, [] as bigint[][]) ?? [];
-    
-    const [images] = useCacheData('images', imageIds);
-    const [videos] = useCacheData('videos', videoIds);
-    const [audios] = useCacheData('audios', audioIds);
-    const [documents] = useCacheData('documents', documentIds);
-  }
+      }, [] as bigint[][]) ?? []);
 
-  $: if (error) console.error(error);
+  const [images] = useCacheData('images', imageIds);
+  const [videos] = useCacheData('videos', videoIds);
+  const [audios] = useCacheData('audios', audioIds);
+  const [documents] = useCacheData('documents', documentIds);
 
-  $: if (!queriedReplies && post.replies) {
-    queriedReplies = true;
-    api.listPostReplies({ id: post.id }).then((posts) => replies = posts);
-  }
+  $effect(() => error && console.error(error));
+
+  $effect(() => {
+    if (!queriedReplies && post.replies) {
+      queriedReplies = true;
+      api.listPostReplies({ id: post.id }).then((posts) => replies = posts);
+    }
+  });
 
   const handleDelete = (e: Event) => {
     e.preventDefault();

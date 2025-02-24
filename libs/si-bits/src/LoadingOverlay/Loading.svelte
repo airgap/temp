@@ -1,11 +1,8 @@
 <script lang="ts">
   import styles from './Loading.module.sass';
-  export let floating: boolean = false;
-  export let visible: boolean = true;
-  export let reverse: boolean = false;
-  export let speed: number | undefined = undefined;
+  const { floating = false, visible = true, reverse = false, speed } = $props<{ floating?: boolean; visible?: boolean; reverse?: boolean; speed?: number }>();
 
-  $: speedClass = speed && speed >= 10 ? `s${Math.floor(speed / 10)}0` : '';
+  const speedClass = speed && speed >= 10 ? `s${Math.floor(speed / 10)}0` : '';
 </script>
 
 <div

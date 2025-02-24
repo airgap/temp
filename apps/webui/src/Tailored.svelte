@@ -3,22 +3,22 @@
   import {PostCreator} from '../PostCreator';
   import {PostList} from '../PostList';
   import { phrasebook } from '../phrasebook';
-  import { currentUser } from '../currentUserStore';
   import {Crosshatch} from '../Crosshatch';
   import styles from './Feed.module.sass';
   import { FeedPage } from 'si-bits';
   let postsPromise = sessionId
     ? api.listFeedPosts({})
     : api.listFeedPostsUnauthenticated({});
+    export let user: string;
 </script>
 
 <FeedPage>
-    {#if $currentUser.loading}
+    {#if user.loading}
       Loading user...
-    {:else if $currentUser.error}
+    {:else if user.error}
       Failed to load user
-    {:else if $currentUser.data}
-      <PostCreator user={$currentUser.data} />
+    {:else if user.data}
+      <PostCreator user={user.data} />
       <Crosshatch />
     {:else}
       <h2>{phrasebook.logInToPost}</h2>

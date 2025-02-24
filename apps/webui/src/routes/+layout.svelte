@@ -1,35 +1,74 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import { initSession } from 'monolith-ts-api';
-    import {DesktopNav, MobileNav, Backdrop, listen, UserLoginForm, UserRegistrationForm} from '@lyku/si-bits';
+    import {DesktopNav, MobileNav, Backdrop, UserLoginForm, UserRegistrationForm} from '@lyku/si-bits';
     import { page } from '$app/stores';
     import styles from './App.module.sass';
+
+    const pageUrl = $derived($page.url);
+    const currentUser = $derived($page.data.currentUser);
+
     onMount(() => {
         initSession();
     });
-    let form = $state(null);
 
     let showJoin = $state(false);
     let showLogin = $state(false);
-    const join = () => {
-        console.log('join');
+    
+    function join() {
         showJoin = true;
+        showLogin = false; // Ensure only one form is shown at a time
     }
-    const login = () => {
-        console.log('login');
+    
+    function login() {
         showLogin = true;
+        showJoin = false; // Ensure only one form is shown at a time
+    }
+
+    function closeJoin() {
+        showJoin = false;
+    }
+
+    function closeLogin() {
+        showLogin = false;
+    }
+
+    // Handle escape key to close forms
+    function handleKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            showJoin = false;
+            showLogin = false;
+        }
     }
 </script>
 
+<svelte:window on:keydown={handleKeydown}/>
+
 <div class={styles.App}>
-    <Backdrop />
-    <DesktopNav url={$page.url} on:join={join} on:login={login} />
+    <Backdrop visible={showJoin || showLogin} on:click={() => { showJoin = false; showLogin = false; }}/>
+    <DesktopNav 
+        url={pageUrl} 
+        user={currentUser}
+        on:join={join} 
+        on:login={login} 
+    />
     <slot />
-    <MobileNav url={$page.url} on:join={join} on:login={login} />
+    <MobileNav 
+        url={pageUrl} 
+        user={currentUser}
+        on:join={join} 
+        on:login={login} 
+    />
     {#if showJoin}
-        <UserRegistrationForm visible={showJoin} />
+        <UserRegistrationForm 
+            visible={showJoin} 
+            on:close={closeJoin}
+        />
     {/if}
     {#if showLogin}
-        <UserLoginForm visible={showLogin} />
+        <UserLoginForm 
+            visible={showLogin}
+            on:close={closeLogin}
+        />
     {/if}
 </div>

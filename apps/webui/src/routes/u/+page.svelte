@@ -7,22 +7,20 @@
   import { Center } from '@lyku/si-bits';
   import { BefriendUser } from '@lyku/si-bits';
   import { FollowUser } from '@lyku/si-bits';
+  import { page } from '$app/stores';
+  import { Post, User } from 'monolith-ts-api';
   
-  const pathWithUsernameOrIdRegex = new RegExp(`^/u(?:ser)?/([^/]+)$`);
-  const getUsernameOrIdFromUrl = () =>
-    window.location.pathname.match(pathWithUsernameOrIdRegex)?.[1];
+  // Get identifier from URL path params using SvelteKit's $page store
+  const ident = $derived($page.url.pathname.match(/^\/u(?:ser)?\/([^/]+)$/)?.[1]);
   
-  const ident = getUsernameOrIdFromUrl();
-  
-  let postsPromise: Promise<any[]>;
-  let userPromise: Promise<any>;
-  
-  if (ident) {
-    postsPromise = api.listUserPosts({ user: ident });
-    userPromise = api.getUserByName(ident);
-  }
 
-  $: hangContent = user ? {
+  let posts = $state<Post[]>([]);
+  let user = $state<User | null>(null);
+  let loading = $state(true);
+  let error = $state<Error | null>(null);
+
+  // Computed hang content for the profile
+  const hangContent = $derived(() => user ? {
     component: Divisio,
     props: {
       size: "m",
@@ -33,15 +31,50 @@
         BefriendUser
       ]
     }
-  } : null;
+  } : null);
+
+  // Effect to fetch user data and posts
+  $effect(() => {
+    if (!ident) {
+      loading = false;
+      return;
+    }
+
+    loading = true;
+    error = null;
+
+    Promise.all([
+      api.listUserPosts({ user: ident }),
+      api.getUserByName(ident)
+    ])
+      .then(([fetchedPosts, fetchedUser]) => {
+        posts = fetchedPosts;
+        user = fetchedUser;
+      })
+      .catch(e => {
+        error = e instanceof Error ? e : new Error(String(e));
+      })
+      .finally(() => {
+        loading = false;
+      });
+  });
+
+  // Computed properties for display
+  const username = $derived(user?.username ?? 'User');
+  const profilePicture = $derived(user?.profilePicture);
+  const showPosts = $derived(posts.length > 0);
 </script>
 
 {#if ident}
-  {#await Promise.all([postsPromise, userPromise])}
+  {#if loading}
     <Center>
       <div>Loading...</div>
     </Center>
-  {:then [posts, user]}
+  {:else if error}
+    <Center>
+      <div>Error: {error.message}</div>
+    </Center>
+  {:else}
     <Center>
       <div class="UserPage">
         <Divisio
@@ -49,22 +82,18 @@
           layout="h"
           {hangContent}
         >
-          <ProfilePicture size="l" url={user?.profilePicture} />
+          <ProfilePicture size="l" url={profilePicture} />
           <Divisio size="m" layout="v">
-            <h1>{user?.username ?? 'User'}</h1>
+            <h1>{username}</h1>
             <p>{phrasebook.bioWip}</p>
           </Divisio>
         </Divisio>
-        {#if posts}
+        {#if showPosts}
           <PostList {posts} />
         {/if}
       </div>
     </Center>
-  {:catch error}
-    <Center>
-      <div>Error: {error.message}</div>
-    </Center>
-  {/await}
+  {/if}
 {:else}
   <h1>404</h1>
 {/if}

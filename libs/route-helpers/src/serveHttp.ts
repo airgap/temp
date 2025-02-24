@@ -33,7 +33,7 @@ export const serveHttp = async ({
 		port,
 		async fetch(req) {
 			const responseHeaders = new Headers();
-			responseHeaders.set('Access-Control-Allow-Origin', '*');
+			responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
 				'Access-Control-Allow-Methods',
@@ -43,7 +43,7 @@ export const serveHttp = async ({
 				'Access-Control-Allow-Headers',
 				'Content-Type, Authorization'
 			);
-
+			responseHeaders.set('Access-Control-Allow-Credentials', 'true');
 			if (req.method === 'OPTIONS') {
 				return new Response(null, {
 					status: 204,
@@ -128,6 +128,8 @@ export const serveHttp = async ({
 				const pack = encode(output);
 
 				// Route handling here
+
+				console.log('responseHeaders', responseHeaders);
 
 				return new Response(pack, {
 					headers: responseHeaders,

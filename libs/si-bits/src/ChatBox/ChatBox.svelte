@@ -4,22 +4,28 @@
     import MessageItem from './MessageItem.svelte';
     import type { Channel, Message } from '@lyku/json-models';
 
-    export let channel: Channel | undefined = undefined;
-    let messages: Message[] = [];
+    const { channel = undefined } = $props<{
+        channel?: Channel;
+    }>();
+    let messages: Message[];
 
-    $: if (channel) {
-        api.listMessages({ channel: channel.id })
-            .then(({ messages: newMessages }) => {
-                messages = newMessages;
-                console.log('messages', messages);
-            });
-    }
+    $effect(() => {
+        if (channel && !messages.length) {
+            api.listMessages({ channel: channel.id })
+                .then(({ messages: newMessages }) => {
+                    messages = newMessages;
+                    console.log('messages', messages);
+                });
+        }
+    });
 </script>
 
 <div class={styles.ChatBox}>
     <ul class={styles.MessageList}>
-        {#each messages as msg (msg.id)}
-            <MessageItem src={msg} />
-        {/each}
+        {#if messages}
+            {#each messages as msg (msg.id)}
+                <MessageItem src={msg} />
+            {/each}
+        {/if}
     </ul>
 </div> 

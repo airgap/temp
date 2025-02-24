@@ -3,10 +3,7 @@
   import { Crosshatch } from '../Crosshatch';
   import styles from './Close.module.sass';
 
-  export let disabled: boolean = false;
-  export let className: string = '';
-
-  // In Svelte, we use the on:click directive instead of onClick prop
+  const { disabled = false, className = '' } = $props();
 </script>
 
 <Button

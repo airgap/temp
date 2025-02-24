@@ -3,7 +3,7 @@
   import type { GroupFilter } from '@lyku/json-models';
   import styles from './GroupFilterSelect.module.sass';
 
-  export let value: GroupFilter | undefined = undefined;
+  let { value } = $props<{ value: GroupFilter | undefined }>();
 
   const groupFilterOptionMap: Record<GroupFilter, string> = {
     iCreated: 'I created',

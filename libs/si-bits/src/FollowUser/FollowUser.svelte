@@ -4,18 +4,22 @@
   import { phrasebook } from '../phrasebook';
   import type { User } from '@lyku/json-models';
 
-  export let user: User;
+  const { user } = $props<{
+    user: User;
+  }>();
 
   let following: boolean | undefined;
   let queried = false;
 
-  $: if (!queried && following === undefined) {
-    queried = true;
-    api.amIFollowing(user.id).then((r) => {
-      following = r;
-      queried = false;
-    });
-  }
+  $effect(() => {
+    if (!queried && following === undefined) {
+      queried = true;
+      api.amIFollowing(user.id).then((r) => {
+        following = r;
+        queried = false;
+      });
+    }
+  });
 </script>
 
 {#if typeof following === 'boolean'}

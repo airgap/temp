@@ -1,15 +1,12 @@
 <script lang="ts">
   import classnames from 'classnames';
   import styles from './Link.module.sass';
-  export let disabled: boolean = false;
-  export let className: string = '';
-  export let href: string | undefined = undefined;
-  export let target: string | undefined = undefined;
+  const { disabled = false, className = '', href, target } = $props<{ disabled?: boolean; className?: string; href?: string; target?: string }>();
 
-  $: classes = classnames(styles.Link, className);
+  const classes = $derived(classnames(styles.Link, className));
 
   // Add security check for external links
-  $: rel = target === '_blank' ? 'noopener noreferrer' : undefined;
+  const rel = $derived(target === '_blank' ? 'noopener noreferrer' : undefined);
 </script>
 
 {#if href}
@@ -26,7 +23,7 @@
     on:mouseleave
     on:keydown
   >
-    <slot />
+    {children}
   </a>
 {:else}
   <button
@@ -40,7 +37,7 @@
     on:mouseleave
     on:keydown
   >
-    <slot />
+    {children}
   </button>
 {/if}
 

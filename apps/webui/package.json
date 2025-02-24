@@ -9,6 +9,7 @@
 		"@lyku/si-bits": "workspace:*",
 		"@lyku/mapi-models": "workspace:*",
 		"@lyku/route-helpers": "workspace:*",
-		"@lyku/monolith-ts-api": "workspace:*"
+		"@lyku/monolith-ts-api": "workspace:*",
+		"@lyku/db-config": "workspace:*"
 	}
 }

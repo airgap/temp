@@ -31,7 +31,7 @@ export default handleLoginUser(async ({ email, password }, ctx) => {
 		throw new Error(strings.incorrectPasswordError);
 	}
 	const sessionId = await createSessionForUser(existing.id, ctx);
-	(ctx.responseHeaders as any).set('Set-Cookie', `sessionid=${sessionId}`);
+	(ctx.responseHeaders as any).set('Set-Cookie', `sessionId=${sessionId}`);
 	console.log('Logged user in');
 	return { sessionId };
 });

@@ -4,7 +4,7 @@
   import styles from './LoadingOverlay.module.sass';
 	import classNames from 'classnames';
   
-  export let visible: boolean = false;
+  const { visible = false } = $props<{ visible?: boolean }>();
 </script>
 
 <div class={classNames(styles.LoadingOverlay, {

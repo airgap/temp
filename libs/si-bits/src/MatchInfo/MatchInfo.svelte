@@ -4,24 +4,26 @@
   import type { TtfMatch, User } from '@lyku/json-models';
   import { localizeUsername } from '../localizeUsername';
 
-  export let match: TtfMatch | undefined = undefined;
+  const { match } = $props<{ match: TtfMatch | undefined }>();
 
   let xUser: User | undefined;
   let oUser: User | undefined;
   let tried = false;
 
-  $: xTurn = match?.turn && match.turn % 2;
-  $: oTurn = match?.turn && match.turn % 2 === 0;
+  const xTurn = $derived(match?.turn && match.turn % 2);
+  const oTurn = $derived(match?.turn && match.turn % 2 === 0);
 
-  $: if (match && !tried) {
-    tried = true;
-    api.getUsers([match.X, match.O])
-      .then(([x, o]) => {
+  $effect(() => {
+    if (match && !tried) {
+      tried = true;
+      api.getUsers([match.X, match.O])
+        .then(([x, o]) => {
         xUser = x;
         oUser = o;
       })
       .catch(console.error);
-  }
+    }
+  });
 </script>
 
 <div class={styles.MatchInfo}>

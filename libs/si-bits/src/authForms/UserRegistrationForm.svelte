@@ -42,9 +42,10 @@
       agreed: agreed as true,
     })
     .then((sessionId) => {
-      setCookie('sessionId', sessionId, 365);
+      // setCookie('sessionId', sessionId, 365);
       dispatch('success');
-      window.location.reload();
+      alert('success');
+      // window.location.reload();
     })
     .catch((e) => {
       dispatch('error', e);

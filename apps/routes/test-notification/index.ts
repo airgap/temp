@@ -125,7 +125,7 @@ export default handleRegisterUser(
 		const sessionId = await createSessionForUser(userId, ctx);
 		(responseHeaders as Headers).set(
 			'Set-Cookie',
-			`sessionid=${sessionId}; Path=/;`
+			`sessionId=${sessionId}; Path=/;`
 		);
 		console.log('Logged user in', sessionId);
 		return sessionId;

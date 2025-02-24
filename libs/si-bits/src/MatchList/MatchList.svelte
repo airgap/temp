@@ -9,29 +9,30 @@
   import { Divisio } from '../Divisio';
   import { cacheStore } from '../CacheProvider';
 
-  export let user: User;
-  export let onClose: () => void;
+  const { user, onClose } = $props<{ user: User; onClose: () => void }>();
 
   let matches: TtfMatch[] = [];
   let queried = false;
   let users: User[] | undefined;
 
-  $: if (!queried) {
-    queried = true;
-    api.listTtfMatches({ finished: false }).then((matchList) => {
-      const mine: TtfMatch[] = [];
+  $effect(() => {
+    if (!queried) {
+      queried = true;
+      api.listTtfMatches({ finished: false }).then((matchList) => {
+        const mine: TtfMatch[] = [];
       const theirs: TtfMatch[] = [];
       for (const match of matchList) {
         (match.whoseTurn === user.id ? mine : theirs).push(match);
-      }
-      matches = [...mine, ...theirs];
-    });
-  }
+        }
+        matches = [...mine, ...theirs];
+      });
+    }
+  });
 
-  $: {
+  $effect(() => {
     const userIds = matches.flatMap((m) => [m.X, m.O]);
     users = cacheStore.users.get(userIds);
-  }
+  });
 </script>
 
 <div class={styles.MatchList}>

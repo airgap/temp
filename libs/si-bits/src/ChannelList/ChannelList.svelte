@@ -4,8 +4,10 @@
   import styles from './ChannelList.module.sass';
   import type { Channel } from '@lyku/json-models';
 
-  export let channels: Channel[] | undefined = undefined;
-  export let mine: boolean = false;
+  const { channels = undefined, mine = false } = $props<{
+    channels?: Channel[];
+    mine?: boolean;
+  }>();
 </script>
 
 <ul class={styles.ChannelList}>
