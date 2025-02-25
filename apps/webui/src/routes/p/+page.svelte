@@ -30,7 +30,7 @@
         style="display: inline-block; margin: 10px"
         href={homepage}
       >
-        <Thumbnail alt={title} url={thumbnail} />
+        <Thumbnail alt={title} src={thumbnail} />
         <label for={id.toString()}>
           {title}
           {#if status !== 'ga'}

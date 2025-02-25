@@ -163,7 +163,7 @@
   {#if image !== undefined}
     <Image
       size="l"
-      url={(imageState ? logoUrl() : base64 ?? logoUrl()) ?? defaultImages[reason]}
+      src={(imageState ? logoUrl() : base64 ?? logoUrl()) ?? defaultImages[reason]}
       {shape}
     />
   {:else}

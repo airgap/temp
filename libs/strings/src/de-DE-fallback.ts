@@ -53,7 +53,7 @@ export const de_DE_fallback = {
 
 	usernameFieldEmpty: 'Benutzername',
 	usernameFieldInvalid:
-		'Benutzername sollte aus 2 bis 20 Buchstaben und Zahlen bestehen',
+		'Benutzername sollte aus 3 bis 20 Buchstaben und Zahlen bestehen',
 	usernameFieldValid: 'Cooler Benutzername, Kumpel',
 
 	myBots: 'Meine Bots',

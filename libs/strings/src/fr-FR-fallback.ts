@@ -52,7 +52,7 @@ export const fr_FR_fallback = {
 
 	usernameFieldEmpty: "Nom d'utilisateur",
 	usernameFieldInvalid:
-		"Le nom d'utilisateur doit contenir de 2 à 20 lettres et chiffres",
+		"Le nom d'utilisateur doit contenir de 3 à 20 lettres et chiffres",
 	usernameFieldValid: "Nom d'utilisateur cool, mon pote",
 
 	myBots: 'Mes Bots',

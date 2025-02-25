@@ -1,7 +1,7 @@
 <script lang="ts">
   import classnames from 'classnames';
   import styles from './Link.module.sass';
-  const { disabled = false, className = '', href, target } = $props<{ disabled?: boolean; className?: string; href?: string; target?: string }>();
+  const { disabled = false, className = '', href, target, children } = $props<{ disabled?: boolean; className?: string; href?: string; target?: string; children: [] }>();
 
   const classes = $derived(classnames(styles.Link, className));
 
@@ -23,7 +23,7 @@
     on:mouseleave
     on:keydown
   >
-    {children}
+    {@render children?.()}
   </a>
 {:else}
   <button
@@ -37,7 +37,7 @@
     on:mouseleave
     on:keydown
   >
-    {children}
+    {@render children?.()}
   </button>
 {/if}
 

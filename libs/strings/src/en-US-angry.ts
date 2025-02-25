@@ -47,7 +47,7 @@ export const en_US_angry = {
 	passwordFieldValid: 'Eh good enough',
 
 	usernameFieldEmpty: 'Username',
-	usernameFieldInvalid: 'Username should be 2 to 20 letters and numbers',
+	usernameFieldInvalid: 'Username should be 3 to 20 letters and numbers',
 	usernameFieldValid: 'Yeah brilliant go fuck yourself',
 
 	myBots: 'My Peons',

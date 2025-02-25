@@ -51,7 +51,7 @@ export const ru_RU_fallback = {
 	passwordFieldValid: 'Отличный пароль',
 
 	usernameFieldEmpty: 'Имя пользователя',
-	usernameFieldInvalid: 'Имя пользователя должно быть от 2 до 20 букв и цифр',
+	usernameFieldInvalid: 'Имя пользователя должно быть от 3 до 20 букв и цифр',
 	usernameFieldValid: 'Крутое имя пользователя, братан',
 
 	myBots: 'Мои Боты',

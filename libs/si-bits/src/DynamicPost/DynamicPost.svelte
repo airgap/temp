@@ -88,7 +88,7 @@
 
   {#if author}
     <span class={styles.pp}>
-      <ProfilePicture size="m" url={formImageUrl(author.profilePicture)} />
+      <ProfilePicture size="m" src={formImageUrl(author.profilePicture)} />
     </span>
   {/if}
 

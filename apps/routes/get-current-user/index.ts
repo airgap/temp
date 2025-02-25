@@ -10,6 +10,10 @@ export default handleGetCurrentUser(async (_, { db, requester, strings }) => {
 	if (!user) {
 		throw new Error('User not found');
 	}
+	console.log('user', user);
+	Object.entries(user).forEach(([key, value]) => {
+		console.log(typeof value, key, '=', value);
+	});
 	return user;
 });
 

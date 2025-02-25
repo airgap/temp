@@ -50,7 +50,7 @@
       href={user ? '/profile' : undefined}
       on:click={!user ? joinOrLogin : undefined}
     >
-      <ProfilePicture url={profile ?? profileBlank} />
+      <ProfilePicture src={profile ?? profileBlank} />
     </MobileNavLink>
   </div>
 </div> 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Link } from '../Link';
   import styles from './MobileNavLink.module.sass';
-  const { href, isActive } = $props<{ href: string | undefined; isActive: boolean }>();
+  const { href, isActive, children } = $props<{ href: string | undefined; isActive: boolean; children: [] }>();
 </script>
 
 <Link
@@ -9,5 +9,5 @@
   class={isActive ? styles.depressed : ''}
   on:click
 >
-  {children}
+  {@render children?.()}
 </Link> 

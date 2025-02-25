@@ -1,8 +1,8 @@
 <script lang="ts">
   import styles from './SubmitButton.module.sass';
 
-  const props = $props<{ className?: string; disabled: boolean } & any>();
-  const { className, disabled, ...rest } = props;
+  const props = $props<{ className?: string; disabled: boolean; children: [] } & any>();
+  const { className, disabled, children, ...rest } = props;
 </script>
 
 <button 
@@ -12,5 +12,5 @@
   on:click
   {...rest}
 >
-  {children}
+  {@render children?.()}
 </button> 

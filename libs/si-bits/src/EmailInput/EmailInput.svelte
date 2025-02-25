@@ -9,7 +9,6 @@
 </script>
 
 <Texticle
-    type="email"
     schema={email}
     empty={phrasebook.emailFieldEmpty}
     invalid={phrasebook.emailFieldInvalid}

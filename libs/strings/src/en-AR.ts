@@ -54,7 +54,7 @@ export const en_AR = {
 	passwordFieldValid: 'That be a fine secret code',
 
 	usernameFieldEmpty: 'Pirate Name',
-	usernameFieldInvalid: 'Pirate name should be 2 to 20 letters and numbers',
+	usernameFieldInvalid: 'Pirate name should be 3 to 20 letters and numbers',
 	usernameFieldValid: "That's a fine pirate name, matey",
 
 	myBots: 'Me Mechanical Mates',

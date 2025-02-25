@@ -30,7 +30,7 @@ export const ru_RU = {
 	passwordFieldValid: 'Ништяк пароль',
 
 	usernameFieldEmpty: 'Имя пользователя',
-	usernameFieldInvalid: 'Нужно от 2 до 20 букафф и цыфир в имени пользователя',
+	usernameFieldInvalid: 'Нужно от 3 до 20 букафф и цыфир в имени пользователя',
 	usernameFieldValid: 'Приятно познакомиться, норм имечко',
 
 	loginFormTitle: 'Вход',

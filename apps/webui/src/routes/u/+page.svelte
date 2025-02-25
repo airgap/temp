@@ -82,7 +82,7 @@
           layout="h"
           {hangContent}
         >
-          <ProfilePicture size="l" url={profilePicture} />
+          <ProfilePicture size="l" src={profilePicture} />
           <Divisio size="m" layout="v">
             <h1>{username}</h1>
             <p>{phrasebook.bioWip}</p>

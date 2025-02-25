@@ -50,7 +50,7 @@
         {:else}
           <tr>
             <td>
-              <ProfilePicture url={toMe ? them.profilePicture : user.profilePicture} />
+              <ProfilePicture src={toMe ? them.profilePicture : user.profilePicture} />
             </td>
             <td style="vertical-align: top">
               <Divisio size="rs" layout="v">
@@ -75,7 +75,7 @@
               </Divisio>
             </td>
             <td>
-              <ProfilePicture url={toMe ? user.profilePicture : them.profilePicture} />
+              <ProfilePicture src={toMe ? user.profilePicture : them.profilePicture} />
             </td>
           </tr>
         {/if}

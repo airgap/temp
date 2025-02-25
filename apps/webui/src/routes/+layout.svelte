@@ -8,6 +8,7 @@
     const pageUrl = $derived($page.url);
     const currentUser = $derived($page.data.currentUser);
 
+    const { children } = $props<{ children?: () => any }>();
     onMount(() => {
         initSession();
     });
@@ -52,7 +53,7 @@
         on:join={join} 
         on:login={login} 
     />
-    <slot />
+    {@render children?.()}
     <MobileNav 
         url={pageUrl} 
         user={currentUser}

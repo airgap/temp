@@ -225,9 +225,11 @@ export const api = Object.fromEntries(
 									'type' in route.response &&
 									route.response.type === 'string'
 									? res.text()
-									: res
-											.arrayBuffer()
-											.then((buf) => decode(new Uint8Array(buf)));
+									: res.arrayBuffer().then((buf) =>
+											decode(new Uint8Array(buf), {
+												useBigInt64: true,
+											})
+									  );
 							})
 							.catch((err) => {
 								console.log('Err:', err);

@@ -10,19 +10,11 @@
     size?: 'l' | 'm' | 's' | 'full-post';
     bot?: boolean;
     shape?: Shape;
-    url?: string;
-    // CLOUDFLARE UPLOAD ID
-    // NOOOOOOOOT HTML ID
-    id?: bigint;
+    src?: string;
   }
 
-  const { size, bot, shape, url, id, className } = $props<$$Props>();
-
-  const src = $derived(id !== undefined 
-    ? formImageUrl(id) 
-    : url !== undefined 
-    ? url 
-    : face);
+  const { size, bot, shape, src, className } = $props<$$Props>();
+  console.log('IMAGE', src);
 </script>
 
 <span

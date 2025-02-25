@@ -54,7 +54,7 @@ export const ca_MC = {
 	passwordFieldValid: 'Decryption-Key is robust',
 
 	usernameFieldEmpty: 'Cognomen-Field',
-	usernameFieldInvalid: 'Cognomen must consist of 2 to 20 alphanumerics',
+	usernameFieldInvalid: 'Cognomen must consist of 3 to 20 alphanumerics',
 	usernameFieldValid: 'Cognomen is acceptable',
 
 	myBots: 'My Servitors',

@@ -30,14 +30,14 @@
     <div class={styles.InnerDesktopNav}>
       <Backdrop />
       <NavLogo />
-      {#if $user}
+      {#if user}
         <CoolLink href="/tail" isActive={url.pathname.startsWith('/tail')}>{phrasebook.navTailored}</CoolLink>
       {/if}
       <CoolLink href="/hot" isActive={url.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
       <CoolLink href="/play" isActive={url.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
       
       <span class={styles.cluster}>
-        {#if $user}
+        {#if user}
           <span class={styles.welcome}>
             {phrasebook.navWelcome}
             <Link href="/profile">
@@ -45,7 +45,7 @@
               <Image
                 shape="circle"
                 size="s"
-                url={user.profilePicture}
+                src={user.profilePicture}
               />
             </Link>
             <span class={styles.badgeHolder}>

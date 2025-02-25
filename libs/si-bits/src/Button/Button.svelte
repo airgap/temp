@@ -5,7 +5,8 @@
     disabled = false,
     className = '',
     type = 'button' as 'button' | 'submit' | 'reset',
-    style = {} as Record<string, string>
+    style = {} as Record<string, string>,
+    children
   } = $props();
 </script>
 

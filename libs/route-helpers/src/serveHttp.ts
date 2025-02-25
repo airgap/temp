@@ -124,8 +124,8 @@ export const serveHttp = async ({
 					server,
 					model,
 				})) as SecureHttpContext<any>;
-
-				const pack = encode(output);
+				console.log('Encoding');
+				const pack = encode(output, { useBigInt64: true });
 
 				// Route handling here
 

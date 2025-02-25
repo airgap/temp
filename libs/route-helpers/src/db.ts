@@ -2,10 +2,14 @@ import { PostgresDialect } from 'kysely';
 
 import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
 import { dbConnectionString } from './env';
 import { readFileSync } from 'fs';
 const ca = readFileSync('./k8s-prd-ca-cert.crt', 'utf8');
+
+types.setTypeParser(types.builtins.INT8, function (val) {
+	return BigInt(val);
+});
 
 async function testConnection() {
 	const pool = new Pool({

@@ -18,7 +18,7 @@
     })}
     aria-label={achievement.name}
 >
-    <Image url={achievement.icon} />
+    <Image src={achievement.icon} />
     <div class={styles.content}>
         <h3>{achievement.name}</h3>
         <p>{achievement.description}</p>

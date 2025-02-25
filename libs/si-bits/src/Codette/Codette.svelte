@@ -2,7 +2,7 @@
   import styles from './Codette.module.sass';
   import classnames from 'classnames';
 
-  const { dense = false } = $props<{
+  const { dense = false, children } = $props<{
     dense?: boolean;
   }>();
 </script>

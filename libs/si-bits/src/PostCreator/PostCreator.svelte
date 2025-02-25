@@ -162,7 +162,7 @@
     
     <div class={styles.UserDetails}>
       <ProfilePicture
-        url={user.profilePicture ?? defaultImages.ProfilePicture}
+        src={user.profilePicture ?? defaultImages.ProfilePicture}
         size="m"
       />
       <Link class={styles.Username}>{user.username}</Link>

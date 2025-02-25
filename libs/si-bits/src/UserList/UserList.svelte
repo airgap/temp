@@ -18,7 +18,7 @@
               <tr>
                 <td>
                   <Image
-                    url={formImageUrl(user.profilePicture, 'btvprofile')}
+                    src={formImageUrl(user.profilePicture, 'btvprofile')}
                     size="m"
                     bot={user.bot}
                   />

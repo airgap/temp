@@ -45,7 +45,7 @@
     >
       <div class={styles.NotificationContent}>
         <Divisio layout="h" size="m">
-          <Image url={notification.icon} class={styles.NotificationIcon} />
+          <Image src={notification.icon} class={styles.NotificationIcon} />
           <Divisio
             layout="v"
             size="m"
