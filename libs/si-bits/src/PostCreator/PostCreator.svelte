@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { default as Editor } from '@tinymce/tinymce-svelte';
+  // import { default as Editor } from '@tinymce/tinymce-svelte';
   import { safeTags } from '@lyku/helpers';
   import { api } from 'monolith-ts-api';
+  import { Tippy } from '../Tippy';
   import type {
     AttachmentMime,
     User,
@@ -170,16 +171,7 @@
     <div class={styles.editBox}>
       <UploadButton on:change={handleFileChange} />
       <span class={styles.editor}>
-        <Editor
-          init={{
-            menubar: false,
-            toolbar: false,
-            inline: true,
-            plugins: ['wordcount'],
-            valid_elements: safeTags.join(','),
-            placeholder,
-          }}
-          apiKey={'n8aknziwp4321kn27h8m3pw30sj42t7akub6yexbtpm0wv5d'}
+        <Tippy
           onEditorChange={(newVal) => body = newVal}
         />
       </span>
