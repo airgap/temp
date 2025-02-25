@@ -60,16 +60,12 @@
         on:join={join} 
         on:login={login} 
     />
-    {#if showJoin}
         <UserRegistrationForm 
             visible={showJoin} 
-            on:close={closeJoin}
+            on:dismiss={closeJoin}
         />
-    {/if}
-    {#if showLogin}
         <UserLoginForm 
             visible={showLogin}
-            on:close={closeLogin}
+            on:dismiss={closeLogin}
         />
-    {/if}
 </div>

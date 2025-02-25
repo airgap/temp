@@ -53,7 +53,7 @@
     });
   }
 </script>
-<AuthOverlay {visible}>
+<AuthOverlay {visible} on:dismiss>
 <h2>{phrasebook.regFormTitle}</h2>
 
 <EmailInput 

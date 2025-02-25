@@ -11,7 +11,7 @@
   const dispatch = createEventDispatcher();
   
   // Props
-  const props = $props<{ visible: boolean }>();
+  const { visible } = $props<{ visible: boolean }>();
 
   // Form state
   let email = $state('');
@@ -56,7 +56,7 @@
   }
 </script>
 
-<AuthOverlay visible={props.visible}>
+<AuthOverlay {visible} on:dismiss>
   <h2>{phrasebook.loginFormTitle}</h2>
   
   <EmailInput 

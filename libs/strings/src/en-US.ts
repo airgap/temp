@@ -47,7 +47,7 @@ export const en_US = {
 	emailFieldValid: 'Email looks good',
 
 	passwordFieldEmpty: 'Password',
-	passwordFieldInvalid: 'Password should be 10 characters long',
+	passwordFieldInvalid: 'Password should be at least 10 characters',
 	passwordFieldValid: 'Dassa nice password',
 
 	usernameFieldEmpty: 'Username',
