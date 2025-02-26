@@ -10,7 +10,7 @@
   import { phrasebook } from '../phrasebook';
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
-  
+  import plus from '../assets/plus.svg';
 
   const showAuth = (form: any) => () => shout('showAuth', form);
   import { createEventDispatcher } from 'svelte';
@@ -18,7 +18,7 @@
 	import type { User } from '@lyku/json-models';
 	// import { currentUser } from '../currentUserStore';
 // const user = $currentUser;
-  const { user, sessionId, url, onjoin, onlogin } = $props<{ user: User; sessionId: string; url: URL, onjoin: () => void, onlogin: () => void }>();
+  const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{ user?: User; sessionId: string; url: URL, onjoin: () => void, onlogin: () => void, oncreate?: () => void }>();
   console.log('user', user);
 </script>
 
@@ -48,6 +48,9 @@
             <span class={styles.badgeHolder}>
               <LevelBadge points={user.points ?? 0n} progress={true} />
             </span>
+            <Link onclick={oncreate}>
+              <Image src={plus} shape="circle" size="s" />
+            </Link>
           </span>
         {:else}
           <Link onclick={onjoin}>

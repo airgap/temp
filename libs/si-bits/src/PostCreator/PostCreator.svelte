@@ -23,11 +23,12 @@
   import styles from './PostCreator.module.sass';
   import { cacheStore } from '../CacheProvider';
 
-  const { user, reply = undefined, echo = undefined, showInset = undefined } = $props<{
+  const { user, reply = undefined, echo = undefined, showInset = undefined, onsuccess = undefined } = $props<{
     user: User;
     reply?: bigint;
     echo?: bigint; 
     showInset?: boolean;
+    onsuccess?: () => void;
   }>();
 
   let { id, body, error, files, imageDrafts, videoDrafts, pending, finalizing } = $state({
@@ -92,6 +93,7 @@
         console.log('ViewPost finalization:', res);
         finalizing = false;
         clear();
+        onsuccess?.();
       });
     }
   });
@@ -162,10 +164,10 @@
     
     <div class={styles.UserDetails}>
       <ProfilePicture
-        src={user.profilePicture ?? defaultImages.ProfilePicture}
+        src={user?.profilePicture ?? defaultImages.ProfilePicture}
         size="m"
       />
-      <Link class={styles.Username}>{user.username}</Link>
+      <Link class={styles.Username}>{user?.username}</Link>
     </div>
 
     <div class={styles.editBox}>

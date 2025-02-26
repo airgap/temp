@@ -4,6 +4,7 @@
     import {DesktopNav, MobileNav, Backdrop, UserLoginForm, UserRegistrationForm} from '@lyku/si-bits';
     import { page } from '$app/stores';
     import styles from './App.module.sass';
+    import { Dialog, PostCreator } from '@lyku/si-bits';
 
     const pageUrl = $derived($page.url);
     const currentUser = $derived($page.data.currentUser);
@@ -18,12 +19,10 @@
     
     function join() {
         showJoin = true;
-        showLogin = false; // Ensure only one form is shown at a time
     }
     
     function login() {
         showLogin = true;
-        showJoin = false; // Ensure only one form is shown at a time
     }
 
     function closeJoin() {
@@ -41,6 +40,9 @@
             showLogin = false;
         }
     }
+    let showCreator = $state(false);
+    const closeCreator = () => showCreator = false;
+    const openCreator = () => showCreator = true;
 </script>
 
 <svelte:window onkeydown={handleKeydown}/>
@@ -60,8 +62,11 @@
         onjoin={join} 
         onlogin={login} 
     />
+    <Dialog visible={showCreator} ondismiss={closeCreator}>
+        <PostCreator onsuccess={closeCreator}></PostCreator>
+    </Dialog>
         <UserRegistrationForm 
-            visible={showJoin} 
+            visible={(showJoin)} 
             ondismiss={closeJoin}
             onsuccess={closeJoin}
         />
