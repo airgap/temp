@@ -44,8 +44,8 @@
     .then((sessionId) => {
       // setCookie('sessionId', sessionId, 365);
       onsuccess?.();
-      alert('success');
-      // window.location.reload();
+      // alert('success');
+      window.location.reload();
     })
     .catch((e) => {
       onerror?.();
