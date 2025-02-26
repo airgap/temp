@@ -5,4 +5,4 @@
   const { onClick } = $props<{ onClick: () => void }>();
 </script>
 
-<ReactionButton glyph={reply} on:click={onClick} /> 
+<ReactionButton glyph={reply} onclick={onClick} /> 

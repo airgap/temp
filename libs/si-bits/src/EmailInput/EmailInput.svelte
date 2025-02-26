@@ -5,7 +5,7 @@
 
     const { email } = jsonPrimitives;
 
-    const { value, disabled, autofocus } = $props<{ value: string; disabled: boolean; autofocus: boolean }>();
+    const props = $props();
 </script>
 
 <Texticle
@@ -13,9 +13,5 @@
     empty={phrasebook.emailFieldEmpty}
     invalid={phrasebook.emailFieldInvalid}
     valid={phrasebook.emailFieldValid}
-    {value}
-    {disabled}
-    {autofocus}
-    on:input
-    on:validation
+    {...props}
 /> 

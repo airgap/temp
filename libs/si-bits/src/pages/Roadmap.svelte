@@ -168,7 +168,7 @@
     {#each cats as c}
       <li>
         <button
-          on:click={() => click(c)}
+          onclick={() => click(c)}
           style="background-color: {catMap[c].color}"
         >
           {catMap[c].title}

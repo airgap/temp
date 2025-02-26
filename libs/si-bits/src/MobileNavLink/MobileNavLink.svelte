@@ -7,7 +7,7 @@
 <Link
   {href}
   class={isActive ? styles.depressed : ''}
-  on:click
+  onclick
 >
   {@render children?.()}
 </Link> 

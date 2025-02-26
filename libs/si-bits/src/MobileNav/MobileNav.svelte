@@ -13,11 +13,8 @@
   import { cacheStore } from '../CacheProvider';
   const user = cacheStore.currentUser;
   let profile = user?.profilePicture;
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
-  const joinOrLogin = () => dispatch('joinOrLogin');
 
-  const { url } = $props<{ url: URL }>();
+  const { url, joinOrLogin } = $props<{ url: URL, joinOrLogin: () => void }>();
 
   $effect(() => {
     if (user) {
@@ -48,7 +45,7 @@
     <!--</Link>-->
     <MobileNavLink
       href={user ? '/profile' : undefined}
-      on:click={!user ? joinOrLogin : undefined}
+      onclick={!user ? joinOrLogin : undefined}
     >
       <ProfilePicture src={profile ?? profileBlank} />
     </MobileNavLink>

@@ -32,23 +32,23 @@
 <ChannelList channels={channels} mine={true}>
     {#if channelCreatorShown}
         <div>
-            <Button on:click={() => channelCreatorShown = false}>
+            <Button onclick={() => channelCreatorShown = false}>
                 Never Mind
             </Button>
             <Texticle
                 empty={phrasebook.channelNameEmpty}
                 valid={phrasebook.channelNameValid}
                 invalid={phrasebook.channelNameInvalid}
-                on:input={(e) => channelName = e.detail}
-                on:validation={(e) => channelNameValid = e.detail}
+                oninput={(e) => channelName = e.detail}
+                onvalidation={(e) => channelNameValid = e.detail}
                 schema={schemas.channelName}
             />
-            <Button on:click={handleCreateChannel} disabled={!channelNameValid}>
+            <Button onclick={handleCreateChannel} disabled={!channelNameValid}>
                 {phrasebook.letsGo}
             </Button>
         </div>
     {:else}
-        <Button on:click={() => channelCreatorShown = true}>
+        <Button onclick={() => channelCreatorShown = true}>
             {phrasebook.createChannel}
         </Button>
     {/if}

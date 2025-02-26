@@ -43,29 +43,31 @@
     }
 </script>
 
-<svelte:window on:keydown={handleKeydown}/>
+<svelte:window onkeydown={handleKeydown}/>
 
 <div class={styles.App}>
-    <Backdrop visible={showJoin || showLogin} on:click={() => { showJoin = false; showLogin = false; }}/>
+    <Backdrop visible={showJoin || showLogin} onclick={() => { showJoin = false; showLogin = false; }}/>
     <DesktopNav 
         url={pageUrl} 
         user={currentUser}
-        on:join={join} 
-        on:login={login} 
+        onjoin={join} 
+        onlogin={login} 
     />
     {@render children?.()}
     <MobileNav 
         url={pageUrl} 
         user={currentUser}
-        on:join={join} 
-        on:login={login} 
+        onjoin={join} 
+        onlogin={login} 
     />
         <UserRegistrationForm 
             visible={showJoin} 
-            on:dismiss={closeJoin}
+            ondismiss={closeJoin}
+            onsuccess={closeJoin}
         />
         <UserLoginForm 
             visible={showLogin}
-            on:dismiss={closeLogin}
+            ondismiss={closeLogin}
+            onsuccess={closeLogin}
         />
 </div>

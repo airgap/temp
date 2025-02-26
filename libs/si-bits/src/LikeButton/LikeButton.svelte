@@ -22,5 +22,5 @@
 
 <ReactionButton 
   glyph={liked ? filledHeart : emptyHeart}
-  on:click={handleClick}
+  onclick={handleClick}
 /> 

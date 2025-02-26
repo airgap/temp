@@ -17,11 +17,8 @@
 	import type { string } from '../../../../../from-schema/dist/bson/primitives';
 	import type { User } from '@lyku/json-models';
 	// import { currentUser } from '../currentUserStore';
-  const dispatch = createEventDispatcher();
-  const join = () => dispatch('join');
-  const login = () => dispatch('login');
 // const user = $currentUser;
-  const { user, sessionId, url } = $props<{ user: User; sessionId: string; url: URL }>();
+  const { user, sessionId, url, onjoin, onlogin } = $props<{ user: User; sessionId: string; url: URL, onjoin: () => void, onlogin: () => void }>();
   console.log('user', user);
 </script>
 
@@ -53,10 +50,10 @@
             </span>
           </span>
         {:else}
-          <Link on:click={join}>
+          <Link onclick={onjoin}>
             {phrasebook.navRegister}
           </Link>
-          <Link on:click={login}>
+          <Link onclick={onlogin}>
             {phrasebook.navLogin}
           </Link>
         {/if}

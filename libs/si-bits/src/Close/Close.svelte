@@ -9,7 +9,7 @@
 <Button
   {disabled}
   class={`${styles.Close} ${className}`}
-  on:click
+  onclick
 >
   <Crosshatch width="20px" bright={true} />
 </Button> 

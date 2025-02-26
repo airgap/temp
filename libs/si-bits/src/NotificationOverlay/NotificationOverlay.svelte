@@ -40,7 +40,7 @@
     <button
       class={styles.Notification}
       class:${styles.clickable}={notification.href}
-      on:click={() => handleNotificationClick(notification)}
+      onclick={() => handleNotificationClick(notification)}
       transition:fade={{ duration: 1000 }}
     >
       <div class={styles.NotificationContent}>

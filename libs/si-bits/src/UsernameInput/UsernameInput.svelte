@@ -11,7 +11,5 @@
   empty={phrasebook.usernameFieldEmpty}
   invalid={phrasebook.usernameFieldInvalid}
   valid={phrasebook.usernameFieldValid}
-  on:validation
-  on:input
   {...props}
 /> 

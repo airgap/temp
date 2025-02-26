@@ -60,10 +60,10 @@
         <Stream
           class={styles.Stream}
           src={channel.whepKey}
-          on:error={hideStream}
-          on:ended={hideStream}
-          on:loadstart={loadStart}
-          on:canplay={nowReady}
+          onerror={hideStream}
+          onended={hideStream}
+          onloadstart={loadStart}
+          oncanplay={nowReady}
           controls
           autoplay={true}
         />

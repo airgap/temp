@@ -25,7 +25,7 @@
 {#if typeof following === 'boolean'}
   {#if following}
     <CoolLink
-      on:click={() => {
+      onclick={() => {
         following = undefined;
         api.unfollowUser(user.id).then(() => following = false);
       }}
@@ -34,7 +34,7 @@
     </CoolLink>
   {:else}
     <CoolLink
-      on:click={() => {
+      onclick={() => {
         following = undefined;
         api.followUser(user.id).then(() => following = true);
       }}

@@ -3,9 +3,8 @@
   import { ttfFlowMode } from '@lyku/json-models';
   import { Button } from '../Button';
   import { phrasebook } from '../phrasebook';
-  import { createEventDispatcher } from 'svelte';
 
-  const dispatch = createEventDispatcher();
+  const { onclose } = $props<{ onclose: () => void }>();
 
   const modeLabels = {
     novice: phrasebook.vsNoviceAi,
@@ -21,9 +20,9 @@
   }
 </script>
 
-<Button on:click={() => dispatch('close')}>&lt; Back</Button>
+<Button onclick={onclose}>&lt; Back</Button>
 {#each ttfFlowMode.enum as mode}
-  <Button on:click={() => handleModeClick(mode)}>
+  <Button onclick={() => handleModeClick(mode)}>
     {modeLabels[mode]}
   </Button>
 {/each} 

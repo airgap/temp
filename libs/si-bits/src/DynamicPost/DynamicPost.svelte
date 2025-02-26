@@ -99,7 +99,7 @@
       </Link>
       <DynamicDate time={post.published} />
       {#if me?.id === author.id}
-        <Button class={styles.delete} on:click={handleDelete}>
+        <Button class={styles.delete} onclick={handleDelete}>
           X
         </Button>
       {/if}
@@ -134,7 +134,7 @@
             src={videos?.find((v) => v.id === at)?.id.toString()}
             controls={true}
             {autoplay}
-            on:abort={() => error = 'Video failed to load'}
+            onabort={() => error = 'Video failed to load'}
           />
         {/if}
       {/each}
@@ -145,7 +145,7 @@
     <span class={styles.PostStats}>
       <LikeButton {post} />
       <EchoButton {post} />
-      <ReplyButton on:click={() => showReplyer = !showReplyer} />
+      <ReplyButton onclick={() => showReplyer = !showReplyer} />
       <ShareButton {post} />
     </span>
 

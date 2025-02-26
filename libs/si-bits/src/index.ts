@@ -3,7 +3,7 @@ export * from './Aerial';
 export * from './Agreeable';
 export * from './Ascendere';
 export * from './authForms';
-export * from './AuthOverlay';
+export * from './Dialog';
 export * from './Backdrop';
 export * from './Banner';
 export * from './BefriendUser';

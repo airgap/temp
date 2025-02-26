@@ -2,12 +2,10 @@
   import type { StringJsonSchema } from 'from-schema';
   import styles from './Texticle.module.sass';
   import classNames from 'classnames';
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
   
   type Type = 'text' | 'email' | 'password';
   
-  let { schema, empty, valid, invalid, pattern, type, minLength, maxLength, multiline, value } = $props<{ schema?: StringJsonSchema; empty?: string; valid?: string; invalid?: string; pattern?: string; type?: Type; minLength?: number; maxLength?: number; multiline?: boolean; value?: string }>();
+  let { schema, empty, valid, invalid, pattern, type, minLength, maxLength, multiline, value, oninput, onvalidation } = $props<{ schema?: StringJsonSchema; empty?: string; valid?: string; invalid?: string; pattern?: string; type?: Type; minLength?: number; maxLength?: number; multiline?: boolean; value?: string, oninput: (value: string) => void, onvalidation?: (isValid: boolean) => void }>();
 
   const id = Math.random().toString().substring(2);
 
@@ -48,11 +46,6 @@ $effect(()=>{
     console.log('pass');
     return true;
   }
-
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-    dispatch('input', target.value);
-  }
 const isValid = $derived(validate(value));
 const isInvalid = $derived(!isValid);
 const label = $derived((value
@@ -61,7 +54,7 @@ const label = $derived((value
         : invalid ?? empty
       : empty) ?? empty ?? ' ');
   $effect(()=>{
-    dispatch('validation', isValid);
+    onvalidation?.(isValid);
   });
 </script>
 
@@ -69,14 +62,14 @@ const label = $derived((value
   {#if multiline}
     <textarea
       {id}
-      oninput={handleInput}
+      oninput={oninput}
       placeholder=""
       bind:value
     ></textarea>
   {:else}
     <input
       {id}
-      oninput={handleInput}
+      oninput={oninput}
       placeholder=""
       {type}
       bind:value

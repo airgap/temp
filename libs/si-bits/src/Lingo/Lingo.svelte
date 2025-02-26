@@ -35,7 +35,7 @@
 <div class={styles.languageSelector}>
   <Link 
     className={styles.languageSelectorButton} 
-    on:click={() => isOpen = !isOpen}
+    onclick={() => isOpen = !isOpen}
   >
     <Svg />
   </Link>

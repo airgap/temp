@@ -18,7 +18,7 @@
   <div class={styles.PostCreatorPopover}>
     <div>
       <Close
-        on:click={() => {
+        onclick={() => {
           shout('echo', undefined);
         }}
       />

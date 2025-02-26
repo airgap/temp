@@ -9,8 +9,7 @@
   import { UsernameInput } from '../UsernameInput';
   import { phrasebook } from '../phrasebook';
   import { createEventDispatcher } from 'svelte';
-  import { AuthOverlay } from '../AuthOverlay';
-  const dispatch = createEventDispatcher();
+  import { Dialog } from '../Dialog';
   let {email, username, password, emailValid, usernameValid, passwordValid, agreed, error} = $state({
     email: '',
     username: '',
@@ -21,9 +20,9 @@
     agreed: false,
     error: undefined
   });
-  let valid = $derived( emailValid && usernameValid && passwordValid && agreed);
+  const valid = $derived( emailValid && usernameValid && passwordValid && agreed);
   
-  const { visible } = $props<{ visible?: boolean }>();
+  const { visible, onsubmit, onsuccess, onerror, ondismiss } = $props<{ visible?: boolean, onsubmit: () => void, onsuccess: () => void, onerror: () => void, ondismiss: () => void }>();
   $effect(() => {
     console.log('email', email);
     console.log('username', username);
@@ -33,8 +32,9 @@
     console.log('passwordValid', passwordValid);
     console.log('agreed', agreed);
   });
+  $effect(() => {console.log('valid', valid)});
   function handleSubmit() {
-    dispatch('submit');
+    onsubmit?.();
     api.registerUser({
       email,
       username,
@@ -43,39 +43,39 @@
     })
     .then((sessionId) => {
       // setCookie('sessionId', sessionId, 365);
-      dispatch('success');
+      onsuccess?.();
       alert('success');
       // window.location.reload();
     })
     .catch((e) => {
-      dispatch('error', e);
+      onerror?.();
       error = e;
     });
   }
 </script>
-<AuthOverlay {visible} on:dismiss>
+<Dialog {visible} {ondismiss}>
 <h2>{phrasebook.regFormTitle}</h2>
 
 <EmailInput 
-  on:input={(e) => email = e.detail}
-  on:validation={(e) => emailValid = e.detail}
+  oninput={(e) => email = e.target.value}
+  onvalidation={(e) => emailValid = e}
 />
 
 <UsernameInput
-  on:input={(e) => username = e.detail}
-  on:validation={(e) => usernameValid = e.detail}
+  oninput={(e) => username = e.target.value}
+  onvalidation={(e) => usernameValid = e}
 />
 
 <PasswordInput
-  on:input={(e) => password = e.detail}
-  on:validation={(e) => {passwordValid = e.detail; console.log(passwordValid)}}
+  oninput={(e) => password = e.target.value}
+  onvalidation={(e) => {passwordValid = e; console.log(passwordValid)}}
 />
 
-<Agreeable on:input={(e) => {
-  agreed = e.detail;
+<Agreeable oninput={(e) => {
+  agreed = e.target.checked;
   console.log('agreed', agreed);
 }}>
-  {phrasebook.termsLabel} <ShowTos>{phrasebook.termsLink}</ShowTos>
+  
 </Agreeable>
 
 <SubmitButton
@@ -87,4 +87,4 @@
 
 {#if error}
   <h3>{error}</h3>
-{/if} </AuthOverlay>
+{/if} </Dialog>

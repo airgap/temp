@@ -6,7 +6,8 @@
     className = '',
     type = 'button' as 'button' | 'submit' | 'reset',
     style = {} as Record<string, string>,
-    children
+    children,
+    onclick
   } = $props();
 </script>
 
@@ -15,7 +16,7 @@
   class={`${styles.Button} ${className}`}
   {type}
   {style}
-  on:click
+  {onclick}
 >
   {@render children?.()}
 </button> 

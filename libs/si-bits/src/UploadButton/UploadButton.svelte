@@ -5,6 +5,7 @@
   import styles from './UploadButton.module.sass';
 
   const id = Math.random().toString();
+  const props = $props();
 </script>
 
 <input
@@ -14,7 +15,7 @@
   name="avatar"
   accept={imageAndVideoMimes}
   multiple={true}
-  on:change
+  {...props}
 />
 <label for={id}>
   <img

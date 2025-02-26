@@ -1,10 +1,11 @@
 <script lang="ts">
   import styles from './ShowTos.module.sass';
+  const { children } = $props();
 </script>
 
 <button
   class={styles.ShowTos}
-  on:click={() => window.dispatchEvent(new CustomEvent('showTos'))}
+  onclick={() => window.dispatchEvent(new CustomEvent('showTos'))}
 >
-  <slot />
+  {@render children?.()}
 </button> 

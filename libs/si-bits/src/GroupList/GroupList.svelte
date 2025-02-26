@@ -33,9 +33,9 @@
       <li>
         <h3>{g.name}</h3>
         {#if $currentUser && memberships.find((m) => m.group === g.id) && g.owner !== $currentUser.id}
-          <Button on:click={() => alert('Coming soon!')}>Leave</Button>
+          <Button onclick={() => alert('Coming soon!')}>Leave</Button>
         {:else}
-          <Button on:click={() => alert('Coming soon!')}>Join</Button>
+          <Button onclick={() => alert('Coming soon!')}>Join</Button>
         {/if}
       </li>
     {/each}

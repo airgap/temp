@@ -67,10 +67,10 @@
             return () => ({
                 $$render: () => `
                     <h1>Tic Tac Flow</h1>
-                    <Button on:click={() => showMatches = true}>Continue</Button>
-                    <Button on:click={() => showInvites = true}>Match invites</Button>
-                    <Button on:click={() => showFriends = true}>Challenge friend</Button>
-                    <Button on:click={() => showBots = true}>Challenge bot</Button>
+                    <Button onclick={() => showMatches = true}>Continue</Button>
+                    <Button onclick={() => showInvites = true}>Match invites</Button>
+                    <Button onclick={() => showFriends = true}>Challenge friend</Button>
+                    <Button onclick={() => showBots = true}>Challenge bot</Button>
                 `
             });
         }
@@ -79,7 +79,7 @@
             $$render: () => `
                 <h1>Tic Tac Flow</h1>
                 Create an account to play with friends!
-                <Button on:click={() => showBots = true}>Challenge bot</Button>
+                <Button onclick={() => showBots = true}>Challenge bot</Button>
             `
         });
     });

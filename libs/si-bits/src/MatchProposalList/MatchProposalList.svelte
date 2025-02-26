@@ -36,7 +36,7 @@
     <thead>
     <tr>
       <td>
-        <Button on:click={onClose}>&lt; Back</Button>
+        <Button onclick={onClose}>&lt; Back</Button>
       </td>
     </tr></thead>
     <tbody>

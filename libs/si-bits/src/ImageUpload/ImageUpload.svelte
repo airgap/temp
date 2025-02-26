@@ -153,7 +153,7 @@
   action={uploadUrl}
   method="post"
   enctype="multipart/form-data"
-  on:submit|preventDefault={confirmClicked}
+  onsubmit={confirmClicked}
   bind:this={formRef}
   class={classnames(styles.ImageUpload, {
     [styles.working]: workingState,
@@ -193,7 +193,7 @@
     type="file"
     {disabled}
     class={classnames(styles.fileInput, className)}
-    on:change={(event) => imageSelected(event.target as HTMLInputElement)}
+    onchange={(event) => imageSelected(event.target as HTMLInputElement)}
   />
 
   <div class={styles.buttons}>
@@ -201,15 +201,15 @@
       {#if base64}
         {#if file !== undefined}
           {#if removeClicked}
-            <Button on:click={removeClicked}>
+            <Button onclick={removeClicked}>
               <img src={times} alt="Remove" />
             </Button>
           {/if}
         {:else}
-          <Button on:click={confirmClicked} disabled={workingState}>
+          <Button onclick={confirmClicked} disabled={workingState}>
             <img src={check} alt="Confirm" />
           </Button>
-          <Button on:click={() => reset()} disabled={workingState}>
+          <Button onclick={() => reset()} disabled={workingState}>
             <img src={x} alt="Cancel" />
           </Button>
         {/if}

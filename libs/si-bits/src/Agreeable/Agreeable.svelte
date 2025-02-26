@@ -1,13 +1,11 @@
 <script lang="ts">
   import styles from './Agreeable.module.sass';
-  import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher();
+  import { phrasebook } from '../phrasebook';
+  import {ShowTos} from '../ShowTos';
 
-
-  let { slots } = $props<{
-    slots: {
-      default?: () => any;
-    }
+  let { children, oninput } = $props<{
+    children: ComponentType[]
+    oninput: (checked: boolean) => void
   }>();
   
   let id = Math.random().toString().substring(2);
@@ -17,9 +15,10 @@
   <input
     type="checkbox"
     {id}
-    oninput={e => dispatch('input', e.currentTarget.checked)}
+    oninput={oninput}
   />
   <label {id}>
-    {@render slots?.default?.()}
+    {phrasebook.termsLabel} 
   </label>
+  <ShowTos>{phrasebook.termsLink}</ShowTos>
 </div> 

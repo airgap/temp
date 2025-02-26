@@ -37,7 +37,7 @@
                 valid={phrasebook.botNameValid}
                 invalid={phrasebook.botNameInvalid}
                 oninput={(e) => botName = e.detail}
-                on:validation={(e) => botNameValid = e.detail}
+                onvalidation={(e) => botNameValid = e.detail}
                 schema={schemas.username}
             />
             <Button onclick={handleCreateBot} disabled={!botNameValid}>

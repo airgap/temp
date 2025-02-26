@@ -169,7 +169,7 @@
     </div>
 
     <div class={styles.editBox}>
-      <UploadButton on:change={handleFileChange} />
+      <UploadButton onchange={handleFileChange} />
       <span class={styles.editor}>
         <Tippy
           onEditorChange={(newVal) => body = newVal}
@@ -196,7 +196,7 @@
     </div>
 
     <div class={styles.Submit}>
-      <Button on:click={post} disabled={!postable}>
+      <Button onclick={post} disabled={!postable}>
         <span>{submitText}</span>
         <img src={chevvy} alt={submitText} aria-hidden={true} />
       </Button>

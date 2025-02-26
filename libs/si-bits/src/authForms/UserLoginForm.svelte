@@ -5,13 +5,10 @@
   import { shout } from '../Sonic';
   import { SubmitButton } from '../SubmitButton';
   import { phrasebook } from '../phrasebook';
-  import { AuthOverlay } from '../AuthOverlay';
-  import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
+  import { Dialog } from '../Dialog';
   
   // Props
-  const { visible } = $props<{ visible: boolean }>();
+  const { visible, ondismiss, onsubmit, onsuccess, onerror } = $props<{ visible: boolean, ondismiss: () => void, onsubmit: () => void, onsuccess: () => void, onerror: () => void }>();
 
   // Form state
   let email = $state('');
@@ -42,31 +39,31 @@
 
   async function handleSubmit() {
     try {
-      dispatch('submit');
+      onsubmit();
       error = null;
 
       const { sessionId } = await api.loginUser({ email, password });
       setCookie('sessionId', sessionId, 365);
-      dispatch('success');
+      onsuccess();
       window.location.reload();
     } catch (e) {
       error = e instanceof Error ? e : new Error(String(e));
-      dispatch('error', error);
+      onerror();
     }
   }
 </script>
 
-<AuthOverlay {visible} on:dismiss>
+<Dialog {visible} {ondismiss}>
   <h2>{phrasebook.loginFormTitle}</h2>
   
   <EmailInput 
-    on:input={handleEmailInput}
-    on:validation={handleEmailValidation}
+    oninput={handleEmailInput}
+    onvalidation={handleEmailValidation}
   />
 
   <PasswordInput 
-    on:input={handlePasswordInput}
-    on:validation={handlePasswordValidation}
+    oninput={handlePasswordInput}
+    onvalidation={handlePasswordValidation}
   />
 
   {#if error}
@@ -77,11 +74,11 @@
 
   <SubmitButton
     disabled={!isFormValid}
-    on:click={handleSubmit}
+    onclick={handleSubmit}
   >
     {@html phrasebook.loginFormSubmit}
   </SubmitButton>
-</AuthOverlay>
+</Dialog>
 
 <style lang="sass">
   .error
