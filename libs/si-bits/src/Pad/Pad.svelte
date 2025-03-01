@@ -1,9 +1,9 @@
 <script lang="ts">
   import { sizes, type Size } from '../sizes';
   
-  export let size: Size;
+  const { size, children } = $props<{ size: Size, children?: any[] }>();
 </script>
 
 <div style="margin: {sizes[size]}">
-  <slot />
+  {children?.()}
 </div> 

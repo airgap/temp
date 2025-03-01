@@ -7,12 +7,11 @@ export default handleListHotPosts(
 		console.log('Listing hot posts');
 		// let query = tables.posts.orderBy(desc('published')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 		// Get base posts query
-		const postsQuery = db.selectFrom('posts').selectAll();
+		let postsQuery = db.selectFrom('posts').selectAll();
 
-		// Apply before filter if specified
-		if (before) {
-			postsQuery.where('published', '<', new Date(before));
-		}
+		const now = new Date();
+		const b = before && before < now ? before : now;
+		postsQuery = postsQuery.where('publish', '<', b);
 
 		console.log('Posts query:', postsQuery.compile().sql);
 
@@ -56,7 +55,7 @@ export default handleListHotPosts(
 						.where(
 							'postId',
 							'in',
-							posts.map((p) => p.id)
+							posts.map((p) => p.id),
 						)
 						.selectAll()
 						.execute()
@@ -73,5 +72,5 @@ export default handleListHotPosts(
 
 		console.log('Hot posts:', posts.length);
 		return response;
-	}
+	},
 );

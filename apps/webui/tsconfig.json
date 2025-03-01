@@ -20,7 +20,9 @@
 			"@lyku/strings": ["dist/libs/strings"],
 			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
 			"@lyku/db-config": ["dist/libs/db-config"],
-			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"]
+			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"],
+			"@lyku/helpers": ["libs/helpers"],
+			"@lyku/defaults": ["libs/defaults"]
 		}
 	},
 	"include": [

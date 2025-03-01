@@ -3,7 +3,7 @@
   import styles from './MessageItem.module.sass';
   import type { Message } from '@lyku/json-models';
 
-  export let src: Message;
+  const { src } = $props<{ src: Message }>();
 
   const [author] = cacheStore.users.fetch(src.author);
 </script>

@@ -3,7 +3,7 @@ import { numberChecks } from './numberChecks';
 
 export const mapBigserialType = (
 	name: string,
-	columnSchema: BigSerialColumnModel
+	columnSchema: BigSerialColumnModel,
 ): string => {
 	const constraints = numberChecks(name, columnSchema);
 

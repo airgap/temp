@@ -1,6 +1,6 @@
 import { handleFinalizePost } from '@lyku/handles';
 import { AttachmentType, getSupertypeFromAttachmentId } from '@lyku/helpers';
-import { Post, User } from '@lyku/json-models/index';
+import { InsertablePost, User } from '@lyku/json-models/index';
 import { sql } from 'kysely';
 
 export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
@@ -17,12 +17,12 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 
 	console.log('ViewPost finalization authorized', authRes);
 
-	const protopost: Post = {
+	const protopost: InsertablePost = {
 		body: body ?? authRes.body,
 		id,
 		author: requester,
 		attachments: [],
-		published: new Date(),
+		publish: new Date(),
 		likes: 0n,
 		echoes: 0n,
 		replies: 0n,
@@ -52,9 +52,9 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	await db
 		.updateTable('users')
 		.set({
-			postCount: sql`postCount + 1`,
-			points: sql`points + ${canSuper ? 10 : 2}`,
-			lastSuper: canSuper ? new Date() : sql`lastSuper`,
+			postCount: sql`${sql.ref('postCount')} + 1`,
+			points: sql`${sql.ref('points')} + ${canSuper ? 10 : 2}`,
+			lastSuper: canSuper ? new Date() : sql.ref('lastSuper'),
 		})
 		.where('id', '=', requester)
 		.execute();

@@ -10,14 +10,14 @@
 
 - Bun
 - Postgres
-- Redis
+- NATS
 
 ### Production
 
 - Bun
 - Doppler
 - A postgres database
-- A redis instance
+- A NATS server
 - A cloudflare account
 - CircleCI (if you want CI/CD)
 - DigitalOcean Registry

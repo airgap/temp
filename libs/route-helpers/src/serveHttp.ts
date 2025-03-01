@@ -60,13 +60,19 @@ export const serveHttp = async ({
 			console.log('req', req.url);
 
 			const auth = req.headers.get('authorization');
-			if (needsAuth && !auth)
+			const cookie = req.headers.get('cookie');
+			const cookieSessionId = cookie
+				?.split(';')
+				.find((c) => c.trim().startsWith('sessionId='))
+				?.split('=')[1];
+
+			if (needsAuth && !auth && !cookieSessionId)
 				return new Response('Unauthorized', {
 					status: 401,
 					headers: responseHeaders,
 				});
 
-			const sessionId = auth?.substring(7);
+			const sessionId = auth?.substring(7) || cookieSessionId;
 			if (needsAuth && !sessionId)
 				return new Response('SessionId required but not provided', {
 					status: 403,
@@ -97,7 +103,7 @@ export const serveHttp = async ({
 			console.log('arrayBuffer', arrayBuffer);
 			const intArray = arrayBuffer ? new Uint8Array(arrayBuffer) : undefined;
 			console.log('intArray', intArray);
-			const params = intArray?.length ? decode(intArray) : undefined;
+			const params = intArray?.length ? decode(intArray, { useBigInt64: true }) : undefined;
 			console.log('params', params);
 			if ('request' in model && methodHasBody) {
 				try {

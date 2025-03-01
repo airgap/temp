@@ -1,7 +1,7 @@
 <script lang="ts">
   import { imageAndVideoMimes } from '@lyku/defaults';
   import { phrasebook } from '../phrasebook';
-  import upload from '../assets/plus.svg';
+  import upload from '../assets/plus.svg?raw';
   import styles from './UploadButton.module.sass';
 
   const id = Math.random().toString();
@@ -16,11 +16,8 @@
   accept={imageAndVideoMimes}
   multiple={true}
   {...props}
+  alt={phrasebook.upload}
 />
-<label for={id}>
-  <img
-    src={upload}
-    class={styles.UploadButton}
-    alt={phrasebook.upload}
-  />
-</label> 
+<label for={id} class={styles.UploadButton}>
+	{@html upload}
+</label>

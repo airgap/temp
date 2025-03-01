@@ -9,7 +9,7 @@
   let postsPromise = sessionId
     ? api.listFeedPosts({})
     : api.listFeedPostsUnauthenticated({});
-    export let user: string;
+    const { user } = $props<{ user: string }>();
 </script>
 
 <FeedPage>

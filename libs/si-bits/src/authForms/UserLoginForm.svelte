@@ -5,10 +5,9 @@
   import { shout } from '../Sonic';
   import { SubmitButton } from '../SubmitButton';
   import { phrasebook } from '../phrasebook';
-  import { Dialog } from '../Dialog';
   
   // Props
-  const { visible, ondismiss, onsubmit, onsuccess, onerror } = $props<{ visible: boolean, ondismiss: () => void, onsubmit: () => void, onsuccess: () => void, onerror: () => void }>();
+  const { onsubmit, onsuccess, onerror } = $props<{ onsubmit: () => void, onsuccess: () => void, onerror: () => void }>();
 
   // Form state
   let email = $state('');
@@ -53,7 +52,6 @@
   }
 </script>
 
-<Dialog {visible} {ondismiss}>
   <h2>{phrasebook.loginFormTitle}</h2>
   
   <EmailInput 
@@ -78,7 +76,6 @@
   >
     {@html phrasebook.loginFormSubmit}
   </SubmitButton>
-</Dialog>
 
 <style lang="sass">
   .error

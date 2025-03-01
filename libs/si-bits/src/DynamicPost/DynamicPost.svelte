@@ -14,7 +14,8 @@
   import { PostList } from '../PostList';
   import { ProfilePicture } from '../ProfilePicture';
   import { formImageUrl } from '../formImageUrl';
-  import { cacheStore } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider/CacheStore';
+  import { useUser } from '../CacheProvider';
   import { PostCreator } from '../PostCreator';
   // import { useCurrentUser } from '../currentUserStore';
   import { LikeButton } from '../LikeButton';
@@ -22,6 +23,7 @@
   import { ReplyButton } from '../ReplyButton';
   import { ShareButton } from '../ShareButton';
   import styles from './DynamicPost.module.sass';
+  import { useCacheData } from '../CacheProvider';
 
   const insets = { reply: styles.replied, echo: styles.echoed } as const;
   
@@ -45,7 +47,7 @@
   const stripLink = (url: string) => url.split(/:\/\//)[1].replace(/:[0-9]{2,5}/, '');
   const stripLinks = (body: string) => body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
-  const author = $derived(cacheStore.users.get(post.author));
+  const author = $derived(useUser(post.author));
   const [imageIds, videoIds, audioIds, documentIds] = 
       $derived(post.attachments?.reduce((acc, id) => {
         const { supertype } = parseAttachmentId(id);
@@ -54,10 +56,10 @@
         return acc;
       }, [] as bigint[][]) ?? []);
 
-  const [images] = useCacheData('images', imageIds);
-  const [videos] = useCacheData('videos', videoIds);
-  const [audios] = useCacheData('audios', audioIds);
-  const [documents] = useCacheData('documents', documentIds);
+  const [images] = [[]];//useCacheData('images', imageIds);
+  const [videos] = [[]];//useCacheData('videos', videoIds);
+  const [audios] = [[]];//useCacheData('audios', audioIds);
+  const [documents] = [[]];//useCacheData('documents', documentIds);
 
   $effect(() => error && console.error(error));
 

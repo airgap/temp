@@ -1,4 +1,6 @@
 export * from './base58SnowflakeRegex';
+export * from './base58ToBigint';
+export * from './bigintToBase58';
 export * from './convertBases';
 export * from './delay';
 export * from './Either';

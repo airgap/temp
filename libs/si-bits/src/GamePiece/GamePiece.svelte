@@ -1,6 +1,5 @@
 <script lang="ts">
-    export let x: number;
-    export let y: number;
+    const { x, y } = $props<{ x: number, y: number }>();
 </script>
 
 <div>

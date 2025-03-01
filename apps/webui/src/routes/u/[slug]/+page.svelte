@@ -7,12 +7,12 @@
   import { Center } from '@lyku/si-bits';
   import { BefriendUser } from '@lyku/si-bits';
   import { FollowUser } from '@lyku/si-bits';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { Post, User } from 'monolith-ts-api';
-  
+
   // Get identifier from URL path params using SvelteKit's $page store
-  const ident = $derived($page.url.pathname.match(/^\/u(?:ser)?\/([^/]+)$/)?.[1]);
-  
+  const ident = page.params.slug;
+
 
   let posts = $state<Post[]>([]);
   let user = $state<User | null>(null);
@@ -102,7 +102,7 @@
   :global(.UserPage)
     width: 100%
     max-width: 800px
-    
+
   :global(.linkBox)
     margin-left: auto
-</style> 
+</style>

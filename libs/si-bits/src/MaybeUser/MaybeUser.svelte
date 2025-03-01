@@ -3,11 +3,7 @@
 	import { currentUserStatus } from './currentUserStore';
 	import { sessionId } from 'monolith-ts-api';
 
-	export let loggedIn: ((user: User) => void) | undefined = undefined;
-	export let loggedOut: (() => void) | undefined = undefined;
-	export let failed: ((error: Error) => void) | undefined = undefined;
-	export let meanwhile: (() => void) | undefined = undefined;
-	export let catchall: ((props: { user: User | undefined; loading: boolean; error: Error | null }) => void) | undefined = undefined;
+	const { loggedIn, loggedOut, failed, meanwhile, catchall } = $props<{ loggedIn: ((user: User) => void) | undefined, loggedOut: (() => void) | undefined, failed: ((error: Error) => void) | undefined, meanwhile: (() => void) | undefined, catchall: ((props: { user: User | undefined; loading: boolean; error: Error | null }) => void) | undefined }>();
 </script>
 
 {#if $currentUserStatus.loading && meanwhile}

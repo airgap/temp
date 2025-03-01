@@ -6,7 +6,7 @@
     const layouts = { h: 'row', v: 'column' } as const;
     type Layout = keyof typeof layouts;
 
-    const { size, layout, fill, hang, alignItems, style } = $props<{ size: Size; layout: Layout; fill: boolean; hang: any; alignItems: Property.AlignItems | undefined; style: CSSProperties }>();
+    const { size, layout, fill, hang, alignItems, style = {} } = $props<{ size: Size; layout: Layout; fill: boolean; hang: any; alignItems: Property.AlignItems | undefined; style: CSSProperties }>();
 </script>
 
 <div
@@ -26,4 +26,4 @@
             {hang}
         </div>
     {/if}
-</div> 
+</div>

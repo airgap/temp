@@ -18,7 +18,7 @@ export default handleAuthorizeImageUpload(
 				throw new Error(
 					`You must provide a channel ID to update ${reason
 						.replace(/([A-Z])/g, (a) => ` ${a.toLowerCase()}`)
-						.trim()}`
+						.trim()}`,
 				);
 
 			const channel = await db
@@ -49,5 +49,5 @@ export default handleAuthorizeImageUpload(
 			.executeTakeFirstOrThrow();
 
 		return { id: cfres.result.id, url: cfres.result.uploadURL };
-	}
+	},
 );

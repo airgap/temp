@@ -1,11 +1,11 @@
 <script lang="ts">
   import styles from './ShowTos.module.sass';
-  const { children } = $props();
+  const { children, onclick } = $props();
 </script>
 
 <button
   class={styles.ShowTos}
-  onclick={() => window.dispatchEvent(new CustomEvent('showTos'))}
+  {onclick}
 >
   {@render children?.()}
-</button> 
+</button>

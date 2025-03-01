@@ -9,7 +9,7 @@
     ImageDraft,
     VideoDraft,
   } from '@lyku/json-models';
-  
+
   import { Button } from '../Button';
   import { Crosshatch } from '../Crosshatch';
   import { DynamicPost } from '../DynamicPost';
@@ -18,15 +18,17 @@
   import { Link } from '../Link';
   import { ProfilePicture } from '../ProfilePicture';
   import { UploadButton } from '../UploadButton';
-  import chevvy from '../assets/chevvy.svg';
+  import chevvy from '../assets/chevvy.svg?raw';
   import { phrasebook } from '../phrasebook';
   import styles from './PostCreator.module.sass';
-  import { cacheStore } from '../CacheProvider';
+  import { cacheStore } from '../CacheProvider/CacheStore';
+  import classnames from 'classnames';
+  import { bigintToBase58 } from '@lyku/helpers'
 
   const { user, reply = undefined, echo = undefined, showInset = undefined, onsuccess = undefined } = $props<{
     user: User;
     reply?: bigint;
-    echo?: bigint; 
+    echo?: bigint;
     showInset?: boolean;
     onsuccess?: () => void;
   }>();
@@ -89,7 +91,7 @@
       console.log('Finalizing post', id);
       finalizing = true;
       api.finalizePost({ id }).then((res) => {
-        window.location.pathname = `/p/${id}`;
+        window.location.pathname = `/${bigintToBase58(id)}`;
         console.log('ViewPost finalization:', res);
         finalizing = false;
         clear();
@@ -154,14 +156,14 @@
   {#if showInset && replyToPost}
     <DynamicPost post={replyToPost} inset="reply" />
   {/if}
-  
-  <div class:${styles.newPost}={replyToPost}>
+
+  <div class={classnames({ [styles.newPost]: replyToPost })}>
     {#if replyToPost}
       <span class={dynaPost.hatchInset}>
         <Crosshatch width="20px" height="100%" />
       </span>
     {/if}
-    
+
     <div class={styles.UserDetails}>
       <ProfilePicture
         src={user?.profilePicture ?? defaultImages.ProfilePicture}
@@ -174,21 +176,22 @@
       <UploadButton onchange={handleFileChange} />
       <span class={styles.editor}>
         <Tippy
-          onEditorChange={(newVal) => body = newVal}
+			value={body}
+          oninput={(newVal) => body = newVal}
         />
       </span>
     </div>
 
     <div class={styles.imageList}>
       {#each files as file, f}
-        {@const pack = imageDrafts?.find((d) => d.filename === file.name) ?? 
+        {@const pack = imageDrafts?.find((d) => d.filename === file.name) ??
                       videoDrafts?.find((d) => d.filename === file.name)}
         <ImageUpload
           key={file.name}
           reason="PostAttachment"
           {file}
           working={Boolean(pending) || Boolean(pack)}
-          removeClicked={pending ? undefined : 
+          removeClicked={pending ? undefined :
             () => files = [...files.slice(0, f), ...files.slice(f + 1)]}
           attachmentUploadPack={pack}
           onUpload={depend}
@@ -198,10 +201,10 @@
     </div>
 
     <div class={styles.Submit}>
-      <Button onclick={post} disabled={!postable}>
-        <span>{submitText}</span>
-        <img src={chevvy} alt={submitText} aria-hidden={true} />
-      </Button>
+      <button onclick={post} disabled={!postable}>
+        <span>{@render submitText()}</span>
+		  {@html chevvy}
+      </button>
     </div>
 
     {#if error}
@@ -212,4 +215,4 @@
       <DynamicPost post={echoPost} inset="echo" />
     {/if}
   </div>
-</div> 
+</div>

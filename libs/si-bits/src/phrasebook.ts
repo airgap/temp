@@ -3,7 +3,7 @@ import { en_US } from '@lyku/strings';
 import { get } from 'svelte/store';
 import { languageStore } from './stores/language';
 
-export let language = get(languageStore);
+export const language = get(languageStore);
 let pb: CompactedPhrasebook = en_US;
 
 // Subscribe to language changes

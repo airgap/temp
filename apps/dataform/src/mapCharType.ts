@@ -2,7 +2,7 @@ import { CharColumnModel } from 'from-schema';
 
 export const mapCharType = (
 	name: string,
-	columnSchema: CharColumnModel
+	columnSchema: CharColumnModel,
 ): string => {
 	// console.log('mapping char', name, columnSchema, '/char');
 	const constraints: string[] = [];
@@ -17,7 +17,7 @@ export const mapCharType = (
 		constraints.push(
 			`GENERATED ALWAYS AS (${columnSchema.generated.as})${
 				columnSchema.generated.stored ? ' STORED' : ''
-			}`
+			}`,
 		);
 	}
 	if (columnSchema.checks) {

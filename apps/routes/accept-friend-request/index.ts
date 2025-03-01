@@ -14,7 +14,7 @@ export default handleAcceptFriendRequest(async (user, { requester, db }) => {
 						eb.val([requester, user]).as('users'),
 						eb.val(new Date()).as('created'),
 					])
-					.where('id', '=', bondIds(requester, user))
+					.where('id', '=', bondIds(requester, user)),
 			)
 			.returningAll()
 			.execute();

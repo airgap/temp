@@ -10,16 +10,18 @@
   import { phrasebook } from '../phrasebook';
   import styles from './DesktopNav.module.sass';
   import { Lingo } from '../Lingo';
-  import plus from '../assets/plus.svg';
+  import Plus from '../assets/plus.svg?raw';
 
   const showAuth = (form: any) => () => shout('showAuth', form);
   import { createEventDispatcher } from 'svelte';
 	import type { string } from '../../../../../from-schema/dist/bson/primitives';
 	import type { User } from '@lyku/json-models';
+  import { ProfilePicture } from '../ProfilePicture';
 	// import { currentUser } from '../currentUserStore';
 // const user = $currentUser;
   const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{ user?: User; sessionId: string; url: URL, onjoin: () => void, onlogin: () => void, oncreate?: () => void }>();
   console.log('user', user);
+  console.log('plus', Plus)
 </script>
 
 <div class={styles.DesktopNav}>
@@ -32,14 +34,14 @@
       {/if}
       <CoolLink href="/hot" isActive={url.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
       <CoolLink href="/play" isActive={url.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
-      
+
       <span class={styles.cluster}>
         {#if user}
           <span class={styles.welcome}>
             {phrasebook.navWelcome}
-            <Link href="/profile">
+            <Link href="/u/{user.slug}">
               <span>{user.username}!</span>
-              <Image
+              <ProfilePicture
                 shape="circle"
                 size="s"
                 src={user.profilePicture}
@@ -48,8 +50,8 @@
             <span class={styles.badgeHolder}>
               <LevelBadge points={user.points ?? 0n} progress={true} />
             </span>
-            <Link onclick={oncreate}>
-              <Image src={plus} shape="circle" size="s" />
+            <Link onclick={oncreate} className={styles.plus}>
+              {@html Plus}
             </Link>
           </span>
         {:else}
@@ -65,4 +67,4 @@
     </div>
   </div>
   <div class={styles.DesktopNavSpacer}></div>
-</div> 
+</div>

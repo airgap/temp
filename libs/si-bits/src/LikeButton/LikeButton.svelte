@@ -6,6 +6,7 @@
   import { UserRegistrationForm } from '../authForms';
   import { api, getSessionId } from 'monolith-ts-api';
   import type { Post } from '@lyku/json-models';
+  import { cacheStore } from '../CacheProvider/CacheStore';
 
   const { post } = $props<{ post: Post }>();
 

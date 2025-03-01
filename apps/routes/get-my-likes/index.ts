@@ -8,7 +8,7 @@ export default handleGetMyLikes(async (ids, { db, requester }) => {
 		.where(
 			'id',
 			'in',
-			ids.map((id) => bindIds(requester, id))
+			ids.map((id) => bindIds(requester, id)),
 		)
 		.execute();
 	const map = likes.reduce((o, l) => {

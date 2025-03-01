@@ -1,6 +1,6 @@
 @use "../symbols" as *
 
-.Dialog
+.DialogBackdrop
     position: fixed
     top: 0
     bottom: 0
@@ -8,8 +8,8 @@
     right: 0
     background: rgba(0, 0, 0, .5)
     z-index: 1000
-.AuthForm
-    width: 400px
+    opacity: 0
+.Dialog
     margin-left: auto
     margin-right: auto
     padding: 10px
@@ -17,10 +17,36 @@
     // backdrop-filter: blur(20px)
     background: linear-gradient(135deg, rgba(38, 13, 65, 0.95) 0%, rgba(58, 20, 100, 0.95) 50%, rgba(38, 13, 65, 0.95) 100%)
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 1)
-    margin-top: 20%
+    margin-top: 50px
     border: $border
     text-shadow: 0 0 5px black, 0 0 10px black
     // height: 400px
+    max-width: calc(100vw - 20px)
+    max-height: calc(100vh - 70px)
+    margin-top: 50vh
+    transform: translateY(-50%)
+    &.xs
+        width: 300px
+    &.s
+        width: 400px
+    &.m
+        width: 600px
+    &.l
+        width: 800px
+    &.xl
+        width: 1000px
+    &.xxl
+        width: 1200px
+    &.fs
+        width: calc(100vw - 20px)
+        height: calc(100vh - 20px)
+    &.tfs
+        width: 100vw
+        height: 100vh
+        max-width: 100vw
+        max-height: 100vh
+        border-radius: 0
+        margin-top: 0
 .Close
     float: right
     width: 15px
@@ -34,6 +60,7 @@
     background: transparent
     border: none
     cursor: pointer
+    z-index: 1
     &::before, &::after
         content: ""
         width: 18px

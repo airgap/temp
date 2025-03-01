@@ -18,11 +18,12 @@ export default handleListUserPosts(
 			.selectFrom('posts')
 			.selectAll()
 			.where('author', '=', author)
-			.orderBy('published', 'desc');
+			.where('publish', '<', new Date())
+			.orderBy('publish', 'desc');
 		const filtered = before ? query.where('id', '<', before) : query;
 		const final = filtered.limit(20);
 		const res = await final.execute();
 		console.log('Listing', res.length, 'posts');
 		return res;
-	}
+	},
 );

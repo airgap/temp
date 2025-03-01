@@ -21,8 +21,8 @@
     error: undefined
   });
   const valid = $derived( emailValid && usernameValid && passwordValid && agreed);
-  
-  const { visible, onsubmit, onsuccess, onerror, ondismiss } = $props<{ visible?: boolean, onsubmit: () => void, onsuccess: () => void, onerror: () => void, ondismiss: () => void }>();
+
+  const { onsubmit, onsuccess, onerror, onshowtos } = $props<{ onsubmit: () => void, onsuccess: () => void, onerror: () => void }>();
   $effect(() => {
     console.log('email', email);
     console.log('username', username);
@@ -53,10 +53,9 @@
     });
   }
 </script>
-<Dialog {visible} {ondismiss}>
 <h2>{phrasebook.regFormTitle}</h2>
 
-<EmailInput 
+<EmailInput
   oninput={(e) => email = e.target.value}
   onvalidation={(e) => emailValid = e}
 />
@@ -74,8 +73,8 @@
 <Agreeable oninput={(e) => {
   agreed = e.target.checked;
   console.log('agreed', agreed);
-}}>
-  
+}} {onshowtos}>
+
 </Agreeable>
 
 <SubmitButton
@@ -87,4 +86,4 @@
 
 {#if error}
   <h3>{error}</h3>
-{/if} </Dialog>
+{/if}

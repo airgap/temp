@@ -3,7 +3,7 @@ import { mapColumnType } from './mapColumnType';
 
 export const mapArrayType = (
 	name: string,
-	columnSchema: ArrayColumnModel
+	columnSchema: ArrayColumnModel,
 ): string => {
 	const itemType = mapColumnType(name, columnSchema.items);
 	const constraints: string[] = [];
@@ -16,12 +16,12 @@ export const mapArrayType = (
 	}
 	if (columnSchema.minItems !== undefined) {
 		constraints.push(
-			`CHECK (array_length("${name}", 1) >= ${columnSchema.minItems})`
+			`CHECK (array_length("${name}", 1) >= ${columnSchema.minItems})`,
 		);
 	}
 	if (columnSchema.maxItems !== undefined) {
 		constraints.push(
-			`CHECK (array_length("${name}", 1) <= ${columnSchema.maxItems})`
+			`CHECK (array_length("${name}", 1) <= ${columnSchema.maxItems})`,
 		);
 	}
 	return `${itemType}[]${

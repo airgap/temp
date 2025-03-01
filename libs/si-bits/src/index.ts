@@ -60,6 +60,7 @@ export * from './ShowTos';
 export * from './Static';
 export * from './Sonic';
 export * from './sortGamesByPrecedence';
+export * from './TermsOfService';
 export * from './Texticle';
 export * from './Thumbnail';
 export * from './TtfBoard';

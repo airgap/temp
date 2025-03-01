@@ -3,11 +3,11 @@
   import { phrasebook } from '../phrasebook';
   import {ShowTos} from '../ShowTos';
 
-  let { children, oninput } = $props<{
+  let { children, oninput, onshowtos } = $props<{
     children: ComponentType[]
     oninput: (checked: boolean) => void
   }>();
-  
+
   let id = Math.random().toString().substring(2);
 </script>
 
@@ -18,7 +18,7 @@
     oninput={oninput}
   />
   <label {id}>
-    {phrasebook.termsLabel} 
+    {phrasebook.termsLabel}
   </label>
-  <ShowTos>{phrasebook.termsLink}</ShowTos>
-</div> 
+  <ShowTos onclick={onshowtos}>{phrasebook.termsLink}</ShowTos>
+</div>

@@ -4,25 +4,32 @@
     import {DesktopNav, MobileNav, Backdrop, UserLoginForm, UserRegistrationForm} from '@lyku/si-bits';
     import { page } from '$app/stores';
     import styles from './App.module.sass';
-    import { Dialog, PostCreator } from '@lyku/si-bits';
+    import { Dialog, PostCreator, TermsOfService } from '@lyku/si-bits';
 
     const pageUrl = $derived($page.url);
     const currentUser = $derived($page.data.currentUser);
 
     const { children } = $props<{ children?: () => any }>();
+
+    let showAuth = $state(false);
+    let showTos = $state(false);
     onMount(() => {
         initSession();
     });
 
     let showJoin = $state(false);
     let showLogin = $state(false);
-    
+
     function join() {
         showJoin = true;
+        showLogin = false;
+        showAuth = true;
     }
-    
+
     function login() {
         showLogin = true;
+        showJoin = false;
+        showAuth = true;
     }
 
     function closeJoin() {
@@ -48,31 +55,40 @@
 <svelte:window onkeydown={handleKeydown}/>
 
 <div class={styles.App}>
-    <Backdrop visible={showJoin || showLogin} onclick={() => { showJoin = false; showLogin = false; }}/>
-    <DesktopNav 
-        url={pageUrl} 
+    <Backdrop visible={showJoin || showLogin} onclick={() => { showAuth = false; }}/>
+    <DesktopNav
+        url={pageUrl}
         user={currentUser}
-        onjoin={join} 
-        onlogin={login} 
+        onjoin={join}
+        onlogin={login}
+        oncreate={openCreator}
+        onshowtos={() => showTos = true}
     />
     {@render children?.()}
-    <MobileNav 
-        url={pageUrl} 
+    <MobileNav
+        url={pageUrl}
         user={currentUser}
-        onjoin={join} 
-        onlogin={login} 
+        onjoin={join}
+        onlogin={login}
+        oncreate={openCreator}
     />
-    <Dialog visible={showCreator} ondismiss={closeCreator}>
+    <Dialog visible={showCreator} ondismiss={closeCreator} size="l" animation="slide-top">
         <PostCreator onsuccess={closeCreator}></PostCreator>
     </Dialog>
-        <UserRegistrationForm 
-            visible={(showJoin)} 
-            ondismiss={closeJoin}
-            onsuccess={closeJoin}
-        />
-        <UserLoginForm 
-            visible={showLogin}
-            ondismiss={closeLogin}
-            onsuccess={closeLogin}
-        />
+    <Dialog visible={showAuth} ondismiss={()=> showAuth = false} animation="slide-top">
+        {#if showJoin}
+            <UserRegistrationForm
+                onsuccess={()=> showAuth = false}
+                onshowtos={()=> showTos = true}
+            />
+        {/if}
+        {#if showLogin}
+            <UserLoginForm
+                onsuccess={() => showAuth = false}
+            />
+        {/if}
+    </Dialog>
+        <Dialog size="m" visible={showTos} ondismiss={() => showTos = false} animation="slide-bottom">
+            <TermsOfService/>
+        </Dialog>
 </div>

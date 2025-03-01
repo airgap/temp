@@ -163,20 +163,17 @@ const jsonify = async () => {
 };
 
 await jsonify();
-const assets = ['package.json', 'README.md', 'tsconfig.json'];
+const assets = [
+	'package.json',
+	'README.md',
+	{ file: 'tsconfig.json', tfm: (txt) => txt.replace('../../', '../../../') },
+];
 // Copy package.json to dist
-for (const asset of assets) {
+for (const { file, tfm = (t) => t } of assets.map((a) =>
+	typeof a === 'string' ? { file: a } : a
+)) {
 	await Bun.write(
-		path.join(
-			__dirname,
-			'..',
-			'..',
-			'..',
-			'dist',
-			'libs',
-			'json-models',
-			asset
-		),
-		await Bun.file(path.join(__dirname, '..', asset)).text()
+		path.join(__dirname, '..', '..', '..', 'dist', 'libs', 'json-models', file),
+		tfm(await Bun.file(path.join(__dirname, '..', file)).text())
 	);
 }

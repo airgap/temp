@@ -25,10 +25,13 @@
 			vertical-align: middle
 		.Username
 			margin-left: 5px
-	
+
 	.Submit
 		text-align: right
 		button
+			appearance: none
+			background: transparent
+			border: none
 			color: white
 			opacity: .5
 			padding: 10px
@@ -39,11 +42,13 @@
 			width: auto
 			border-radius: 0px
 			font-family: 'Montserrat', sans-serif
+			cursor: pointer
+			cursor: pointer
 			&:hover
 				// background: #ffffff77
 				opacity: .75
 				filter: drop-shadow(0 0 5px #ffffff77)
-				img
+				img, svg
 					margin-right: -10px
 					margin-left: 10px
 			&:disabled
@@ -52,7 +57,7 @@
 				transition: .25s
 				display: inline-block
 				vertical-align: middle
-			img
+			img, svg
 				height: 20px
 				margin-left: 5px
 			// &::after

@@ -1,5 +1,11 @@
+<script lang="ts">
+    import type { ComponentType } from 'svelte';
+
+    let { children } = $props<{ children: ComponentType }>();
+</script>
+
 <div class="ascendere">
-    <slot></slot>
+    {@render children?.()}
 </div>
 
 <style lang="sass">

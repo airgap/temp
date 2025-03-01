@@ -167,10 +167,13 @@ export const api = Object.fromEntries(
 					const route = monolith[routeName] as TsonHandlerModel;
 					const key = onlyKey(routeName as ContractName);
 					const data = key ? { [key]: params } : params;
-					const body = encode(data);
+					console.log('dddata', data);
+					const body = encode(data, {
+						useBigInt64: true,
+					} as any);
 					const stream = 'stream' in route && route.stream;
 					const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
-					let path = `https://api.lyku.org/${snakeName}`;
+					const path = `https://api.lyku.org/${snakeName}`;
 					// let path = `//${currentPlatform.apiHostname}/${snakeName}`;
 
 					// Don't create WebSocket connections during SSR

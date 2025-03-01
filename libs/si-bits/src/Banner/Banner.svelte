@@ -7,5 +7,5 @@
 </script>
 
 <div class={classnames(bannerStyles.Banner)}>
-	{@render children?.()}
-</div> 
+  <h1>{@render children?.()}</h1>
+</div>
