@@ -2,7 +2,7 @@ import { TextColumnModel } from 'from-schema';
 
 export const mapTextType = (
 	name: string,
-	columnSchema: TextColumnModel,
+	columnSchema: TextColumnModel
 ): string => {
 	// console.log('mapping text', name, columnSchema, '/text');
 	const constraints: string[] = [];
@@ -17,7 +17,7 @@ export const mapTextType = (
 		constraints.push(
 			`GENERATED ALWAYS AS (${columnSchema.generated.as})${
 				columnSchema.generated.stored ? ' STORED' : ''
-			}`,
+			}`
 		);
 	}
 	if (columnSchema.checks) {

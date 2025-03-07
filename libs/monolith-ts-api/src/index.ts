@@ -109,6 +109,7 @@ interface CookieAdapter {
 
 // Cookie utility functions that use the platform
 export function getCookie(name: string): string {
+	console.log('Getting cookie', name);
 	return currentPlatform.cookies.get(name) || '';
 }
 
@@ -137,6 +138,7 @@ export const setCookieAdapter = (adapter: CookieAdapter) => {
 let _sessionId: FromTsonSchema<typeof sId> | undefined;
 
 export const getSessionId = () => {
+	console.log('Getting sessionId');
 	return cookieAdapter.get('sessionId') || '';
 };
 
@@ -152,6 +154,15 @@ export const initSession = (serverSessionId?: string) => {
 // }
 
 export const getActiveSession = () => _sessionId;
+
+export const fe = {
+	tch: fetch,
+	custom: false,
+};
+export const setFetch = (f: any) => {
+	fe.tch = f;
+	fe.custom = true;
+};
 
 export const api = Object.fromEntries(
 	(Object.entries(monolith) as [ContractName, TsonHandlerModel][]).map(
@@ -196,9 +207,10 @@ export const api = Object.fromEntries(
 						});
 					} else {
 						console.log('fetching', path);
+						console.log('cookieAdapter', cookieAdapter);
 						const bearer = stupidSessionId || cookieAdapter.get('sessionId');
 						console.log('bearer', bearer);
-						const fetchOptions: RequestInit = {
+						const fetchOptions = {
 							method: 'method' in model ? model.method : 'POST',
 							// Only include credentials if it's supported in the environment
 							...(typeof window !== 'undefined'
@@ -209,10 +221,12 @@ export const api = Object.fromEntries(
 								'Content-Type': 'application/x-msgpack',
 								...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
 							},
-						};
-						console.log('fetchOptions', fetchOptions);
-						return fetch(path, fetchOptions)
+						} satisfies RequestInit;
+						console.log('Fetching', path, fetchOptions);
+						return fe
+							.tch(path, fetchOptions)
 							.then((res) => {
+								console.log('Fetched', path);
 								if (res.status !== 200) console.log('Fetch code:', res.status);
 								if (!res.ok) {
 									switch (res.status) {

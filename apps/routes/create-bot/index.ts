@@ -36,5 +36,5 @@ export default handleCreateBot(
 			.returning('id')
 			.executeTakeFirstOrThrow();
 		return id;
-	},
+	}
 );

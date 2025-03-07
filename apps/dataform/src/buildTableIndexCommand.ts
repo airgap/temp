@@ -2,7 +2,7 @@ import { PostgresRecordModel, PostgresTableModel } from 'from-schema';
 import { mapColumnType } from './mapColumnType';
 
 export function buildTableIndexCommands<
-	T extends PostgresTableModel<PostgresRecordModel>,
+	T extends PostgresTableModel<PostgresRecordModel>
 >(tableName: string, model: T) {
 	const indexQueries: string[] = [];
 	if (model.indexes) {
@@ -28,7 +28,7 @@ export function buildTableIndexCommands<
 			}
 
 			const indexQuery = `CREATE INDEX IF NOT EXISTS "${indexName}" ON "${tableName}" (${indexColumns.join(
-				', ',
+				', '
 			)});`;
 			indexQueries.push(indexQuery);
 		});

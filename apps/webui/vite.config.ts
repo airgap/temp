@@ -14,8 +14,8 @@ export default defineConfig({
 	root: __dirname,
 	cacheDir: '../../node_modules/.vite/apps/webui',
 	plugins: [
-		sveltekit(),
 		nxViteTsPaths(),
+		sveltekit(),
 		nxCopyAssetsPlugin(['*.md', '*.svg', '*.png']),
 		svgLoader(),
 	],

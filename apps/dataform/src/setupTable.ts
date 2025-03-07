@@ -6,7 +6,7 @@ import { buildTableTriggerCommands } from './buildTableTriggerCommands';
 
 export function setupTable<T extends PostgresTableModel<PostgresRecordModel>>(
 	tableName: string,
-	model: T,
+	model: T
 ) {
 	let output = '';
 	const append = (str?: string) => (output += (str ?? '') + '\n');

@@ -55,7 +55,7 @@ export default handleListHotPosts(
 						.where(
 							'postId',
 							'in',
-							posts.map((p) => p.id),
+							posts.map((p) => p.id)
 						)
 						.selectAll()
 						.execute()
@@ -72,5 +72,5 @@ export default handleListHotPosts(
 
 		console.log('Hot posts:', posts.length);
 		return response;
-	},
+	}
 );

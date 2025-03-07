@@ -16,5 +16,5 @@ export default handleListGroupsImIn((_, { db, requester }) =>
 	]).then(([groups, groupMemberships]) => ({
 		groups,
 		groupMemberships,
-	})),
+	}))
 );

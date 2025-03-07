@@ -3,7 +3,7 @@ import { numberChecks } from './numberChecks';
 
 export const mapIntegerType = (
 	name: string,
-	columnSchema: IntegerColumnModel,
+	columnSchema: IntegerColumnModel
 ): string => {
 	const constraints = numberChecks(name, columnSchema);
 

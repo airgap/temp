@@ -1,5 +1,5 @@
 import { getCookie } from 'monolith-ts-api';
-import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
+import { type CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';
 import { en_US } from '@lyku/strings';
 
 export const getDictionary = (): CompactedPhrasebook => {

@@ -45,6 +45,8 @@ spec:
               value: '${WEBUI_DOMAIN}'
             - name: SERVICE_DOMAIN
               value: '${SERVICE_DOMAIN}'
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: '0'
           ports:
             - containerPort: 3000
           resources:

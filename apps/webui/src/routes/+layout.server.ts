@@ -1,4 +1,4 @@
-import type { ServerLoadEvent } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
 import { api, cookieAdapter, setStupidSessionId } from 'monolith-ts-api';
 
 const getCurrentUserFromSession = async (sessionId: string) => {
@@ -7,9 +7,8 @@ const getCurrentUserFromSession = async (sessionId: string) => {
 	return user || undefined;
 };
 
-export async function load({ locals, cookies }: ServerLoadEvent) {
+export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 	const sessionId = cookies.get('sessionId');
-	console.log('a sessionId', sessionId);
 	setStupidSessionId(sessionId);
 	// console.log('setter', cookieAdapter.set);
 	// cookieAdapter.set?.('sessionId', sessionId);
@@ -20,4 +19,4 @@ export async function load({ locals, cookies }: ServerLoadEvent) {
 	return {
 		currentUser: user,
 	};
-}
+};

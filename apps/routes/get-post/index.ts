@@ -5,5 +5,5 @@ export default handleGetPost((id, { db }) =>
 		.selectFrom('posts')
 		.selectAll()
 		.where('id', '=', id)
-		.executeTakeFirstOrThrow(),
+		.executeTakeFirstOrThrow()
 );

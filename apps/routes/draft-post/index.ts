@@ -10,7 +10,12 @@ import {
 	shortenLinksInBody,
 } from '@lyku/route-helpers';
 import { handleDraftPost } from '@lyku/handles';
-import { ImageDraft, PostDraft, VideoDraft, InsertablePostDraft } from '@lyku/json-models/index';
+import {
+	ImageDraft,
+	PostDraft,
+	VideoDraft,
+	InsertablePostDraft,
+} from '@lyku/json-models/index';
 import { getSupertypeFromMime, makeAttachmentId } from '@lyku/helpers';
 
 type AttachmentDraft = ImageDraft | VideoDraft;
@@ -18,7 +23,7 @@ type AttachmentDraft = ImageDraft | VideoDraft;
 export default handleDraftPost(
 	async (
 		{ attachments, body, replyTo, echoing },
-		{ db, requester, strings },
+		{ db, requester, strings }
 	) => {
 		console.log('Drafting post', requester, body, replyTo, echoing);
 		if (!cfApiToken && attachments?.length)
@@ -45,7 +50,7 @@ export default handleDraftPost(
 		const atAts: AttachmentDraft[] = [];
 		const attachmentIds: bigint[] =
 			attachments?.map((a, i) =>
-				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type)),
+				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type))
 			) ?? [];
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
@@ -78,7 +83,7 @@ export default handleDraftPost(
 				imageDrafts.length,
 				'images and',
 				videoDrafts.length,
-				'videos drafted',
+				'videos drafted'
 			);
 			atAts.push(...imageDrafts, ...videoDrafts);
 		}
@@ -96,13 +101,17 @@ export default handleDraftPost(
 		if (replyTo) draft.replyTo = replyTo;
 		else if (echoing) draft.echoing = echoing;
 		console.log('draft', draft);
-		await db.updateTable('postDrafts').set(draft).where('id','=',draft.id).execute();
+		await db
+			.updateTable('postDrafts')
+			.set(draft)
+			.where('id', '=', draft.id)
+			.execute();
 		return {
 			attachmentUploadPacks: atAts,
 			// userId,
 			id: draft.id,
 		};
-	},
+	}
 );
 type AttachmentInitializerProps = {
 	id: bigint;
@@ -112,7 +121,7 @@ type AttachmentInitializerProps = {
 	size?: number;
 };
 type AttachmentInitializer<Return> = (
-	props: AttachmentInitializerProps,
+	props: AttachmentInitializerProps
 ) => Promise<Return>;
 // Example usage
 // const html = '<div><p>Some <b>bold</b> text</p><script>alert("no!");</script></div>';
@@ -174,7 +183,7 @@ const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 		'stdout',
 		stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1],
 		'stderr',
-		stderr,
+		stderr
 	);
 	const uploadURL = stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1];
 	const id = stdout.match(/^stream-media-id: ([a-z0-9]{32})$/m)?.[1];

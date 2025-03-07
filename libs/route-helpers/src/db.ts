@@ -2,26 +2,28 @@ import { PostgresDialect } from 'kysely';
 
 import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
-import { Pool, types } from 'pg';
+import { Pool, PoolConfig, types } from 'pg';
 import { dbConnectionString } from './env';
 import { readFileSync } from 'fs';
-const ca = readFileSync('./k8s-prd-ca-cert.crt', 'utf8');
+const ca = readFileSync('./k8s-prd-ca-cert.crt');
+
+const pgOpts = {
+	connectionString: dbConnectionString,
+	max: 10,
+	idleTimeoutMillis: 20000,
+	connectionTimeoutMillis: 5000, // Increased timeout for establishing a connection
+	ssl: {
+		ca,
+		rejectUnauthorized: false,
+	},
+} satisfies PoolConfig;
 
 types.setTypeParser(types.builtins.INT8, function (val) {
 	return BigInt(val);
 });
 
 async function testConnection() {
-	const pool = new Pool({
-		connectionString: dbConnectionString,
-		max: 10,
-		idleTimeoutMillis: 20000,
-		connectionTimeoutMillis: 5000, // Increased timeout for establishing a connection
-		ssl: {
-			ca,
-			rejectUnauthorized: true,
-		},
-	});
+	const pool = new Pool(pgOpts);
 
 	const client = await pool.connect();
 	try {
@@ -35,21 +37,12 @@ async function testConnection() {
 }
 
 // Call the test connection function
-// testConnection().catch((error) => {
-// 	console.error('Connection test failed:', error);
-// });
+testConnection().catch((error) => {
+	console.error('Connection test failed:', error);
+});
 
 const dialect = new PostgresDialect({
-	pool: new Pool({
-		connectionString: dbConnectionString,
-		max: 10,
-		idleTimeoutMillis: 10000,
-		query_timeout: 5000,
-		ssl: {
-			ca,
-			rejectUnauthorized: true,
-		},
-	}),
+	pool: new Pool(pgOpts),
 });
 console.log('dbConnectionString', dbConnectionString);
 

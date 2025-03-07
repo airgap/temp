@@ -1,13 +1,24 @@
 {
-	"extends": "./tsconfig.json",
+	"extends": "../../dist/apps/webui/tsconfig.json",
 	"compilerOptions": {
 		"outDir": "../../dist/out-tsc",
+		"baseUrl": "../..",
 		"types": [
 			"node",
 			"svelte",
 			"@nx/react/typings/cssmodule.d.ts",
 			"@nx/react/typings/image.d.ts"
-		]
+		],
+		"paths": {
+			"@lyku/json-models": ["dist/libs/json-models"],
+			"monolith-ts-api": ["dist/libs/monolith-ts-api"],
+			"@lyku/strings": ["dist/libs/strings"],
+			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
+			"@lyku/db-config": ["dist/libs/db-config"],
+			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"],
+			"@lyku/helpers": ["libs/helpers"],
+			"@lyku/defaults": ["libs/defaults"]
+		}
 	},
 	"exclude": [
 		"jest.config.ts",
@@ -30,6 +41,8 @@
 		"src/**/*.ts",
 		"src/**/*.tsx",
 		"src/**/*.svelte",
-		"src/**/*.html"
+		"src/**/*.html",
+		".svelte-kit/types",
+		"apps/webui/.svelte-kit/types"
 	]
 }

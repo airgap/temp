@@ -2,7 +2,7 @@ import { PostgresRecordModel, PostgresTableModel } from 'from-schema';
 import { mapColumnType } from './mapColumnType';
 
 export function buildTableTriggerCommands<
-	T extends PostgresTableModel<PostgresRecordModel>,
+	T extends PostgresTableModel<PostgresRecordModel>
 >(tableName: string, model: T) {
 	const triggerQueries: string[] = [];
 	if (model.triggers) {
@@ -24,7 +24,7 @@ export function buildTableTriggerCommands<
 					`${timing} ${event.toUpperCase()}\n` +
 					`ON "${tableName}"\n` +
 					`FOR EACH ROW\n` +
-					`EXECUTE FUNCTION ${triggerName}_fn();`,
+					`EXECUTE FUNCTION ${triggerName}_fn();`
 			);
 		});
 	}

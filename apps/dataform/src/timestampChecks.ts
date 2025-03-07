@@ -2,7 +2,7 @@ import { TimestampBase } from 'from-schema/dist/postgres/columns/numeric/Timesta
 
 export const timestampChecks = <T extends TimestampBase>(
 	name: string,
-	columnSchema: T,
+	columnSchema: T
 ) => {
 	const constraints: string[] = [];
 	if ('checks' in columnSchema && columnSchema.checks)

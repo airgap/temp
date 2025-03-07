@@ -15,7 +15,7 @@ import { handlePlacePiece } from '@lyku/handles';
 const isValidTicTacFlowMove = (
 	{ board, turn, winner }: TtfMatch,
 	who: 'X' | 'O',
-	where: number,
+	where: number
 ): boolean => {
 	if (winner) return false;
 	if (board[where] !== '-') return false;
@@ -51,7 +51,7 @@ export default handlePlacePiece(
 			'and',
 			canPlace ? 'can' : 'cannot',
 			'place a piece at',
-			square,
+			square
 		);
 		if (!canPlace) throw new Error("You can't do that");
 		placePieceInMatch(iAm, square, match);
@@ -61,7 +61,7 @@ export default handlePlacePiece(
 			void grantPointsToUser(
 				ttfBotsById.get(oppId)?.points ?? 1,
 				requester,
-				db,
+				db
 			);
 			const achievement = achievementMap.get(oppId);
 			if (!achievement) console.log('No achievement to grant');
@@ -76,5 +76,5 @@ export default handlePlacePiece(
 			.set(match)
 			.where('id', '=', matchId)
 			.execute();
-	},
+	}
 );

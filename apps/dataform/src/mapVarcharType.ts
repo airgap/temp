@@ -2,7 +2,7 @@ import { VarcharColumnModel } from 'from-schema';
 
 export const mapVarcharType = (
 	name: string,
-	columnSchema: VarcharColumnModel,
+	columnSchema: VarcharColumnModel
 ): string => {
 	// console.log('mapping varchar', name, columnSchema, '/varchar');
 	const constraints: string[] = [];
@@ -17,7 +17,7 @@ export const mapVarcharType = (
 		constraints.push(
 			`GENERATED ALWAYS AS (${columnSchema.generated.as})${
 				columnSchema.generated.stored ? ' STORED' : ''
-			}`,
+			}`
 		);
 	}
 	if (columnSchema.checks) {

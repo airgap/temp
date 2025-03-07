@@ -3,7 +3,7 @@ import { timestampChecks } from './timestampChecks';
 import { dateToPostgresString } from './dateToPostgresString';
 export const mapTimestamptzType = (
 	name: string,
-	columnSchema: BigIntColumnModel,
+	columnSchema: BigIntColumnModel
 ): string => {
 	const constraints = timestampChecks(name, columnSchema);
 

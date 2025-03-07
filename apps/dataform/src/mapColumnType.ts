@@ -12,7 +12,7 @@ import { mapBigserialType } from './mapBigserialType';
 
 export function mapColumnType(
 	name: string,
-	columnSchema: PostgresColumnModel,
+	columnSchema: PostgresColumnModel
 ): string {
 	// console.log('switching', columnSchema.type);
 	switch (columnSchema.type) {

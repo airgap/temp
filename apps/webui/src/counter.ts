@@ -30,7 +30,7 @@ export const registerCounter = () =>
 					},
 					ease: config.ease,
 				},
-				0,
+				0
 			);
 
 			return tl;

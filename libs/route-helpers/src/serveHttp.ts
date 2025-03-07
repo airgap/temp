@@ -33,7 +33,14 @@ export const serveHttp = async ({
 		port,
 		async fetch(req) {
 			const responseHeaders = new Headers();
-			responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
+			const origin = req.headers.get('origin');
+			if (origin && origin.startsWith('https://lyku.org')) {
+				responseHeaders.set('Access-Control-Allow-Origin', origin);
+			} else {
+				responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
+			}
+			console.log('origin', origin);
+			// responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
 				'Access-Control-Allow-Methods',
@@ -103,7 +110,9 @@ export const serveHttp = async ({
 			console.log('arrayBuffer', arrayBuffer);
 			const intArray = arrayBuffer ? new Uint8Array(arrayBuffer) : undefined;
 			console.log('intArray', intArray);
-			const params = intArray?.length ? decode(intArray, { useBigInt64: true }) : undefined;
+			const params = intArray?.length
+				? decode(intArray, { useBigInt64: true })
+				: undefined;
 			console.log('params', params);
 			if ('request' in model && methodHasBody) {
 				try {
@@ -143,9 +152,15 @@ export const serveHttp = async ({
 			} catch (e) {
 				console.error('Error executing route', e);
 				if (e instanceof Err) {
-					return new Response(e.message, { status: e.code });
+					return new Response(e.message, {
+						status: e.code,
+						headers: responseHeaders,
+					});
 				}
-				return new Response('Internal server error', { status: 500 });
+				return new Response('Internal server error', {
+					status: 500,
+					headers: responseHeaders,
+				});
 			}
 		},
 	});
