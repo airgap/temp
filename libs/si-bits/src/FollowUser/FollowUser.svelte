@@ -8,8 +8,8 @@
     user: User;
   }>();
 
-  let following: boolean | undefined;
-  let queried = false;
+  let following = $state<boolean>();
+  let queried = $state(false);
 
   $effect(() => {
     if (!queried && following === undefined) {

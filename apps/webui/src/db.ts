@@ -1,29 +1,63 @@
-import { PostgresDialect } from 'kysely';
+/**
+ * @deprecated This file is deprecated. Use the server-only module instead.
+ * Import from '$lib/server/db' in server-only code.
+ */
 
+// This file should only be imported in server-side code
+if (typeof window !== 'undefined') {
+	throw new Error('This module can only be imported in server-side code');
+}
+
+// Throw an error to prevent this file from being used
+throw new Error(
+	'This database module is deprecated. Please use the server-only module instead. ' +
+		'Import from "$lib/server/db" in server-only code.'
+);
+
+// The rest of this file is kept for reference but will never be executed
+/* 
+import { PostgresDialect } from 'kysely';
 import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
-import { Pool } from 'pg';
-// import { dbConnectionString } from './env';
-// import { readFileSync } from 'fs';
-// const ca = readFileSync('./k8s-prd-ca-cert.crt', 'utf8');
+import * as Drizzy from '@neondatabase/serverless';
 
-const connectionString = process.env.PG_CONNECTION_STRING;
+let connectionString: string;
+
+export function initDb(pgConnectionString: string) {
+	console.log('Initializing DB with', pgConnectionString);
+	connectionString = pgConnectionString;
+
+	const dialect = new PostgresDialect({
+		pool: new Drizzy.Pool({
+			connectionString,
+			max: 10,
+			idleTimeoutMillis: 10000,
+			query_timeout: 5000,
+			ssl: {
+				rejectUnauthorized: true,
+			},
+		}),
+	});
+	return new Kysely<Database>({
+		dialect,
+		log: ['query', 'error'],
+	});
+}
 
 async function testConnection() {
-	const pool = new Pool({
+	const pool = new Drizzy.Pool({
 		connectionString,
 		max: 10,
 		idleTimeoutMillis: 20000,
-		connectionTimeoutMillis: 5000, // Increased timeout for establishing a connection
+		connectionTimeoutMillis: 5000,
 		ssl: {
-			// ca,
 			rejectUnauthorized: true,
 		},
 	});
 
 	const client = await pool.connect();
 	try {
-		const res = await client.query('SELECT NOW()'); // Basic query to check connection
+		const res = await client.query('SELECT NOW()');
 		console.log('PostgreSQL connection successful:', res.rows[0]);
 	} catch (error) {
 		console.error('Error connecting to PostgreSQL:', error);
@@ -31,31 +65,4 @@ async function testConnection() {
 		client.release();
 	}
 }
-
-// Call the test connection function
-// testConnection().catch((error) => {
-// 	console.error('Connection test failed:', error);
-// });
-
-const dialect = new PostgresDialect({
-	pool: new Pool({
-		connectionString,
-		max: 10,
-		idleTimeoutMillis: 10000,
-		query_timeout: 5000,
-		ssl: {
-			// ca,
-			rejectUnauthorized: true,
-		},
-	}),
-});
-console.log('connectionString', connectionString);
-
-// Database interface is passed to Kysely's constructor, and from now on, Kysely
-// knows your database structure.
-// Dialect is passed to Kysely's constructor, and from now on, Kysely knows how
-// to communicate with your database.
-export const db = new Kysely<Database>({
-	dialect,
-	log: ['query', 'error'],
-});
+*/

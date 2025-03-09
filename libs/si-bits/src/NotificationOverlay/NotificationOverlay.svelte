@@ -6,9 +6,10 @@
   import { shout } from '../Sonic';
   import { api, getSessionId, type ThiccSocket } from 'monolith-ts-api';
   import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
 
-  let notifications: Notification[] = [];
-  let listener: ThiccSocket<'listenForNotifications'> | undefined;
+  let notifications = $state<Notification[]>([]);
+  let listener = $state<ThiccSocket<'listenForNotifications'>>();
 
   // Noti component logic
   function handleNotificationClick(notification: Notification) {
@@ -60,11 +61,3 @@
     </button>
   {/each}
 </div>
-
-<script context="module">
-  import { fade } from 'svelte/transition';
-</script>
-
-<style>
-  /* Add any component-specific styles here */
-</style> 

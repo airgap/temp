@@ -4,8 +4,10 @@
   import { bind, unbind } from '../bind';
   import { onMount, onDestroy } from 'svelte';
 
-  let shown = false;
+  let shown = $state(false);
   const overlay = String(Math.random()).substring(2);
+
+  const {children} = $props<{children?: ComponentType}>();
 
   const showHandler = () => shown = true;
   const hideHandler = () => shown = false;
@@ -23,6 +25,6 @@
 
 <div class={`${styles.WinOverlay} ${shown ? 'shown' : ''}`}>
   <PopupBox {overlay}>
-    <slot />
+    {@render children?.()}
   </PopupBox>
 </div> 

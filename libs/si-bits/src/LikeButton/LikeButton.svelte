@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ReactionButton } from '../ReactionButton';
-  import filledHeart from '../assets/filledheart.svg';
-  import emptyHeart from '../assets/heart.svg';
+  import filledHeart from '../assets/filledheart.svg?raw';
+  import emptyHeart from '../assets/heart.svg?raw';
   import { shout } from '../Sonic';
   import { UserRegistrationForm } from '../authForms';
   import { api, getSessionId } from 'monolith-ts-api';

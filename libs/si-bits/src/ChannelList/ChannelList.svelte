@@ -1,12 +1,14 @@
 <script lang="ts">
+	import type { ComponentType } from 'svelte';
   import { formImageUrl } from '../formImageUrl';
   import { phrasebook } from '../phrasebook';
   import styles from './ChannelList.module.sass';
   import type { Channel } from '@lyku/json-models';
 
-  const { channels = undefined, mine = false } = $props<{
+  const { channels = undefined, mine = false, children } = $props<{
     channels?: Channel[];
     mine?: boolean;
+    children?: ComponentType
   }>();
 </script>
 
@@ -38,7 +40,7 @@
       </li>
     {/each}
   {/if}
-  {#if $$slots.default}
-    <li><slot /></li>
+  {#if children}
+    <li>{@render children?.()}</li>
   {/if}
 </ul> 

@@ -38,6 +38,6 @@
     {phrasebook.botlessLuddite}
   {/if}
   <li>
-    <slot />
+    {@render children?.()}
   </li>
 </ul> 

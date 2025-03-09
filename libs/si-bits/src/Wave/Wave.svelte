@@ -1,5 +1,5 @@
 <script lang="ts">
-  import wave from '../assets/wave.svg';
+  import wave from '../assets/wave.svg?raw';
   import styles from './Wave.module.sass';
   const { turn } = $props<{ turn: number }>();
 </script>

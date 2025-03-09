@@ -1,5 +1,8 @@
+<script lang="ts">
+    const {children} = $props<{children?: ComponentType}>();
+</script>
 <div class="center">
-    <slot></slot>
+    {@render children?.()}
 </div>
 
 <style>

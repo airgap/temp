@@ -3,5 +3,5 @@
 </script>
 
 <div class={styles.TvBox}>
-  <slot />
+  {@render children?.()}
 </div> 

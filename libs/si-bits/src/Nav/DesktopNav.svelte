@@ -19,9 +19,8 @@
   import { ProfilePicture } from '../ProfilePicture';
 	// import { currentUser } from '../currentUserStore';
 // const user = $currentUser;
-  const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{ user?: User; sessionId: string; url: URL, onjoin: () => void, onlogin: () => void, oncreate?: () => void }>();
+  const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{ user?: User; sessionId: string; url?: URL, onjoin: () => void, onlogin: () => void, oncreate?: () => void }>();
   console.log('user', user);
-  console.log('plus', Plus)
 </script>
 
 <div class={styles.DesktopNav}>
@@ -30,10 +29,10 @@
       <Backdrop />
       <NavLogo />
       {#if user}
-        <CoolLink href="/tail" isActive={url.pathname.startsWith('/tail')}>{phrasebook.navTailored}</CoolLink>
+        <CoolLink href="/tail" isActive={url?.pathname.startsWith('/tail')}>{phrasebook.navTailored}</CoolLink>
       {/if}
-      <CoolLink href="/hot" isActive={url.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
-      <CoolLink href="/play" isActive={url.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
+      <CoolLink href="/hot" isActive={url?.pathname.startsWith('/hot')}>{phrasebook.navHot}</CoolLink>
+      <CoolLink href="/play" isActive={url?.pathname.startsWith('/play')}>{phrasebook.navPlay}</CoolLink>
 
       <span class={styles.cluster}>
         {#if user}

@@ -9,11 +9,11 @@
   import { Divisio } from '../Divisio';
   import { cacheStore } from '../CacheProvider';
 
-  const { user, onClose } = $props<{ user: User; onClose: () => void }>();
+  const { user, onclose } = $props<{ user: User; onclose: () => void }>();
 
-  let matches: TtfMatch[] = [];
-  let queried = false;
-  let users: User[] | undefined;
+  let matches = $state<TtfMatch[]>([]);
+  let queried = $state(false);
+  let users = $state<User[]>();
 
   $effect(() => {
     if (!queried) {
@@ -40,7 +40,7 @@
     <thead>
     <tr>
       <td>
-        <Button onclick={onClose}>&lt; Back</Button>
+        <Button onclick={onclose}>&lt; Back</Button>
       </td>
     </tr></thead>
     <tbody>

@@ -1,11 +1,9 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
   import type { GameStatus } from '@lyku/json-models';
-  import { Thumbnail } from '@lyku/si-bits';
-  import { phrasebook } from '@lyku/si-bits';
+  import { Thumbnail, phrasebook, sortGamesByPrecedence } from '@lyku/si-bits';
   import styles from './ViewGames.module.sass';
   import classNames from 'classnames';
-  import { sortGamesByPrecedence } from '@lyku/si-bits';
 
   // CSS classes for various game statuses
   const statusClasses = {

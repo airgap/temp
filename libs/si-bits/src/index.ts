@@ -32,7 +32,6 @@ export * from './FollowUser';
 export * from './Footer';
 export * from './FriendInviter';
 export * from './getHomepage';
-export * from './Gol';
 export * from './GroupList';
 export * from './GroupFilterSelect';
 export * from './ImageUpload';

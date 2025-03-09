@@ -4,10 +4,10 @@
     import MessageItem from './MessageItem.svelte';
     import type { Channel, Message } from '@lyku/json-models';
 
-    const { channel = undefined } = $props<{
+    const { channel } = $props<{
         channel?: Channel;
     }>();
-    let messages: Message[];
+    let messages = $state<Message[]>();
 
     $effect(() => {
         if (channel && !messages.length) {

@@ -1,8 +1,35 @@
 import { setCookieAdapter } from 'monolith-ts-api';
 import type { Handle } from '@sveltejs/kit';
+import { initDb } from './lib/server/db.server';
+import type { Kysely } from 'kysely';
+import type { Database } from '@lyku/db-config/kysely';
+
+// Extend the Locals interface to include the database
+declare global {
+	namespace App {
+		interface Locals {
+			cookies: import('@sveltejs/kit').Cookies;
+			db?: Kysely<Database>;
+		}
+
+		interface Platform {
+			env?: {
+				DATABASE_URL?: string;
+				[key: string]: string | undefined;
+			};
+		}
+	}
+}
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.cookies = event.cookies;
+
+	// Initialize database if we have platform environment
+	if (event.platform?.env?.DATABASE_URL) {
+		const db = initDb(event.platform.env.DATABASE_URL);
+		event.locals.db = db;
+	}
+
 	// Set up server-side adapter
 	setCookieAdapter({
 		get: (name: string) => event.cookies.get(name),

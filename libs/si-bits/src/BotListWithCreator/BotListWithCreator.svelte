@@ -6,10 +6,10 @@
     import { UserList } from '../UserList';
     import { phrasebook } from '../phrasebook';
 
-    let botCreatorShown = false;
-    let botNameValid = false;
-    let botName = '';
-    let bots: any[] = [];
+    let botCreatorShown = $state(false);
+    let botNameValid = $state(false);
+    let botName = $state('');
+    let bots = $state<any[]>([]);
 
     // Fetch bots on component mount
     api.listMyBots().then(result => {

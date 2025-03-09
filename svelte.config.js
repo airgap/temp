@@ -22,6 +22,12 @@ const config = {
 		csrf: {
 			checkOrigin: false,
 		},
+		// Enforce server/client separation
+		moduleExtensions: ['.server.js', '.server.ts'],
+		alias: {
+			$server: 'apps/webui/src/lib/server',
+			$env: 'dist/apps/webui/src/env'
+		},
 	},
 	preprocess: vitePreprocess(),
 	compilerOptions: {

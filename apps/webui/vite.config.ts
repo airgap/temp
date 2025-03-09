@@ -4,6 +4,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import svgLoader from 'vite-svg-loader';
 import vps from '@sveltejs/vite-plugin-svelte';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
 	server: {
@@ -18,22 +19,50 @@ export default defineConfig({
 		sveltekit(),
 		nxCopyAssetsPlugin(['*.md', '*.svg', '*.png']),
 		svgLoader(),
+		// visualizer({ open: false, filename: 'bundle-visualization.html' })
 	],
 	build: {
 		outDir: '../../dist/apps/webui',
 		emptyOutDir: true,
 		rollupOptions: {
 			output: {
-				manualChunks: undefined,
+				manualChunks: (id) => {
+					// Create separate chunks for large third-party libraries
+					if (id.includes('node_modules')) {
+						if (id.includes('@tiptap')) {
+							return 'vendor_tiptap';
+						}
+						if (id.includes('tus-js-client')) {
+							return 'vendor_tus';
+						}
+						if (id.includes('@msgpack')) {
+							return 'vendor_msgpack';
+						}
+						if (id.includes('vue') || id.includes('prosemirror')) {
+							return 'vendor_vue_prosemirror';
+						}
+						if (id.includes('gsap')) {
+							return 'vendor_gsap';
+						}
+
+						return 'vendor'; // All other node_modules
+					}
+				},
 			},
+			treeshake: true,
 		},
+		// Ensure no Node.js APIs are used in client code
+		target: 'esnext',
 	},
-	test: {
-		watch: false,
-		globals: true,
-		environment: 'jsdom',
-		include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-		reporters: ['default'],
-		coverage: { reportsDirectory: '../../coverage/apps/webui', provider: 'v8' },
+	// Prevent Node.js built-ins from being bundled
+	resolve: {
+		conditions: ['browser', 'module', 'jsnext:main', 'jsnext'],
+	},
+	optimizeDeps: {
+		exclude: ['kysely', 'pg', '@neondatabase/serverless'],
+	},
+	// Let SvelteKit handle server/client code separation
+	ssr: {
+		noExternal: ['@lyku/db-config', '@neondatabase/serverless'],
 	},
 });

@@ -7,10 +7,10 @@
     import { Texticle } from '../Texticle';
     import { phrasebook } from '../phrasebook';
 
-    let channels: Channel[] = [];
-    let channelCreatorShown = false;
-    let channelNameValid = false;
-    let channelName = '';
+    let channels = $state<Channel[]>([]);
+    let channelCreatorShown = $state(false);
+    let channelNameValid = $state(false);
+    let channelName = $state('');
 
     // Fetch channels on component mount
     api.listMyChannels()

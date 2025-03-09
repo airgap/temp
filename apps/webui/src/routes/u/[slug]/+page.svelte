@@ -1,14 +1,8 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
-  import { PostList } from '@lyku/si-bits';
-  import { ProfilePicture } from '@lyku/si-bits';
-  import { phrasebook } from '@lyku/si-bits';
-  import { Divisio } from '@lyku/si-bits';
-  import { Center } from '@lyku/si-bits';
-  import { BefriendUser } from '@lyku/si-bits';
-  import { FollowUser } from '@lyku/si-bits';
+  import { BefriendUser, Center, Divisio, FollowUser, PostList, ProfilePicture, phrasebook } from '@lyku/si-bits';
   import { page } from '$app/state';
-  import { Post, User } from 'monolith-ts-api';
+  import type { Post, User } from '@lyku/json-models';
 
   // Get identifier from URL path params using SvelteKit's $page store
   const ident = page.params.slug;

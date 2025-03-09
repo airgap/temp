@@ -3,11 +3,12 @@
   import { getHomepage } from '../getHomepage';
   import styles from './NavLogo.module.sass';
   import logo from './gifmaker_me.gif';
+  import { tempId } from '../tempId';
 
   const { className } = $props<{ className: string }>();
 
   // Generate unique ID for mask
-  const maskId = crypto.randomUUID().replace(/-/g, '');
+  const maskId = tempId();
 </script>
 
 <Link

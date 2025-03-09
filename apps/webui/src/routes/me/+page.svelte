@@ -1,12 +1,6 @@
 <script lang="ts">
-    import { BotListWithCreator } from '@lyku/si-bits';
-    import { Center } from '@lyku/si-bits';
-    import { ChannelListWithCreator } from '@lyku/si-bits';
-    import { Divisio } from '@lyku/si-bits';
-    import { ImageUpload } from '@lyku/si-bits';
-    import { phrasebook } from '@lyku/si-bits';
-    import { shout } from '@lyku/si-bits';
-    import { currentUser } from '@lyku/si-bits';
+    import { BotListWithCreator, Center, ChannelListWithCreator, Divisio, ImageUpload, phrasebook, shout, currentUser } from '@lyku/si-bits';
+    
     
     import styles from './Profile.module.sass';
   

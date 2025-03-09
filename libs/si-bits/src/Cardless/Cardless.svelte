@@ -1,5 +1,5 @@
 <div class="cardless">
-    <slot></slot>
+    {@render children?.()}
 </div>
 
 <style>

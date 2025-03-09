@@ -8,8 +8,8 @@
     import { Editor } from "@tiptap/core";
     import { onMount } from "svelte";
 
-    let element;
-    let editor;
+    let element = $state();
+    let editor = $state();
 
 	const {value, oninput} = $props();
 
@@ -155,4 +155,4 @@
       </div>
     </div>
   {/if}
-  <div bind:this={element} />
+  <div bind:this={element}></div>

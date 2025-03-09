@@ -2,13 +2,14 @@
   import styles from './Agreeable.module.sass';
   import { phrasebook } from '../phrasebook';
   import {ShowTos} from '../ShowTos';
+	import { tempId } from '../tempId';
 
   let { children, oninput, onshowtos } = $props<{
     children: ComponentType[]
     oninput: (checked: boolean) => void
   }>();
 
-  let id = Math.random().toString().substring(2);
+  let id = tempId();
 </script>
 
 <div class={styles.Agreeable}>
@@ -17,7 +18,7 @@
     {id}
     oninput={oninput}
   />
-  <label {id}>
+  <label for={id}>
     {phrasebook.termsLabel}
   </label>
   <ShowTos onclick={onshowtos}>{phrasebook.termsLink}</ShowTos>

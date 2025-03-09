@@ -1,19 +1,9 @@
 <script lang="ts">
-    import { AchievementList } from '@lyku/si-bits';
-    import { TtfBoard } from '@lyku/si-bits';
-    import { Button } from '@lyku/si-bits';
-    import { Divisio } from '@lyku/si-bits';
-    import { MatchInfo } from '@lyku/si-bits';
-    import { MatchList } from '@lyku/si-bits';
-    import { MatchProposalList } from '@lyku/si-bits';
-    import { currentUser } from '@lyku/si-bits';
+    import { AchievementList, Button, currentUser, Divisio, FriendInviter, MatchInfo, MatchList, MatchProposalList, TtfBoard, TtfBotList, WinPanel } from '@lyku/si-bits';
     import styles from './PlayTtf.module.sass';
     import { api, type ThiccSocket } from 'monolith-ts-api';
     import type { TtfMatch } from '@lyku/json-models';
     import { games } from '@lyku/stock-docs';
-    import { FriendInviter } from '@lyku/si-bits';
-    import { TtfBotList } from '@lyku/si-bits';
-    import { WinPanel } from '@lyku/si-bits';
     import { onMount, onDestroy } from 'svelte';
 
     const { id } = games.ticTacFlow;

@@ -1,8 +1,8 @@
-import type { PageLoad } from './$types';
+// import type { PageLoad } from './$types';
 import { api, setFetch } from 'monolith-ts-api';
 import { base58ToBigint } from '@lyku/helpers';
 
-export const load: PageLoad = async ({ params, data, fetch }: any) => {
+export const load = async ({ params, data, fetch }: any) => {
 	setFetch(fetch);
 	const postId = params.post;
 	console.log('params', params);

@@ -31,6 +31,7 @@
 		"src/**/*.tsx",
 		"src/**/*.svelte",
 		".svelte-kit/types/**/$types.d.ts",
+		"dist/apps/webui/ambient.d.ts",
 		"vite.config.ts",
 		".svelte-kit/types"
 	],

@@ -21,8 +21,8 @@
     name,
   })) as { code: Lang; name: string }[];
 
-  let selectedLanguage: Lang = language in langs ? (language as Lang) : 'en-US';
-  let isOpen = false;
+  let selectedLanguage: Lang = $state(language in langs ? (language as Lang) : 'en-US');
+  let isOpen = $state(false);
 
   function handleLanguageChange(language: Lang) {
     selectedLanguage = language;

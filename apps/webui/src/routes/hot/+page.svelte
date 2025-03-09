@@ -1,7 +1,6 @@
 <script lang="ts">
   import { api } from 'monolith-ts-api';
-  import { PostList } from '@lyku/si-bits';
-  import { FeedPage } from '@lyku/si-bits';
+  import { FeedPage, PostList } from '@lyku/si-bits';
   let postsPromise = api.listHotPosts({});
 </script>
 

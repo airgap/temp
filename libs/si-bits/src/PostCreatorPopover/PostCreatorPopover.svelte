@@ -6,7 +6,7 @@
   import styles from './PostCreatorPopover.module.sass';
   import { cacheStore } from '../CacheProvider';
 
-  let echoing: Post | undefined;
+  let echoing = $state<Post>();
   const user = cacheStore.currentUser;
 
   listen('echo', (post) => {

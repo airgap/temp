@@ -3,6 +3,7 @@
   import O from '../assets/o.png';
   import X from '../assets/x.png';
   import type { TtfMatch } from '@lyku/json-models';
+  import Piece from './Piece.svelte';
 
   const images = { O, X };
   type Piece = {
@@ -15,9 +16,9 @@
 
   const { match } = $props<{ match: TtfMatch }>();
   
-  let lastTurn: number | undefined;
-  let lastBoard: string | undefined;
-  let pieces: Piece[] = [];
+  let lastTurn = $state<number>();
+  let lastBoard = $state<string>();
+  let pieces = $state<Piece[]>([]);
   
   $effect(() => {
     if (lastTurn) {
@@ -90,42 +91,9 @@
 
 <div class="board-pieces">
   {#each pieces as { x, y, p, i, key }}
-    <PieceComponent {x} {y} {p} {i} {key} />
+    <Piece {x} {y} {p} {i} {key} />
   {/each}
 </div>
-
-<script lang="ts" context="module">
-  const PieceComponent = (function() {
-    return {
-      render: (props: { x: number; y: number; p: 'X' | 'O'; i: number; key: number }) => {
-        let grown = false;
-        
-        onMount(() => {
-          requestAnimationFrame(() => grown = true);
-        });
-        
-        return `
-          <img
-            key="${props.key}"
-            style="
-              position: absolute;
-              width: 33.33%;
-              height: 33.33%;
-              transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${Math.random() * 0.3}s;
-              transform: scale(${grown ? 75 : 0}%);
-              left: ${33.33 * props.x}%;
-              top: ${33.33 * props.y}%;
-              opacity: ${props.i < 9 ? 1 : 0};
-              pointer-events: none;
-            "
-            src="${images[props.p]}"
-            alt="${props.p}"
-          />
-        `;
-      }
-    };
-  })();
-</script>
 
 <style>
   .board-pieces {

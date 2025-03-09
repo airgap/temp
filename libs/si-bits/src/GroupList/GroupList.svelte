@@ -7,9 +7,9 @@
 
   const { substring, filter } = $props<{ substring?: string; filter?: GroupFilter }>();
 
-  let groups: Group[] = [];
-  let memberships: GroupMembership[] = [];
-  let queriedGroups = false;
+  let groups = $state<Group[]>([]);
+  let memberships = $state<GroupMembership[]>([]);
+  let queriedGroups = $state(false);
 
   $effect(() => {
     if (!queriedGroups && getSessionId()) {

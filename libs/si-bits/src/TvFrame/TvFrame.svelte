@@ -11,5 +11,5 @@
   })}
   style={`height: ${height}px`}
 >
-  <slot />
+  {@render children?.()}
 </div> 

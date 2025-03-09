@@ -7,13 +7,14 @@
   import { Static } from '../Static';
   import { TvFrame } from '../TvFrame';
   import styles from './Tv.module.sass';
+	import type { ComponentType } from 'svelte';
 
-  const { channel, showStatic } = $props<{ channel: Channel | undefined; showStatic: boolean }>();
+  const { channel, showStatic, children } = $props<{ channel: Channel | undefined; showStatic: boolean, children?: ComponentType }>();
 
-  let frameRef: HTMLDivElement;
-  let ready = false;
-  let height = 480;
-  let loading = false;
+  let frameRef: HTMLDivElement = $state();
+  let ready = $state(false);
+  let height = $state(480);
+  let loading = $state(false);
 
   function hideStream() {
     console.log('Done streaming!');
@@ -49,7 +50,7 @@
   <Aerial {loading} />
   <TvFrame {height}>
     <Screensaver {channel} {ready}>
-      <slot />
+      {@render children?.()}
     </Screensaver>
     {#if channel?.whepKey}
       <div

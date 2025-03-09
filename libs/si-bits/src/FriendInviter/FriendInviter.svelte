@@ -9,10 +9,10 @@
         onClose: (() => void) | undefined;
     }>();
 
-    let friends: User[] = [];
-    let invites: MatchProposal[] = [];
-    let friendsById = new Map<bigint, User>();
-    let queried = false;
+    let friends = $state<User[]>([]);
+    let invites = $state<MatchProposal[]>([]);
+    let friendsById = $state(new Map<bigint, User>());
+    let queried = $state(false);
 
     const incoming = $derived(invites?.filter((i) => i.to === user.id) ?? []);
     const outgoing = $derived(invites?.filter((i) => i.from === user.id) ?? []);

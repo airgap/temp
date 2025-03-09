@@ -43,6 +43,7 @@
 		"src/**/*.svelte",
 		"src/**/*.html",
 		".svelte-kit/types",
+		".svelte-kit/ambient.d.ts",
 		"apps/webui/.svelte-kit/types"
 	]
 }

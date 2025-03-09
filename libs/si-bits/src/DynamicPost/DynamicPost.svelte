@@ -37,10 +37,10 @@
     // author?: User | undefined;
   }>();
 
-  let replies: Post[] = [];
-  let queriedReplies = false;
-  let error: string | undefined;
-  let showReplyer = false;
+  let replies = $state<Post[]>([]);
+  let queriedReplies = $state(false);
+  let error = $state<string>();
+  let showReplyer = $state(false);
   let me = cacheStore.currentUser;
 
   const urlRegex = /(?:(?:http|ftp|https):\/\/)?(?:[\w-]+(?:(?:\.[\w-]+)+))(?::\d{2,5})?[^ "]*/g;

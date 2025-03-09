@@ -6,8 +6,8 @@
 
   const { match } = $props<{ match: TtfMatch | undefined }>();
 
-  let xUser: User | undefined;
-  let oUser: User | undefined;
+  let xUser = $state<User>();
+  let oUser = $state<User>();
   let tried = false;
 
   const xTurn = $derived(match?.turn && match.turn % 2);

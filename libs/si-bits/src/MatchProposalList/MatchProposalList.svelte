@@ -11,8 +11,8 @@
 
   const { user, onClose } = $props<{ user: User; onClose: () => void }>();
 
-  let proposals: MatchProposal[] = [];
-  let queried = false;
+  let proposals: MatchProposal[] = $state([]);
+  let queried = $state(false);
 
   $effect(() => {
     if (!queried) {

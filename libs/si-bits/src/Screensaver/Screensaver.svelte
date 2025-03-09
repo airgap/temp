@@ -1,7 +1,7 @@
 <script lang="ts">
   import gsap from 'gsap';
   import { api } from 'monolith-ts-api';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, type ComponentType } from 'svelte';
   import { Logo } from '../Logo';
   import { listen } from '../Sonic';
   import { phrasebook } from '../phrasebook';
@@ -9,8 +9,7 @@
   import tickPath from './tick.wav';
   import type { Bounce, Channel } from '@lyku/json-models';
 
-  const { channel } = $props<{ channel: Channel | undefined }>();
-  let children: any = $$slots.default;
+  const { channel, children } = $props<{ channel: Channel | undefined, children?: ComponentType }>();
 
   const tick = new Audio(tickPath);
   tick.load();
@@ -21,16 +20,16 @@
     neither: 'red',
   };
 
-  let showTut = true;
-  const width = 640;
-  const height = 480;
-  let x = 0;
-  let y = 0;
-  let edges = 0;
-  let corners = 0;
-  let logo: HTMLImageElement;
-  let flash: HTMLDivElement;
-  let animationFrameId: number;
+  let showTut = $state(true);
+  const width = $state(640);
+  const height = $state(480);
+  let x = $state(0);
+  let y = $state(0);
+  let edges = $state(0);
+  let corners = $state(0);
+  let logo: HTMLImageElement = $state();
+  let flash: HTMLDivElement = $state();
+  let animationFrameId: number = $state();
 
   const pointsAsText = (key: 'edge' | 'corner') => {
     const points = { edge: edges, corner: corners }[key];
@@ -135,6 +134,6 @@
     </div>
   </div>
   <Logo {x} {y} bind:logoRef={logo} bind:flashRef={flash}>
-    <slot />
+    {@render children?.()}
   </Logo>
 </div> 

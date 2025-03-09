@@ -51,11 +51,15 @@
     }
   }}
   role="dialog"
+  tabindex=0
 >
   <div
     class={classnames(styles.Dialog, classes[size])}
     style={`${transform}`}
     onclick={(e) => e.stopPropagation()}
+    tabindex=0
+    role="dialog"
+    onkeydown={e=>e.stopPropagation()}
   >
     <div
       class={classnames(styles.interactives, {

@@ -14,24 +14,24 @@
   import { Image, type Shape } from '../Image';
   import { Loading } from '../LoadingOverlay';
   import { formImageUrl } from '../formImageUrl';
-  import replace from '../assets/replace.svg';
-  import check from '../assets/squircle-check.svg';
-  import x from '../assets/x.svg';
+  import replace from '../assets/replace.svg?raw';
+  import check from '../assets/squircle-check.svg?raw';
+  import x from '../assets/x.svg?raw';
 
   // Props
   const { disabled = false, className = '', onUpload, channelId, reason, working = false, shape, allowVideo = false, image, file, removeClicked, attachmentUploadPack, onFinished } = $props<{ disabled?: boolean; className?: string; onUpload?: (id: string) => void; channelId?: bigint; reason: ImageUploadReason; working?: boolean; shape?: Shape; allowVideo?: boolean; image?: string; file?: File; removeClicked?: () => void; attachmentUploadPack?: ImageDraft | VideoDraft; onFinished?: () => void }>();
 
   // State
-  let imageState: string | undefined = undefined;
-  let base64: string | undefined = undefined;
-  let uploadUrl: string | undefined = undefined;
-  let fileState: File | undefined = file;
-  let workingState = working;
-  let inputId = String(Math.random()).substring(2);
+  let imageState = $state<string>();
+  let base64 = $state<string>();
+  let uploadUrl = $state<string>();
+  let fileState = $state<File>(file);
+  let workingState = $state(working);
+  let inputId = $state(String(Math.random()).substring(2));
   let formRef: HTMLFormElement;
-  let pack: { url: string; id: string } | undefined = undefined;
-  let submitting = false;
-  let succeeded = false;
+  let pack = $state<{ url: string; id: string }>();
+  let submitting = $state(false);
+  let succeeded = $state(false);
 
   const readFile = (file: File): Promise<string> =>
     new Promise((r, j) => {
@@ -215,11 +215,11 @@
         {/if}
       {:else}
         <label for={inputId} class={buttonStyles.Button}>
-          <slot>
+          {@render children?.()}
             {#if image !== undefined}
               <img class={styles.replace} src={replace} alt="Replace" />
             {/if}
-          </slot>
+          {@render children?.()}
         </label>
       {/if}
     {/if}

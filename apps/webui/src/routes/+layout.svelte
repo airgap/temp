@@ -6,7 +6,6 @@
     import styles from './App.module.sass';
     import { Dialog, PostCreator, TermsOfService } from '@lyku/si-bits';
 
-    const pageUrl = $derived($page.url);
     const currentUser = $derived($page.data.currentUser);
 
     const { children } = $props<{ children?: () => any }>();
@@ -57,7 +56,7 @@
 <div class={styles.App}>
     <Backdrop visible={showJoin || showLogin} onclick={() => { showAuth = false; }}/>
     <DesktopNav
-        url={pageUrl}
+        url={page.url}
         user={currentUser}
         onjoin={join}
         onlogin={login}
@@ -66,7 +65,7 @@
     />
     {@render children?.()}
     <MobileNav
-        url={pageUrl}
+        url={page.url}
         user={currentUser}
         onjoin={join}
         onlogin={login}

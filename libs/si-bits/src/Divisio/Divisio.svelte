@@ -1,12 +1,12 @@
 <script lang="ts">
     import type { Property } from 'csstype';
-    import type { CSSProperties } from 'react';
+    import type { ComponentType, CSSProperties } from 'react';
     import { type Size, sizes } from '../sizes';
 
     const layouts = { h: 'row', v: 'column' } as const;
     type Layout = keyof typeof layouts;
 
-    const { size, layout, fill, hang, alignItems, style = {} } = $props<{ size: Size; layout: Layout; fill: boolean; hang: any; alignItems: Property.AlignItems | undefined; style: CSSProperties }>();
+    const { size, layout, fill, hang, alignItems, style = {}, children } = $props<{ size: Size; layout: Layout; fill: boolean; hang: any; alignItems: Property.AlignItems | undefined; style: CSSProperties, children?: ComponentType }>();
 </script>
 
 <div
@@ -20,7 +20,7 @@
         {Object.entries(style).map(([key, value]) => `${key}: ${value};`).join(' ')}
     "
 >
-    <slot></slot>
+    {@render children?.()}
     {#if hang}
         <div style="position: absolute; top: 0; right: 0">
             {hang}
