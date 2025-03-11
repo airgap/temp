@@ -1,7 +1,7 @@
 export class Err extends Error {
-	code: number = 0;
+	code: number;
 	constructor(code: number, message?: string) {
 		super(message);
-		code = code;
+		this.code = code;
 	}
 }

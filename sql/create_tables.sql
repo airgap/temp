@@ -1383,7 +1383,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "staff" BOOLEAN NOT NULL,
   "username" VARCHAR UNIQUE CHECK (length("username") <= 20) NOT NULL,
   "channelLimit" INTEGER,
-  "slug" TEXT CHECK (length("slug") <= 20) CHECK (length("slug") >= 2) NOT NULL,
+  "slug" TEXT CHECK (length("slug") <= 20) CHECK (length("slug") >= 3) NOT NULL,
   "points" BIGINT NOT NULL,
   "postCount" BIGINT NOT NULL,
   "lastLogin" TIMESTAMPTZ NOT NULL,

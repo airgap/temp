@@ -32,14 +32,22 @@ export const serveHttp = async ({
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
+			console.log('--- New request ---');
 			const responseHeaders = new Headers();
 			const origin = req.headers.get('origin');
-			if (origin && origin.startsWith('https://lyku.org')) {
-				responseHeaders.set('Access-Control-Allow-Origin', origin);
+			let allow;
+			if (
+				origin &&
+				(origin.startsWith('https://lyku.org') ||
+					/^https?:\/\/(192\.168\.|localhost(:|$))/.test(origin))
+			) {
+				allow = origin;
 			} else {
-				responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
+				allow = 'https://lyku.org';
 			}
-			console.log('origin', origin);
+			responseHeaders.set('Access-Control-Allow-Origin', allow);
+			console.log('Source origin:  ', origin);
+			console.log('Allowing origin:', allow);
 			// responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
@@ -150,7 +158,10 @@ export const serveHttp = async ({
 					headers: responseHeaders,
 				});
 			} catch (e) {
-				console.error('Error executing route', e);
+				console.error(
+					e instanceof Err ? e.code : 'unknown',
+					'error executing route'
+				);
 				if (e instanceof Err) {
 					return new Response(e.message, {
 						status: e.code,
