@@ -21,7 +21,7 @@ export function initDb(pgConnectionString: string): Kysely<Database> {
 		return db;
 	}
 
-	console.log('Initializing database connection');
+	console.log('Initializing database connection', pgConnectionString);
 	connectionString = pgConnectionString;
 
 	const dialect = new PostgresDialect({

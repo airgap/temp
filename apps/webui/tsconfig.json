@@ -31,17 +31,8 @@
 		"src/**/*.tsx",
 		"src/**/*.svelte",
 		".svelte-kit/types/**/$types.d.ts",
-		"dist/apps/webui/ambient.d.ts",
 		"vite.config.ts",
 		".svelte-kit/types"
 	],
-	"exclude": ["node_modules"],
-	"references": [
-		{
-			"path": "./tsconfig.app.json"
-		},
-		{
-			"path": "./tsconfig.spec.json"
-		}
-	]
+	"exclude": ["node_modules"]
 }

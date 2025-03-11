@@ -44,6 +44,7 @@
 		"src/**/*.html",
 		".svelte-kit/types",
 		".svelte-kit/ambient.d.ts",
+		"dist/apps/webui/.svelte-kit/",
 		"apps/webui/.svelte-kit/types"
 	]
 }

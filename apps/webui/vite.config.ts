@@ -5,6 +5,7 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import svgLoader from 'vite-svg-loader';
 import vps from '@sveltejs/vite-plugin-svelte';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { svelteKitEnv } from './src/env-plugin.js';
 
 export default defineConfig({
 	server: {
@@ -19,6 +20,7 @@ export default defineConfig({
 		sveltekit(),
 		nxCopyAssetsPlugin(['*.md', '*.svg', '*.png']),
 		svgLoader(),
+		svelteKitEnv(),
 		// visualizer({ open: false, filename: 'bundle-visualization.html' })
 	],
 	build: {

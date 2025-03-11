@@ -6,7 +6,7 @@
     import styles from './App.module.sass';
     import { Dialog, PostCreator, TermsOfService } from '@lyku/si-bits';
 
-    const currentUser = $derived($page.data.currentUser);
+    const currentUser = $page.data.user;
 
     const { children } = $props<{ children?: () => any }>();
 
