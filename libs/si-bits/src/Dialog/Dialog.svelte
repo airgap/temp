@@ -37,7 +37,6 @@
     'slide-top': () => `margin-top: ${25 + $transformSpring / 4}vh`,
     'slide-bottom': () => `margin-top: ${75 - $transformSpring / 4}vh`
   } satisfies Record<Animation, () => string>;
-  console.log('ANIM', animation);
   const transform = $derived(animations[animation]());
 </script>
 

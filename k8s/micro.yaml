@@ -35,8 +35,8 @@ spec:
               value: '1'
             - name: FORCE_COLOR
               value: '1'
-            - name: PG_CONNECTION_STRING
-              value: '${PG_CONNECTION_STRING}'
+            - name: DATABASE_URL
+              value: '${DATABASE_URL}'
             - name: CLOUDFLARE_API_TOKEN
               value: '${CLOUDFLARE_API_TOKEN}'
             - name: CLOUDFLARE_ACCOUNT_ID

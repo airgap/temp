@@ -168,9 +168,14 @@ export default handleRegisterUser(async (params, ctx) => {
 			.execute();
 
 		const sessionId = await createSessionForUser(insertedUser.id, ctx);
+		const origin = ctx.request.headers.get('origin');
+		const domain = origin?.startsWith('https://lyku.org')
+			? `Domain=lyku.org;`
+			: '';
+		console.log('origin', origin, 'domain', domain);
 		(responseHeaders as Headers).set(
 			'Set-Cookie',
-			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; Domain=lyku.org; Max-Age=31536000`
+			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; ${domain} Max-Age=31536000`
 		);
 		console.log('Logged user in', sessionId);
 

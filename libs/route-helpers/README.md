@@ -105,7 +105,7 @@ The library expects the following environment variables:
 
 - `SERVICE_PORT` - Server port (default: from apiPorts.http)
 - `DOPPLER_ENVIRONMENT` - Environment type ('dev' or production)
-- `PG_CONNECTION_STRING` - PostgreSQL connection string
+- `DATABASE_URL` - PostgreSQL connection string
 - `NATS_PORT` - NATS server connection string
 - `WEBUI_DOMAIN` - Web UI domain
 - `SHORTLINK_DOMAIN` - URL shortener domain

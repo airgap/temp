@@ -7,23 +7,18 @@ import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
 import * as Drizzy from '@neondatabase/serverless';
 
-// Singleton pattern for database connection
-let db: Kysely<Database> | null = null;
-let connectionString: string | null = null;
+// Set the PostgreSQL type parser for INT8 (BIGINT) to return BigInt objects
+// This ensures bigint values are returned as actual BigInt objects, not strings
+Drizzy.types.setTypeParser(Drizzy.types.builtins.INT8, function (val) {
+	return BigInt(val);
+});
 
 /**
  * Initialize the database with a connection string
  * This should only be called once at application startup
  */
-export function initDb(pgConnectionString: string): Kysely<Database> {
-	if (db) {
-		console.log('Database already initialized, returning existing instance');
-		return db;
-	}
-
-	console.log('Initializing database connection', pgConnectionString);
-	connectionString = pgConnectionString;
-
+export function initDb(connectionString: string): Kysely<Database> {
+	console.log('Initializing database connection', connectionString);
 	const dialect = new PostgresDialect({
 		pool: new Drizzy.Pool({
 			connectionString,
@@ -35,38 +30,20 @@ export function initDb(pgConnectionString: string): Kysely<Database> {
 			},
 		}),
 	});
-
-	db = new Kysely<Database>({
+	return new Kysely<Database>({
 		dialect,
 		log: ['query', 'error'],
 	});
-
-	return db;
-}
-
-/**
- * Get the database instance, initializing it if necessary
- */
-export function getDb(pgConnectionString?: string): Kysely<Database> {
-	if (db) {
-		return db;
-	}
-
-	if (!pgConnectionString) {
-		throw new Error(
-			'Database not initialized and no connection string provided'
-		);
-	}
-
-	return initDb(pgConnectionString);
 }
 
 /**
  * Test the database connection
  */
-export async function testConnection(): Promise<boolean> {
+export async function testConnection(
+	connectionString: string
+): Promise<boolean> {
 	if (!connectionString) {
-		throw new Error('Connection string not set. Call initDb first.');
+		throw new Error('Connection string not passed.');
 	}
 
 	const pool = new Drizzy.Pool({

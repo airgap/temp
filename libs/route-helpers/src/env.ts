@@ -16,5 +16,5 @@ export const shortlinkBasepath =
 	shortlinkProtocol + '://' + shortlinkDomain + '/';
 export const natsPort = env['NATS_PORT'] || 'nats://localhost:4222';
 export const dbConnectionString =
-	env['PG_CONNECTION_STRING'] || 'postgresql://localhost:5434/Lyku';
+	env['DATABASE_URL'] || 'postgresql://localhost:5434/Lyku';
 console.log('dbConnectionString', dbConnectionString);

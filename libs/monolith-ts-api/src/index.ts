@@ -108,10 +108,8 @@ interface CookieAdapter {
 }
 
 // Cookie utility functions that use the platform
-export function getCookie(name: string): string {
-	console.log('Getting cookie', name);
-	return currentPlatform.cookies.get(name) || '';
-}
+export const getCookie = (name: string): string =>
+	currentPlatform.cookies.get(name) || '';
 
 export function setCookie(name: string, value: string, days: number) {
 	currentPlatform.cookies.set(name, value, {
@@ -137,10 +135,7 @@ export const setCookieAdapter = (adapter: CookieAdapter) => {
 
 let _sessionId: FromTsonSchema<typeof sId> | undefined;
 
-export const getSessionId = () => {
-	console.log('Getting sessionId');
-	return cookieAdapter.get('sessionId') || '';
-};
+export const getSessionId = () => cookieAdapter.get('sessionId') || '';
 
 export const initSession = (serverSessionId?: string) => {
 	const cookie = getSessionId() || serverSessionId;

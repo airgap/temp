@@ -15,7 +15,7 @@ export const load = async ({ params, data, fetch }: any) => {
 		console.log('got post!', post.body);
 
 		const author = await api.getUser(post.author);
-
+		console.log('Fetch successful');
 		return {
 			post,
 			author,
@@ -23,7 +23,6 @@ export const load = async ({ params, data, fetch }: any) => {
 	} catch (error) {
 		console.log('Failed to get post', error);
 		return {
-			post: null,
 			error: error instanceof Error ? error.message : 'Failed to load post',
 		};
 	}

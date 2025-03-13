@@ -35,11 +35,11 @@ export function svelteKitEnv() {
 				// Generate a module that exports all environment variables
 				let code = 'export {';
 
-				// Add the PG_CONNECTION_STRING
-				if (processEnv.PG_CONNECTION_STRING) {
-					code += `\n  PG_CONNECTION_STRING: "${processEnv.PG_CONNECTION_STRING}",`;
+				// Add the DATABASE_URL
+				if (processEnv.DATABASE_URL) {
+					code += `\n  DATABASE_URL: "${processEnv.DATABASE_URL}",`;
 				} else {
-					code += '\n  PG_CONNECTION_STRING: "",';
+					code += '\n  DATABASE_URL: "",';
 				}
 
 				// Add other env vars as needed

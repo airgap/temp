@@ -29,7 +29,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const db = initDb(event.platform.env.DATABASE_URL);
 		event.locals.db = db;
 	}
-
+	console.log('Got db');
 	// Set up server-side adapter
 	setCookieAdapter({
 		get: (name: string) => event.cookies.get(name),
@@ -39,17 +39,17 @@ export const handle: Handle = async ({ event, resolve }) => {
 				...(options?.expires ? { maxAge: options.expires * 24 * 60 * 60 } : {}),
 			}),
 	});
-
+	console.log('Set cookie adapter');
 	// Get language from cookie or accept-language header
 	const lang =
 		event.cookies.get('lang') ||
 		event.request.headers.get('accept-language')?.split(',')[0] ||
 		'en-US';
-
+	console.log('Set lang');
 	// Pass language to client through html data attribute
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang),
 	});
-
+	console.log('Set response');
 	return response;
 };
