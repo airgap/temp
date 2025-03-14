@@ -1,7 +1,8 @@
 <script lang="ts">
   import styles from './Template.module.sass';
+  const {children} = $props();
 </script>
 
 <div class={styles.Template}>
-  <slot />
+  {@render children?.()}
 </div>
