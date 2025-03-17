@@ -3,7 +3,7 @@ import { mapColumnType } from './mapColumnType';
 
 export const buildTableCreationCommand = (
 	tableName: string,
-	model: PostgresTableModel<PostgresRecordModel>
+	model: PostgresTableModel<PostgresRecordModel>,
 ) => {
 	const { schema } = model;
 	const required = 'required' in schema ? schema.required : [];

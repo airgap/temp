@@ -10,5 +10,5 @@ export default handleGetPost((id, { db }) =>
 		.then((p) => {
 			if (!p) throw new Err(404);
 			return p;
-		})
+		}),
 );

@@ -2,7 +2,7 @@ import { NumberBase } from 'from-schema/dist/postgres/columns/numeric/NumberBase
 
 export const numberChecks = <T extends NumberBase<bigint | number>>(
 	name: string,
-	columnSchema: T
+	columnSchema: T,
 ) => {
 	const constraints: string[] = [];
 	if ('checks' in columnSchema && columnSchema.checks)

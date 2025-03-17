@@ -8,7 +8,7 @@
 	const { game = undefined } = $props<{
 		game?: number;
 	}>();
-	
+
 	let grants: Map<bigint, AchievementGrant> = $state(new Map());
 	let dropped = $state(false);
 	let achievements = $state<any[]>([]);
@@ -17,7 +17,8 @@
 	// Replace useEffect with onMount
 	$effect(() => {
 		if (sessionId) {
-			api.listenForAchievementGrants({ game })
+			api
+				.listenForAchievementGrants({ game })
 				.listen((e) => e.forEach((g) => grants.set(g.id, g)));
 		}
 	});
@@ -42,7 +43,7 @@
 <button
 	type="button"
 	class={classnames(styles.AchievementList, {
-		[styles.dropped]: dropped
+		[styles.dropped]: dropped,
 	})}
 	onclick={() => !dropped && (dropped = true)}
 >
@@ -56,7 +57,7 @@
 		role="button"
 		aria-label="Toggle achievements"
 		class={styles.dropHeader}
-		onclick={() => dropped = !dropped}
+		onclick={() => (dropped = !dropped)}
 		id="dropper"
 	>
 		<h2>Achievements</h2>

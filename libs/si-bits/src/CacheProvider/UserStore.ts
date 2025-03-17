@@ -16,7 +16,7 @@ export function createUserStore() {
 
 	// Track pending requests to avoid duplicate fetches
 	const pendingRequestsStore = writable<Map<string, Promise<User[]>>>(
-		new Map()
+		new Map(),
 	);
 
 	// Track IDs that need to be fetched in the next batch

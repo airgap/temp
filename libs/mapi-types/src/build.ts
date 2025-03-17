@@ -36,7 +36,7 @@ const types = Object.entries(src).map(([key, value]) => {
 		tweakResKeys[key] = reskey;
 		if ('tweakResponse' in value.stream)
 			fns += `export type ${reskey} = ${tsonToType(
-				value.stream.tweakResponse
+				value.stream.tweakResponse,
 			)};\n`;
 	}
 });
@@ -60,7 +60,7 @@ export type MonolithTypes = {
 										tweakResponse:
 											${'tweakResponse' in value.stream ? tweakResKeys[key] : 'never'},
 								  }`
-					  },`
+						},`
 					: ''
 			}}`;
 		})
@@ -70,5 +70,5 @@ fs.mkdirSync('../../dist/libs/mapi-types', { recursive: true });
 fs.copyFileSync('package.json', '../../dist/libs/mapi-types/package.json');
 fs.writeFileSync(
 	'../../dist/libs/mapi-types/index.d.ts',
-	prettier.format(functions, { parser: 'typescript' })
+	prettier.format(functions, { parser: 'typescript' }),
 );

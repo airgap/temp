@@ -3,7 +3,7 @@ import { handleListFeedPostsUnauthenticated } from '@lyku/handles';
 export default handleListFeedPostsUnauthenticated(
 	async (
 		{ before, tags, groups, authors, count },
-		{ db, requester, model }
+		{ db, requester, model },
 	) => {
 		let query = db.selectFrom('posts').selectAll().orderBy('publish', 'desc');
 
@@ -22,8 +22,8 @@ export default handleListFeedPostsUnauthenticated(
 						.selectFrom('hashtags')
 						.select('id')
 						.where('lowerText', 'in', tags)
-						.whereRef('id', 'in', eb.ref('hashtags'))
-				)
+						.whereRef('id', 'in', eb.ref('hashtags')),
+				),
 			);
 		}
 
@@ -32,5 +32,5 @@ export default handleListFeedPostsUnauthenticated(
 			.execute();
 		console.log('Listing', posts.length, 'posts');
 		return posts;
-	}
+	},
 );

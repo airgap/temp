@@ -4,7 +4,7 @@ import { sql } from 'kysely';
 export default handleListFeedPosts(
 	async (
 		{ before, tags, groups, authors, count },
-		{ db, requester, model }
+		{ db, requester, model },
 	) => {
 		let query = db.selectFrom('posts').selectAll().orderBy('publish', 'desc');
 
@@ -20,9 +20,9 @@ export default handleListFeedPosts(
 								.selectFrom('groupMemberships')
 								.select('group')
 								.where('user', '=', requester)
-								.whereRef('group', '=', eb.ref('group'))
-					  )
-					: eb('group', 'in', groups)
+								.whereRef('group', '=', eb.ref('group')),
+						)
+					: eb('group', 'in', groups),
 			);
 		}
 
@@ -33,7 +33,7 @@ export default handleListFeedPosts(
 					SELECT 1 FROM hashtags 
 					WHERE lowerText IN (${sql.join(tags)}) 
 					AND id IN (SELECT unnest(hashtags) FROM posts)
-				)`
+				)`,
 			);
 		}
 
@@ -42,5 +42,5 @@ export default handleListFeedPosts(
 			.execute();
 		console.log('Listing', posts.length, 'posts');
 		return posts;
-	}
+	},
 );

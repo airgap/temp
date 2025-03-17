@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { ComponentType } from 'svelte';
+	import type { ComponentType } from 'svelte';
 
-    let { children } = $props<{ children: ComponentType }>();
+	let { children } = $props<{ children: ComponentType }>();
 </script>
 
 <div class="ascendere">
-    {@render children?.()}
+	{@render children?.()}
 </div>
 
 <style lang="sass">

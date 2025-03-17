@@ -1,14 +1,20 @@
 <script lang="ts">
-    const PieceComponent = (function() {
-      return {
-        render: (props: { x: number; y: number; p: 'X' | 'O'; i: number; key: number }) => {
-          let grown = false;
-          
-          onMount(() => {
-            requestAnimationFrame(() => grown = true);
-          });
-          
-          return `
+	const PieceComponent = (function () {
+		return {
+			render: (props: {
+				x: number;
+				y: number;
+				p: 'X' | 'O';
+				i: number;
+				key: number;
+			}) => {
+				let grown = false;
+
+				onMount(() => {
+					requestAnimationFrame(() => (grown = true));
+				});
+
+				return `
             <img
               key="${props.key}"
               style="
@@ -26,8 +32,7 @@
               alt="${props.p}"
             />
           `;
-        }
-      };
-    })();
-  </script>
-  
+			},
+		};
+	})();
+</script>

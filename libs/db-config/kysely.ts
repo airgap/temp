@@ -20,7 +20,7 @@ const kimports = `import {
 const ktypes = kyselyExports
 	.map(
 		([k, v]) =>
-			`export type ${k[0].toLocaleUpperCase()}${k.substring(1)} = ${v}`
+			`export type ${k[0].toLocaleUpperCase()}${k.substring(1)} = ${v}`,
 	)
 	.join('\n');
 const ktsContent = `${kimports}\n${ktypes}\nexport type Database = {\n${kyselyExports
@@ -39,6 +39,6 @@ const ktsPath = join(
 	'dist',
 	'libs',
 	'db-config',
-	`kysely.d.ts`
+	`kysely.d.ts`,
 );
 await Bun.write(ktsPath, formattedKtsContent);

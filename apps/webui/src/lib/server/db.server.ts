@@ -44,7 +44,7 @@ export const neon = () =>
  * Test the database connection
  */
 export async function testConnection(
-	connectionString: string
+	connectionString: string,
 ): Promise<boolean> {
 	if (!connectionString) {
 		throw new Error('Connection string not passed.');

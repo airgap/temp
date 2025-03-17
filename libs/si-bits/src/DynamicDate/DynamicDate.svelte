@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { prettyTime } from '@lyku/helpers';
-  import styles from './DynamicDate.module.sass';
+	import { prettyTime } from '@lyku/helpers';
+	import styles from './DynamicDate.module.sass';
 
-  const { time } = $props<{
-    time: Date;
-  }>();
+	const { time } = $props<{
+		time: Date;
+	}>();
 </script>
 
-<span class={styles.DynamicDate}>{prettyTime(time)}</span> 
+<span class={styles.DynamicDate}>{prettyTime(time)}</span>

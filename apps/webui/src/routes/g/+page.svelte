@@ -27,4 +27,4 @@
 	/>
 	-->
 	<GroupList {filter} {substring} />
-</div> 
+</div>

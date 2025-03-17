@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { TtfMatch, User } from '@lyku/json-models';
-  import { Link } from '../Link';
+	import type { TtfMatch, User } from '@lyku/json-models';
+	import { Link } from '../Link';
 
-  const { user, match } = $props<{ user: User | undefined; match: TtfMatch }>();
+	const { user, match } = $props<{ user: User | undefined; match: TtfMatch }>();
 </script>
 
 {#if user?.id === match.winner}
-  <h1>You won!</h1>
-  {#if !user?.id}
-    <h3>Make an account to earn points when you win!</h3>
-  {/if}
+	<h1>You won!</h1>
+	{#if !user?.id}
+		<h3>Make an account to earn points when you win!</h3>
+	{/if}
 {:else}
-  <h1>You lost.</h1>
+	<h1>You lost.</h1>
 {/if}
 
-<Link href={'#'}>Play again</Link> 
+<Link href={'#'}>Play again</Link>

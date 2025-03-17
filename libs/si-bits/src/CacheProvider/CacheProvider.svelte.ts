@@ -80,12 +80,8 @@ const cacheConfigMap = {
 } as const;
 
 type CacheConfigs = typeof cacheConfigMap;
-type DocOfModel<T extends CacheConfig<any, any>> = T extends CacheConfig<
-	infer G,
-	infer K
->
-	? G
-	: never;
+type DocOfModel<T extends CacheConfig<any, any>> =
+	T extends CacheConfig<infer G, infer K> ? G : never;
 
 function createCacheStore() {
 	// Create state objects for caches, loading states, and errors
@@ -100,8 +96,8 @@ function createCacheStore() {
 					DocOfModel<CacheConfigs[K]>[CacheConfigs[K]['key']],
 					DocOfModel<CacheConfigs[K]>
 				>;
-			}
-		)
+			},
+		),
 	);
 
 	const loading = $state(new Set<string>());
@@ -109,12 +105,12 @@ function createCacheStore() {
 
 	function createModelActions<ModelName extends keyof CacheConfigs>(
 		modelName: ModelName,
-		config: CacheConfigs[ModelName]
+		config: CacheConfigs[ModelName],
 	) {
 		const cache = caches[modelName];
 
 		async function fetch(
-			id: DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']]
+			id: DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']],
 		): Promise<DocOfModel<CacheConfigs[ModelName]> | undefined> {
 			if (cache.has(id)) {
 				return cache.get(id);
@@ -140,7 +136,9 @@ function createCacheStore() {
 		}
 
 		async function fetchAll(
-			ids: DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']][]
+			ids: DocOfModel<
+				CacheConfigs[ModelName]
+			>[CacheConfigs[ModelName]['key']][],
 		): Promise<(DocOfModel<CacheConfigs[ModelName]> | undefined)[]> {
 			const missingIds = ids.filter((id) => !cache.has(id));
 
@@ -170,7 +168,9 @@ function createCacheStore() {
 		}
 
 		function setupListener(
-			ids: DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']][]
+			ids: DocOfModel<
+				CacheConfigs[ModelName]
+			>[CacheConfigs[ModelName]['key']][],
 		) {
 			if (!('listen' in config)) return;
 
@@ -203,7 +203,7 @@ function createCacheStore() {
 		}),
 		{} as {
 			[K in keyof CacheConfigs]: ReturnType<typeof createModelActions<K>>;
-		}
+		},
 	);
 
 	return {

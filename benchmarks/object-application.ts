@@ -1,6 +1,6 @@
 const newObject = (count: number, offset: number) =>
 	Object.fromEntries(
-		new Array(count).fill(null).map((v, i) => [offset + i, offset + i])
+		new Array(count).fill(null).map((v, i) => [offset + i, offset + i]),
 	);
 
 const COUNT = 400000;
@@ -63,5 +63,5 @@ console.log('Map construction:', (mapEnd - mapStart).toFixed(2), 'ms');
 console.log(
 	'Object.fromEntries:',
 	(entriesEnd - entriesStart).toFixed(2),
-	'ms'
+	'ms',
 );

@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { hydrateUserStore } from './useCacheData';
-  import PostView from './SSRExample.svelte';
-  
-  // Get the data from the server using $props in Svelte 5
-  const { data } = $props<{ data: any }>();
-  
-  onMount(() => {
-    // Hydrate the user store with the data from the server
-    if (data.initialStoreData?.users) {
-      hydrateUserStore(data.initialStoreData.users);
-    }
-  });
+	import { onMount } from 'svelte';
+	import { hydrateUserStore } from './useCacheData';
+	import PostView from './SSRExample.svelte';
+
+	// Get the data from the server using $props in Svelte 5
+	const { data } = $props<{ data: any }>();
+
+	onMount(() => {
+		// Hydrate the user store with the data from the server
+		if (data.initialStoreData?.users) {
+			hydrateUserStore(data.initialStoreData.users);
+		}
+	});
 </script>
 
 <PostView post={data.post} posts={data.replies} />
@@ -42,4 +42,4 @@
     delete window.__INITIAL_USER_STORE__;
   }
 </script>
---> 
+-->

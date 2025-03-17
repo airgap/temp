@@ -52,11 +52,11 @@ export const serveHttp = async ({
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
 				'Access-Control-Allow-Methods',
-				'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+				'GET, POST, PUT, DELETE, PATCH, OPTIONS',
 			);
 			responseHeaders.set(
 				'Access-Control-Allow-Headers',
-				'Content-Type, Authorization'
+				'Content-Type, Authorization',
 			);
 			responseHeaders.set('Access-Control-Allow-Credentials', 'true');
 			if (req.method === 'OPTIONS') {
@@ -128,9 +128,9 @@ export const serveHttp = async ({
 				} catch (e) {
 					return new Response(
 						`Request "${stringifyBON(params)}" failed validation ${stringifyBON(
-							model.request
+							model.request,
 						)} due to ${e}`,
-						{ status: 400, headers: responseHeaders }
+						{ status: 400, headers: responseHeaders },
 					);
 				}
 			}
@@ -160,7 +160,7 @@ export const serveHttp = async ({
 			} catch (e) {
 				console.error(
 					e instanceof Err ? e.code : 'unknown',
-					'error executing route'
+					'error executing route',
 				);
 				if (e instanceof Err) {
 					return new Response(e.message, {
@@ -179,6 +179,6 @@ export const serveHttp = async ({
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['HOSTNAME']
+		process.env['HOSTNAME'],
 	);
 };

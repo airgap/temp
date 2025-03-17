@@ -17,5 +17,5 @@ export default handleGetFriendshipStatus(
 			.executeTakeFirst();
 		if (!request) return 'none';
 		return request.from === requester ? 'youOffered' : 'theyOffered';
-	}
+	},
 );

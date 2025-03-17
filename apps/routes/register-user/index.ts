@@ -86,7 +86,7 @@ export default handleRegisterUser(async (params, ctx) => {
 				Authorization: `Bearer ${cfApiToken}`,
 			},
 			body: new Blob([png], { type: 'image/png' }),
-		}
+		},
 	);
 
 	const cfres = (await response.json()) as UrlImageUploadResponse;
@@ -175,7 +175,7 @@ export default handleRegisterUser(async (params, ctx) => {
 		console.log('origin', origin, 'domain', domain);
 		(responseHeaders as Headers).set(
 			'Set-Cookie',
-			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; ${domain} Max-Age=31536000`
+			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; ${domain} Max-Age=31536000`,
 		);
 		console.log('Logged user in', sessionId);
 

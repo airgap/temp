@@ -5,7 +5,7 @@ export function makeDonut(
 	cx: number,
 	cy: number,
 	radius: number,
-	data: { value: number }[]
+	data: { value: number }[],
 ) {
 	const floor = cfloor(4);
 	const f2 = cfloor(2);

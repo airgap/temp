@@ -8,5 +8,5 @@ if (!term) {
 }
 
 console.log(
-	`Migrate ${term}.tsx to ${term}.svelte while preserving the \`import styles from './${term}.module.sass';\``
+	`Migrate ${term}.tsx to ${term}.svelte while preserving the \`import styles from './${term}.module.sass';\``,
 );

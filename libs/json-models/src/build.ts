@@ -73,7 +73,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.js`
+		`index.js`,
 	);
 	const dtsPath = path.join(
 		__dirname,
@@ -84,7 +84,7 @@ const jsonify = async () => {
 		'libs',
 		'json-models',
 		'src',
-		`index.d.ts`
+		`index.d.ts`,
 	);
 	const exportDir = path.dirname(jsPath);
 	await mkdir(exportDir, { recursive: true });
@@ -108,8 +108,8 @@ const jsonify = async () => {
 				? postgresColumnToTson(value as any)
 				: value
 			: hasProperties
-			? postgresRecordToTson(value as any, false)
-			: value;
+				? postgresRecordToTson(value as any, false)
+				: value;
 		// console.log('Typing', tsonSchema);
 		const resolvedTypeString = tsonToType(tsonSchema as any);
 		exports.push(`export const ${key} = ${stringifyBON(tsonSchema)};`);
@@ -118,14 +118,14 @@ const jsonify = async () => {
 			`export declare const ${key}: ${stringifyBON(tsonSchema)};\n` +
 				`export type ${
 					key[0].toUpperCase() + key.slice(1)
-				} = ${resolvedTypeString};`
+				} = ${resolvedTypeString};`,
 		);
 
 		if (hasProperties) {
 			const insertableTsonSchema = postgresRecordToTson(value as any, true);
 			// console.log('Typing', tsonSchema);
 			const resolvedInsertableTypeString = tsonToType(
-				insertableTsonSchema as any
+				insertableTsonSchema as any,
 			);
 
 			// exports.push(`export const ${key} = ${stringifyBON(insertableTsonSchema)};`);
@@ -134,7 +134,7 @@ const jsonify = async () => {
 				// `export declare const ${key}: ${stringifyBON(insertableTsonSchema)};\n` +
 				`export type ${
 					'Insertable' + key[0].toUpperCase() + key.slice(1)
-				} = ${resolvedInsertableTypeString};`
+				} = ${resolvedInsertableTypeString};`,
 			);
 		}
 	}
@@ -170,10 +170,10 @@ const assets = [
 ];
 // Copy package.json to dist
 for (const { file, tfm = (t) => t } of assets.map((a) =>
-	typeof a === 'string' ? { file: a } : a
+	typeof a === 'string' ? { file: a } : a,
 )) {
 	await Bun.write(
 		path.join(__dirname, '..', '..', '..', 'dist', 'libs', 'json-models', file),
-		tfm(await Bun.file(path.join(__dirname, '..', file)).text())
+		tfm(await Bun.file(path.join(__dirname, '..', file)).text()),
 	);
 }

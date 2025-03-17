@@ -4,7 +4,7 @@ import { Channel } from '@lyku/json-models';
 export default handleUpdateChannel(
 	async (
 		{ id, name, tagline, bio, bgColor, fgColor, tvColor },
-		{ db, requester, strings }
+		{ db, requester, strings },
 	) => {
 		const partial = Object.fromEntries(
 			Object.entries({
@@ -14,7 +14,7 @@ export default handleUpdateChannel(
 				bgColor,
 				fgColor,
 				tvColor,
-			}).filter(([, v]) => typeof v !== 'undefined')
+			}).filter(([, v]) => typeof v !== 'undefined'),
 		) as Partial<Channel>;
 
 		console.log('Partial channel update', partial);
@@ -32,5 +32,5 @@ export default handleUpdateChannel(
 		}
 
 		return updatedChannel;
-	}
+	},
 );
