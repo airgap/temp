@@ -105,12 +105,12 @@
 	</span>
 
 	<span class={styles.text}>
-		<Link class={styles.username} href={`/u/${author.username}`}>
+		<Link className={styles.username} href={`/u/${author.username}`}>
 			{$author?.username}
 		</Link>
 		<DynamicDate time={post.publish} />
 		{#if me?.id === author.id}
-			<Button class={styles.delete} onclick={handleDelete}>X</Button>
+			<Button className={styles.delete} onclick={handleDelete}>X</Button>
 		{/if}
 
 		<span class={styles.PostContent}>
