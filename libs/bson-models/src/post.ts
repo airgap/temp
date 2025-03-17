@@ -46,7 +46,7 @@ export const post = {
 	required: [
 		'id',
 		'author',
-		'published',
+		'publish',
 		'likes',
 		'echoes',
 		'replies',

@@ -1,6 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { api } from 'monolith-ts-api';
 import type { User } from '@lyku/json-models';
+import { serialize as gSerialize, deserialize as gDeserialize } from '../utils';
 
 // Detect if we're running in SSR mode
 const isSSR = typeof window === 'undefined';
@@ -64,8 +65,9 @@ export function createUserStore() {
 				.then(([user]) => {
 					if (user) {
 						usersStore.update((map) => {
-							map.set(user.id, user);
-							return map;
+							const newMap = new Map(map); // Create a new map to ensure reactivity
+							newMap.set(user.id, user);
+							return newMap;
 						});
 					}
 					return user;
@@ -149,6 +151,7 @@ export function createUserStore() {
 
 		// Return what we have now
 		const currentUsersMap = getStoreValue(usersStore);
+		console.log('currentUsersMap', typeof currentUsersMap);
 		return ids.map((id) => currentUsersMap.get(id));
 	}
 
@@ -183,10 +186,11 @@ export function createUserStore() {
 				.then((fetchedUsers) => {
 					// Update the store with the fetched users
 					usersStore.update((map) => {
+						const newMap = new Map(map); // Create a new map to ensure reactivity
 						fetchedUsers.forEach((user) => {
-							map.set(user.id, user);
+							newMap.set(user.id, user);
 						});
-						return map;
+						return newMap;
 					});
 
 					// Remove the pending request
@@ -219,8 +223,9 @@ export function createUserStore() {
 	 */
 	function update(user: User) {
 		usersStore.update((map) => {
-			map.set(user.id, user);
-			return map;
+			const newMap = new Map(map); // Create a new map to ensure reactivity
+			newMap.set(user.id, user);
+			return newMap;
 		});
 	}
 
@@ -248,10 +253,11 @@ export function createUserStore() {
 	 */
 	function preload(initialUsers: User[]) {
 		usersStore.update((map) => {
+			const newMap = new Map(map); // Create a new map to ensure reactivity
 			initialUsers.forEach((user) => {
-				map.set(user.id, user);
+				newMap.set(user.id, user);
 			});
-			return map;
+			return newMap;
 		});
 	}
 
@@ -272,16 +278,19 @@ export function createUserStore() {
 	 */
 	function serialize(): string {
 		const usersMap = getStoreValue(usersStore);
-		return JSON.stringify(Array.from(usersMap.values()));
+		const users = Array.from(usersMap.values());
+
+		return gSerialize(users);
 	}
 
 	/**
 	 * Hydrate the store from serialized data
 	 */
-	function hydrate(serializedData: string) {
+	function hydrate(userData: User[]) {
 		try {
-			const userData = JSON.parse(serializedData) as User[];
+			// const userData = gDeserialize(serializedData) as User[];
 			preload(userData);
+			console.log('HYDRATED', userData);
 		} catch (error) {
 			console.error('Error hydrating user store:', error);
 		}

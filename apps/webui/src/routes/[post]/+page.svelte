@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { DynamicPost } from '@lyku/si-bits';
+	import { DynamicPost, userStore } from '@lyku/si-bits';
     import type { PageData } from './$types';
 	import type { Post, User } from '@lyku/json-models';
+	import { onMount } from 'svelte';
 
-    const {data} = $props<{data:{post: Post, author: User}|{error: string}}>();
+    const {data} = $props<{data:{post: Post, users: User[]}|{error: string}}>();
     const {post, error} = data;
-    console.log('data', data)
-    $effect(()=>console.log('PpPost', post))
+    userStore.hydrate(data.users);
 </script>
 
 {#if error}

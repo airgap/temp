@@ -12,7 +12,7 @@ describe('SubmitButton', () => {
 				body: 'Body ipsum dolor sit amet ',
 				id: 'aaa',
 				userId: '000',
-				published: new Date().toDateString(),
+				publish: new Date().toDateString(),
 				attachments: [],
 				author: {
 					username: 'AdaBanana',

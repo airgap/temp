@@ -6,8 +6,8 @@ export default handleListPostReplies(async ({ id, before, tags }, { db }) => {
 		.selectFrom('posts')
 		.selectAll()
 		.where('replyTo', '=', id)
-		.orderBy('published');
-	if (before) query = query.where('published', '<', before);
+		.orderBy('publish');
+	if (before) query = query.where('publish', '<', before);
 	if (tags && tags.length > 0) {
 		query = query.where('hashtags', '&&', tags);
 	}

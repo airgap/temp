@@ -1,3 +1,4 @@
+import { derived, type Readable } from 'svelte/store';
 import { userStore } from './UserStore';
 import type { User } from '@lyku/json-models';
 
@@ -5,13 +6,13 @@ import type { User } from '@lyku/json-models';
 const isSSR = typeof window === 'undefined';
 
 /**
- * Hook for Svelte components to use the user store
+ * Reactive hook for Svelte components to use the user store
  *
  * @param id A single user ID
- * @returns The user object or undefined if not loaded yet
+ * @returns A reactive store containing the user object or undefined if not loaded yet
  */
-export function useUser(id: bigint): User | undefined {
-	return userStore.get(id);
+export function useUser(id: bigint): Readable<User | undefined> {
+	return derived(userStore, ($usersMap) => $usersMap.get(id));
 }
 
 /**
@@ -32,24 +33,24 @@ export function useUsers(ids: bigint[]): (User | undefined)[] {
  * @param ids The IDs to fetch
  * @returns A tuple with the fetched data and loading state
  */
-export function useCacheData<T extends 'users'>(
-	type: T,
-	ids: bigint[]
-): [(User | undefined)[], boolean] {
-	if (type === 'users') {
-		const users = useUsers(ids);
-		const pendingIds = userStore._getPendingIds();
-		const isLoading =
-			!isSSR &&
-			ids.some((id) => {
-				const store = userStore._getStore();
-				return !store.has(id) && pendingIds.has(id);
-			});
-		return [users as any, isLoading];
-	}
+// export function useCacheData<T extends 'users'>(
+// 	type: T,
+// 	ids: bigint[]
+// ): [(User | undefined)[], boolean] {
+// 	if (type === 'users') {
+// 		const users = useUsers(ids);
+// 		const pendingIds = userStore._getPendingIds();
+// 		const isLoading =
+// 			!isSSR &&
+// 			ids.some((id) => {
+// 				const store = userStore._getStore();
+// 				return !store.has(id) && pendingIds.has(id);
+// 			});
+// 		return [users as any, isLoading];
+// 	}
 
-	throw new Error(`useCacheData for type ${type} not implemented`);
-}
+// 	throw new Error(`useCacheData for type ${type} not implemented`);
+// }
 
 /**
  * Preload users into the cache
@@ -67,18 +68,4 @@ export function preloadUsers(users: User[]): void {
  */
 export async function awaitSSRData(): Promise<void> {
 	return userStore.awaitSSR();
-}
-
-/**
- * Serialize the store data for SSR hydration
- */
-export function serializeUserStore(): string {
-	return userStore.serialize();
-}
-
-/**
- * Hydrate the store from serialized data
- */
-export function hydrateUserStore(serializedData: string): void {
-	userStore.hydrate(serializedData);
 }

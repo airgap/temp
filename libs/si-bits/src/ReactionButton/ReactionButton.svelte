@@ -22,7 +22,7 @@
   )}
 >
   <Link {disabled} {onClick}>
-    <SVG src={glyph} />
+    {@html glyph}
   </Link>
   {#if typeof value === 'number'}
     <span class={styles.Stat}>{value}</span>

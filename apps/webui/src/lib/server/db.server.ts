@@ -6,6 +6,7 @@ import { PostgresDialect } from 'kysely';
 import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
 import * as Drizzy from '@neondatabase/serverless';
+import { DATABASE_URL } from '$env/static/private';
 
 // Set the PostgreSQL type parser for INT8 (BIGINT) to return BigInt objects
 // This ensures bigint values are returned as actual BigInt objects, not strings
@@ -35,6 +36,9 @@ export function initDb(connectionString: string): Kysely<Database> {
 		log: ['query', 'error'],
 	});
 }
+
+export const neon = () =>
+	initDb(DATABASE_URL || process?.env?.DATABASE_URL || '');
 
 /**
  * Test the database connection

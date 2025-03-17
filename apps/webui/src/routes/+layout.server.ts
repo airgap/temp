@@ -26,5 +26,6 @@ export const load = async ({ cookies }: { cookies: Cookies }) => {
 	return {
 		session,
 		user,
+		users: [user],
 	};
 };

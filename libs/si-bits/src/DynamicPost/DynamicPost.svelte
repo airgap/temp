@@ -23,7 +23,7 @@
   import { ReplyButton } from '../ReplyButton';
   import { ShareButton } from '../ShareButton';
   import styles from './DynamicPost.module.sass';
-  import { useCacheData } from '../CacheProvider';
+  // import { useCacheData } from '../CacheProvider';
 
   const insets = { reply: styles.replied, echo: styles.echoed } as const;
   
@@ -48,13 +48,15 @@
   const stripLinks = (body: string) => body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
   const author = $derived(useUser(post.author));
-  const [imageIds, videoIds, audioIds, documentIds] = 
-      $derived(post.attachments?.reduce((acc, id) => {
-        const { supertype } = parseAttachmentId(id);
-        if (!acc[supertype]) acc[supertype] = [];
-        acc[supertype].push(id);
-        return acc;
-      }, [] as bigint[][]) ?? []);
+  // const [imageIds, videoIds, audioIds, documentIds] = 
+  //     $derived(post.attachments?.reduce((acc, id) => {
+  //       const { supertype } = parseAttachmentId(id);
+  //       if (!acc[supertype]) acc[supertype] = [];
+  //       acc[supertype].push(id);
+  //       return acc;
+  //     }, [] as bigint[][]) ?? []);
+
+  $effect(()=>console.log('Uhh', $author))
 
   const [images] = [[]];//useCacheData('images', imageIds);
   const [videos] = [[]];//useCacheData('videos', videoIds);
@@ -88,23 +90,19 @@
     </span>
   {/if}
 
-  {#if author}
     <span class={styles.pp}>
-      <ProfilePicture size="m" src={formImageUrl(author.profilePicture)} />
+      <ProfilePicture size="m" src={formImageUrl(author?.profilePicture)} />
     </span>
-  {/if}
 
   <span class={styles.text}>
-    {#if author}
-      <Link class={styles.username} href={`/u/${author.username}`}>
-        {author.username}
-      </Link>
-      <DynamicDate time={post.published} />
-      {#if me?.id === author.id}
-        <Button class={styles.delete} onclick={handleDelete}>
-          X
-        </Button>
-      {/if}
+    <Link class={styles.username} href={`/u/${author.username}`}>
+      {$author?.username}
+    </Link>
+    <DynamicDate time={post.publish} />
+    {#if me?.id === author.id}
+      <Button class={styles.delete} onclick={handleDelete}>
+        X
+      </Button>
     {/if}
 
     <span class={styles.PostContent}>

@@ -3,7 +3,7 @@ import { handleListUserPosts } from '@lyku/handles';
 export default handleListUserPosts(
 	async ({ before, user }, { db, requester }) => {
 		// TODO: implement <groups> and <tags> filters
-		// let query = tables.posts.orderBy(desc('published')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
+		// let query = tables.posts.orderBy(desc('publish')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 		// const author = isUuid(user) ? user : tables.users.get(user);
 		const author =
 			typeof user === 'string'

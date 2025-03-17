@@ -5,10 +5,10 @@ export default handleListFeedPostsUnauthenticated(
 		{ before, tags, groups, authors, count },
 		{ db, requester, model }
 	) => {
-		let query = db.selectFrom('posts').selectAll().orderBy('published', 'desc');
+		let query = db.selectFrom('posts').selectAll().orderBy('publish', 'desc');
 
 		if (before) {
-			query = query.where('published', '<', new Date(before));
+			query = query.where('publish', '<', new Date(before));
 		}
 
 		if (groups) {
