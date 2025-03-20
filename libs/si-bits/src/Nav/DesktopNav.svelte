@@ -53,7 +53,10 @@
 			>
 
 			<span
-				class={classNames(styles.cluster, user ? styles.user : styles.guest)}
+				class={classNames(
+					styles.cluster,
+					user ? styles.loggedIn : styles.guest,
+				)}
 			>
 				{#if user}
 					<span class={styles.welcome}>
