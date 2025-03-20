@@ -49,6 +49,13 @@
 		vertical-align: middle
 	a
 		font-weight: 600 !important
+.loggedIn
+	button, a
+		padding: 0
+		box-shadow: 0 0 5px 0 black
+		&:hover
+			transform: scale(1.1)
+			box-shadow: 0 0 10px 0 black
 .cluster
 	float: right
 	display: flex
@@ -59,16 +66,11 @@
 	*
 		vertical-align: middle
 	button, a
-		border-radius: 50% !important
+		border-radius: 999px !important
 		// padding: 4px
 		// margin-left: 8px
 		height: 35px
 		display: inline-block
-		padding: 0
-		box-shadow: 0 0 5px 0 black
-		&:hover
-			transform: scale(1.1)
-			box-shadow: 0 0 10px 0 black
 		+ button, + a
 		margin-left: 8px
 		svg, img

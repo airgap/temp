@@ -12,6 +12,7 @@
 	import { Lingo } from '../Lingo';
 	import Plus from '../assets/plus.svg?raw';
 	import pen from '../pen.png';
+	import classNames from 'classnames';
 
 	const showAuth = (form: any) => () => shout('showAuth', form);
 	import { createEventDispatcher } from 'svelte';
@@ -51,7 +52,9 @@
 				>{phrasebook.navPlay}</BubbleButton
 			>
 
-			<span class={styles.cluster}>
+			<span
+				class={classNames(styles.cluster, user ? styles.user : styles.guest)}
+			>
 				{#if user}
 					<span class={styles.welcome}>
 						<Link onclick={oncreate} className={styles.createPost}>

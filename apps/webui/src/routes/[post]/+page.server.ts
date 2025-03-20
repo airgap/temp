@@ -8,6 +8,12 @@ export const load = async ({ params, fetch }: any) => {
 	const postId = params.post;
 	console.log('params', params);
 	console.log('postId', postId);
+	if (
+		!/^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$/.test(
+			postId,
+		)
+	)
+		throw new Err(404, 'Not a valid post or page');
 	const big = base58ToBigint(postId);
 	console.log('big', big);
 	const post = await db
