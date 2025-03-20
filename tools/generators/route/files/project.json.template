@@ -1,19 +1,19 @@
 {
- "name": "routes-<%= fileName %>",
- "$schema": "../../../node_modules/nx/schemas/project-schema.json",
- "extends": ["../_shared/project.json"],
- "sourceRoot": "libs/routes/<%= fileName %>/src",
- "projectType": "library",
- "targets": {
-  "build": {
-   "$extends": ["../_shared/project.json:build"]
-  },
-  "lint": {
-   "$extends": ["../_shared/project.json:lint"]
-  },
-   "test": {
+	"name": "routes-<%= fileName %>",
+	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
+	"extends": ["../_shared/project.json"],
+	"sourceRoot": "libs/routes/<%= fileName %>/src",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"$extends": ["../_shared/project.json:build"]
+		},
+		"lint": {
+			"$extends": ["../_shared/project.json:lint"]
+		},
+		"test": {
 			"$extends": ["../_shared/project.json:test"]
-   }
- },
- "tags": []
+		}
+	},
+	"tags": []
 }

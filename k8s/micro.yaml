@@ -1,29 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${SERVICE_NAME}
+  name: ${DEPLOYMENT_NAME}
   labels:
-    app: ${SERVICE_NAME}
+    app: ${DEPLOYMENT_NAME}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: ${SERVICE_NAME}
+      app: ${DEPLOYMENT_NAME}
   template:
     metadata:
       labels:
-        app: ${SERVICE_NAME}
+        app: ${DEPLOYMENT_NAME}
     spec:
-      # imagePullSecrets:
-      #   - name: registry-digitalocean
+      imagePullSecrets:
+        - name: lyku
       containers:
-        - name: ${SERVICE_NAME}
+        - name: ${DEPLOYMENT_NAME}
           image: registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
           imagePullPolicy: Always
           command: ['bun']
           args:
-            - '--eval'
-            - "process.stdout.isTTY = true; console.log('Container starting...'); require('./index.js')"
+            - './serve.js'
+          envFrom:
+            - secretRef:
+                name: doppler-token-secret
           env:
             - name: NODE_ENV
               value: 'production'
@@ -33,15 +35,17 @@ spec:
               value: '1'
             - name: FORCE_COLOR
               value: '1'
+            - name: PG_CONNECTION_STRING
+              value: '${PG_CONNECTION_STRING}'
           ports:
             - containerPort: 3000
           resources:
             requests:
-              memory: '40Mi'
-              cpu: '20m'
+              memory: '160Mi'
+              cpu: '5m'
             limits:
-              memory: '256Mi'
-              cpu: '200m'
+              memory: '200Mi'
+              cpu: '20m'
           startupProbe:
             httpGet:
               path: /health
@@ -66,12 +70,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${SERVICE_NAME}-service
+  name: ${DEPLOYMENT_NAME}-service
 spec:
   selector:
-    app: ${SERVICE_NAME}
+    app: ${DEPLOYMENT_NAME}
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
   type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lyku
+  namespace: kube-system
+  annotations:
+    digitalocean.com/dosecret-identifier: lyku
+type: kubernetes.io/dockerconfigjson
+# data:
+#   .dockerconfigjson: ${DOCKER_CREDENTIALS}

@@ -1,4 +1,10 @@
 {
+	"compilerOptions": {
+		"module": "ESNext",
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"types": ["bun-types"]
+	},
 	"extends": "../_shared/tsconfig.json",
 	"include": ["serve.ts"]
 }

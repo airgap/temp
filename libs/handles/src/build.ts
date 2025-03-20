@@ -21,8 +21,13 @@ const jsonify = async () => {
 
 	let modelImports: string[] = [];
 	let typeImports: string[] = ['MonolithTypes'];
+	const exports = [] as string[];
 
 	for (const [key, value] of Object.entries(models)) {
+		const output = [] as string[];
+		exports.push(`export * from './${key}'`);
+		output.push(`import { ${key} } from '@lyku/mapi-models';`);
+		output.push(`import { MonolithTypes } from '@lyku/mapi-types';`);
 		modelImports.push(key);
 		const upper = key[0].toUpperCase() + key.slice(1);
 		// modelImports.push(upper);
@@ -48,6 +53,10 @@ const jsonify = async () => {
 				? upper + 'TweakResponse'
 				: undefined;
 		typeImports.push(request);
+		const responseImport = response.endsWith('void') ? '' : `, ${response}`;
+		output.push(
+			`import type { ${request}${responseImport} } from '@lyku/mapi-types';`
+		);
 		if (!response.endsWith('void')) typeImports.push(response);
 		if (tweakRequest !== undefined) typeImports.push(tweakRequest);
 		if (tweakResponse !== undefined) typeImports.push(tweakResponse);
@@ -60,6 +69,9 @@ const jsonify = async () => {
 				: authenticated
 				? `SecureHttpContext<typeof ${key}>`
 				: `MaybeSecureHttpContext<typeof ${key}>`;
+		output.push(
+			`import type {${context.split('<')[0]}} from '@lyku/route-helpers';`
+		);
 		const validator =
 			'request' in value
 				? (() => {
@@ -67,7 +79,7 @@ const jsonify = async () => {
 						return `{ "validate": (request: unknown): string[] => {const allErrors = []; ${validator.validate.toString()}; return allErrors; }, "validateOrThrow": (request: unknown): void => {${validator.validateOrThrow.toString()}}, "isValid": (request: unknown): string | true => {${validator.isValid.toString()}; return true as const } }`;
 				  })()
 				: '{ validate: (): string[] => [], validateOrThrow: (): void => {}, isValid: (): true => true as const }';
-		console.log('validator', validator);
+		// console.log('validator', validator);
 		const tweakValidator =
 			'stream' in value &&
 			typeof value.stream === 'object' &&
@@ -88,6 +100,23 @@ const jsonify = async () => {
 				${tweakValidator}
 				model: ${stringifyBON(value)}
 			} as const);`;
+		if (handle.includes('isObject'))
+			output.push(`import { isObject } from 'from-schema';`);
+		output.push(handle);
+		await Bun.write(
+			path.join(
+				__dirname,
+				'..',
+				'..',
+				'..',
+				'dist',
+				'libs',
+				'handles',
+				'src',
+				`${key}.ts`
+			),
+			output.join('\n')
+		);
 		handles.push(handle);
 	}
 
@@ -97,7 +126,7 @@ const jsonify = async () => {
 			'..',
 			'..',
 			'..',
-			'tmp',
+			'dist',
 			'libs',
 			'handles',
 			'src',
@@ -111,7 +140,7 @@ const jsonify = async () => {
 		import { ${typeImports.join(', ')} } from '@lyku/mapi-types';
 	${handles.join('\n\n')}
 	`;
-		const formattedTsContent = await prettier.format(tsContent, {
+		const formattedTsContent = await prettier.format(exports.join('\n'), {
 			parser: 'typescript',
 			semi: true,
 			singleQuote: true,

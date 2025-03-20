@@ -14,8 +14,9 @@ export default handleListHotPosts(
 			postsQuery.where('published', '<', new Date(before));
 		}
 
-		// Calculate hotness and get posts
-		const posts = await postsQuery
+		console.log('Posts query:', postsQuery.compile().sql);
+
+		const refinedPostsQuery = postsQuery
 			.select((eb) => [
 				sql<number>`(${eb.ref('likes')} + ${eb.ref(
 					'loves'
@@ -24,32 +25,44 @@ export default handleListHotPosts(
 				)}, 0)`.as('hotness'),
 			])
 			.orderBy('hotness', 'desc')
-			.limit(limit ?? 20)
-			.execute();
+			.limit(limit ?? 20);
+		console.log('Refined posts query:', refinedPostsQuery.compile().sql);
+
+		const posts = await refinedPostsQuery.execute();
+
+		console.log('Posts:', posts.length);
 
 		// Get unique author IDs
 		const authorIds = [...new Set(posts.map((p) => p.author))];
+		console.log('Author IDs:', authorIds);
 
 		// Get authors in single query
-		const authors = await db
-			.selectFrom('users')
-			.where('id', 'in', authorIds)
-			.selectAll()
-			.execute();
-
-		// Get likes if authenticated
-		const likes: Like[] = requester
+		const authors = authorIds.length
 			? await db
-					.selectFrom('likes')
-					.where('userId', '=', requester)
-					.where(
-						'postId',
-						'in',
-						posts.map((p) => p.id)
-					)
+					.selectFrom('users')
+					.where('id', 'in', authorIds)
 					.selectAll()
 					.execute()
 			: [];
+
+		console.log('Authors:', authors.length);
+
+		// Get likes if authenticated
+		const likes: Like[] =
+			requester && posts.length
+				? await db
+						.selectFrom('likes')
+						.where('userId', '=', requester)
+						.where(
+							'postId',
+							'in',
+							posts.map((p) => p.id)
+						)
+						.selectAll()
+						.execute()
+				: [];
+
+		console.log('Likes:', likes.length);
 
 		// Build response with normalized data
 		const response = {

@@ -1,5 +1,6 @@
 import * as path from 'path';
 import tsconfig from './tsconfig.base.json';
+import { treeShake } from 'esbuild-plugin-tree-shake';
 
 export const plugins = [
 	{
@@ -27,4 +28,5 @@ export const plugins = [
 			});
 		},
 	},
+	treeShake(),
 ];

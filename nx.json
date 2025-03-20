@@ -61,7 +61,8 @@
 			"dependsOn": ["^build", "^compile", "^generate-types", "^post-build"]
 		},
 		"dockerize": {
-			"dependsOn": ["build"]
+			"dependsOn": ["build"],
+			"cache": true
 		},
 		"kubernetize": {
 			"dependsOn": ["dockerize"]

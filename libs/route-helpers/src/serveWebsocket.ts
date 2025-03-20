@@ -13,6 +13,7 @@ import {
 } from 'from-schema';
 import { en_US } from '@lyku/strings';
 import * as nats from 'nats';
+import { natsPort } from './env';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 type Data = { authenticated: boolean; user?: bigint; sessionId?: string };
@@ -27,9 +28,11 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 	tweakValidator?: Model['stream'] extends StreamConfig ? Validator : never;
 	model: Model;
 }) => {
-	const nc = await nats.connect();
-	let closers: (() => void)[] = [];
-	let tweakers: ((params: any) => void)[] = [];
+	const nc = await nats.connect({
+		servers: [natsPort],
+	});
+	const closers: (() => void)[] = [];
+	const tweakers: ((params: any) => void)[] = [];
 	const server = Bun.serve({
 		port,
 		fetch(server, req) {
@@ -69,7 +72,7 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 
 					const sessionId = decodedMessage.auth.substring(7);
 					if (!sessionId) {
-						ws.close(1008, 'Invalid sessionId');
+						ws.close(1008, '[WS] Invalid sessionId');
 						return;
 					}
 					const hasRequest = 'request' in model;

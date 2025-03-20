@@ -16,6 +16,7 @@ export { apiHost };
 export const protocol = local ? 'http' : 'https';
 
 import { MonolithTypes } from 'monolith-api-types';
+import { encode } from '@msgpack/msgpack';
 
 type ContractName = keyof MonolithTypes;
 
@@ -48,9 +49,10 @@ export const api = Object.fromEntries(
 				const route = monolith[routeName] as TsonHandlerModel;
 				const key = onlyKey(routeName as ContractName);
 				const data = key ? { [key]: params } : params;
-				const body = JSON.stringify(data);
-				const stream = route.stream;
-				let path = `//${apiHost}/${routeName}`;
+				const body = encode(data);
+				const stream = 'stream' in route && route.stream;
+				const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
+				let path = `//${apiHost}/${snakeName}`;
 				if (stream) {
 					path += toQueryString(data);
 					type Listener = (ev: (typeof route)['response']) => void;

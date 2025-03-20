@@ -29,11 +29,12 @@ fi
 
 # Build the image
 docker build \
+    --quiet \
     --build-arg ROUTE_NAME=$ROUTE_NAME \
     -f docker/templates/route.Dockerfile \
-    --provenance=mode=max \
     -t $REGISTRY/$REPO:$ROUTE_NAME \
     .
+    # --provenance=mode=max \
 
 # Push the image
 if [ -n "$PUSH_FLAG" ]; then 
@@ -42,12 +43,12 @@ if [ -n "$PUSH_FLAG" ]; then
         DOCKER_CONFIG="/home/$SUDO_USER/.docker"
         if [ -f "$DOCKER_CONFIG/config.json" ]; then
             echo "Using Docker credentials from $SUDO_USER"
-            docker --config "$DOCKER_CONFIG" push $REGISTRY/$REPO:$ROUTE_NAME
+            docker --config "$DOCKER_CONFIG" push --quiet $REGISTRY/$REPO:$ROUTE_NAME
         else
             echo "Error: Docker credentials not found. Please run 'docker login' as your regular user first."
             exit 1
         fi
     else
-        docker push $REGISTRY/$REPO:$ROUTE_NAME
+        docker push --quiet $REGISTRY/$REPO:$ROUTE_NAME
     fi
 fi 

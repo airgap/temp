@@ -15,6 +15,7 @@ const ingressTemplate = {
 			'nginx.ingress.kubernetes.io/use-regex': 'true',
 			'nginx.ingress.kubernetes.io/proxy-body-size': '50m',
 			'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
+			'cert-manager.io/issuer': 'letsencrypt-nginx',
 		},
 	},
 	spec: {
@@ -22,7 +23,8 @@ const ingressTemplate = {
 		tls: [
 			{
 				hosts: ['api.lyku.org'],
-				secretName: 'cloudflare-origin-cert',
+				secretName: 'letsencrypt-nginx-cert',
+				// secretName: 'cloudflare-origin-cert',
 			},
 		],
 		rules: [
@@ -45,11 +47,11 @@ const routeDirs = fs
 // Generate path for each route
 routeDirs.forEach((route) => {
 	ingressTemplate.spec.rules[0].http.paths.push({
-		path: `/api/${route}(/|$)(.*)`,
+		path: `/${route}(/|$)(.*)`,
 		pathType: 'ImplementationSpecific',
 		backend: {
 			service: {
-				name: `${route}-service`,
+				name: `lyku-${route}-service`,
 				port: {
 					number: 3000,
 				},

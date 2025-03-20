@@ -45,4 +45,9 @@ vite.config.*.timestamp*
 bin
 **/dist
 **/coverage
+<<<<<<< HEAD
 **/*~lock~
+=======
+
+k8s-prd-ca-cert.crt
+>>>>>>> 97bb3df34a1feaf0c7e247f2fef314010248d6d4

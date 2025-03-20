@@ -1,12 +1,17 @@
 import { decode, encode } from '@msgpack/msgpack';
-import { SecureHttpContext } from './Contexts';
+import type { SecureHttpContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
-import { TsonHandlerModel } from 'from-schema';
 import * as nats from 'nats';
-import { Validator } from 'from-schema';
+import {
+	stringifyBON,
+	type TsonHandlerModel,
+	type Validator,
+} from 'from-schema';
+import { natsPort } from './env';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
+const methodsWithBody = ['POST', 'PUT', 'PATCH'];
 
 export const serveHttp = async ({
 	execute,
@@ -17,7 +22,12 @@ export const serveHttp = async ({
 	validator: Validator;
 	model: TsonHandlerModel;
 }) => {
-	const nc = await nats.connect();
+	console.log('Connecting to NATS');
+	const nc = await nats.connect({
+		servers: [natsPort],
+	});
+	console.log('Connected to NATS');
+	console.log('Starting HTTP server');
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
@@ -27,13 +37,17 @@ export const serveHttp = async ({
 				console.log('Health check');
 				return new Response(':D', { status: 200 });
 			}
+			console.log('req', req.url);
 
 			const auth = req.headers.get('authorization');
 			if (needsAuth && !auth)
 				return new Response('Unauthorized', { status: 401 });
 
 			const sessionId = auth?.substring(7);
-			if (!sessionId) return new Response('Invalid sessionId', { status: 403 });
+			if (needsAuth && !sessionId)
+				return new Response('SessionId required but not provided', {
+					status: 403,
+				});
 
 			const session = sessionId
 				? await db
@@ -46,43 +60,62 @@ export const serveHttp = async ({
 			if (needsAuth && !session)
 				return new Response('Invalid session', { status: 403 });
 
+			const methodHasBody =
+				'method' in model && methodsWithBody.includes(model.method);
 			// Parse params from MessagePack
-			const arrayBuffer = await req.arrayBuffer();
-			const params = decode(new Uint8Array(arrayBuffer));
-			try {
-				validator.validate(params);
-			} catch (e) {
-				return new Response('Invalid request', { status: 400 });
+			const arrayBuffer = methodHasBody ? await req.arrayBuffer() : undefined;
+			console.log('arrayBuffer', arrayBuffer);
+			const intArray = arrayBuffer ? new Uint8Array(arrayBuffer) : undefined;
+			console.log('intArray', intArray);
+			const params = intArray?.length ? decode(intArray) : undefined;
+			console.log('params', params);
+			if ('request' in model && methodHasBody) {
+				try {
+					validator.validate(params);
+				} catch (e) {
+					return new Response(
+						`Request "${stringifyBON(params)}" failed validation ${stringifyBON(
+							model.request
+						)} due to ${e}`,
+						{ status: 400 }
+					);
+				}
 			}
 			const phrasebook = getDictionary(req);
 
 			const responseHeaders = new Headers();
 			responseHeaders.set('Access-Control-Allow-Origin', '*');
-			const output = (await execute(params, {
-				db,
-				strings: phrasebook,
-				request: req,
-				requester: session!.userId, // oh just kill me
-				session: sessionId,
-				responseHeaders,
-				nats: nc,
-				server,
-				model,
-			})) as SecureHttpContext<any>;
+			responseHeaders.set('Content-Type', 'application/x-msgpack');
+			try {
+				const output = (await execute(params ?? {}, {
+					db,
+					strings: phrasebook,
+					request: req,
+					requester: session?.userId, // oh just kill me
+					session: sessionId,
+					responseHeaders,
+					nats: nc,
+					server,
+					model,
+				})) as SecureHttpContext<any>;
 
-			const pack = encode(output);
+				const pack = encode(output);
 
-			// Route handling here
+				// Route handling here
 
-			return new Response(pack, {
-				headers: responseHeaders,
-			});
+				return new Response(pack, {
+					headers: responseHeaders,
+				});
+			} catch (e) {
+				console.error('Error executing route', e);
+				return new Response('Internal server error', { status: 500 });
+			}
 		},
 	});
 	console.log(
 		'HTTP server started on port',
 		port,
 		'for',
-		process.env['SERVICE_NAME']
+		process.env['HOSTNAME']
 	);
 };

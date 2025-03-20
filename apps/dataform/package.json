@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"@lyku/db-config": "workspace:*"
+	},
+	"type": "module"
+}

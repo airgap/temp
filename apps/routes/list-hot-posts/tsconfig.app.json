@@ -1,4 +1,7 @@
 {
 	"extends": "../_shared/tsconfig.json",
-	"include": ["serve.ts"]
+	"include": ["serve.ts"],
+	"compilerOptions": {
+		"types": ["bun-types", "bun"]
+	}
 }

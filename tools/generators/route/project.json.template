@@ -1,11 +1,11 @@
 {
-  "name": "<%= name %>",
-  "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "options": {
-        "jestConfig": "libs/routes/<%= name %>/jest.config.ts"
-      }
-    }
-  }
+	"name": "<%= name %>",
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"options": {
+				"jestConfig": "libs/routes/<%= name %>/jest.config.ts"
+			}
+		}
+	}
 }

@@ -23,7 +23,7 @@
 			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely.d.ts"],
 			"@lyku/defaults": ["libs/defaults/src/index.ts"],
 			"@lyku/get-current-user": ["libs/routes/getCurrentUser/src/index.ts"],
-			"@lyku/handles": ["tmp/libs/handles/src/index.ts"],
+			"@lyku/handles": ["dist/libs/handles/src/index.ts"],
 			"@lyku/helpers": ["libs/helpers/src/index.ts"],
 			"@lyku/json-models": ["dist/libs/json-models"],
 			"@lyku/json-models/*": ["dist/libs/json-models/src/*"],
