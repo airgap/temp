@@ -12,7 +12,7 @@
 </script>
 
 <Link href={getHomepage()} className={`${className} ${styles.NavLogo}`}>
-	<svg width="30px" height="30px">
+	<svg width="35px" height="35px">
 		<defs>
 			<mask
 				id={maskId}

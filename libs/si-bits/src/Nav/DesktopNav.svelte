@@ -11,12 +11,15 @@
 	import styles from './DesktopNav.module.sass';
 	import { Lingo } from '../Lingo';
 	import Plus from '../assets/plus.svg?raw';
+	import pen from '../pen.png';
 
 	const showAuth = (form: any) => () => shout('showAuth', form);
 	import { createEventDispatcher } from 'svelte';
 	import type { string } from '../../../../../from-schema/dist/bson/primitives';
 	import type { User } from '@lyku/json-models';
 	import { ProfilePicture } from '../ProfilePicture';
+	import { Search } from '../Search';
+	import BubbleButton from '../BubbleButton/BubbleButton.svelte';
 	// import { currentUser } from '../currentUserStore';
 	// const user = $currentUser;
 	const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{
@@ -35,46 +38,47 @@
 		<div class={styles.InnerDesktopNav}>
 			<Backdrop />
 			<NavLogo />
-			{#if user}
-				<CoolLink href="/tail" isActive={url?.pathname.startsWith('/tail')}
-					>{phrasebook.navTailored}</CoolLink
-				>
-			{/if}
-			<CoolLink href="/hot" isActive={url?.pathname.startsWith('/hot')}
-				>{phrasebook.navHot}</CoolLink
+			<Search />
+			<!-- {#if user} -->
+			<BubbleButton href="/" isActive={url?.pathname === '/'}
+				>{phrasebook.navFeed}</BubbleButton
 			>
-			<CoolLink href="/play" isActive={url?.pathname.startsWith('/play')}
-				>{phrasebook.navPlay}</CoolLink
+			<!-- {/if} -->
+			<BubbleButton href="/hot" isActive={url?.pathname.startsWith('/g')}
+				>{phrasebook.navGroups}</BubbleButton
+			>
+			<BubbleButton href="/play" isActive={url?.pathname.startsWith('/p')}
+				>{phrasebook.navPlay}</BubbleButton
 			>
 
 			<span class={styles.cluster}>
 				{#if user}
 					<span class={styles.welcome}>
-						{phrasebook.navWelcome}
+						<Link onclick={oncreate} className={styles.createPost}>
+							<img src={pen} alt="Pen post" />
+						</Link>
+						<!--{phrasebook.navWelcome}-->
 						<Link href="/u/{user.slug}">
-							<span>{user.username}!</span>
+							<!--<span>{user.username}!</span>-->
 							<ProfilePicture
 								shape="circle"
 								size="s"
 								src={user.profilePicture}
 							/>
 						</Link>
-						<span class={styles.badgeHolder}>
+						<Link>
 							<LevelBadge points={user.points ?? 0n} progress={true} />
-						</span>
-						<Link onclick={oncreate} className={styles.plus}>
-							{@html Plus}
 						</Link>
 					</span>
 				{:else}
-					<Link onclick={onjoin}>
-						{phrasebook.navRegister}
-					</Link>
-					<Link onclick={onlogin}>
+					<BubbleButton onclick={onlogin}>
 						{phrasebook.navLogin}
-					</Link>
+					</BubbleButton>
+					<BubbleButton onclick={onjoin} variant="primary">
+						{phrasebook.navRegister}
+					</BubbleButton>
 				{/if}
-				<Lingo />
+				<!-- <Lingo /> -->
 			</span>
 		</div>
 	</div>

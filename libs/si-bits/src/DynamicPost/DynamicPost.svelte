@@ -66,8 +66,6 @@
 	//       return acc;
 	//     }, [] as bigint[][]) ?? []);
 
-	$effect(() => console.log('Uhh', $author));
-
 	const [images] = [[]]; //useCacheData('images', imageIds);
 	const [videos] = [[]]; //useCacheData('videos', videoIds);
 	const [audios] = [[]]; //useCacheData('audios', audioIds);
@@ -101,7 +99,10 @@
 	{/if}
 
 	<span class={styles.pp}>
-		<ProfilePicture size="m" src={formImageUrl(author?.profilePicture)} />
+		<ProfilePicture
+			size="m"
+			src={author?.profilePicture && formImageUrl(author?.profilePicture)}
+		/>
 	</span>
 
 	<span class={styles.text}>

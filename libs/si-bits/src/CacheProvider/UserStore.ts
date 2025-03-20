@@ -290,7 +290,7 @@ export function createUserStore() {
 		try {
 			// const userData = gDeserialize(serializedData) as User[];
 			preload(userData);
-			console.log('HYDRATED', userData);
+			// console.log('HYDRATED', userData);
 		} catch (error) {
 			console.error('Error hydrating user store:', error);
 		}

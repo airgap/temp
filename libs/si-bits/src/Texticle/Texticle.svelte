@@ -18,6 +18,7 @@
 		value,
 		oninput,
 		onvalidation,
+		className,
 	} = $props<{
 		schema?: StringJsonSchema;
 		empty?: string;
@@ -31,6 +32,7 @@
 		value?: string;
 		oninput: (value: string) => void;
 		onvalidation?: (isValid: boolean) => void;
+		className?: string;
 	}>();
 
 	const id = Math.random().toString().substring(2);
@@ -63,7 +65,8 @@
 	const finalPattern = $derived(
 		pattern ??
 			schema?.pattern ??
-			('format' in schema &&
+			(typeof schema === 'object' &&
+				'format' in schema &&
 				schema.format in formatRegexes &&
 				formatRegexes[schema.format]),
 	);
@@ -96,10 +99,14 @@
 </script>
 
 <div
-	class={classNames(styles.Texticle, {
-		[styles.valid]: isValid,
-		[styles.invalid]: isInvalid,
-	})}
+	class={classNames(
+		styles.Texticle,
+		{
+			[styles.valid]: isValid,
+			[styles.invalid]: isInvalid,
+		},
+		className,
+	)}
 >
 	{#if multiline}
 		<textarea {id} {oninput} placeholder="" bind:value></textarea>

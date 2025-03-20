@@ -15,15 +15,14 @@
 	}
 
 	const { size, bot, shape, src, className } = $props<$$Props>();
-	console.log('IMAGE', src);
 </script>
 
-<span
+<img
 	class={classnames(styles.Image, className, size && styles[size], {
 		[styles.bot]: bot,
 		[styles.squircle]: shape === 'squircle',
 		[styles.circle]: shape === 'circle',
 	})}
->
-	<img {src} alt="Profile" />
-</span>
+	{src}
+	alt="Profile"
+/>

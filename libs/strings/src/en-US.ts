@@ -1,6 +1,8 @@
 export const en_US = {
 	navLogoAlt: 'Lyku',
 	navTailored: 'Tailored',
+	navFeed: 'Feed',
+	navGroups: 'Groups',
 	navHot: 'Hot',
 	navPlay: 'Play',
 	navDiscord: 'Discord',

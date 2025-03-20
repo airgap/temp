@@ -10,12 +10,11 @@
 	}
 </script>
 
-<div style="margin: auto; width: 800px; max-width: 100%">
-	<h2 style="display: flex">
-		Groups <Button onclick={handleAddClick}>+</Button>
-	</h2>
-	<br />
-	<!--
+<h2 style="display: flex">
+	Groups <Button onclick={handleAddClick}>+</Button>
+</h2>
+<br />
+<!--
 	<Texticle
 		on:input={e => substring = e.detail}
 		value={substring}
@@ -26,5 +25,4 @@
 		on:change={e => filter = e.detail?.value}
 	/>
 	-->
-	<GroupList {filter} {substring} />
-</div>
+<GroupList {filter} {substring} />

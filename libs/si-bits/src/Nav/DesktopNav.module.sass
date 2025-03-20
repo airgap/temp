@@ -15,9 +15,9 @@
 	//font-family: Gumzilla
 	// z-index: 2
 	color: white
-	height: 2rem
+	// height: 2rem
 	width: 100%
-	max-width: max($ideal-width, $nav-break)
+	// max-width: max($ideal-width, $nav-break)
 	margin-left: auto
 	margin-right: auto
 	text-align: left
@@ -30,7 +30,7 @@
 	> div
 		overflow: hidden
 		// height: 45px
-		height: 80px
+		// height: 80px
 		top: -20px
 		left: -20px
 		right: -20px
@@ -45,36 +45,44 @@
 			// top: -20px
 			object-fit: cover
 			margin-left: 0
-	> *
-		vertical-align: top
-	> a, button
-		vertical-align: top
-		padding: 8px
+	a, button
+		vertical-align: middle
 	a
 		font-weight: 600 !important
-		span
-			vertical-align: bottom
-			img
-				//border-radius: 25%
 .cluster
 	float: right
-	display: inline-block
-	vertical-align: baseline
-	> *
-		vertical-align: baseline
-	button.plus
-		padding: 4px
+	display: flex
+	align-items: center
+	vertical-align: middle
+	height: 47px
+	margin-right: 4px
+	*
+		vertical-align: middle
+	button, a
+		border-radius: 50% !important
+		// padding: 4px
+		// margin-left: 8px
+		height: 35px
+		display: inline-block
+		padding: 0
+		box-shadow: 0 0 5px 0 black
+		&:hover
+			transform: scale(1.1)
+			box-shadow: 0 0 10px 0 black
+		+ button, + a
 		margin-left: 8px
-		svg
+		svg, img
+			margin: 0
 			border-radius: 50%
 			overflow: hidden
-			height: 25px !important
+			width: 100%
+			height: 100%
 			display: inline-block
 			width: auto !important
 	span:last-of-type
 		a:last-of-type
-			padding-left: 0
-			padding-right: .5px
+			// padding-left: 0
+			// padding-right: .5px
 .welcome
 	//padding: 2px
 	//display: inline-block
@@ -91,12 +99,21 @@
 		vertical-align: center
 	a
 		//margin-top: -2px
-		padding-top: 2px !important
+		// padding-top: 2px !important
 		//background: red
 		align-content: center
 		+ *
-			margin-left: 5px
-.badgeHolder
+			// margin-left: 5px
+// .badgeHolder
+// 	display: inline-block
+// 	margin-top: -5px
+// 	vertical-align: middle
+.createPost
+	width: 35px
+	height: 35px
 	display: inline-block
-	margin-top: -5px
-	vertical-align: middle
+	text-align: center
+	background-color: #652966 !important
+	padding: 5px !important
+	img
+		border-radius: 0 !important

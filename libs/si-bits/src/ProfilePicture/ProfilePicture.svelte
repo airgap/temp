@@ -10,6 +10,10 @@
 	} = $props<{ src?: string; alt?: string; size?: number }>();
 </script>
 
-<span class={styles.ProfilePicture}>
-	<Image shape="circle" src={src ?? smile} {alt} {size} />
-</span>
+<Image
+	className={styles.ProfilePicture}
+	shape="circle"
+	src={src ?? smile}
+	{alt}
+	{size}
+/>
