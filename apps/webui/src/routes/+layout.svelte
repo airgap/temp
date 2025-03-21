@@ -67,7 +67,7 @@
 		}}
 	/>
 	<DesktopNav
-		url={page.url}
+		url={$page.url}
 		user={currentUser}
 		onjoin={join}
 		onlogin={login}
@@ -76,7 +76,7 @@
 	/>
 	{@render children?.()}
 	<MobileNav
-		url={page.url}
+		url={$page.url}
 		user={currentUser}
 		onjoin={join}
 		onlogin={login}

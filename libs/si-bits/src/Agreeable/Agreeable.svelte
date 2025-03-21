@@ -2,14 +2,13 @@
 	import styles from './Agreeable.module.sass';
 	import { phrasebook } from '../phrasebook';
 	import { ShowTos } from '../ShowTos';
-	import { tempId } from '../tempId';
 
 	let { children, oninput, onshowtos } = $props<{
 		children: ComponentType[];
 		oninput: (checked: boolean) => void;
 	}>();
 
-	let id = tempId();
+	let id = Math.random();
 </script>
 
 <div class={styles.Agreeable}>

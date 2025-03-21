@@ -14,8 +14,7 @@
 	import styles from './DesktopNav.module.sass';
 	import { Lingo } from '../Lingo';
 	import Plus from '../assets/plus.svg?raw';
-	import pen from '../pen.png';
-	import classNames from 'classnames';
+	import pen from '../assets/pen.png';
 
 	const showAuth = (form: any) => () => shout('showAuth', form);
 	import { createEventDispatcher } from 'svelte';
@@ -44,25 +43,16 @@
 			<NavLogo />
 			<Search />
 			<!-- {/if} -->
-			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}
-				>
+			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}>
 				{phrasebook.navGroups}
 				<!-- {@html groups} -->
-				</BubbleButton
-			>
-			<BubbleButton href="/p/" isActive={/^\/p(\/|$)/.test(url?.pathname)}
-				>
+			</BubbleButton>
+			<BubbleButton href="/p/" isActive={/^\/p(\/|$)/.test(url?.pathname)}>
 				{phrasebook.navPlay}
 				<!-- {@html play} -->
-				</BubbleButton
-			>
+			</BubbleButton>
 
-			<span
-				class={[
-					styles.cluster,
-					user ? styles.loggedIn : styles.guest,
-				]}
-			>
+			<span class={[styles.cluster, user ? styles.loggedIn : styles.guest]}>
 				{#if user}
 					<span class={styles.welcome}>
 						<Link onclick={oncreate} className={styles.createPost}>

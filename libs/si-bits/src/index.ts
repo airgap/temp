@@ -46,6 +46,7 @@ export * from './MatchList';
 export * from './MatchProposalList';
 export * from './MobileNav';
 export * from './Nav';
+export * from './NavLogo';
 export * from './NotificationOverlay';
 export * from './phrasebook';
 export * from './PopupOverlay';
