@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-    <g transform="matrix(1,0,0,1,-647,-1546)">
-        <g transform="matrix(0.25,0,0,0.25,647,1546)">
+<svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(0.25,0,0,0.25,0,0)">
+        <g>
             <rect id="Artboard1" x="0" y="0" width="1024" height="1024" style="fill:none;"/>
             <g id="Artboard11">
                 <g transform="matrix(4.55172,0,0,4.55172,-3176.88,-5814.9)">
-                    <path d="M783.194,1477C831.242,1477 870.194,1438.05 870.194,1390C870.194,1343.74 833.995,1305.57 787.802,1303.12C833.995,1305.57 870.194,1343.74 870.194,1390C870.194,1438.05 831.242,1477 783.194,1477Z" style="fill:rgb(235,235,235);fill-opacity:0;stroke:white;stroke-width:30.76px;"/>
+                    <path id="stroke-fg" d="M783.194,1477C831.242,1477 870.194,1438.05 870.194,1390C870.194,1343.74 833.995,1305.57 787.802,1303.12C833.995,1305.57 870.194,1343.74 870.194,1390C870.194,1438.05 831.242,1477 783.194,1477Z" style="fill:rgb(235,235,235);fill-opacity:0;stroke:white;stroke-width:30.76px;"/>
                 </g>
                 <g transform="matrix(1.47126,0,0,1.47126,-764.285,-1533.06)">
-                    <path d="M736.662,1463.51C750.583,1472.32 766.719,1477 783.194,1477C831.21,1477 870.194,1438.02 870.194,1390C870.194,1341.98 831.21,1303 783.194,1303C768.284,1303 753.624,1306.83 740.621,1314.13C753.624,1306.83 768.284,1303 783.194,1303C831.21,1303 870.194,1341.98 870.194,1390C870.194,1438.02 831.21,1477 783.194,1477C766.719,1477 750.583,1472.32 736.662,1463.51Z" style="fill:rgb(235,235,235);fill-opacity:0;stroke:white;stroke-width:95.16px;"/>
+                    <path id="stroke-fg1" serif:id="stroke-fg" d="M736.662,1463.51C750.583,1472.32 766.719,1477 783.194,1477C831.21,1477 870.194,1438.02 870.194,1390C870.194,1341.98 831.21,1303 783.194,1303C768.284,1303 753.624,1306.83 740.621,1314.13C753.624,1306.83 768.284,1303 783.194,1303C831.21,1303 870.194,1341.98 870.194,1390C870.194,1438.02 831.21,1477 783.194,1477C766.719,1477 750.583,1472.32 736.662,1463.51Z" style="fill:rgb(235,235,235);fill-opacity:0;stroke:white;stroke-width:95.16px;"/>
                 </g>
             </g>
         </g>
