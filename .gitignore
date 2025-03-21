@@ -49,3 +49,5 @@ bin
 k8s-prd-ca-cert.crt
 .svelte-kit/
 .env
+
+**/*~lock~
