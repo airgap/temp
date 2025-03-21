@@ -11,10 +11,15 @@
 	import styles from './MobileNav.module.sass';
 	import { ProfilePicture } from '../ProfilePicture';
 	import { cacheStore } from '../CacheProvider';
+	import search from '../assets/search.svg?raw';
 	const user = cacheStore.currentUser;
 	let profile = $derived(user?.profilePicture);
 
-	const { url, joinOrLogin } = $props<{ url: URL; joinOrLogin: () => void }>();
+	const { url, joinOrLogin, onSearchClick } = $props<{
+		url: URL;
+		joinOrLogin: () => void;
+		onSearchClick?: () => void;
+	}>();
 </script>
 
 <div class={styles.MobileNavContainer}>
@@ -25,6 +30,9 @@
 		<!-- <MobileNavLink isActive={url?.pathname.startsWith('/live')} href="/live">
 			{@html live}
 		</MobileNavLink> -->
+		<MobileNavLink onClick={onSearchClick}>
+			{@html search}
+		</MobileNavLink>
 		<MobileNavLink isActive={/^\/g(\/|$)/.test(url?.pathname)} href="/g/">
 			{@html groups}
 		</MobileNavLink>

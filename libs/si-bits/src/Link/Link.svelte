@@ -8,6 +8,7 @@
 		href,
 		target,
 		children,
+		onClick,
 		...rest
 	} = $props<{
 		disabled?: boolean;
@@ -16,6 +17,7 @@
 		target?: string;
 		children: [];
 		[key: string]: any;
+		onClick?: () => void;
 	}>();
 
 	const classes = $derived(classnames(styles.Link, className));
@@ -25,11 +27,19 @@
 </script>
 
 {#if href}
-	<a {href} {target} {rel} class={classes} aria-disabled={disabled} {...rest}>
+	<a
+		{href}
+		{target}
+		{rel}
+		class={classes}
+		onclick={onClick}
+		aria-disabled={disabled}
+		{...rest}
+	>
 		{@render children?.()}
 	</a>
 {:else}
-	<button type="button" class={classes} {disabled} {...rest}>
+	<button type="button" class={classes} {disabled} onclick={onClick} {...rest}>
 		{@render children?.()}
 	</button>
 {/if}

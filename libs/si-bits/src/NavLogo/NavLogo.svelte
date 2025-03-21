@@ -9,10 +9,10 @@
 	const { class: className } = $props<{ className: ClassValue }>();
 
 	// Generate unique ID for mask
-	const maskId = Math.random();
+	const maskId = tempId();
 </script>
 
-<Link href={getHomepage()} class={[className,styles.NavLogo]}>
+<Link href={getHomepage()} class={[className, styles.NavLogo]}>
 	<svg width="35px" height="35px">
 		<defs>
 			<mask
