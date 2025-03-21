@@ -1,1 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"><rect id="Artboard1" x="0" y="0" width="256" height="256" style="fill:none;"/><g id="Artboard11"><path d="M128,61.067c21.893,-42.14 65.68,-42.14 87.573,-21.07c21.894,21.07 21.894,63.21 0,105.35c-15.325,31.605 -54.733,63.21 -87.573,84.28c-32.841,-21.07 -72.248,-52.675 -87.574,-84.28c-21.893,-42.14 -21.893,-84.28 0,-105.35c21.894,-21.07 65.68,-21.07 87.574,21.07Z" style="fill:#ebebeb;fill-opacity:0;stroke:#fff;stroke-width:35px;"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <rect id="Artboard12" x="0" y="0" width="256" height="256" style="fill:none;"/>
+    <g id="Artboard121" serif:id="Artboard12">
+        <path id="stroke-fg" d="M128,61.067C149.893,18.927 193.68,18.927 215.573,39.997C237.467,61.067 237.467,103.207 215.573,145.347C200.248,176.952 160.84,208.557 128,229.627C95.159,208.557 55.752,176.952 40.426,145.347C18.533,103.207 18.533,61.067 40.426,39.997C62.32,18.927 106.106,18.927 128,61.067Z" style="fill:rgb(235,235,235);fill-opacity:0;stroke:white;stroke-width:35px;"/>
+    </g>
+</svg>
