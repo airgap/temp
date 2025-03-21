@@ -22,14 +22,14 @@
 		<Backdrop />
 		<!--<Link href="/leaderboards"><img src={gold} alt='Leaderboards'/></Link>-->
 		<!--<Link href="/hot"><img src={fire} alt='Hot'/></Link>-->
-		<MobileNavLink isActive={url?.pathname.startsWith('/live')} href="/live">
+		<!-- <MobileNavLink isActive={url?.pathname.startsWith('/live')} href="/live">
 			{@html live}
-		</MobileNavLink>
-		<MobileNavLink isActive={url?.pathname.startsWith('/g')} href="/g">
+		</MobileNavLink> -->
+		<MobileNavLink isActive={/^\/g(\/|$)/.test(url?.pathname)} href="/g/">
 			{@html groups}
 		</MobileNavLink>
 		<NavLogo class={styles.mainIcon} />
-		<MobileNavLink isActive={url?.pathname.startsWith('/play')} href="/play">
+		<MobileNavLink isActive={/^\/p(\/|$)/.test(url?.pathname)} href="/p/">
 			{@html play}
 		</MobileNavLink>
 		<!--<Link href="/search">-->

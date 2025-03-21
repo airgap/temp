@@ -4,7 +4,8 @@
 	import search from '../assets/search.svg?raw';
 </script>
 
-<BubbleButton>{@html search}</BubbleButton>
-<!-- <span class={styles.Search}>
+<!-- <BubbleButton>{@html search}</BubbleButton> -->
+<span class={styles.Search}>
 	<input type="text" placeholder="Search..." />
-</span> -->
+	<span>{@html search}</span>
+</span>
