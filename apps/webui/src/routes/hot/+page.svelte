@@ -3,7 +3,7 @@
 	import { FeedPage, PostList, userStore } from '@lyku/si-bits';
 	import type { Post, User } from '@lyku/json-models';
 	// let postsPromise = api.listHotPosts({});
-	
+
 	const { data } = $props<{
 		data: { posts: Post[]; users: User[] } | { error: string };
 	}>();

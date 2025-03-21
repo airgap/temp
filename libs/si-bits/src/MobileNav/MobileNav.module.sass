@@ -42,7 +42,7 @@
 
 		filter: blur(10px)
 		width: calc(100% + 40px)
-		background-size: auto 100vh
+		background-size: calc(100% + 40px) 100vh
 		background-position-y: bottom
 	> a, > button
 		vertical-align: top
@@ -62,6 +62,8 @@
 			padding-left: 4vw
 		&:nth-last-child(1)
 			padding-right: 4vw
+			img
+				transition: .25s
 		&:nth-child(4)
 			svg
 				height: 20vw !important
@@ -78,7 +80,7 @@
 		&:not(.mainIcon):not(:hover)
 			opacity: .75
 		&:hover
-			svg
+			svg, img
 				transform: scale(1.25)
 				filter: saturate(1.5) drop-shadow(0 0 5px #FFFFFF55)
 .mainIcon

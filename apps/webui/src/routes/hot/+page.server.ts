@@ -10,14 +10,14 @@ export const load = async ({ params, fetch }: any) => {
 		.selectAll()
 		.orderBy(
 			sql`(likes / (EXTRACT(EPOCH FROM (NOW() - "publish")) / 3600))`,
-			'desc'
+			'desc',
 		)
 		.limit(50)
 		.execute();
 
 	const authors = await db
 		.selectFrom('users')
-		.where('id', 'in', [...new Set(posts.map(p=>p.author))])
+		.where('id', 'in', [...new Set(posts.map((p) => p.author))])
 		.selectAll()
 		.execute();
 	return {

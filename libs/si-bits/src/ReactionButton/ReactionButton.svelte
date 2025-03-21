@@ -9,7 +9,14 @@
 	export type Orientation = 'Horizontal' | 'Vertical';
 	export type PostReactionHandler = () => void;
 
-	const { disabled, onClick, orientation, glyph, value, class: className } = $props<{
+	const {
+		disabled,
+		onClick,
+		orientation,
+		glyph,
+		value,
+		class: className,
+	} = $props<{
 		disabled?: boolean;
 		onClick?: PostReactionHandler;
 		orientation?: Orientation;
