@@ -1,16 +1,17 @@
 <script lang="ts">
 	import classnames from 'classnames';
 	import styles from './Link.module.sass';
+	import type { ClassValue } from 'svelte/elements';
 	const {
 		disabled = false,
-		className = '',
+		class: className = '',
 		href,
 		target,
 		children,
 		...rest
 	} = $props<{
 		disabled?: boolean;
-		className?: string;
+		class?: ClassValue;
 		href?: string;
 		target?: string;
 		children: [];

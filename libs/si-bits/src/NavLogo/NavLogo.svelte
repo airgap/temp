@@ -4,14 +4,15 @@
 	import styles from './NavLogo.module.sass';
 	import logo from './gifmaker_me.gif';
 	import { tempId } from '../tempId';
+	import type { ClassValue } from 'svelte/elements';
 
-	const { className } = $props<{ className: string }>();
+	const { class: className } = $props<{ className: ClassValue }>();
 
 	// Generate unique ID for mask
-	const maskId = tempId();
+	const maskId = Math.random();
 </script>
 
-<Link href={getHomepage()} className={`${className} ${styles.NavLogo}`}>
+<Link href={getHomepage()} class={[className,styles.NavLogo]}>
 	<svg width="35px" height="35px">
 		<defs>
 			<mask

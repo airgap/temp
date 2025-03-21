@@ -25,6 +25,8 @@
 	//letter-spacing: .1em
 	//@media screen and (min-width: 660px)
 	//  margin-right: 0px
+	svg
+		width: 35px
 	> div:first-child
 		overflow: hidden
 		// height: 45px
@@ -36,16 +38,8 @@
 
 		filter: blur(10px)
 		width: calc(100% + 40px)
-		> img
-			height: calc(100vh + 20px)
-			top: calc(-100vh + 120px)
-			position: fixed
-			background-size: cover
-			background-position-y: bottom
-			filter: blur(0)
-			// top: -20px
-			object-fit: cover
-			margin-left: 0
+		background-size: 150% 100vh
+		background-position-y: bottom
 	> *
 		vertical-align: top
 	> a, button
