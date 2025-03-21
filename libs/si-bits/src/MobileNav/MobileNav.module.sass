@@ -66,7 +66,10 @@
 				transition: .25s
 		&:nth-child(4)
 			svg
-				height: 20vw !important
+				height: 40vw !important
+		&:nth-child(2), &:nth-last-child(1)
+			svg, img
+				margin-top: 5vw
 		transform-origin: bottom
 		font-weight: 600 !important
 		img
@@ -98,3 +101,6 @@
 .welcome
 	padding: 2px
 	display: inline-block
+@media (pointer: coarse)
+	a:hover
+		all: revert-layer
