@@ -50,3 +50,30 @@ h1, h2, h3, h4, h5, p
 .note
 	font-style: italic
 	font-size: .8em
+
+
+[id*=fill-fg]
+	transition: .25s fill
+	fill: #fcc !important
+	path, circle
+		transition: .25s fill
+		fill: #fcc !important
+
+[id*=stroke-fg]
+	transition: .25s stroke
+	stroke: #fcc !important
+	path, circle
+		transition: .25s stroke
+		stroke: #fcc !important
+
+a, button
+	&:hover
+		[id*=fill-fg]
+			fill: #fff !important
+			path, circle
+				fill: #fff !important
+
+		[id*=stroke-fg]
+			stroke: #fff !important
+			path, circle
+				stroke: #fff !important

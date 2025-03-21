@@ -1,7 +1,9 @@
 <script lang="ts">
-	import styles from './Search.module.sass';
+	import BubbleButton from '../BubbleButton/BubbleButton.svelte';
+import styles from './Search.module.sass';
+import search from '../assets/search.svg?raw';
 </script>
-
-<span class={styles.Search}>
+<BubbleButton>{@html search}</BubbleButton>
+<!-- <span class={styles.Search}>
 	<input type="text" placeholder="Search..." />
-</span>
+</span> -->
