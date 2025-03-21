@@ -14,6 +14,8 @@ html
 	//font-weight: 900
 	//letter-spacing: .1em
 	font-family: 'Montserrat', sans-serif
+	--fg: #fcc
+	--fg-hover: #fff
 html, body
 	height: 100% !important
 	margin: 0
@@ -51,29 +53,28 @@ h1, h2, h3, h4, h5, p
 	font-style: italic
 	font-size: .8em
 
-
 [id*=fill-fg]
 	transition: .25s fill
-	fill: #fcc !important
+	fill: var(--fg) !important
 	path, circle
 		transition: .25s fill
-		fill: #fcc !important
+		fill: var(--fg) !important
 
 [id*=stroke-fg]
 	transition: .25s stroke
-	stroke: #fcc !important
+	stroke: var(--fg) !important
 	path, circle
 		transition: .25s stroke
-		stroke: #fcc !important
+		stroke: var(--fg) !important
 
 a, button
 	&:hover
 		[id*=fill-fg]
-			fill: #fff !important
+			fill: var(--fg-hover) !important
 			path, circle
-				fill: #fff !important
+				fill: var(--fg-hover) !important
 
 		[id*=stroke-fg]
-			stroke: #fff !important
+			stroke: var(--fg-hover) !important
 			path, circle
-				stroke: #fff !important
+				stroke: var(--fg-hover) !important

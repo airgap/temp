@@ -1,26 +1,49 @@
 .Search
     border-radius: 20px
-    background: #ffffff55 !important
+    background: #ffcccccc
     display: inline-block
     vertical-align: middle
-    transition: .125s
+    transition: .25s
+    position: relative
+    --fg: black
+    outline: 2px solid #fff0
+    &:hover
+        background: #ffffffcc
     &:focus-within
         outline: 2px solid white
         background: #ffffff33 !important
+        input
+            width: 1000px
+        --fg: white
         ::placeholder
             color: white
     input
+        max-width: calc(100vw - 350px)
         font-family: inherit
         font-weight: 500
         color: white
         height: 35px
-        padding-left: 15px
+        padding-left: 30px
         font-size: 1em
         border: 0
         background: #ffffff00
         outline: none
+        width: 130px
+        box-shadow: 0 0 5px 0 black
+        transition: .25s
         &::placeholder
             color: black
             opacity: 1
             font-weight: 600
             font-style: italic
+            text-shadow: 0 0 5px white
+            transition: .25s
+    span
+        position: absolute
+        left: 10px
+        height: 100%
+        svg
+            vertical-align: middle
+            height: 100% !important
+            width: 15px !important
+            filter: drop-shadow(0 0 5px white)

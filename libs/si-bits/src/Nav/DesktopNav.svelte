@@ -45,17 +45,23 @@
 			<Search />
 			<!-- {/if} -->
 			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}
-				>{@html groups}</BubbleButton
+				>
+				{phrasebook.navGroups}
+				<!-- {@html groups} -->
+				</BubbleButton
 			>
 			<BubbleButton href="/p/" isActive={/^\/p(\/|$)/.test(url?.pathname)}
-				>{@html play}</BubbleButton
+				>
+				{phrasebook.navPlay}
+				<!-- {@html play} -->
+				</BubbleButton
 			>
 
 			<span
-				class={classNames(
+				class={[
 					styles.cluster,
 					user ? styles.loggedIn : styles.guest,
-				)}
+				]}
 			>
 				{#if user}
 					<span class={styles.welcome}>
