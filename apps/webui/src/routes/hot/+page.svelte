@@ -1,15 +1,20 @@
 <script lang="ts">
 	import { api } from 'monolith-ts-api';
-	import { FeedPage, PostList } from '@lyku/si-bits';
-	let postsPromise = api.listHotPosts({});
+	import { FeedPage, PostList, userStore } from '@lyku/si-bits';
+	import type { Post, User } from '@lyku/json-models';
+	// let postsPromise = api.listHotPosts({});
+	
+	const { data } = $props<{
+		data: { posts: Post[]; users: User[] } | { error: string };
+	}>();
+	const { post, error } = data;
+	userStore.hydrate(data.users);
 </script>
 
 <FeedPage>
-	{#await postsPromise}
-		<p>Loading posts...</p>
-	{:then response}
-		<PostList posts={response?.posts ?? []} />
-	{:catch error}
+	{#if data.posts}
+		<PostList posts={data.posts ?? []} />
+	{:else}
 		<h3>{String(error)}</h3>
-	{/await}
+	{/if}
 </FeedPage>
