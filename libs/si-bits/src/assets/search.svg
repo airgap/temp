@@ -9,5 +9,8 @@
         <g id="stroke-fg1" serif:id="stroke-fg" transform="matrix(0.904416,0,0,0.904416,-24.2047,11.0676)">
             <circle cx="128" cy="89" r="70" style="fill:white;fill-opacity:0;stroke:white;stroke-width:23.59px;"/>
         </g>
+        <g id="fill-fg" transform="matrix(0.550703,0,0,0.550703,-101.181,-16.1719)">
+            <circle cx="316.498" cy="162.133" r="16.025" style="fill:white;"/>
+        </g>
     </g>
 </svg>
