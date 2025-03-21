@@ -3,8 +3,8 @@
 	import { Backdrop } from '../Backdrop';
 	import { Image } from '../Image';
 	import { Link } from '../Link';
-	import groups from '../assets/groups.svg?raw';
-	import hot from '../assets/hot.svg?raw';
+	import groups from '../assets/group.svg?raw';
+	// import hot from '../assets/hot.svg?raw';
 	import play from '../assets/play.svg?raw';
 	import { CoolLink } from '../CoolLink';
 	import { NavLogo } from '../NavLogo';
@@ -43,16 +43,12 @@
 			<Backdrop />
 			<NavLogo />
 			<Search />
-			<!-- {#if user} -->
-			<BubbleButton href="/" isActive={url?.pathname === '/'}
+			<!-- {/if} -->
+			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}
 				>{@html groups}</BubbleButton
 			>
-			<!-- {/if} -->
-			<BubbleButton href="/hot" isActive={url?.pathname.startsWith('/g')}
-				>{phrasebook.navGroups}</BubbleButton
-			>
-			<BubbleButton href="/play" isActive={url?.pathname.startsWith('/p')}
-				>{phrasebook.navPlay}</BubbleButton
+			<BubbleButton href="/p/" isActive={/^\/p(\/|$)/.test(url?.pathname)}
+				>{@html play}</BubbleButton
 			>
 
 			<span
