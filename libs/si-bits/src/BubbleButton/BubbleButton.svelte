@@ -16,14 +16,15 @@
 		variant?: BBVariant;
 	}>();
 	const { isActive, children, right, variant = 'secondary', ...rest } = p;
-	const classes = $derived(
-		[styles.BubbleButton,
-			{
-				[styles.depressed]: isActive,
-				[styles.right]: right,
-			},
-			styles[variant],p.class]
-	);
+	const classes = $derived([
+		styles.BubbleButton,
+		{
+			[styles.depressed]: isActive,
+			[styles.right]: right,
+		},
+		styles[variant],
+		p.class,
+	]);
 </script>
 
 <Link {...rest} className={classes}>
