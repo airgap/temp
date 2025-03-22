@@ -7,13 +7,13 @@
 	const { data } = $props<{
 		data: { posts: Post[]; users: User[] } | { error: string };
 	}>();
-	const { post, error } = data;
-	userStore.hydrate(data.users);
+	const { posts, users, error } = data;
+	userStore.hydrate(users);
 </script>
 
 <FeedPage>
-	{#if data.posts}
-		<PostList posts={data.posts ?? []} />
+	{#if posts}
+		<PostList posts={posts ?? []} />
 	{:else}
 		<h3>{String(error)}</h3>
 	{/if}

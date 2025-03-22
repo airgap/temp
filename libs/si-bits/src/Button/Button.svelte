@@ -3,7 +3,7 @@
 
 	let {
 		disabled = false,
-		className = '',
+		class: className = '',
 		type = 'button' as 'button' | 'submit' | 'reset',
 		style = {} as Record<string, string>,
 		children,
@@ -11,12 +11,6 @@
 	} = $props();
 </script>
 
-<button
-	{disabled}
-	class={`${styles.Button} ${className}`}
-	{type}
-	{style}
-	{onclick}
->
+<button {disabled} class={[styles.Button, className]} {type} {style} {onclick}>
 	{@render children?.()}
 </button>

@@ -42,7 +42,6 @@
 			<Backdrop />
 			<NavLogo />
 			<Search />
-			<!-- {/if} -->
 			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}>
 				{phrasebook.navGroups}
 				<!-- {@html groups} -->
@@ -55,7 +54,7 @@
 			<span class={[styles.cluster, user ? styles.loggedIn : styles.guest]}>
 				{#if user}
 					<span class={styles.welcome}>
-						<Link onclick={oncreate} className={styles.createPost}>
+						<Link onclick={oncreate} class={styles.createPost}>
 							<img src={pen} alt="Pen post" />
 						</Link>
 						<!--{phrasebook.navWelcome}-->

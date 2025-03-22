@@ -7,13 +7,13 @@
 	const p = $props<
 		{
 			href: string | undefined;
-			className: string | undefined;
+			class: string | undefined;
 			style: string | undefined;
 			isActive: boolean;
 			children: [];
 		} & any
 	>();
-	const { href, className, style, isActive, children, ...rest } = p;
+	const { href, class: className, style, isActive, children, ...rest } = p;
 	const classes = $derived(
 		classNames(
 			styles.CoolLink,
@@ -25,6 +25,6 @@
 	);
 </script>
 
-<Link {...rest} {href} className={classes} {style}>
+<Link {...rest} {href} class={classes} {style}>
 	{@render children?.()}
 </Link>

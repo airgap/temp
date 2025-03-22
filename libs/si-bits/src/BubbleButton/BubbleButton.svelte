@@ -27,6 +27,6 @@
 	]);
 </script>
 
-<Link {...rest} className={classes}>
+<Link {...rest} class={classes}>
 	{@render children?.()}
 </Link>

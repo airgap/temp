@@ -59,7 +59,7 @@
 	let uploadUrl = $state<string>();
 	let fileState = $state<File>(file);
 	let workingState = $state(working);
-	let inputId = $state(String(Math.random()).substring(2));
+	let inputId = $props.id();
 	let formRef: HTMLFormElement;
 	let pack = $state<{ url: string; id: string }>();
 	let submitting = $state(false);

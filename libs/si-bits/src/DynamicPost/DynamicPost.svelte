@@ -106,12 +106,12 @@
 	</span>
 
 	<span class={styles.text}>
-		<Link className={styles.username} href={`/u/${author.username}`}>
+		<Link class={styles.username} href={`/u/${author.username}`}>
 			{$author?.username}
 		</Link>
 		<DynamicDate time={post.publish} />
 		{#if me?.id === author.id}
-			<Button className={styles.delete} onclick={handleDelete}>X</Button>
+			<Button class={styles.delete} onclick={handleDelete}>X</Button>
 		{/if}
 
 		<span class={styles.PostContent}>
@@ -121,19 +121,22 @@
 		</span>
 
 		{#if post.body}
-			<p
-				class={classnames(styles.body, {
-					[styles.brief]: post.body.length < 100,
-				})}
+			<div
+				class={[
+					styles.body,
+					{
+						[styles.brief]: post.body.length < 100,
+					},
+				]}
 			>
-				{@html stripLinks(post.body)}
-			</p>
+				{@html post.body}
+			</div>
 		{/if}
 	</span>
 
 	{#if 'attachments' in post}
 		<div
-			class={classnames(
+			class={[
 				styles.attachments,
 				post.attachments?.length &&
 					[
@@ -148,7 +151,7 @@
 						styles.nine,
 						styles.ten,
 					][post.attachments.length - 1],
-			)}
+			]}
 		>
 			{#each post.attachments || [] as at}
 				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}

@@ -11,7 +11,7 @@
 </script>
 
 <Image
-	className={styles.ProfilePicture}
+	class={styles.ProfilePicture}
 	shape="circle"
 	src={src ?? smile}
 	{alt}

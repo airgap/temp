@@ -29,12 +29,9 @@
 	$effect(() => console.log(level, progressValue));
 
 	// Generate unique IDs for SVG elements
-	const fillClipId = $derived(
-		`fill-clip-${Math.random().toString(36).substring(2, 10)}`,
-	);
-	const nonFillClipId = $derived(
-		`non-fill-clip-${Math.random().toString(36).substring(2, 10)}`,
-	);
+	const id = $props.id();
+	const fillClipId = $derived(`fill-clip-${id}`);
+	const nonFillClipId = $derived(`non-fill-clip-${id}`);
 
 	// Calculate dimensions for the fill
 	const fillHeight = $derived((progressValue / 100) * sizeValue);

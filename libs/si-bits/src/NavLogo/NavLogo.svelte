@@ -3,13 +3,12 @@
 	import { getHomepage } from '../getHomepage';
 	import styles from './NavLogo.module.sass';
 	import logo from './gifmaker_me.gif';
-	import { tempId } from '../tempId';
 	import type { ClassValue } from 'svelte/elements';
 
 	const { class: className } = $props<{ className: ClassValue }>();
 
 	// Generate unique ID for mask
-	const maskId = tempId();
+	const maskId = $props.id();
 </script>
 
 <Link href={getHomepage()} class={[className, styles.NavLogo]}>

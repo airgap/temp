@@ -8,7 +8,7 @@
 		oninput: (checked: boolean) => void;
 	}>();
 
-	let id = Math.random();
+	let id = $props.id();
 </script>
 
 <div class={styles.Agreeable}>
