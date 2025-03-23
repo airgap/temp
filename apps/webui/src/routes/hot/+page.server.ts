@@ -29,9 +29,13 @@ export const load = async ({ params, fetch }: any) => {
 		)
 		.selectAll()
 		.execute();
+	// const likemap = likes.reduce((o,l)=>({...o, [l.postId]}))
+	// console.log('OY M8 WE GOT LIKES', )
 	return {
 		posts,
 		users: authors,
-		likes,
+		likes: posts.map((p) =>
+			likes.some((l) => l.postId === p.id) ? p.id : -p.id,
+		),
 	};
 };

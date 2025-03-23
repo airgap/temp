@@ -12,7 +12,7 @@ const isSSR = typeof window === 'undefined';
  */
 export function createMyLikesStore() {
 	// Store all users in a Map
-	const myLikesStore = writable<Map<bigint, boolean>>(new Map());
+	const internalStore = writable<Map<bigint, boolean>>(new Map());
 
 	// Track pending requests to avoid duplicate fetches
 	const pendingRequestsStore = writable<Map<string, Promise<bigint[]>>>(
@@ -53,32 +53,35 @@ export function createMyLikesStore() {
 	 */
 	function get(id: bigint): bigint | undefined {
 		// If we already have the user, return it immediately
-		const myLikesMap = getStoreValue(myLikesStore);
+		console.log('get', id);
+		const myLikesMap = getStoreValue(internalStore);
+		console.log('ewewwewwe', Array.from(myLikesMap.entries()));
 		if (myLikesMap.has(id)) {
 			return myLikesMap.get(id) ? id : -id;
 		}
+		console.log('based');
 
 		if (isSSR) {
 			// In SSR mode, fetch immediately and synchronously
-			const promise = api
-				.getMyLikes([id])
-				.then(([like]) => {
-					if (like) {
-						myLikesStore.update((map) => {
-							const newMap = new Map(map); // Create a new map to ensure reactivity
-							newMap.set(like > 0n ? like : -like, like > 0n);
-							return newMap;
-						});
-					}
-					return like;
-				})
-				.catch((error) => {
-					console.error(`Error fetching user ${id}:`, error);
-					return undefined;
-				});
+			// const promise = api
+			// 	.getMyLikes([id])
+			// 	.then(([like]) => {
+			// 		if (like) {
+			// 			myLikesStore.update((map) => {
+			// 				const newMap = new Map(map); // Create a new map to ensure reactivity
+			// 				newMap.set(like > 0n ? like : -like, like > 0n);
+			// 				return newMap;
+			// 			});
+			// 		}
+			// 		return like;
+			// 	})
+			// 	.catch((error) => {
+			// 		console.error(`Error fetching user ${id}:`, error);
+			// 		return undefined;
+			// 	});
 
-			// Add to SSR promises to track
-			ssrPromises.push(promise);
+			// // Add to SSR promises to track
+			// ssrPromises.push(promise);
 
 			// In SSR, we can't return undefined and expect a re-render,
 			// so we need to handle this differently in the component
@@ -108,7 +111,7 @@ export function createMyLikesStore() {
 	 */
 	function getMany(ids: bigint[]): (bigint | undefined)[] {
 		// Filter out IDs that we don't have yet
-		const usersMap = getStoreValue(myLikesStore);
+		const usersMap = getStoreValue(internalStore);
 		const missingIds = ids.filter((id) => !usersMap.has(id));
 
 		if (missingIds.length > 0) {
@@ -117,7 +120,7 @@ export function createMyLikesStore() {
 				const promise = api
 					.getMyLikes(missingIds)
 					.then((fetchedLikes) => {
-						myLikesStore.update((map) => {
+						internalStore.update((map) => {
 							fetchedLikes.forEach((like) => {
 								map.set(like > 0n ? like : -like, like > 0n);
 							});
@@ -150,7 +153,7 @@ export function createMyLikesStore() {
 		}
 
 		// Return what we have now
-		const currentLikesMap = getStoreValue(myLikesStore);
+		const currentLikesMap = getStoreValue(internalStore);
 		console.log('currentLikesMap', typeof currentLikesMap);
 		return ids.map((id) => (currentLikesMap.get(id) ? id : -id));
 	}
@@ -185,7 +188,7 @@ export function createMyLikesStore() {
 				.getMyLikes(batchIds)
 				.then((fetchedLikes) => {
 					// Update the store with the fetched users
-					myLikesStore.update((map) => {
+					internalStore.update((map) => {
 						const newMap = new Map(map); // Create a new map to ensure reactivity
 						fetchedLikes.forEach((like) => {
 							newMap.set(like > 0n ? like : -like, like > 0n);
@@ -222,9 +225,10 @@ export function createMyLikesStore() {
 	 * Update or add a user to the store
 	 */
 	function update(like: bigint) {
-		myLikesStore.update((map) => {
+		internalStore.update((map) => {
 			const newMap = new Map(map); // Create a new map to ensure reactivity
 			newMap.set(like > 0n ? like : -like, like > 0n);
+			console.log('LikeStore Set', like > 0n ? like : -like, like > 0n);
 			return newMap;
 		});
 	}
@@ -233,7 +237,7 @@ export function createMyLikesStore() {
 	 * Remove a user from the store
 	 */
 	function remove(id: bigint) {
-		myLikesStore.update((map) => {
+		internalStore.update((map) => {
 			map.delete(id);
 			return map;
 		});
@@ -243,7 +247,7 @@ export function createMyLikesStore() {
 	 * Clear the entire store
 	 */
 	function clear() {
-		myLikesStore.set(new Map());
+		internalStore.set(new Map());
 		pendingIdsStore.set(new Set());
 		pendingRequestsStore.set(new Map());
 	}
@@ -252,7 +256,7 @@ export function createMyLikesStore() {
 	 * Preload the store with users (useful for SSR hydration)
 	 */
 	function preload(initialLikes: bigint[]) {
-		myLikesStore.update((map) => {
+		internalStore.update((map) => {
 			const newMap = new Map(map); // Create a new map to ensure reactivity
 			initialLikes.forEach((like) => {
 				newMap.set(like > 0n ? like : -like, like > 0n);
@@ -277,7 +281,7 @@ export function createMyLikesStore() {
 	 * Serialize the store data for SSR hydration
 	 */
 	function serialize(): string {
-		const usersMap = getStoreValue(myLikesStore);
+		const usersMap = getStoreValue(internalStore);
 		const users = Array.from(usersMap.values());
 
 		return gSerialize(users);
@@ -306,9 +310,9 @@ export function createMyLikesStore() {
 		awaitSSR,
 		serialize,
 		hydrate,
-		subscribe: myLikesStore.subscribe,
+		subscribe: internalStore.subscribe,
 		// For debugging
-		_getStore: () => getStoreValue(myLikesStore),
+		_getStore: () => getStoreValue(internalStore),
 		_getPendingIds: () => getStoreValue(pendingIdsStore),
 		_getPendingRequests: () => getStoreValue(pendingRequestsStore),
 	};

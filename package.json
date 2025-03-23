@@ -20,6 +20,7 @@
 	},
 	"private": true,
 	"dependencies": {
+		"@sentry/cloudflare": "^9.8.0",
 		"dotenv": "^16.4.7",
 		"svelte-typeahead": "^5.0.0"
 	},
