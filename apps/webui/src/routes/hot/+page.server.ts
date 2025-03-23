@@ -20,8 +20,18 @@ export const load = async ({ params, fetch }: any) => {
 		.where('id', 'in', [...new Set(posts.map((p) => p.author))])
 		.selectAll()
 		.execute();
+	const likes = await db
+		.selectFrom('likes')
+		.where(
+			'postId',
+			'in',
+			posts.map((p) => p.id),
+		)
+		.selectAll()
+		.execute();
 	return {
 		posts,
 		users: authors,
+		likes,
 	};
 };

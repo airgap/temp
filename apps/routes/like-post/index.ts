@@ -1,4 +1,5 @@
 import { handleLikePost } from '@lyku/handles';
+import { Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
 export default handleLikePost(async (postId, { requester, db }) => {
@@ -10,7 +11,7 @@ export default handleLikePost(async (postId, { requester, db }) => {
 		.where('id', '=', likeId)
 		.executeTakeFirst();
 
-	if (existingLike) throw 'Post already liked';
+	if (existingLike) throw new Err(409, 'Post already liked');
 
 	const post = await db
 		.selectFrom('posts')
@@ -18,10 +19,10 @@ export default handleLikePost(async (postId, { requester, db }) => {
 		.where('id', '=', postId)
 		.executeTakeFirst();
 
-	if (!post) throw "Post doesn't exist";
+	if (!post) throw new Err(404, "Post doesn't exist");
 
-	if (!post || existingLike || post.author === requester) {
-		throw "Post doesn't exist or is already liked";
+	if (post.author === requester) {
+		throw new Err(403, 'You cannot like your own post');
 	}
 
 	// Insert the like

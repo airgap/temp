@@ -5,10 +5,9 @@ import type { PostgresRecordModel } from 'from-schema';
 
 export const like = {
 	properties: {
-		id: { ...idBond, primaryKey: true },
-		userId: { type: 'bigint' },
-		postId: { type: 'bigint' },
+		userId: { type: 'bigint', primaryKey: true },
+		postId: { type: 'bigint', primaryKey: true },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
-	required: ['id', 'userId', 'postId', 'created'],
+	required: ['userId', 'postId', 'created'],
 } as const satisfies PostgresRecordModel;

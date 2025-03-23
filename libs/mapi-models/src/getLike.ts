@@ -1,8 +1,8 @@
 import type { TsonHandlerModel } from 'from-schema';
-import { like } from '@lyku/json-models';
+import { like, post } from '@lyku/json-models';
 
 export const getLike = {
-	request: like.properties.id,
+	request: post.properties.id,
 	response: like,
 	authenticated: false,
 } as const satisfies TsonHandlerModel;

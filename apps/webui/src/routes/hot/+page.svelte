@@ -5,7 +5,7 @@
 	// let postsPromise = api.listHotPosts({});
 
 	const { data } = $props<{
-		data: { posts: Post[]; users: User[] } | { error: string };
+		data: { posts: Post[]; users: User[]; likes: BigInt[] } | { error: string };
 	}>();
 	const { posts, users, error } = data;
 	userStore.hydrate(users);

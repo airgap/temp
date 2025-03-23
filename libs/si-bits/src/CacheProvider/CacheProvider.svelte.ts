@@ -13,7 +13,16 @@ import type {
 	LikeState,
 } from '@lyku/json-models';
 
-type CacheConfig<T extends Record<string, any>, K extends keyof T> = {
+type VectorCacheConfig = {
+	get?: (id: bigint) => Promise<bigint>;
+	getAll: (ids: bigint[]) => Promise<bigint[]>;
+	listen?: (ids: bigint[]) => {
+		listen: (cb: (val: bigint) => void) => void;
+		close: () => void;
+	};
+};
+
+type RecordCacheConfig<T extends Record<string, any>, K extends keyof T> = {
 	get?: (id: T[K]) => Promise<T>;
 	getAll: (ids: T[K][]) => Promise<T[]>;
 	listen?: (ids: T[K][]) => {
@@ -23,81 +32,74 @@ type CacheConfig<T extends Record<string, any>, K extends keyof T> = {
 	key: K;
 };
 
+type CacheConfig = VectorCacheConfig | RecordCacheConfig<any, any>;
+
 const cacheConfigMap = {
 	images: {
 		get: api.getImage,
 		getAll: api.getImages,
 		key: 'id',
-	} as const satisfies CacheConfig<ImageDoc, 'id'>,
+	} as const satisfies RecordCacheConfig<ImageDoc, 'id'>,
 
 	videos: {
 		get: api.getVideo,
 		getAll: api.getVideos,
 		key: 'id',
-	} as const satisfies CacheConfig<CloudflareVideoDoc, 'id'>,
+	} as const satisfies RecordCacheConfig<CloudflareVideoDoc, 'id'>,
 
 	audios: {
 		get: api.getAudio,
 		getAll: api.getAudios,
 		key: 'id',
-	} as const satisfies CacheConfig<AudioDoc, 'id'>,
+	} as const satisfies RecordCacheConfig<AudioDoc, 'id'>,
 
 	documents: {
 		get: api.getDocument,
 		getAll: api.getDocuments,
 		key: 'id',
-	} as const satisfies CacheConfig<Document, 'id'>,
+	} as const satisfies RecordCacheConfig<Document, 'id'>,
 
 	posts: {
 		get: api.getPost,
 		getAll: api.getPosts,
 		listen: api.listenToPosts,
 		key: 'id',
-	} as const satisfies CacheConfig<Post, 'id'>,
+	} as const satisfies RecordCacheConfig<Post, 'id'>,
 
 	users: {
 		get: api.getUser,
 		getAll: api.getUsers,
 		listen: api.listenToUsers,
 		key: 'id',
-	} as const satisfies CacheConfig<User, 'id'>,
+	} as const satisfies RecordCacheConfig<User, 'id'>,
 
 	myLikes: {
 		getAll: api.getMyLikes,
 		listen: api.listenToMyLikes,
-		key: 'id',
-	} as const satisfies CacheConfig<LikeState, 'id'>,
+	} as const satisfies VectorCacheConfig,
 
 	groups: {
 		getAll: api.getGroups,
 		key: 'id',
-	} as const satisfies CacheConfig<Group, 'id'>,
+	} as const satisfies RecordCacheConfig<Group, 'id'>,
 
 	groupMemberships: {
 		getAll: api.getGroupMemberships,
 		key: 'id',
-	} as const satisfies CacheConfig<GroupMembership, 'id'>,
+	} as const satisfies RecordCacheConfig<GroupMembership, 'id'>,
 } as const;
 
 type CacheConfigs = typeof cacheConfigMap;
-type DocOfModel<T extends CacheConfig<any, any>> =
-	T extends CacheConfig<infer G, infer K> ? G : never;
+type DocOfModel<T extends CacheConfig> =
+	T extends RecordCacheConfig<infer G, infer K> ? G : bigint;
 
 function createCacheStore() {
 	// Create state objects for caches, loading states, and errors
 	const caches = $state(
-		Object.keys(cacheConfigMap).reduce(
-			(acc: any, key) => {
-				acc[key as keyof CacheConfigs] = new Map();
-				return acc;
-			},
-			{} as {
-				[K in keyof CacheConfigs]: Map<
-					DocOfModel<CacheConfigs[K]>[CacheConfigs[K]['key']],
-					DocOfModel<CacheConfigs[K]>
-				>;
-			},
-		),
+		Object.keys(cacheConfigMap).reduce((acc: any, key) => {
+			acc[key as keyof CacheConfigs] = new Map();
+			return acc;
+		}, {}),
 	);
 
 	const loading = $state(new Set<string>());
@@ -108,9 +110,12 @@ function createCacheStore() {
 		config: CacheConfigs[ModelName],
 	) {
 		const cache = caches[modelName];
+		const key = 'key' in config ? config.key : undefined;
 
 		async function fetch(
-			id: DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']],
+			id: CacheConfigs[ModelName] extends { key: any }
+				? DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']]
+				: bigint,
 		): Promise<DocOfModel<CacheConfigs[ModelName]> | undefined> {
 			if (cache.has(id)) {
 				return cache.get(id);
@@ -136,9 +141,9 @@ function createCacheStore() {
 		}
 
 		async function fetchAll(
-			ids: DocOfModel<
-				CacheConfigs[ModelName]
-			>[CacheConfigs[ModelName]['key']][],
+			ids: CacheConfigs[ModelName] extends { key: any }
+				? DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']][]
+				: bigint[],
 		): Promise<(DocOfModel<CacheConfigs[ModelName]> | undefined)[]> {
 			const missingIds = ids.filter((id) => !cache.has(id));
 
@@ -155,7 +160,10 @@ function createCacheStore() {
 			try {
 				const docs = await config.getAll(missingIds as any[]);
 				docs.forEach((doc) => {
-					cache.set(doc.id, doc);
+					cache.set(
+						typeof doc === 'bigint' ? doc : doc[key as keyof typeof doc],
+						doc,
+					);
 				});
 				return ids.map((id) => cache.get(id));
 			} catch (error) {
@@ -168,15 +176,18 @@ function createCacheStore() {
 		}
 
 		function setupListener(
-			ids: DocOfModel<
-				CacheConfigs[ModelName]
-			>[CacheConfigs[ModelName]['key']][],
+			ids: CacheConfigs[ModelName] extends { key: any }
+				? DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']][]
+				: bigint[],
 		) {
 			if (!('listen' in config)) return;
 
 			const listener = config.listen(ids as any[]);
 			listener.listen((val) => {
-				cache.set(val.id, val);
+				cache.set(
+					typeof val === 'bigint' ? val : val[key as keyof typeof val],
+					val,
+				);
 			});
 
 			return listener.close;
@@ -187,9 +198,16 @@ function createCacheStore() {
 			fetchAll,
 			setupListener,
 			update: (item: DocOfModel<CacheConfigs[ModelName]>) => {
-				cache.set(item.id, item);
+				cache.set(
+					typeof item === 'bigint' ? item : item[key as keyof typeof item],
+					item,
+				);
 			},
-			remove: (id: DocOfModel<CacheConfigs[ModelName]>['id']) => {
+			remove: (
+				id: CacheConfigs[ModelName] extends { key: any }
+					? DocOfModel<CacheConfigs[ModelName]>[CacheConfigs[ModelName]['key']]
+					: bigint,
+			) => {
 				cache.delete(id);
 			},
 		};
