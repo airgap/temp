@@ -110,7 +110,7 @@
 			{$author?.username}
 		</Link>
 		<DynamicDate time={post.publish} />
-		{#if me?.id === author.id}
+		{#if $cacheStore.currentUser && $cacheStore.currentUser.id === $author.id}
 			<Button class={styles.delete} onclick={handleDelete}>X</Button>
 		{/if}
 

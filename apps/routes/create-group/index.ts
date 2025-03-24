@@ -1,4 +1,4 @@
-import { bindIds } from '@lyku/helpers';
+import { bindIds, Err } from '@lyku/helpers';
 import { handleCreateGroup } from '@lyku/handles';
 import { Group } from '@lyku/json-models/index';
 import { Insertable, sql } from 'kysely';
@@ -25,11 +25,11 @@ export default handleCreateGroup(
 			.executeTakeFirst();
 
 		if (existingGroup) {
-			throw new Error(strings.groupAlreadyExists);
+			throw new Err(409, strings.groupAlreadyExists);
 		}
 
 		if (!underLimit) {
-			throw new Error(strings.groupLimitReached);
+			throw new Err(403, strings.groupLimitReached);
 		}
 
 		const g = await db

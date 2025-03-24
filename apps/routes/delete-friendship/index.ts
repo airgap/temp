@@ -1,9 +1,10 @@
 import { handleDeleteFriendship } from '@lyku/handles';
-import { bondIds } from '@lyku/helpers';
+import { bondIds, Err } from '@lyku/helpers';
 
 export default handleDeleteFriendship(async (user, { db, requester }) => {
-	await db
+	const res = await db
 		.deleteFrom('friendships')
 		.where('id', '=', bondIds(requester, user))
-		.execute();
+		.executeTakeFirst();
+	if (res.numDeletedRows === 0n) throw new Err(404);
 });

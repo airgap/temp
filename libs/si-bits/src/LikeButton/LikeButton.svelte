@@ -24,5 +24,5 @@
 <ReactionButton
 	glyph={emptyHeart}
 	onClick={liked ? unlike : like}
-	class={liked&&styles.fillMeUp}
+	class={liked && styles.fillMeUp}
 />

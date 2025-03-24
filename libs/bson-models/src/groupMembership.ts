@@ -7,7 +7,7 @@ export const groupMembership = {
 		group: { type: 'bigint' },
 		user: { type: 'bigint' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
-		updated: { type: 'timestamptz' },
+		updated: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
 	required: ['group', 'user', 'id', 'created', 'updated'],
 } as const satisfies PostgresRecordModel;

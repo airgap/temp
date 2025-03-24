@@ -1,4 +1,5 @@
 import { handleDeletePost } from '@lyku/handles';
+import { Err } from '@lyku/helpers';
 
 export default handleDeletePost(async (id, { db, requester, strings }) => {
 	const post = await db
@@ -8,7 +9,7 @@ export default handleDeletePost(async (id, { db, requester, strings }) => {
 		.executeTakeFirst();
 
 	if (!post) {
-		throw new Error(strings.noPostByYou);
+		throw new Err(404, strings.noPostByYou);
 	}
 
 	await db.deleteFrom('posts').where('id', '=', id).execute();
