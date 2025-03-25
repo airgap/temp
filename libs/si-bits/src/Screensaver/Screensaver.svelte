@@ -1,5 +1,4 @@
 <script lang="ts">
-	import gsap from 'gsap';
 	import { api } from 'monolith-ts-api';
 	import { onMount, onDestroy, type ComponentType } from 'svelte';
 	import { Logo } from '../Logo';
@@ -70,16 +69,16 @@
 	};
 
 	const flashBox = (type: keyof typeof flashColors) => {
-		gsap.fromTo(
-			flash,
-			{
-				backgroundColor: flashColors[type],
-			},
-			{
-				backgroundColor: 'transparent',
-				duration: 1,
-			},
-		);
+		// gsap.fromTo(
+		// 	flash,
+		// 	{
+		// 		backgroundColor: flashColors[type],
+		// 	},
+		// 	{
+		// 		backgroundColor: 'transparent',
+		// 		duration: 1,
+		// 	},
+		// );
 	};
 
 	const click = () => {
