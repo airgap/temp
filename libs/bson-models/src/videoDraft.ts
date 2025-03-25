@@ -8,7 +8,6 @@ export const videoDraft = {
 		channel: { type: 'bigint' },
 		post: { type: 'bigint' },
 		id: { type: 'bigint', primaryKey: true },
-		uid: { type: 'text', maxLength: 32 },
 		uploadURL: { type: 'text' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		filename: { type: 'text', maxLength: 100 },

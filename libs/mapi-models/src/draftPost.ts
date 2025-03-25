@@ -29,8 +29,9 @@ export const draftPost = {
 					properties: {
 						type: attachmentMime,
 						size: { type: 'integer' },
+						filename: { type: 'string' },
 					},
-					required: ['type', 'size'],
+					required: ['type', 'size', 'filename'],
 				},
 			},
 		},

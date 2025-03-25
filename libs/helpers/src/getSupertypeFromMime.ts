@@ -7,7 +7,7 @@ const map = Object.fromEntries(
 	),
 ) satisfies Record<string, AttachmentType>;
 
-export const getSupertypeFromMime = (mime: string) => {
+export const getSupertypeFromMime = (mime: string): number => {
 	if (!(mime in map)) throw new Error(`Unknown mime type: ${mime}`);
 	return map[mime];
 };

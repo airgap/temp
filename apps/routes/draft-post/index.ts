@@ -6,7 +6,6 @@ import {
 	dev,
 	webuiDomain,
 	flagUnsafeHtml,
-	run,
 	shortenLinksInBody,
 } from '@lyku/route-helpers';
 import { handleDraftPost } from '@lyku/handles';
@@ -16,7 +15,15 @@ import {
 	VideoDraft,
 	InsertablePostDraft,
 } from '@lyku/json-models/index';
-import { getSupertypeFromMime, makeAttachmentId } from '@lyku/helpers';
+import {
+	Err,
+	getSupertypeFromMime,
+	makeAttachmentId,
+	Supertype,
+} from '@lyku/helpers';
+import { AttachmentInitializerProps } from './AttachmentInitializer';
+import { uploadImage } from './uploadImage';
+import { uploadVideo } from './uploadVideo';
 
 type AttachmentDraft = ImageDraft | VideoDraft;
 
@@ -26,9 +33,10 @@ export default handleDraftPost(
 		{ db, requester, strings },
 	) => {
 		console.log('Drafting post', requester, body, replyTo, echoing);
+		console.log('id', cfAccountId, 'token', cfApiToken);
 		if (!cfApiToken && attachments?.length)
-			throw new Error('We forgot to enter our Cloudflare password');
-		console.log('YAY YOU PASS');
+			throw new Err(500, 'We forgot to enter our Cloudflare password');
+		console.log('YAY we entered our cloudflare password');
 		const imageDrafts: ImageDraft[] = [];
 		const videoDrafts: VideoDraft[] = [];
 		// const attachmentIds: bigint[] = attachments.map(a => makeAttachmentId(a.type, a.size));
@@ -44,19 +52,21 @@ export default handleDraftPost(
 			.values({
 				author: requester,
 				body,
-			})
+			} as PostDraft)
 			.returningAll()
 			.executeTakeFirstOrThrow();
 		const atAts: AttachmentDraft[] = [];
+		console.log('Mapping attachment ids');
 		const attachmentIds: bigint[] =
 			attachments?.map((a, i) =>
 				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type)),
 			) ?? [];
+			console.log('Mapped att ids')
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
 				console.log('Drafting upload', a, 'of', attachments.length);
-				const { type, size } = attachments[a];
-
+				const { type, size, filename } = attachments[a];
+				console.log('D1');
 				const supertype = type.split('/')[0] as 'image' | 'video';
 				const init = {
 					id: attachmentIds[a],
@@ -64,16 +74,23 @@ export default handleDraftPost(
 					post: draft.id,
 					strings,
 					size,
+					orderNum: a,
+					filename,
 				} satisfies AttachmentInitializerProps;
-
+				console.log('D2');
 				switch (supertype) {
 					case 'image':
+						console.log('D3A1');
 						imageDrafts.push(await uploadImage(init));
+						console.log('D3A2');
 						break;
 					case 'video':
+						console.log('D3B1');
 						videoDrafts.push(await uploadVideo(init));
+						console.log('D3B2');
 						break;
 				}
+				console.log('D4');
 			}
 			if (imageDrafts.length)
 				await db.insertInto('imageDrafts').values(imageDrafts).execute();
@@ -107,95 +124,10 @@ export default handleDraftPost(
 			.where('id', '=', draft.id)
 			.execute();
 		return {
-			attachmentUploadPacks: atAts,
+			imageDrafts,
+			videoDrafts,
 			// userId,
 			id: draft.id,
 		};
 	},
 );
-type AttachmentInitializerProps = {
-	id: bigint;
-	author: bigint;
-	post: bigint;
-	strings: CompactedPhrasebook;
-	size?: number;
-};
-type AttachmentInitializer<Return> = (
-	props: AttachmentInitializerProps,
-) => Promise<Return>;
-// Example usage
-// const html = '<div><p>Some <b>bold</b> text</p><script>alert("no!");</script></div>';
-// const allowed = ['b', 'p'];
-//
-// console.log(stripHtml(html, allowed)); // Output: <p>Some <b>bold</b> text</p>
-
-const uploadImage: AttachmentInitializer<ImageDraft> = async ({
-	author,
-	post,
-	strings,
-}) => {
-	// Do I need <size>?
-	const url = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload`;
-	const metadata = {
-		author,
-		post,
-	};
-	const command = `curl --request POST \\
-    --url ${url} \\
-    --header 'Content-Type: multipart/form-data' \\
-    --header 'Authorization: Bearer ${cfApiToken}' \\
-    --form 'requireSignedURLs=false' \\
-    --form 'metadata=${JSON.stringify(metadata)}'`;
-	const { stdout } = await run(command);
-	const cfres = JSON.parse(stdout); // as dus['response'];
-	console.log('CFRES', cfres);
-	if (!cfres.success) throw new Error(strings.unknownBackendError);
-	return {
-		...cfres.result,
-		post,
-		author,
-		supertype: 'image',
-	};
-};
-
-const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
-	author,
-	post,
-	size,
-}): Promise<VideoDraft> => {
-	const endpoint = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/stream?direct_user=true`;
-
-	const metadata = {
-		author,
-		post,
-	};
-	const command = `curl -i --request POST \\
-    --url ${endpoint} \\
-    --header 'Content-Type: multipart/form-data' \\
-    --header 'Authorization: Bearer ${cfApiToken}' \\
-    --header 'Tus-Resumable: 1.0.0' \\
-    --header 'Upload-Metadata: maxDurationSeconds NjAw' \\
-	--header 'Upload-Length: ${size}' \\
-    --form 'requireSignedURLs=false' \\
-    --form 'metadata=${JSON.stringify(metadata)}'`;
-	const { stdout, stderr } = await run(command);
-	console.log(
-		'stdout',
-		stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1],
-		'stderr',
-		stderr,
-	);
-	const uploadURL = stdout.match(/^location: (https:\/\/upload.+)$/m)?.[1];
-	const id = stdout.match(/^stream-media-id: ([a-z0-9]{32})$/m)?.[1];
-	console.log('CFRES', id, uploadURL);
-	if (!(uploadURL && id)) throw new Error('500');
-	console.log('VIDEO VIDEO');
-	return {
-		id,
-		uid: id,
-		uploadURL,
-		user: author,
-		post,
-		created: new Date(),
-	};
-};

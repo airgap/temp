@@ -1,12 +1,13 @@
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { run } from '@lyku/route-helpers';
 import { handleConfirmVideoUpload } from '@lyku/handles';
+import { Err } from '@lyku/helpers';
 
 export default handleConfirmVideoUpload(
 	async (id, { db, requester, strings }) => {
 		console.log('Confirming image upload', id);
 		if (!cfApiToken)
-			throw new Error('We forgot to enter our Cloudflare password');
+			throw new Err(500, 'We forgot to enter our Cloudflare password');
 
 		const videoUpload = await db
 			.selectFrom('videoDrafts')
@@ -16,7 +17,7 @@ export default handleConfirmVideoUpload(
 			.executeTakeFirst();
 
 		if (!videoUpload) {
-			throw new Error(strings.youHaveNoChannelByThatId);
+			throw new Error(404, strings.youHaveNoChannelByThatId);
 		}
 
 		console.log('WHORE', cfAccountId, id);
@@ -30,7 +31,8 @@ export default handleConfirmVideoUpload(
 		const cfres = JSON.parse(stdout);
 		console.log('CFRES', cfres);
 
-		if (!cfres.success) throw new Error(strings.videoUploadAuthorizationError);
+		if (!cfres.success)
+			throw new Err(500, strings.videoUploadAuthorizationError);
 
 		const dbres = await db
 			.insertInto('videos')
@@ -47,7 +49,7 @@ export default handleConfirmVideoUpload(
 
 		console.log('dbres', dbres);
 
-		if (!dbres) throw new Error(strings.unknownBackendError);
+		if (!dbres) throw new Err(500, strings.unknownBackendError);
 
 		// return dbres.id;
 	},

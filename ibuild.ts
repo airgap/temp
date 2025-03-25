@@ -22,7 +22,7 @@ esbuild
 	.then(() => {
 		// console.log('Built');
 	})
-	.catch((err) => {
+	.catch((err: Error) => {
 		console.error('Build failed:', err);
 		process.exit(1);
 	});

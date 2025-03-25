@@ -21,6 +21,7 @@
 	import replace from '../assets/replace.svg?raw';
 	import check from '../assets/squircle-check.svg?raw';
 	import x from '../assets/x.svg?raw';
+	import type { ComponentType } from 'svelte';
 
 	// Props
 	const {
@@ -37,6 +38,7 @@
 		removeClicked,
 		attachmentUploadPack,
 		onFinished,
+		children,
 	} = $props<{
 		disabled?: boolean;
 		className?: string;
@@ -51,6 +53,7 @@
 		removeClicked?: () => void;
 		attachmentUploadPack?: ImageDraft | VideoDraft;
 		onFinished?: () => void;
+		children?: ComponentType;
 	}>();
 
 	// State
@@ -78,6 +81,7 @@
 	});
 
 	$effect(() => {
+		console.log('Packed?', attachmentUploadPack);
 		if (attachmentUploadPack) {
 			pack = {
 				id: attachmentUploadPack.id,
@@ -235,22 +239,22 @@
 				{#if file !== undefined}
 					{#if removeClicked}
 						<Button onclick={removeClicked}>
-							<img src={times} alt="Remove" />
+							{@html times}
 						</Button>
 					{/if}
 				{:else}
 					<Button onclick={confirmClicked} disabled={workingState}>
-						<img src={check} alt="Confirm" />
+						{@html check}
 					</Button>
 					<Button onclick={() => reset()} disabled={workingState}>
-						<img src={x} alt="Cancel" />
+						{@html x}
 					</Button>
 				{/if}
 			{:else}
 				<label for={inputId} class={buttonStyles.Button}>
 					{@render children?.()}
 					{#if image !== undefined}
-						<img class={styles.replace} src={replace} alt="Replace" />
+						{@html replace}
 					{/if}
 					{@render children?.()}
 				</label>

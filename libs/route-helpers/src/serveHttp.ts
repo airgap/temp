@@ -160,7 +160,7 @@ export const serveHttp = async ({
 			} catch (e) {
 				console.error(
 					e instanceof Err ? e.code : 'unknown',
-					'error executing route',
+					'error executing route', e
 				);
 				if (e instanceof Err) {
 					return new Response(e.message, {

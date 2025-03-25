@@ -68,7 +68,7 @@ export default handleConfirmImageUpload(
 		} else if (reason === 'ProfilePicture') {
 			await db
 				.updateTable('users')
-				.set({ profilePicture: id })
+				.set({ profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile` })
 				.where('id', '=', requester)
 				.execute();
 		}

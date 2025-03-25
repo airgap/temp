@@ -120,16 +120,14 @@
 	});
 
 	async function post() {
-		console.log('submitting', body);
+		console.log('submitting', body, 'with', files);
 		pending = files.length;
 		const result = await api.draftPost({
-			body,
-			attachments: files.map(({ type, size }) => ({
-				type: type as AttachmentMime,
-				size,
-			})),
+			...body.trim().length?{body}:{},
+			attachments: files.map(({name, type, size})=>({filename: name, type, size})),
 			replyTo: replyToPost?.id,
 			echoing: echoPost?.id,
+			d: void 0
 		});
 
 		if (!result.id) {

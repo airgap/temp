@@ -5,7 +5,7 @@ export const imageDraft = {
 	description:
 		'Either the information you need to upload an image or video attachment, or any errors encountered',
 	properties: {
-		user: { type: 'bigint' },
+		author: { type: 'bigint' },
 		channel: { type: 'bigint' },
 		post: { type: 'bigint' },
 		reason: imageUploadReason,
@@ -14,5 +14,5 @@ export const imageDraft = {
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		filename: { type: 'text', maxLength: 100 },
 	},
-	required: ['id', 'user', 'reason', 'uploadURL', 'created'],
+	required: ['id', 'author', 'reason', 'uploadURL', 'created', 'filename'],
 } as const satisfies PostgresRecordModel;
