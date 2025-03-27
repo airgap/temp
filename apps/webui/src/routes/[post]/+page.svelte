@@ -3,7 +3,7 @@
 	import type { PageData } from './$types';
 	import type { Post, User } from '@lyku/json-models';
 	import { onMount } from 'svelte';
-	import { PUBLIC_CLOUDFLARE_ACCOUNT_ID } from '$env/static/public';
+	import { PUBLIC_CF_HASH } from '$env/static/public';
 
 	const { data } = $props<{
 		data: { post: Post; users: User[] } | { error: string };
@@ -15,7 +15,7 @@
 {#if error}
 	<p>Error loading post: {error}</p>
 {:else if post}
-	<PostList posts={[post]} cfAccountId={PUBLIC_CLOUDFLARE_ACCOUNT_ID} />
+	<PostList posts={[post]} cfHash={PUBLIC_CF_HASH} />
 {:else}
 	<p>Loading post...</p>
 {/if}

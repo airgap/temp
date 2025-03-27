@@ -22,6 +22,7 @@ export * from './makeAttachmentId';
 export * from './makeDonut';
 export * from './Only';
 export * from './parseAttachmentId';
+export * from './patchAttachments';
 export * from './prettyTime';
 export * from './removeKey';
 export * from './uuidToBase62';

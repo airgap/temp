@@ -1,0 +1,86 @@
+#!/bin/bash
+
+while true; do
+    # Buffer the output in a temporary file
+    output=$(kubectl get deployments --all-namespaces | \
+    awk '
+    BEGIN {
+        print "Deployment Status Grid:"
+        print ""
+        cols=10
+        count=0
+        failed_count=0
+        partial_count=0
+    }
+
+    # Skip header line
+    NR==1 { next }
+
+    # Process each deployment
+    {
+        # Split READY column into ready/desired
+        split($3, ready, "/")
+        ready_count = ready[1]
+        desired_count = ready[2]
+        
+        # Store deployment info for failed/partial cases
+        if (ready_count == desired_count) {
+            # All replicas ready - print green square
+            printf "\033[32m■\033[0m "
+            count++
+        } else if (ready_count == 0) {
+            # No replicas ready - print red square
+            printf "\033[31m■\033[0m "
+            count++
+            failed[failed_count++] = $2 " (" $1 ")"
+        } else {
+            # Partial replicas ready - print yellow square
+            printf "\033[33m■\033[0m "
+            count++
+            partial[partial_count++] = $2 " (" $1 ") - " ready_count "/" desired_count " replicas"
+        }
+        
+        # New line after every 10 squares
+        if (count%cols==0) {
+            printf "\n"
+        }
+    }
+
+    END {
+        # Ensure we end with a newline if grid is not complete
+        if (count%cols!=0) {
+            printf "\n"
+        }
+        print ""
+        # Print the legend
+        print "■ \033[32mHealthy\033[0m ■ \033[31mFailed\033[0m ■ \033[33mPartial\033[0m"
+        print ""
+        
+        # Print failed deployments
+        if (failed_count > 0) {
+            print "\033[31mFailed Deployments:\033[0m"
+            for (i = 0; i < failed_count; i++) {
+                print "  " failed[i]
+            }
+            print ""
+        }
+        
+        # Print partial deployments
+        if (partial_count > 0) {
+            print "\033[33mPartial Deployments:\033[0m"
+            for (i = 0; i < partial_count; i++) {
+                print "  " partial[i]
+            }
+        }
+        
+        # Print timestamp
+        print "\nLast updated: " strftime("%Y-%m-%d %H:%M:%S")
+    }')
+    
+    # Clear screen and print buffered output
+    clear
+    echo "$output"
+    
+    # Wait 5 seconds before next update
+    sleep 5
+done

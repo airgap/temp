@@ -2,6 +2,6 @@ import { PostgresTableModel } from 'from-schema';
 import { imageDoc } from 'bson-models';
 
 export const images = {
-	indexes: ['uploader', 'uploaded', 'variants', 'draft', 'channel'],
+	indexes: ['uploader', 'created', 'variants', 'channel'],
 	schema: imageDoc,
 } satisfies PostgresTableModel<typeof imageDoc>;

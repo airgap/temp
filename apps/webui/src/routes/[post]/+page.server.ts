@@ -20,10 +20,13 @@ export const load = async ({ params, fetch }: any) => {
 		.selectFrom('posts')
 		.where('id', '=', big)
 		.selectAll()
-		.executeTakeFirst();
+		.executeTakeFirst()
+		.then((p) =>
+			p ? { ...p, attachments: p.attachments?.map((a) => BigInt(a)) } : null,
+		);
 	if (!post) throw new Err(404, 'Post not found');
 	console.log('got post', typeof post.id, '!', post.body);
-	console.log('attachments', post.attachments);
+	console.log('attachments', typeof post.attachments?.[0]);
 
 	const author = await db
 		.selectFrom('users')

@@ -4,8 +4,8 @@ const { env } = process;
 export const originCertificate = env['ORIGIN_CERTIFICATE'];
 export const privateKey = env['PRIVATE_KEY'];
 export const servicePort = env['SERVICE_PORT'] || apiPorts.http;
-export const cfAccountId = env['CLOUDFLARE_ACCOUNT_ID'];
-export const cfApiToken = env['CLOUDFLARE_API_TOKEN'];
+export const cfAccountId = env['CF_ID'];
+export const cfApiToken = env['CF_API_TOKEN'];
 
 export const webuiDomain = env['WEBUI_DOMAIN'] || 'localhost';
 export const dev = process.env['DOPPLER_ENVIRONMENT'] === 'dev';

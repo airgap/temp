@@ -3,7 +3,7 @@
 	import { api } from 'monolith-ts-api';
 	import { Stream } from '@cloudflare/stream-react';
 	import type { Post, User } from '@lyku/json-models';
-	import type { AttachmentType } from '@lyku/helpers';
+	import { AttachmentType } from '@lyku/helpers';
 	import {
 		getSupertypeFromAttachmentId,
 		parseAttachmentId,
@@ -36,14 +36,14 @@
 		showReplies = false,
 		autoplay = false,
 		// author = undefined
-		cfAccountId,
+		cfHash,
 	} = $props<{
 		post: Post;
 		inset?: keyof typeof insets | false;
 		showReplies?: boolean;
 		autoplay?: boolean;
 		// author?: User | undefined;
-		cfAccountId: string;
+		cfHash: string;
 	}>();
 
 	let replies = $state<Post[]>([]);
@@ -93,7 +93,7 @@
 	};
 
 	$effect(() => {
-		console.log('id', cfAccountId, 'attachments', post.attachments);
+		console.log('id', cfHash, 'attachments', post.attachments);
 	});
 </script>
 
@@ -160,10 +160,11 @@
 			]}
 		>
 			{#each post.attachments || [] as at}
-				<!-- {#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
-					<Image src={`https://imagedelivery.net/${cfAccountId}/${
-		at.toString()
-	}/btvprofile`} size="full-post" />
+				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
+					<Image
+						src={`https://imagedelivery.net/${cfHash}/${at.toString()}/btvprofile`}
+						size="full-post"
+					/>
 				{:else if getSupertypeFromAttachmentId(at) === AttachmentType.Video}
 					<Stream
 						src={videos?.find((v) => v.id === at)?.id.toString()}
@@ -171,7 +172,7 @@
 						{autoplay}
 						onabort={() => (error = 'Video failed to load')}
 					/>
-				{/if} -->
+				{/if}
 			{/each}
 		</div>
 	{/if}
@@ -192,6 +193,6 @@
 
 	{#if showReplies && replies.length > 0}
 		<div class={styles.sep}></div>
-		<PostList posts={replies} inset={1} {cfAccountId} />
+		<PostList posts={replies} inset={1} cfAccountId={cfHash} />
 	{/if}
 </span>

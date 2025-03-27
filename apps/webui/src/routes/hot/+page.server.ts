@@ -13,7 +13,13 @@ export const load = async ({ params, fetch }: any) => {
 			'desc',
 		)
 		.limit(50)
-		.execute();
+		.execute()
+		.then((ps) =>
+			ps.map((p) => ({
+				...p,
+				attachments: p.attachments?.map((a) => BigInt(a)),
+			})),
+		);
 
 	const authors = await db
 		.selectFrom('users')

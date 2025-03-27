@@ -37,10 +37,12 @@ spec:
               value: '1'
             - name: DATABASE_URL
               value: '${DATABASE_URL}'
-            - name: CLOUDFLARE_API_TOKEN
-              value: '${CLOUDFLARE_API_TOKEN}'
-            - name: PUBLIC_CLOUDFLARE_ACCOUNT_ID
-              value: '${PUBLIC_CLOUDFLARE_ACCOUNT_ID}'
+            - name: CF_API_TOKEN
+              value: '${CF_API_TOKEN}'
+            - name: CF_ID
+              value: '${CF_ID}'
+            - name: PUBLIC_CF_HASH
+              value: '${PUBLIC_CF_HASH}'
             - name: WEBUI_DOMAIN
               value: '${WEBUI_DOMAIN}'
             - name: SERVICE_DOMAIN

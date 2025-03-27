@@ -21,9 +21,9 @@ export default handleLikePost(async (postId, { requester, db }) => {
 
 	if (!post) throw new Err(404, "Post doesn't exist");
 
-	if (post.author === requester) {
-		throw new Err(403, 'You cannot like your own post');
-	}
+	// if (post.author === requester) {
+	// 	throw new Err(403, 'You cannot like your own post');
+	// }
 
 	// Insert the like
 	await db
@@ -47,13 +47,14 @@ export default handleLikePost(async (postId, { requester, db }) => {
 		.executeTakeFirstOrThrow();
 
 	// Add points to both users
-	await db
-		.updateTable('users')
-		.set((eb) => ({
-			points: eb('points', '+', 1n),
-		}))
-		.where('id', 'in', [requester, post.author])
-		.executeTakeFirstOrThrow();
+	if (post.author !== requester)
+		await db
+			.updateTable('users')
+			.set((eb) => ({
+				points: eb('points', '+', 1n),
+			}))
+			.where('id', 'in', [requester, post.author])
+			.executeTakeFirstOrThrow();
 
 	return updatedPost.likes;
 });
