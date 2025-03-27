@@ -61,7 +61,7 @@ export default handleDraftPost(
 			attachments?.map((a, i) =>
 				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type)),
 			) ?? [];
-			console.log('Mapped att ids')
+		console.log('Mapped att ids');
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
 				console.log('Drafting upload', a, 'of', attachments.length);

@@ -7,16 +7,14 @@ export const imageDoc = {
 		// 	type: 'object',
 		// 	properties: {},
 		// },
-		uploaded: { type: 'text' },
-		requireSignedURLs: { type: 'boolean' },
+		requireSignedURLs: { type: 'boolean', default: false },
 		variants: {
 			type: 'array',
 			items: { type: 'text' },
 		},
-		draft: { type: 'boolean' },
 		channel: { type: 'text' },
 		uploader: { type: 'bigint' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 	},
-	required: ['id', 'uploaded', 'requireSignedURLs', 'variants', 'created'],
+	required: ['id', 'uploaded', 'requireSignedURLs', 'created'],
 } as const satisfies PostgresRecordModel;

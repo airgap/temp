@@ -18,16 +18,13 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	console.log('ViewPost finalization authorized', authRes);
 
 	const protopost: InsertablePost = {
+		...authRes,
 		body: body ?? authRes.body,
 		id,
-		author: requester,
-		attachments: [],
 		publish: new Date(),
 		likes: 0n,
 		echoes: 0n,
 		replies: 0n,
-		replyTo: authRes.replyTo,
-		echoing: authRes.echoing,
 	};
 
 	// const insertablePost = Object.fromEntries(

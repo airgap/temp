@@ -22,7 +22,8 @@ export const load = async ({ params, fetch }: any) => {
 		.selectAll()
 		.executeTakeFirst();
 	if (!post) throw new Err(404, 'Post not found');
-	console.log('got post!', post.body);
+	console.log('got post', typeof post.id, '!', post.body);
+	console.log('attachments', post.attachments);
 
 	const author = await db
 		.selectFrom('users')

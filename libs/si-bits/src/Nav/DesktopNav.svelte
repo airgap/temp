@@ -33,7 +33,7 @@
 		onlogin: () => void;
 		oncreate?: () => void;
 	}>();
-	console.log('user', user);
+	console.log('DesktopNav user', user);
 </script>
 
 <div class={styles.DesktopNav}>
@@ -63,7 +63,7 @@
 							<ProfilePicture
 								shape="circle"
 								size="s"
-								src={user.profilePicture}
+								src={user.profilePicture?.toString()}
 							/>
 						</Link>
 						<Link>

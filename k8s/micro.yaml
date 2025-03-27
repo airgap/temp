@@ -39,8 +39,8 @@ spec:
               value: '${DATABASE_URL}'
             - name: CLOUDFLARE_API_TOKEN
               value: '${CLOUDFLARE_API_TOKEN}'
-            - name: CLOUDFLARE_ACCOUNT_ID
-              value: '${CLOUDFLARE_ACCOUNT_ID}'
+            - name: PUBLIC_CLOUDFLARE_ACCOUNT_ID
+              value: '${PUBLIC_CLOUDFLARE_ACCOUNT_ID}'
             - name: WEBUI_DOMAIN
               value: '${WEBUI_DOMAIN}'
             - name: SERVICE_DOMAIN

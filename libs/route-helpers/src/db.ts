@@ -18,8 +18,17 @@ const pgOpts = {
 	},
 } satisfies PoolConfig;
 
-types.setTypeParser(types.builtins.INT8, function (val) {
+types.setTypeParser(types.builtins.INT8, function (val: string) {
 	return BigInt(val);
+});
+
+types.setTypeParser(types.builtins.INT8 + 1000, function (val: string) {
+	if (val === null) return null;
+	// Remove the curly braces and split by comma
+	return val
+		.slice(1, -1)
+		.split(',')
+		.map((v) => BigInt(v.trim()));
 });
 
 async function testConnection() {

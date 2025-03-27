@@ -5,23 +5,20 @@
 import { PostgresDialect } from 'kysely';
 import type { Database } from '@lyku/db-config/kysely';
 import { Kysely } from 'kysely';
-import * as Drizzy from '@neondatabase/serverless';
 import { DATABASE_URL } from '$env/static/private';
 
-// Set the PostgreSQL type parser for INT8 (BIGINT) to return BigInt objects
-// This ensures bigint values are returned as actual BigInt objects, not strings
-Drizzy.types.setTypeParser(Drizzy.types.builtins.INT8, function (val) {
-	return BigInt(val);
-});
+import { Pool, types } from '@neondatabase/serverless';
 
-/**
- * Initialize the database with a connection string
- * This should only be called once at application startup
- */
-export function initDb(connectionString: string): Kysely<Database> {
-	console.log('Initializing database connection', connectionString);
-	const dialect = new PostgresDialect({
-		pool: new Drizzy.Pool({
+types.setTypeParser(types.builtins.INT8, (val) =>
+	val === null ? null : BigInt(val),
+);
+
+types.setTypeParser(types.builtins.INT8 + 1000, (val) =>
+	val === null ? null : 'TEST SUCCESS',
+);
+export const initDialect = (connectionString: string) =>
+	new PostgresDialect({
+		pool: new Pool({
 			connectionString,
 			max: 10,
 			idleTimeoutMillis: 10000,
@@ -31,11 +28,15 @@ export function initDb(connectionString: string): Kysely<Database> {
 			},
 		}),
 	});
-	return new Kysely<Database>({
-		dialect,
+/**
+ * Initialize the database with a connection string
+ * This should only be called once at application startup
+ */
+export const initDb = (connectionString: string): Kysely<Database> =>
+	new Kysely<Database>({
+		dialect: initDialect(connectionString),
 		log: ['query', 'error'],
 	});
-}
 
 export const neon = () =>
 	initDb(DATABASE_URL || process?.env?.DATABASE_URL || '');
@@ -50,7 +51,7 @@ export async function testConnection(
 		throw new Error('Connection string not passed.');
 	}
 
-	const pool = new Drizzy.Pool({
+	const pool = new Pool({
 		connectionString,
 		max: 1,
 		idleTimeoutMillis: 20000,

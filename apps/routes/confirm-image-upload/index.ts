@@ -1,6 +1,16 @@
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { run } from '@lyku/route-helpers';
 import { handleConfirmImageUpload } from '@lyku/handles';
+import { InsertableImageDoc } from '@lyku/json-models';
+
+interface CloudflareImageResponse {
+	success: boolean;
+	result: {
+		id: string;
+		// Add other result fields as needed
+		[key: string]: any;
+	};
+}
 
 export default handleConfirmImageUpload(
 	async (id, { requester, strings, db }) => {
@@ -12,19 +22,25 @@ export default handleConfirmImageUpload(
 		const imageDraft = await db
 			.selectFrom('imageDrafts')
 			.where('id', '=', id)
-			.where('user', '=', requester)
+			.where('author', '=', requester)
 			.selectAll()
 			.executeTakeFirst();
 
 		if (!imageDraft) throw new Error('Invalid image draft');
 
 		const url = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v1/${id}`;
-		const command = `curl --request GET \\
-    --url ${url} \\
-    --header 'Content-Type: application/json' \\
-    --header 'Authorization: Bearer ${cfApiToken}'`;
-		const { stdout } = await run(command);
-		const cfres = JSON.parse(stdout);
+		const response = await fetch(url, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${cfApiToken}`,
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(strings.imageUploadAuthorizationError);
+		}
+
+		const cfres = (await response.json()) as CloudflareImageResponse;
 		console.log('CFRES', cfres);
 		// const bod = cfres.body.toString();
 		// console.log('bod', bod);
@@ -36,13 +52,11 @@ export default handleConfirmImageUpload(
 		const [record] = await db
 			.insertInto('images')
 			.values({
-				...cfres.result,
-				authorId: requester,
-				supertype: 'image',
-				uploaded: new Date(),
+				id,
+				uploader: requester,
 				...(imageDraft.channel ? { channelId: imageDraft.channel } : {}),
-				...(imageDraft.reason ? { reason: imageDraft.reason } : {}),
-			})
+				// ...(imageDraft.reason ? { reason: imageDraft.reason } : {}),
+			} satisfies InsertableImageDoc)
 			.returningAll()
 			.execute();
 
@@ -54,25 +68,25 @@ export default handleConfirmImageUpload(
 			ChannelLogo: 'logo',
 			ActiveChannelBackground: 'activeBg',
 			AwayChannelBackground: 'awayBg',
-		};
+		} as const;
 
 		// Update channel or user profile based on reason
 		if (reason && reason in postReasons && imageDraft.channel) {
 			await db
 				.updateTable('channels')
 				.set({
-					[postReasons[reason as keyof typeof postReasons]]: id,
+					[postReasons[reason as keyof typeof postReasons]]: cfres.result.id,
 				})
 				.where('id', '=', imageDraft.channel)
 				.execute();
 		} else if (reason === 'ProfilePicture') {
 			await db
 				.updateTable('users')
-				.set({ profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile` })
+				.set({
+					profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile`,
+				})
 				.where('id', '=', requester)
 				.execute();
 		}
-
-		return cfres.result.id;
 	},
 );

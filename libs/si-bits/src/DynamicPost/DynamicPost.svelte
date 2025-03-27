@@ -36,12 +36,14 @@
 		showReplies = false,
 		autoplay = false,
 		// author = undefined
+		cfAccountId,
 	} = $props<{
 		post: Post;
 		inset?: keyof typeof insets | false;
 		showReplies?: boolean;
 		autoplay?: boolean;
 		// author?: User | undefined;
+		cfAccountId: string;
 	}>();
 
 	let replies = $state<Post[]>([]);
@@ -66,10 +68,10 @@
 	//       return acc;
 	//     }, [] as bigint[][]) ?? []);
 
-	const [images] = [[]]; //useCacheData('images', imageIds);
-	const [videos] = [[]]; //useCacheData('videos', videoIds);
-	const [audios] = [[]]; //useCacheData('audios', audioIds);
-	const [documents] = [[]]; //useCacheData('documents', documentIds);
+	// const [images] = [[]]; //useCacheData('images', imageIds);
+	// const [videos] = [[]]; //useCacheData('videos', videoIds);
+	// const [audios] = [[]]; //useCacheData('audios', audioIds);
+	// const [documents] = [[]]; //useCacheData('documents', documentIds);
 
 	$effect(() => error && console.error(error));
 
@@ -89,6 +91,10 @@
 			});
 		}
 	};
+
+	$effect(() => {
+		console.log('id', cfAccountId, 'attachments', post.attachments);
+	});
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>
@@ -154,8 +160,10 @@
 			]}
 		>
 			{#each post.attachments || [] as at}
-				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
-					<Image id={at} size="full-post" />
+				<!-- {#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
+					<Image src={`https://imagedelivery.net/${cfAccountId}/${
+		at.toString()
+	}/btvprofile`} size="full-post" />
 				{:else if getSupertypeFromAttachmentId(at) === AttachmentType.Video}
 					<Stream
 						src={videos?.find((v) => v.id === at)?.id.toString()}
@@ -163,7 +171,7 @@
 						{autoplay}
 						onabort={() => (error = 'Video failed to load')}
 					/>
-				{/if}
+				{/if} -->
 			{/each}
 		</div>
 	{/if}
@@ -184,6 +192,6 @@
 
 	{#if showReplies && replies.length > 0}
 		<div class={styles.sep}></div>
-		<PostList posts={replies} inset={1} />
+		<PostList posts={replies} inset={1} {cfAccountId} />
 	{/if}
 </span>

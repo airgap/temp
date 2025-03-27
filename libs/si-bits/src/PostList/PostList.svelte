@@ -8,13 +8,19 @@
 		posts,
 		inset = false,
 		placeholder,
-	} = $props<{ posts: Post[]; inset?: boolean; placeholder?: any }>();
+		cfAccountId,
+	} = $props<{
+		posts: Post[];
+		inset?: boolean;
+		placeholder?: any;
+		cfAccountId: string;
+	}>();
 </script>
 
 <div class={classNames(styles.PostList, { [styles.inset]: inset })}>
 	{#if posts?.length}
 		{#each posts as post (post.id)}
-			<DynamicPost {post} autoplay={false} />
+			<DynamicPost {post} autoplay={false} {cfAccountId} />
 		{/each}
 	{:else}
 		{placeholder}
