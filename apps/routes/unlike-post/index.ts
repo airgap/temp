@@ -1,13 +1,13 @@
 import { handleUnlikePost } from '@lyku/handles';
-
+import { elasticate } from './elasticate';
 export default handleUnlikePost(async (postId, { db, requester }) => {
 	console.log('unliking post');
-	const likeId = `${requester}~${postId}`;
 	console.log('got user id', requester);
 
 	const like = await db
 		.selectFrom('likes')
-		.where('id', '=', likeId)
+		.where('postId', '=', postId)
+		.where('userId', '=', requester)
 		.executeTakeFirst();
 
 	if (!like) throw 'You have not liked that post';
@@ -27,18 +27,13 @@ export default handleUnlikePost(async (postId, { db, requester }) => {
 	console.log('Updated post', postUpdate);
 	console.log('Deleting like');
 
-	await db.deleteFrom('likes').where('id', '=', likeId).execute();
+	await db
+		.deleteFrom('likes')
+		.where('postId', '=', postId)
+		.where('userId', '=', requester)
+		.execute();
 
 	console.log('Deleted like');
-
-	const userUpdate = await db
-		.updateTable('users')
-		.where('id', '=', requester)
-		.set((eb) => ({
-			points: eb('points', '-', 1n),
-		}))
-		.returning(['points'])
-		.executeTakeFirstOrThrow();
 
 	const post = await db
 		.selectFrom('posts')
@@ -55,7 +50,9 @@ export default handleUnlikePost(async (postId, { db, requester }) => {
 		.returning(['points'])
 		.executeTakeFirstOrThrow();
 
-	console.log('Liker update', userUpdate, 'likee update', authorUpdate);
+	await elasticate(postId);
+
+	console.log('likee update', authorUpdate);
 	console.log('YAY YOU PASS');
 	return postUpdate.likes;
 });

@@ -1,8 +1,0 @@
-#! /bin/bash
-project=$1
-if [ -z "$project" ]; then
-	echo "Usage: $0 <project>"
-	exit 1
-fi
-
-nx build @lyku/$project && nx dockerize @lyku/$project && doppler run -- nx kubernetize @lyku/$project

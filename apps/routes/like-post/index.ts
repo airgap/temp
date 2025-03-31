@@ -45,14 +45,14 @@ export default handleLikePost(async (postId, { requester, db }) => {
 		.returning('likes')
 		.executeTakeFirstOrThrow();
 
-	// Add points to both users
+	// Add point to recipient
 	if (post.author !== requester)
 		await db
 			.updateTable('users')
 			.set((eb) => ({
 				points: eb('points', '+', 1n),
 			}))
-			.where('id', 'in', [requester, post.author])
+			.where('id', '=', post.author)
 			.executeTakeFirstOrThrow();
 
 	await elasticate(postId);

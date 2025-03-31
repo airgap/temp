@@ -1,5 +1,3 @@
-import type { Post } from '@lyku/json-models';
-
 export async function elasticate(postId: bigint): Promise<void> {
 	const url = `${process.env.ELASTIC_API_ENDPOINT}/posts/_update/${postId}`;
 	const headers = new Headers({
@@ -10,7 +8,7 @@ export async function elasticate(postId: bigint): Promise<void> {
 	const updateScript = {
 		script: {
 			source: `
-				ctx._source.likes = (ctx._source.likes ?: 0) + 1;
+				ctx._source.likes = (ctx._source.likes ?: 0) - 1;
 			`,
 			lang: 'painless',
 		},

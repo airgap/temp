@@ -17,7 +17,13 @@ export const buildTableCreationCommand = (
 					})
 					.join(', ')
 			: '';
-
-	const createTableQuery = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columns});`;
+	const { primaryKey } = model;
+	const primary = primaryKey
+		? `, PRIMARY KEY (${[primaryKey]
+				.flat()
+				.map((k) => `"${k}"`)
+				.join(', ')})`
+		: '';
+	const createTableQuery = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columns} ${primary});`;
 	return createTableQuery;
 };

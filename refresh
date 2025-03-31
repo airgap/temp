@@ -1,0 +1,17 @@
+#! /bin/bash
+project=$1
+if [ "$project" = "all" ]; then
+	nx run-many --target=build --parallel=99 --skip-nx-cache | sed 's/^/🏗️  /' && \
+		nx run-many --target=dockerize --parallel=1 | sed 's/^/🐳  /' && \
+		doppler run -- nx run-many --target=kubernetize --parallel=99 | sed 's/^/🚀  /'
+	exit 0
+fi
+
+if [ -z "$project" ]; then
+	echo "Usage: $0 <project>"
+	exit 1
+fi
+
+nx build @lyku/$project | sed 's/^/🏗️  /' && \
+	nx dockerize @lyku/$project | sed 's/^/🐳  /' && \
+	doppler run -- nx kubernetize @lyku/$project | sed 's/^/🚀  /'

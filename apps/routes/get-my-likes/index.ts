@@ -6,6 +6,7 @@ export default handleGetMyLikes(async (ids, { db, requester }) => {
 		.selectFrom('likes')
 		.selectAll()
 		.where('postId', 'in', ids)
+		.where('userId', '=', requester)
 		.execute();
 	const map = likes.reduce((o, l) => {
 		o.set(l.postId, true);

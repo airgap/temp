@@ -1,1 +1,1 @@
-preload = ["/raid/nicole/temp/apps/dataform/sqlPlugin.ts"]
+preload = ["./sqlPlugin.ts"]

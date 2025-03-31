@@ -2,7 +2,8 @@
 import { neon } from '../../lib/server/db.server';
 import { queryHotPosts } from './getHotPosts.server';
 import { ELASTIC_API_ENDPOINT, ELASTIC_API_KEY } from '$env/static/private';
-export const load = async ({ params, fetch }) => {
+export const load = async ({ params, fetch, parent }) => {
+	const { user } = await parent();
 	const db = neon();
 	const { posts, continuation } = await queryHotPosts({
 		fetch,
@@ -15,15 +16,18 @@ export const load = async ({ params, fetch }) => {
 		.where('id', 'in', [...new Set(posts.map((p) => p.author))])
 		.selectAll()
 		.execute();
-	const likes = await db
-		.selectFrom('likes')
-		.where(
-			'postId',
-			'in',
-			posts.map((p) => p.id),
-		)
-		.selectAll()
-		.execute();
+	const likes = user
+		? await db
+				.selectFrom('likes')
+				.where(
+					'postId',
+					'in',
+					posts.map((p) => p.id),
+				)
+				.where('userId', '=', user.id)
+				.select('postId')
+				.execute()
+		: [];
 	// const likemap = likes.reduce((o,l)=>({...o, [l.postId]}))
 	// console.log('OY M8 WE GOT LIKES', )
 	return {
