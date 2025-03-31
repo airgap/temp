@@ -2,6 +2,7 @@ import { handleFinalizePost } from '@lyku/handles';
 import { AttachmentType, getSupertypeFromAttachmentId } from '@lyku/helpers';
 import { InsertablePost, User } from '@lyku/json-models/index';
 import { sql } from 'kysely';
+import { elasticate } from './elasticate';
 
 export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	const authRes = await db
@@ -72,5 +73,6 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 			})
 			.where('id', '=', authRes.echoing)
 			.execute();
+	await elasticate(p);
 	return p;
 });

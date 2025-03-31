@@ -19,6 +19,7 @@ export const safeTags = [
 	'ul',
 	'ol',
 	'li',
+	'span',
 ];
 export const fullSafeTags = safeTags.flatMap((tag) => [
 	`<${tag}>`,
@@ -34,5 +35,6 @@ export const flagUnsafeTags = (inputHtml: string): boolean =>
 			return res;
 		}),
 	);
+
 export const flagAttributes = (inputHtml: string): boolean =>
-	/<[a-z][a-z0-9]*\s+[^>]+>/i.test(inputHtml);
+	/<[a-z][a-z0-9]*\s+(?!color=["'][^"']*["'])[^>]+>/i.test(inputHtml);

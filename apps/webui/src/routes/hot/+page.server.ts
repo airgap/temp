@@ -1,25 +1,14 @@
 // import type { PageLoad } from './$types';
-import { api, setFetch } from 'monolith-ts-api';
 import { neon } from '../../lib/server/db.server';
-import { sql } from 'kysely';
-
-export const load = async ({ params, fetch }: any) => {
+import { queryHotPosts } from './getHotPosts.server';
+import { ELASTIC_API_ENDPOINT, ELASTIC_API_KEY } from '$env/static/private';
+export const load = async ({ params, fetch }) => {
 	const db = neon();
-	const posts = await db
-		.selectFrom('posts')
-		.selectAll()
-		.orderBy(
-			sql`(likes / (EXTRACT(EPOCH FROM (NOW() - "publish")) / 3600))`,
-			'desc',
-		)
-		.limit(50)
-		.execute()
-		.then((ps) =>
-			ps.map((p) => ({
-				...p,
-				attachments: p.attachments?.map((a) => BigInt(a)),
-			})),
-		);
+	const { posts, continuation } = await queryHotPosts({
+		fetch,
+		ELASTIC_API_ENDPOINT,
+		ELASTIC_API_KEY,
+	});
 
 	const authors = await db
 		.selectFrom('users')
@@ -39,6 +28,7 @@ export const load = async ({ params, fetch }: any) => {
 	// console.log('OY M8 WE GOT LIKES', )
 	return {
 		posts,
+		continuation,
 		users: authors,
 		likes: posts.map((p) =>
 			likes.some((l) => l.postId === p.id) ? p.id : -p.id,

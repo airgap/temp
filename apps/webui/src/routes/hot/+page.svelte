@@ -6,9 +6,11 @@
 	import { PUBLIC_CF_HASH } from '$env/static/public';
 
 	const { data } = $props<{
-		data: { posts: Post[]; users: User[]; likes: BigInt[] } | { error: string };
+		data:
+			| { posts: Post[]; users: User[]; likes: BigInt[]; continuation?: string }
+			| { error: string };
 	}>();
-	const { posts, users, error, likes } = data;
+	const { posts, users, error, likes, continuation } = data;
 	userStore.hydrate(users);
 	console.log('likes', likes);
 	myLikeStore.hydrate(likes);

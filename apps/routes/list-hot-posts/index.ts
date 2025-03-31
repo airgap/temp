@@ -16,14 +16,14 @@ export default handleListHotPosts(
 		console.log('Posts query:', postsQuery.compile().sql);
 
 		const refinedPostsQuery = postsQuery
-			// .select((eb) => [
-			// 	sql<number>`(${eb.ref('likes')} + ${eb.ref(
-			// 		'loves',
-			// 	)} * 10.0) / NULLIF(${sql<number>`EXTRACT(EPOCH FROM (NOW() - publish))`.as(
-			// 		'age',
-			// 	)}, 0)`.as('hotness'),
-			// ])
-			// 	.orderBy('hotness', 'desc')
+			.select((eb) => [
+				sql<number>`(${eb.ref('likes')} + ${eb.ref(
+					'loves',
+				)} * 10.0) / NULLIF(${sql<number>`EXTRACT(EPOCH FROM (NOW() - publish))`.as(
+					'age',
+				)}, 0)`.as('hotness'),
+			])
+			.orderBy('hotness', 'desc')
 			.limit(limit ?? 20);
 		console.log('Refined posts query:', refinedPostsQuery.compile().sql);
 

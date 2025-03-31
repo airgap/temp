@@ -107,7 +107,7 @@ export default handleDraftPost(
 		console.log('atAts', atAts);
 		if (body) {
 			console.log('body', body);
-			if (flagUnsafeHtml(body)) throw 400;
+			if (flagUnsafeHtml(body)) throw new Err(400, 'Invalid HTML detected');
 			body = await shortenLinksInBody(body, draft.id, requester, db);
 		}
 		const webuiPath = `${dev ? 'http' : 'https'}://${webuiDomain}/p/${

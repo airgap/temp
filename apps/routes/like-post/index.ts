@@ -2,13 +2,13 @@ import { handleLikePost } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
+import { elasticate } from './elasticate';
 export default handleLikePost(async (postId, { requester, db }) => {
-	const likeId = `${requester}~${postId}`;
-
 	// Check if post exists and isn't already liked by this user
 	const existingLike = await db
 		.selectFrom('likes')
-		.where('id', '=', likeId)
+		.where('userId', '=', requester)
+		.where('postId', '=', postId)
 		.executeTakeFirst();
 
 	if (existingLike) throw new Err(409, 'Post already liked');
@@ -29,7 +29,6 @@ export default handleLikePost(async (postId, { requester, db }) => {
 	await db
 		.insertInto('likes')
 		.values({
-			id: likeId,
 			userId: requester,
 			postId: postId,
 			created: new Date(),
@@ -55,6 +54,8 @@ export default handleLikePost(async (postId, { requester, db }) => {
 			}))
 			.where('id', 'in', [requester, post.author])
 			.executeTakeFirstOrThrow();
+
+	await elasticate(postId);
 
 	return updatedPost.likes;
 });
