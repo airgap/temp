@@ -1,5 +1,5 @@
 import { handleLikePost } from '@lyku/handles';
-import { Err } from '@lyku/helpers';
+import { bigintToBase58, Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
 import { sendNotification } from 'libs/route-helpers/src/sendNotification';
@@ -69,15 +69,16 @@ export default handleLikePost(async (postId, { requester, db, elastic }) => {
 		(post.likes & (post.likes - 1n)) === 0n &&
 		(post.likes < -9 || post.likes > 9)
 	) {
+		const slug = bigintToBase58(postId);
 		await sendNotification(
 			{
 				recipient: post.author,
-				message: `Your post has been liked ${post.likes} times!`,
-				link: `/post/${postId}`,
-				linkText: 'View Post',
-				linkColor: '#000000',
-				linkBackgroundColor: '#FFFFFF',
-				linkBorderColor: '#000000',
+				title: `Your post hit ${post.likes} likes!`,
+				href: `/${slug}`,
+				id: `${post.id}-${post.likes}`,
+				user: post.author,
+				body: `Head over to /${slug} to check it out!`,
+				// icon: { type: 'varchar', minLength: 5, maxLength: 50 },
 			},
 			db,
 		);
