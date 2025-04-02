@@ -1,3 +1,4 @@
+import { Client } from '@elastic/elasticsearch';
 import type { Database } from '@lyku/db-config/kysely';
 import type { CompactedPhrasebook } from '@lyku/phrasebooks';
 import type { ServerWebSocket, Server } from 'bun';
@@ -17,6 +18,7 @@ type BaseContextFragment<Model extends TsonHandlerModel> = {
 	requester?: bigint;
 	session?: string;
 	model: Model;
+	elastic: Client;
 };
 type HttpContextFragment = {
 	request: Request;

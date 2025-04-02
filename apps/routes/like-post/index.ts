@@ -2,8 +2,8 @@ import { handleLikePost } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
-import { elasticate } from './elasticate';
-export default handleLikePost(async (postId, { requester, db }) => {
+import { sendNotification } from 'libs/route-helpers/src/sendNotification';
+export default handleLikePost(async (postId, { requester, db, elastic }) => {
 	// Check if post exists and isn't already liked by this user
 	const existingLike = await db
 		.selectFrom('likes')
@@ -55,7 +55,33 @@ export default handleLikePost(async (postId, { requester, db }) => {
 			.where('id', '=', post.author)
 			.executeTakeFirstOrThrow();
 
-	await elasticate(postId);
+	await elastic.update({
+		index: 'posts',
+		id: postId.toString(),
+		script: {
+			source: 'ctx._source.likes = (ctx._source.likes ?: 0) + 1',
+			lang: 'painless',
+		},
+	});
+
+	if (
+		post.likes &&
+		(post.likes & (post.likes - 1n)) === 0n &&
+		(post.likes < -9 || post.likes > 9)
+	) {
+		await sendNotification(
+			{
+				recipient: post.author,
+				message: `Your post has been liked ${post.likes} times!`,
+				link: `/post/${postId}`,
+				linkText: 'View Post',
+				linkColor: '#000000',
+				linkBackgroundColor: '#FFFFFF',
+				linkBorderColor: '#000000',
+			},
+			db,
+		);
+	}
 
 	return updatedPost.likes;
 });

@@ -10,9 +10,16 @@ import {
 } from 'from-schema';
 import { natsPort } from './env';
 import { Err } from '@lyku/helpers';
-
+import { Client } from '@elastic/elasticsearch';
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
+
+const elastic = new Client({
+	node: process.env['ELASTIC_API_ENDPOINT'],
+	auth: {
+		apiKey: process.env['ELASTIC_API_KEY'] as string,
+	},
+});
 
 export const serveHttp = async ({
 	execute,
@@ -146,6 +153,7 @@ export const serveHttp = async ({
 					nats: nc,
 					server,
 					model,
+					elastic,
 				})) as SecureHttpContext<any>;
 				console.log('Encoding');
 				const pack = encode(output, { useBigInt64: true });

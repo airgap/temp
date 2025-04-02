@@ -1,6 +1,6 @@
 import { handleUnlikePost } from '@lyku/handles';
-import { elasticate } from './elasticate';
-export default handleUnlikePost(async (postId, { db, requester }) => {
+
+export default handleUnlikePost(async (postId, { db, requester, elastic }) => {
 	console.log('unliking post');
 	console.log('got user id', requester);
 
@@ -50,7 +50,14 @@ export default handleUnlikePost(async (postId, { db, requester }) => {
 		.returning(['points'])
 		.executeTakeFirstOrThrow();
 
-	await elasticate(postId);
+	await elastic.update({
+		index: 'posts',
+		id: postId.toString(),
+		script: {
+			source: 'ctx._source.likes = (ctx._source.likes ?: 0) - 1',
+			lang: 'painless',
+		},
+	});
 
 	console.log('likee update', authorUpdate);
 	console.log('YAY YOU PASS');
