@@ -7,4 +7,5 @@ export const listFriends = {
 		items: user,
 	},
 	authenticated: true,
+	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;

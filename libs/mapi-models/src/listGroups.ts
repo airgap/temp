@@ -26,4 +26,5 @@ export const listGroups = {
 		required: ['groups', 'memberships'],
 	},
 	authenticated: true,
+	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;

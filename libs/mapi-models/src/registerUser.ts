@@ -12,4 +12,5 @@ export const registerUser = {
 		required: ['email', 'password', 'username', 'agreed'],
 	},
 	authenticated: false,
+	throws: [400, 409, 500],
 } as const satisfies TsonHandlerModel;

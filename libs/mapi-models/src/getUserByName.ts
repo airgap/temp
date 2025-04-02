@@ -5,4 +5,5 @@ export const getUserByName = {
 	request: username,
 	response: user,
 	authenticated: false,
+	throws: [400, 404, 500],
 } as const satisfies TsonHandlerModel;

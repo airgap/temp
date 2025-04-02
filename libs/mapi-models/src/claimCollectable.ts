@@ -9,4 +9,5 @@ export const claimCollectable = {
 		required: ['id'],
 	},
 	authenticated: false,
+	throws: [400, 401, 404, 409, 500],
 } as const satisfies TsonHandlerModel;

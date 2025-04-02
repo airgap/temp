@@ -22,4 +22,5 @@ export const getChannel = {
 	},
 	response: channel,
 	authenticated: false,
+	throws: [400, 401, 404, 500],
 } as const satisfies TsonHandlerModel;

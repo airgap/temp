@@ -22,4 +22,5 @@ export const listDevelopers = {
 		required: ['developers'],
 	},
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

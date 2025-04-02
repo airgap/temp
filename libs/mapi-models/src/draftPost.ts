@@ -15,6 +15,7 @@ export const draftPost = {
 			'Upload a text/image/video post to BTV. You must be logged in to post.',
 		type: 'object',
 		properties: {
+			id: { type: 'bigint' },
 			body: {
 				type: 'string',
 				maxLength: 116_650,
@@ -59,4 +60,5 @@ export const draftPost = {
 		required: [],
 	},
 	authenticated: true,
+	throws: [400, 401, 404, 500],
 } as const satisfies TsonHandlerModel;

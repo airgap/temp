@@ -17,4 +17,5 @@ export const streamTtfMatch = {
 	},
 	authenticated: true,
 	stream: true,
+	throws: [400, 401, 404, 500],
 } as const satisfies TsonHandlerModel;

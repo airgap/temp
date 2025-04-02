@@ -29,4 +29,5 @@ export const listFeedPostsUnauthenticated = {
 	},
 	response: { type: 'array', items: post },
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

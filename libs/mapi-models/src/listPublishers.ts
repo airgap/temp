@@ -1,7 +1,7 @@
 import type { TsonHandlerModel } from 'from-schema';
 import { publisher } from '@lyku/json-models';
 
-export const listDPublishers = {
+export const listPublishers = {
 	request: {
 		type: 'object',
 		properties: {
@@ -22,4 +22,5 @@ export const listDPublishers = {
 		required: ['publishers'],
 	},
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

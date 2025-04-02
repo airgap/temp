@@ -23,4 +23,5 @@ export const getUsersByUsername = {
 		required: ['users'],
 	},
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

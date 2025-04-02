@@ -12,4 +12,5 @@ export const listenForAchievements = {
 	},
 	stream: true,
 	authenticated: true,
+	throws: [400, 401, 404, 500],
 } as const satisfies TsonHandlerModel;

@@ -11,4 +11,5 @@ export const testNotification = {
 	},
 	response: notification,
 	authenticated: true,
+	throws: [400, 401, 409, 500],
 } as const satisfies TsonHandlerModel;

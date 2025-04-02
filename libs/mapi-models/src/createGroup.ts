@@ -13,4 +13,5 @@ export const createGroup = {
 	},
 	response: group,
 	authenticated: true,
+	throws: [400, 401, 409, 500],
 } as const satisfies TsonHandlerModel;

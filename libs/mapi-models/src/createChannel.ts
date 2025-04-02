@@ -17,4 +17,5 @@ export const createChannel = {
 		required: ['channel'],
 	},
 	authenticated: true,
+	throws: [400, 401, 409, 500],
 } as const satisfies TsonHandlerModel;

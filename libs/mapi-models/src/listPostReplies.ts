@@ -19,4 +19,5 @@ export const listPostReplies = {
 		items: post,
 	},
 	authenticated: true,
+	throws: [400, 401, 404, 500],
 } as const satisfies TsonHandlerModel;

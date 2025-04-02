@@ -14,4 +14,5 @@ export const placePiece = {
 		required: ['match', 'square'],
 	},
 	authenticated: true,
+	throws: [400, 401, 404, 409, 500],
 } as const satisfies TsonHandlerModel;

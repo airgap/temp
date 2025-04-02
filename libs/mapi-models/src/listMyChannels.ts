@@ -9,4 +9,5 @@ export const listMyChannels = {
 		items: channel,
 	},
 	authenticated: true,
+	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;

@@ -17,4 +17,5 @@ export const listGroupsUnauthenticated = {
 		items: group,
 	},
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

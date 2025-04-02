@@ -11,4 +11,5 @@ export const getUsers = {
 		items: user,
 	},
 	authenticated: false,
+	throws: [400, 500],
 } as const satisfies TsonHandlerModel;

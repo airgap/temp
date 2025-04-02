@@ -15,4 +15,5 @@ export const proposeMatch = {
 	response: matchProposal.properties.id,
 
 	authenticated: true,
+	throws: [400, 401, 404, 409, 500],
 } as const satisfies TsonHandlerModel;

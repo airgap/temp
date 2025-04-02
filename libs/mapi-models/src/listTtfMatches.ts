@@ -15,4 +15,5 @@ export const listTtfMatches = {
 		items: ttfMatch,
 	},
 	authenticated: true,
+	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;

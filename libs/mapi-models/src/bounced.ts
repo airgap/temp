@@ -17,4 +17,5 @@ export const bounced = {
 	},
 	response: btvGameStats,
 	authenticated: true,
+	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;
