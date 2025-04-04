@@ -16,5 +16,6 @@ export * from './getDictionary';
 export * from './internalUsers';
 export * from './isSessionId';
 export * from './placePieceInMatch';
+export * from './sendNotification';
 export * from './serveHttp';
 export * from './serveWebsocket';

@@ -3,6 +3,7 @@ export * from './AttachmentType';
 export * from './base58SnowflakeRegex';
 export * from './base58ToBigint';
 export * from './bigintToBase58';
+export * from './buildHotQuery';
 export * from './bondIds';
 export * from './cfloor';
 export * from './convertBases';

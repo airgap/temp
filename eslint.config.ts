@@ -13,7 +13,7 @@ export default [
 			'@nx/enforce-module-boundaries': [
 				'error',
 				{
-					enforceBuildableLibDependency: true,
+					// enforceBuildableLibDependency: true,
 					allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?js$'],
 					depConstraints: [
 						{

@@ -57,17 +57,19 @@ export default handleListHotPosts(
 							'in',
 							posts.map((p) => p.id),
 						)
-						.selectAll()
+						.select('postId')
 						.execute()
 				: [];
 
 		console.log('Likes:', likes.length);
 
+		const set = new Set(likes.map((like) => like.postId));
+
 		// Build response with normalized data
 		const response = {
 			posts,
 			authors,
-			likes,
+			likes: posts.map(({ id }) => (set.has(id) ? id : -id)),
 		};
 
 		console.log('Hot posts:', posts.length);

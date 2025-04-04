@@ -1,5 +1,6 @@
 {
 	"root": true,
+	"extends": ["airbnb-base"],
 	"plugins": ["@nx"],
 	"overrides": [
 		{
@@ -8,7 +9,7 @@
 				"@nx/enforce-module-boundaries": [
 					"error",
 					{
-						"enforceBuildableLibDependency": true,
+						"enforceBuildableLibDependency": false,
 						"allow": [],
 						"depConstraints": [
 							{

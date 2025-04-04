@@ -1,14 +1,5 @@
 import type { Post } from '@lyku/json-models';
-
-type DateRange = 'hour' | 'day' | 'week' | 'month' | 'year';
-
-const rangeMap: Record<DateRange, string> = {
-	hour: 'now-1h/h',
-	day: 'now-1d/d',
-	week: 'now-7d/d',
-	month: 'now-30d/d',
-	year: 'now-1y/y',
-};
+import { buildHotQuery, type DateRange } from '@lyku/helpers';
 
 export async function queryHotPosts(opts: {
 	ELASTIC_API_ENDPOINT: string;
@@ -19,47 +10,8 @@ export async function queryHotPosts(opts: {
 	continuation?: unknown[];
 }): Promise<{ posts: Post[]; continuation?: unknown[] }> {
 	const { dateRange, continuation } = opts ?? {};
-	const size = opts?.size ?? 100;
 
-	const filter = dateRange
-		? [{ range: { publish: { gte: rangeMap[dateRange] } } }]
-		: [];
-
-	const body = {
-		size,
-		sort: ['_score', 'publish:desc'],
-		// search_after: continuation,
-		query: {
-			function_score: {
-				query: {
-					bool: { filter },
-				},
-				score_mode: 'multiply',
-				boost_mode: 'replace',
-				functions: [
-					{
-						field_value_factor: {
-							field: 'engagement_score',
-							modifier: 'log1p',
-							factor: 1,
-							missing: 0,
-						},
-					},
-					{
-						exp: {
-							publish: {
-								origin: 'now',
-								scale: dateRange
-									? rangeMap[dateRange].replace('now-', '')
-									: '7d',
-								decay: 0.5,
-							},
-						},
-					},
-				],
-			},
-		},
-	};
+	const body = buildHotQuery(opts);
 	// const url = 'https://broke.lyku.org/posts/hot';
 
 	const url = `${opts.ELASTIC_API_ENDPOINT}/_search`;

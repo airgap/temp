@@ -5,7 +5,7 @@
 	// Svelte 5: use $props to get component inputs with defaults
 	let {
 		cubeSize = 1,
-		pipeDiameter = 0.1,
+		pipeDiameter = 0.15,
 		rotationSpeedX = 0.01,
 		rotationSpeedY = 0.01,
 		rotationSpeedZ = 0.01,
@@ -60,7 +60,7 @@
 				position: regl.prop('positions'),
 			},
 			uniforms: {
-				color: [0, 0, 0, 1], // RGBA color of edges (here: solid black)
+				color: [1, 0.8, 0.8, 1], // RGBA color of edges (here: solid black)
 			},
 			vert: `
           precision mediump float;
@@ -210,8 +210,8 @@
 <!-- Canvas for WebGL output; pointer events enable dragging -->
 <canvas
 	bind:this={canvasElem}
-	width={400}
-	height={400}
+	width={80}
+	height={80}
 	style="touch-action: none; /* prevent touch scrolling while dragging */"
 	on:pointerdown={pointerDown}
 	on:pointermove={pointerMove}

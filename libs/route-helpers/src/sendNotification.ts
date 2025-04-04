@@ -8,6 +8,6 @@ export const sendNotification = async (
 ): Promise<Notification> =>
 	db
 		.insertInto('notifications')
-		.values({ ...notification, posted: new Date() })
+		.values(notification as Notification)
 		.returningAll()
 		.executeTakeFirstOrThrow();

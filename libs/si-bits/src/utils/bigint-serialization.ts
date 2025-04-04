@@ -19,7 +19,7 @@ export type BigintPropsAsStrings<
 					: T[K];
 };
 
-export type Serialized<T extends any> = T extends Object
+export type Serialized<T extends any> = T extends object
 	? Record<string, Serialized<keyof T>>
 	: T extends Array<infer I>
 		? Array<Serialized<I>>

@@ -7,52 +7,52 @@ const COUNT = 400000;
 const BATCH = 1000;
 
 // Test 1: Object.assign
-let assignStart = performance.now();
+const assignStart = performance.now();
 for (let j = 0; j < COUNT; j++) {
 	const testObjects = newObject(1, j);
-	let assignResult = {};
+	const assignResult = {};
 	Object.assign(assignResult, testObjects[0]);
 }
-let assignEnd = performance.now();
+const assignEnd = performance.now();
 
 // Test 2: Spread operator
-let spreadStart = performance.now();
+const spreadStart = performance.now();
 for (let j = 0; j < COUNT; j++) {
 	const testObjects = newObject(1, j);
 	let spreadResult: Record<string, number> = {};
 	spreadResult = { ...spreadResult, ...testObjects[0] };
 }
-let spreadEnd = performance.now();
+const spreadEnd = performance.now();
 
 // Test 3: Direct property assignment (for...in)
-let forInStart = performance.now();
+const forInStart = performance.now();
 for (let j = 0; j < COUNT; j++) {
 	const testObjects = newObject(1, j);
-	let forInResult: Record<string, number> = {};
-	for (let key in testObjects[0]) {
+	const forInResult: Record<string, number> = {};
+	for (const key in testObjects[0]) {
 		forInResult[key] = testObjects[0][key];
 	}
 }
-let forInEnd = performance.now();
+const forInEnd = performance.now();
 
 // Test 4: Map construction
-let mapStart = performance.now();
+const mapStart = performance.now();
 for (let j = 0; j < COUNT; j++) {
 	const testObjects = newObject(1, j);
-	let mapResult = new Map();
-	for (let key in testObjects[0]) {
+	const mapResult = new Map();
+	for (const key in testObjects[0]) {
 		mapResult.set(key, testObjects[0][key]);
 	}
 }
-let mapEnd = performance.now();
+const mapEnd = performance.now();
 
 // Test 5: Object.fromEntries
-let entriesStart = performance.now();
+const entriesStart = performance.now();
 for (let j = 0; j < COUNT; j++) {
 	const testObjects = newObject(1, j);
-	let entriesResult = Object.fromEntries(Object.entries(testObjects[0]));
+	const entriesResult = Object.fromEntries(Object.entries(testObjects[0]));
 }
-let entriesEnd = performance.now();
+const entriesEnd = performance.now();
 
 // Log results
 console.log('Results for', COUNT, 'iterations:');

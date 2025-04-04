@@ -12,6 +12,7 @@
 	import { ProfilePicture } from '../ProfilePicture';
 	import { cacheStore } from '../CacheProvider';
 	import search from '../assets/search.svg?raw';
+	import Cube from '../Cube.svelte';
 	const user = cacheStore.currentUser;
 	let profile = $derived(user?.profilePicture);
 
@@ -36,7 +37,8 @@
 		<MobileNavLink isActive={/^\/g(\/|$)/.test(url?.pathname)} href="/g/">
 			{@html groups}
 		</MobileNavLink>
-		<NavLogo class={styles.mainIcon} />
+		<!-- <NavLogo class={styles.mainIcon} /> -->
+		<MobileNavLink><Cube /></MobileNavLink>
 		<MobileNavLink isActive={/^\/p(\/|$)/.test(url?.pathname)} href="/p/">
 			{@html play}
 		</MobileNavLink>

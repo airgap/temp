@@ -39,7 +39,7 @@ export const serveHttp = async ({
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
-			console.log('--- New request ---');
+			// console.log('--- New request ---');
 			const responseHeaders = new Headers();
 			const origin = req.headers.get('origin');
 			let allow;
@@ -53,8 +53,8 @@ export const serveHttp = async ({
 				allow = 'https://lyku.org';
 			}
 			responseHeaders.set('Access-Control-Allow-Origin', allow);
-			console.log('Source origin:  ', origin);
-			console.log('Allowing origin:', allow);
+			// console.log('Source origin:  ', origin);
+			// console.log('Allowing origin:', allow);
 			// responseHeaders.set('Access-Control-Allow-Origin', 'https://lyku.org');
 			responseHeaders.set('Content-Type', 'application/x-msgpack');
 			responseHeaders.set(
@@ -76,7 +76,7 @@ export const serveHttp = async ({
 			const needsAuth = model.authenticated;
 			// HTTP handler
 			if (req.url.endsWith('/health')) {
-				console.log('Health check');
+				// console.log('Health check');
 				return new Response(':D', { status: 200, headers: responseHeaders });
 			}
 			console.log('req', req.url);

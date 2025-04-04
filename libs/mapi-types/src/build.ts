@@ -11,7 +11,7 @@ const tweakResKeys = {};
 const tweakReqTypes = {};
 const tweakResTypes = {};
 
-let unformatted = '';
+const unformatted = '';
 let fns = '';
 
 const types = Object.entries(src).map(([key, value]) => {

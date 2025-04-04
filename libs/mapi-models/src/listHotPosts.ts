@@ -27,7 +27,7 @@ export const listHotPosts = {
 		properties: {
 			posts: { type: 'array', items: post },
 			authors: { type: 'array', items: user },
-			likes: { type: 'array', items: like },
+			likes: { type: 'array', items: { type: 'bigint' } },
 		},
 	},
 	authenticated: false,

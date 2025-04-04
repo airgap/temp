@@ -22,7 +22,7 @@ types.setTypeParser(types.builtins.INT8, function (val: string) {
 	return BigInt(val);
 });
 
-types.setTypeParser(types.builtins.INT8 + 1000, function (val: string) {
+types.setTypeParser(1016, function (val: string) {
 	if (val === null) return null;
 	// Remove the curly braces and split by comma
 	return val

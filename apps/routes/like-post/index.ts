@@ -2,7 +2,7 @@ import { handleLikePost } from '@lyku/handles';
 import { bigintToBase58, Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
-import { sendNotification } from 'libs/route-helpers/src/sendNotification';
+import { sendNotification } from '@lyku/route-helpers';
 export default handleLikePost(async (postId, { requester, db, elastic }) => {
 	// Check if post exists and isn't already liked by this user
 	const existingLike = await db

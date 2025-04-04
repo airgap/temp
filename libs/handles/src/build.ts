@@ -19,8 +19,8 @@ type Handle<I, O, H = (input: I) => O> = (handler: H) => {
 const jsonify = async () => {
 	const handles = [];
 
-	let modelImports: string[] = [];
-	let typeImports: string[] = ['MonolithTypes'];
+	const modelImports: string[] = [];
+	const typeImports: string[] = ['MonolithTypes'];
 	const exports = [] as string[];
 
 	for (const [key, value] of Object.entries(models)) {
