@@ -5,7 +5,8 @@
 	// Svelte 5: use $props to get component inputs with defaults
 	let {
 		cubeSize = 1,
-		pipeDiameter = 0.15,
+		pipeDiameter = 0.16,
+		jointScale = 1.0, // Scale factor for joint diameter relative to pipe diameter
 		rotationSpeedX = 0.01,
 		rotationSpeedY = 0.01,
 		rotationSpeedZ = 0.01,
@@ -54,19 +55,17 @@
 
 		// Setup the regl draw call for edge triangles (uses dynamic attributes)
 		const drawEdges = regl({
-			depth: { enable: false }, // draw all lines without depth test (show full wireframe)
+			depth: { enable: true }, // Enable depth testing for proper 3D rendering
 			attributes: {
-				// position will be an array of [x, y] NDC coordinates per vertex, supplied each frame
 				position: regl.prop('positions'),
 			},
 			uniforms: {
-				color: [1, 0.8, 0.8, 1], // RGBA color of edges (here: solid black)
+				color: [1, 0.8, 0.8, 1],
 			},
 			vert: `
           precision mediump float;
           attribute vec2 position;
           void main() {
-            // The position is already in clip space (NDC), just use it
             gl_Position = vec4(position, 0.0, 1.0);
           }
         `,
@@ -77,7 +76,33 @@
             gl_FragColor = color;
           }
         `,
-			count: regl.prop('count'), // number of vertices to draw (6 per edge * number of edges)
+			count: regl.prop('count'),
+		});
+
+		// Setup the regl draw call for joint circles
+		const drawJoints = regl({
+			depth: { enable: true },
+			attributes: {
+				position: regl.prop('positions'),
+			},
+			uniforms: {
+				color: [1, 0.8, 0.8, 1],
+			},
+			vert: `
+          precision mediump float;
+          attribute vec2 position;
+          void main() {
+            gl_Position = vec4(position, 0.0, 1.0);
+          }
+        `,
+			frag: `
+          precision mediump float;
+          uniform vec4 color;
+          void main() {
+            gl_FragColor = color;
+          }
+        `,
+			count: regl.prop('count'),
 		});
 
 		// Animation loop
@@ -129,7 +154,55 @@
 			});
 
 			// Build an array of triangle vertices for all thick edges
-			const positions: [number, number][] = [];
+			const edgePositions: [number, number][] = [];
+			const jointPositions: [number, number][] = [];
+
+			// First draw the joints
+			for (const [x, y, z] of vertices) {
+				// Apply rotation and projection to get screen coordinates
+				let x1 = x;
+				let y1 = cx * y - sx * z;
+				let z1 = sx * y + cx * z;
+				let x2 = cy * x1 + sy * z1;
+				let y2 = y1;
+				let z2 = -sy * x1 + cy * z1;
+				let x3 = cz * x2 - sz * y2;
+				let y3 = sz * x2 + cz * y2;
+				let z3 = z2;
+
+				let zCamera = z3 - cameraDist;
+				const d = -zCamera;
+				const ndcX = (x3 * f) / aspect / d;
+				const ndcY = (y3 * f) / d;
+
+				// Convert to pixel coordinates
+				const px = ndcX * halfW + halfW;
+				const py = ndcY * halfH + halfH;
+
+				// Calculate joint size based on depth
+				const jointSize = (pipeDiameter * jointScale * f * halfH) / d;
+
+				// Create a circle of triangles for the joint
+				const segments = 16;
+				for (let i = 0; i < segments; i++) {
+					const angle1 = (i * 2 * Math.PI) / segments;
+					const angle2 = ((i + 1) * 2 * Math.PI) / segments;
+
+					const x1 = px + Math.cos(angle1) * jointSize;
+					const y1 = py + Math.sin(angle1) * jointSize;
+					const x2 = px + Math.cos(angle2) * jointSize;
+					const y2 = py + Math.sin(angle2) * jointSize;
+
+					// Convert back to NDC
+					jointPositions.push(
+						[px / halfW - 1, py / halfH - 1],
+						[x1 / halfW - 1, y1 / halfH - 1],
+						[x2 / halfW - 1, y2 / halfH - 1],
+					);
+				}
+			}
+
+			// Then draw the edges
 			for (const [i, j] of edges) {
 				const A = projected[i];
 				const B = projected[j];
@@ -160,19 +233,19 @@
 				const Bx_off2 = Bx - px * halfThick,
 					By_off2 = By - py * halfThick;
 				// Convert back to NDC coordinates for WebGL
-				positions.push(
-					[Ax_off1 / halfW - 1, Ay_off1 / halfH - 1], // triangle 1: A1
-					[Bx_off1 / halfW - 1, By_off1 / halfH - 1], // triangle 1: B1
-					[Ax_off2 / halfW - 1, Ay_off2 / halfH - 1], // triangle 1: A2
-
-					[Ax_off2 / halfW - 1, Ay_off2 / halfH - 1], // triangle 2: A2
-					[Bx_off1 / halfW - 1, By_off1 / halfH - 1], // triangle 2: B1
-					[Bx_off2 / halfW - 1, By_off2 / halfH - 1], // triangle 2: B2
+				edgePositions.push(
+					[Ax_off1 / halfW - 1, Ay_off1 / halfH - 1],
+					[Bx_off1 / halfW - 1, By_off1 / halfH - 1],
+					[Ax_off2 / halfW - 1, Ay_off2 / halfH - 1],
+					[Ax_off2 / halfW - 1, Ay_off2 / halfH - 1],
+					[Bx_off1 / halfW - 1, By_off1 / halfH - 1],
+					[Bx_off2 / halfW - 1, By_off2 / halfH - 1],
 				);
 			}
 
-			// Draw all edges in one call
-			drawEdges({ positions, count: positions.length });
+			// Draw all edges and joints
+			drawEdges({ positions: edgePositions, count: edgePositions.length });
+			drawJoints({ positions: jointPositions, count: jointPositions.length });
 			frameHandle = requestAnimationFrame(animate);
 		};
 
@@ -210,8 +283,8 @@
 <!-- Canvas for WebGL output; pointer events enable dragging -->
 <canvas
 	bind:this={canvasElem}
-	width={80}
-	height={80}
+	width={120}
+	height={120}
 	style="touch-action: none; /* prevent touch scrolling while dragging */"
 	on:pointerdown={pointerDown}
 	on:pointermove={pointerMove}

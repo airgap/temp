@@ -60,7 +60,12 @@
 			height: 10vw !important
 		canvas
 			height: 125%
-			margin-top: -20px
+			margin-top: -4vh
+			transform: scale(.75)
+			transition: .25s
+			&:hover
+				transform: scale(1)
+				filter: brightness(1.25) drop-shadow(0 0 5px white)
 			// filter: drop-shadow(0 0 1px #ffcccc)
 		&:nth-child(2)
 			padding-left: 4vw
