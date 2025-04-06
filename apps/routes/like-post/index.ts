@@ -2,7 +2,7 @@ import { handleLikePost } from '@lyku/handles';
 import { bigintToBase58, Err } from '@lyku/helpers';
 
 import { sql } from 'kysely';
-import { sendNotification } from '@lyku/route-helpers';
+import { grantPointsToUser, sendNotification } from '@lyku/route-helpers';
 export default handleLikePost(async (postId, { requester, db, elastic }) => {
 	// Check if post exists and isn't already liked by this user
 	const existingLike = await db
@@ -46,14 +46,7 @@ export default handleLikePost(async (postId, { requester, db, elastic }) => {
 		.executeTakeFirstOrThrow();
 
 	// Add point to recipient
-	if (post.author !== requester)
-		await db
-			.updateTable('users')
-			.set((eb) => ({
-				points: eb('points', '+', 1n),
-			}))
-			.where('id', '=', post.author)
-			.executeTakeFirstOrThrow();
+	if (post.author !== requester) await grantPointsToUser(1, post.author, db);
 
 	await elastic.update({
 		index: 'posts',

@@ -16,7 +16,7 @@ export const buildHotQuery = ({
 	size?: number;
 }) => ({
 	size: size ?? 100,
-	sort: ['_score', 'publish:desc'],
+	sort: ['_score', { publish: { order: 'desc' } }],
 	// search_after: continuation,
 	query: {
 		function_score: {

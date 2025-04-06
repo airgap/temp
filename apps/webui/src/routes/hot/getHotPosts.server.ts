@@ -14,7 +14,7 @@ export async function queryHotPosts(opts: {
 	const body = buildHotQuery(opts);
 	// const url = 'https://broke.lyku.org/posts/hot';
 
-	const url = `${opts.ELASTIC_API_ENDPOINT}/_search`;
+	const url = `${opts.ELASTIC_API_ENDPOINT}/posts-*/_search`;
 	const auth = `ApiKey ${opts.ELASTIC_API_KEY}`;
 	console.log('url', url, 'auth', auth);
 
@@ -23,11 +23,15 @@ export async function queryHotPosts(opts: {
 		// 'User-Agent': 'Mozilla/5.0',
 		Authorization: auth,
 	});
-	console.log('FETCH PARAMS', url, {
-		method: 'POST',
-		headers: [...headers.entries()].flat(),
-		body: JSON.stringify(body),
-	});
+	console.log(
+		'FETCH PARAMS',
+		url,
+		{
+			method: 'POST',
+			headers: [...headers.entries()].flat(),
+		},
+		JSON.stringify(body, null, 2),
+	);
 	const res = await fetch(url, {
 		method: 'POST',
 		headers,
@@ -39,7 +43,7 @@ export async function queryHotPosts(opts: {
 	// 	headers: { 'Content-Type': 'application/json' },
 	// 	body: JSON.stringify(body)
 	// });
-	console.log('status', res.status, res.statusText, 'res', await res.text());
+	console.log('status', res.status, res.statusText);
 	console.log('ok?', res.ok);
 	if (!res.ok) throw new Error(`Elasticsearch query failed: ${res.statusText}`);
 

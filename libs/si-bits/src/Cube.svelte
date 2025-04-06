@@ -283,8 +283,8 @@
 <!-- Canvas for WebGL output; pointer events enable dragging -->
 <canvas
 	bind:this={canvasElem}
-	width={120}
-	height={120}
+	width={160}
+	height={160}
 	style="touch-action: none; /* prevent touch scrolling while dragging */"
 	on:pointerdown={pointerDown}
 	on:pointermove={pointerMove}
