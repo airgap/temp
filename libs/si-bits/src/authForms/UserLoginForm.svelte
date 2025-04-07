@@ -71,7 +71,7 @@
 	</div>
 {/if}
 
-<SubmitButton disabled={!isFormValid} onclick={handleSubmit}>
+<SubmitButton disabled={!isFormValid} onClick={handleSubmit}>
 	{@html phrasebook.loginFormSubmit}
 </SubmitButton>
 

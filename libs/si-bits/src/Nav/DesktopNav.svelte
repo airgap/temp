@@ -71,10 +71,10 @@
 						</Link>
 					</span>
 				{:else}
-					<BubbleButton onclick={onlogin}>
+					<BubbleButton onClick={onlogin}>
 						{phrasebook.navLogin}
 					</BubbleButton>
-					<BubbleButton onclick={onjoin} variant="primary">
+					<BubbleButton onClick={onjoin} variant="primary">
 						{phrasebook.navRegister}
 					</BubbleButton>
 				{/if}

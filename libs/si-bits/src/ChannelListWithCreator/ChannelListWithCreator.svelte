@@ -33,7 +33,7 @@
 <ChannelList {channels} mine={true}>
 	{#if channelCreatorShown}
 		<div>
-			<Button onclick={() => (channelCreatorShown = false)}>Never Mind</Button>
+			<Button onClick={() => (channelCreatorShown = false)}>Never Mind</Button>
 			<Texticle
 				empty={phrasebook.channelNameEmpty}
 				valid={phrasebook.channelNameValid}
@@ -42,12 +42,12 @@
 				onvalidation={(e) => (channelNameValid = e.detail)}
 				schema={schemas.channelName}
 			/>
-			<Button onclick={handleCreateChannel} disabled={!channelNameValid}>
+			<Button onClick={handleCreateChannel} disabled={!channelNameValid}>
 				{phrasebook.letsGo}
 			</Button>
 		</div>
 	{:else}
-		<Button onclick={() => (channelCreatorShown = true)}>
+		<Button onClick={() => (channelCreatorShown = true)}>
 			{phrasebook.createChannel}
 		</Button>
 	{/if}

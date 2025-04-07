@@ -100,7 +100,7 @@
 	{onshowtos}
 ></Agreeable>
 
-<SubmitButton disabled={!valid} onclick={handleSubmit}>
+<SubmitButton disabled={!valid} onClick={handleSubmit}>
 	{phrasebook.regFormTitle}
 </SubmitButton>
 

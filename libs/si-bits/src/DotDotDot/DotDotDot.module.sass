@@ -1,0 +1,37 @@
+@use '../symbols' as *
+.DotDotDot
+    width: 40px
+    height: 40px
+    float: right
+    line-height: .7em
+    // background: white
+    padding-top: 0
+    border-radius: 50%
+    text-align: center
+    &:hover
+        > div
+            transform: rotate(120deg)
+            scale: 1.25
+            span
+                box-shadow: 0 0 5px 0 #fff
+    > div
+        transition: all .125s ease-in-out
+        // background: grey
+        padding-bottom: 2px
+        width: 25px
+        display: inline-block
+        text-align: center
+        height: 25px
+        margin-top: 5px
+        span
+            display: inline-block
+            width: 5px
+            height: 5px
+            background-color: $clickable-color
+            // outline: 2px solid $clickable-color
+            border-radius: 50%
+            margin: 0 2px
+            transition: all $transition-duration ease-in-out
+            &:hover
+                outline-color: white
+            

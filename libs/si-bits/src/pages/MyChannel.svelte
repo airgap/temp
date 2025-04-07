@@ -98,11 +98,11 @@
 				value={channel.tagline}
 			/>
 			{#if sensitives}
-				<Button onclick={hideChannelSensitives}>
+				<Button onClick={hideChannelSensitives}>
 					{phrasebook.hideStreamInfo}
 				</Button>
 			{:else}
-				<Button onclick={showChannelSensitives} disabled={loadingSensitives}>
+				<Button onClick={showChannelSensitives} disabled={loadingSensitives}>
 					{phrasebook.showStreamInfo}
 				</Button>
 			{/if}
@@ -139,7 +139,7 @@
 			multiline={true}
 			value={channel.bio}
 		/>
-		<Button onclick={saveChannel} disabled={!savable}>Save</Button>
+		<Button onClick={saveChannel} disabled={!savable}>Save</Button>
 		<br />
 		<ImageUpload
 			image={channel.activeBg ??

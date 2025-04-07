@@ -29,7 +29,7 @@
 <UserList users={bots} mine={true}>
 	{#if botCreatorShown}
 		<div>
-			<Button onclick={() => (botCreatorShown = false)}>
+			<Button onClick={() => (botCreatorShown = false)}>
 				{phrasebook.neverMind}
 			</Button>
 			<Texticle
@@ -40,12 +40,12 @@
 				onvalidation={(e) => (botNameValid = e.detail)}
 				schema={schemas.username}
 			/>
-			<Button onclick={handleCreateBot} disabled={!botNameValid}>
+			<Button onClick={handleCreateBot} disabled={!botNameValid}>
 				{phrasebook.letsGo}
 			</Button>
 		</div>
 	{:else}
-		<Button onclick={() => (botCreatorShown = true)}>
+		<Button onClick={() => (botCreatorShown = true)}>
 			{phrasebook.createBot}
 		</Button>
 	{/if}

@@ -238,15 +238,15 @@
 			{#if base64}
 				{#if file !== undefined}
 					{#if removeClicked}
-						<Button onclick={removeClicked}>
+						<Button onClick={removeClicked}>
 							{@html times}
 						</Button>
 					{/if}
 				{:else}
-					<Button onclick={confirmClicked} disabled={workingState}>
+					<Button onClick={confirmClicked} disabled={workingState}>
 						{@html check}
 					</Button>
-					<Button onclick={() => reset()} disabled={workingState}>
+					<Button onClick={() => reset()} disabled={workingState}>
 						{@html x}
 					</Button>
 				{/if}

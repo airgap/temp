@@ -20,9 +20,9 @@
 	}
 </script>
 
-<Button onclick={onclose}>&lt; Back</Button>
+<Button onClick={onclose}>&lt; Back</Button>
 {#each ttfFlowMode.enum as mode}
-	<Button onclick={() => handleModeClick(mode)}>
+	<Button onClick={() => handleModeClick(mode)}>
 		{modeLabels[mode]}
 	</Button>
 {/each}

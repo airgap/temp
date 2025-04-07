@@ -11,7 +11,7 @@
 </script>
 
 <h2 style="display: flex">
-	Groups <Button onclick={handleAddClick}>+</Button>
+	Groups <Button onClick={handleAddClick}>+</Button>
 </h2>
 <br />
 <!--

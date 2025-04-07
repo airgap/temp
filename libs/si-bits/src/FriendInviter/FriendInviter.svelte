@@ -38,13 +38,13 @@
 </script>
 
 <div>
-	<Button onclick={onClose}>&lt; Back</Button>
+	<Button onClick={onClose}>&lt; Back</Button>
 
 	{#each incoming as invite (invite.id)}
 		<div>
 			Incoming from {friendsById.get(invite.from)?.username}
-			<Button onclick={() => api.acceptMatchProposal(invite.id)}>Accept</Button>
-			<Button onclick={() => api.declineMatchProposal(invite.id)}>
+			<Button onClick={() => api.acceptMatchProposal(invite.id)}>Accept</Button>
+			<Button onClick={() => api.declineMatchProposal(invite.id)}>
 				Decline
 			</Button>
 		</div>
@@ -60,7 +60,7 @@
 	{#each remaining as friend (friend.id)}
 		<div>
 			Invite {friend.username}?
-			<Button onclick={() => api.proposeMatch({ user: friend.id, game })}>
+			<Button onClick={() => api.proposeMatch({ user: friend.id, game })}>
 				Invite
 			</Button>
 		</div>

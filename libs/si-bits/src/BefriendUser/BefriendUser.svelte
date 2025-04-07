@@ -21,7 +21,7 @@
 
 {#if status === 'befriended'}
 	<CoolLink
-		onclick={() => {
+		onClick={() => {
 			status = undefined;
 			api.deleteFriendship(user.id).then(() => (status = 'none'));
 		}}
@@ -30,7 +30,7 @@
 	</CoolLink>
 {:else if status === 'none'}
 	<CoolLink
-		onclick={() => {
+		onClick={() => {
 			status = undefined;
 			api.createFriendRequest(user.id).then(() => (status = 'youOffered'));
 		}}
@@ -39,7 +39,7 @@
 	</CoolLink>
 {:else if status === 'theyOffered'}
 	<CoolLink
-		onclick={() => {
+		onClick={() => {
 			status = undefined;
 			api.acceptFriendRequest(user.id).then(() => (status = 'befriended'));
 		}}
@@ -47,7 +47,7 @@
 		{phrasebook.acceptFriendRequest} +
 	</CoolLink>
 	<CoolLink
-		onclick={() => {
+		onClick={() => {
 			status = undefined;
 			api.declineFriendRequest(user.id).then(() => (status = 'none'));
 		}}
@@ -56,7 +56,7 @@
 	</CoolLink>
 {:else if status === 'youOffered'}
 	<CoolLink
-		onclick={() => {
+		onClick={() => {
 			status = undefined;
 			api.declineFriendRequest(user.id).then(() => (status = 'none'));
 		}}

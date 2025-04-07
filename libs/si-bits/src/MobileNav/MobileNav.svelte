@@ -47,7 +47,7 @@
 		<!--</Link>-->
 		<MobileNavLink
 			href={user ? '/profile' : undefined}
-			onclick={!user ? joinOrLogin : undefined}
+			onClick={!user ? joinOrLogin : undefined}
 		>
 			<ProfilePicture src={profile} />
 		</MobileNavLink>

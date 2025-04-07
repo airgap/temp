@@ -25,11 +25,19 @@
 		// fucking whatever
 		window.addEventListener('replyTo' as any, (event: CustomEvent) => {
 			console.log('replyTo', event.detail);
+			if (!currentUser) {
+				showAuth = true;
+				return;
+			}
 			reply = event.detail;
 			showCreator = true;
 		});
 		window.addEventListener('echo' as any, (event: CustomEvent) => {
 			console.log('echo', event.detail);
+			if (!currentUser) {
+				showAuth = true;
+				return;
+			}
 			echo = event.detail;
 			showCreator = true;
 		});
@@ -73,12 +81,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class={styles.App}>
-	<Backdrop
-		visible={showJoin || showLogin}
-		onclick={() => {
-			showAuth = false;
-		}}
-	/>
+	<Backdrop visible={showJoin || showLogin} />
 	<DesktopNav
 		url={$page.url}
 		user={currentUser}

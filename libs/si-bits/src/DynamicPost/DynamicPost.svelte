@@ -20,6 +20,7 @@
 	import { currentUserStore } from '../CacheProvider';
 	import { useUser } from '../CacheProvider';
 	import { PostCreator } from '../PostCreator';
+	import { DotDotDot } from '../DotDotDot';
 	// import { useCurrentUser } from '../currentUserStore';
 	import { LikeButton } from '../LikeButton';
 	import { EchoButton } from '../EchoButton';
@@ -50,7 +51,7 @@
 	let queriedReplies = $state(false);
 	let error = $state<string>();
 	let showReplyer = $state(false);
-
+	let dropped = $state(false);
 	const urlRegex =
 		/(?:(?:http|ftp|https):\/\/)?(?:[\w-]+(?:(?:\.[\w-]+)+))(?::\d{2,5})?[^ "]*/g;
 	const stripLink = (url: string) =>
@@ -96,6 +97,9 @@
 	$effect(() => {
 		console.log('id', cfHash, 'attachments', post.attachments);
 	});
+	$effect(() => {
+		console.log('dropped', dropped);
+	});
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>
@@ -118,7 +122,22 @@
 		</Link>
 		<DynamicDate time={post.publish} />
 		{#if currentUserStore && currentUserStore.id === author.id}
-			<Button class={styles.delete} onclick={handleDelete}>X</Button>
+			<span class={[styles.dropper, dropped && styles.dropped]}>
+				<div
+					class={styles.dropperBackdrop}
+					onclick={() => (dropped = false)}
+					role="button"
+					aria-label="Close"
+				></div>
+				<DotDotDot onClick={() => (dropped = !dropped)} />
+				<div class={styles.dropperMenu}>
+					<ul>
+						<!-- <li><Button>Edit</Button></li> -->
+						<li><Button onClick={handleDelete}>Delete</Button></li>
+						<li><Button onClick={() => alert('WIP')}>Share</Button></li>
+					</ul>
+				</div>
+			</span>
 		{/if}
 
 		<span class={styles.PostContent}>
