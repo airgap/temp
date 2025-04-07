@@ -7,7 +7,7 @@
 		ImageUpload,
 		phrasebook,
 		shout,
-		currentUser,
+		currentUserStore as currentUser,
 	} from '@lyku/si-bits';
 
 	import styles from './Profile.module.sass';

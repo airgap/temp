@@ -18,8 +18,21 @@
 
 	let showAuth = $state(false);
 	let showTos = $state(false);
+	let reply = $state<bigint>();
+	let echo = $state<bigint>();
 	onMount(() => {
 		initSession();
+		// fucking whatever
+		window.addEventListener('replyTo' as any, (event: CustomEvent) => {
+			console.log('replyTo', event.detail);
+			reply = event.detail;
+			showCreator = true;
+		});
+		window.addEventListener('echo' as any, (event: CustomEvent) => {
+			console.log('echo', event.detail);
+			echo = event.detail;
+			showCreator = true;
+		});
 	});
 
 	let showJoin = $state(false);
@@ -88,7 +101,7 @@
 		size="l"
 		animation="slide-top"
 	>
-		<PostCreator onsuccess={closeCreator}></PostCreator>
+		<PostCreator onsuccess={closeCreator} {reply} {echo}></PostCreator>
 	</Dialog>
 	<Dialog
 		visible={showAuth}

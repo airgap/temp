@@ -20,7 +20,6 @@ export * from './ChannelList';
 export * from './ChannelListWithCreator';
 export * from './ChannelLogo';
 export * from './ChatBox';
-export * from './currentUserStore';
 export * from './Close';
 export * from './Codette';
 export * from './Crosshatch';

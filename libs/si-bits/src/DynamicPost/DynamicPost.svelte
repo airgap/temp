@@ -17,7 +17,7 @@
 	import { PostList } from '../PostList';
 	import { ProfilePicture } from '../ProfilePicture';
 	import { formImageUrl } from '../formImageUrl';
-	import { cacheStore } from '../CacheProvider/CacheStore';
+	import { currentUserStore } from '../CacheProvider';
 	import { useUser } from '../CacheProvider';
 	import { PostCreator } from '../PostCreator';
 	// import { useCurrentUser } from '../currentUserStore';
@@ -50,7 +50,6 @@
 	let queriedReplies = $state(false);
 	let error = $state<string>();
 	let showReplyer = $state(false);
-	let me = cacheStore.currentUser;
 
 	const urlRegex =
 		/(?:(?:http|ftp|https):\/\/)?(?:[\w-]+(?:(?:\.[\w-]+)+))(?::\d{2,5})?[^ "]*/g;
@@ -74,6 +73,8 @@
 	// const [documents] = [[]]; //useCacheData('documents', documentIds);
 
 	$effect(() => error && console.error(error));
+
+	$effect(() => console.log('hnng', currentUserStore, showReplyer));
 
 	$effect(() => {
 		if (!queriedReplies && post.replies) {
@@ -116,7 +117,7 @@
 			{$author?.username}
 		</Link>
 		<DynamicDate time={post.publish} />
-		{#if $cacheStore.currentUser && $cacheStore.currentUser.id === $author.id}
+		{#if currentUserStore && currentUserStore.id === author.id}
 			<Button class={styles.delete} onclick={handleDelete}>X</Button>
 		{/if}
 
@@ -181,13 +182,13 @@
 		<span class={styles.PostStats}>
 			<LikeButton {post} />
 			<EchoButton {post} />
-			<ReplyButton onclick={() => (showReplyer = !showReplyer)} />
+			<ReplyButton {post} />
 			<ShareButton {post} />
 		</span>
 
-		{#if showReplyer && me}
+		{#if showReplyer && currentUserStore}
 			<br />
-			<PostCreator showInset={false} reply={post.id} user={me} />
+			<PostCreator showInset={false} reply={post.id} user={currentUserStore} />
 		{/if}
 	{/if}
 

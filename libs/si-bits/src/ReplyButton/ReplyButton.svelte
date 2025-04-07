@@ -1,8 +1,12 @@
 <script lang="ts">
 	import reply from '../assets/comment.svg?raw';
 	import { ReactionButton } from '../ReactionButton';
-
-	const { onClick } = $props<{ onClick: () => void }>();
+	import type { Post } from '@lyku/json-models';
+	const { post } = $props<{ post: Post }>();
 </script>
 
-<ReactionButton glyph={reply} onclick={onClick} />
+<ReactionButton
+	glyph={reply}
+	onClick={() =>
+		window.dispatchEvent(new CustomEvent('replyTo', { detail: post.id }))}
+/>

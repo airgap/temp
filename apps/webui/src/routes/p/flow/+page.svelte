@@ -2,7 +2,7 @@
 	import {
 		AchievementList,
 		Button,
-		currentUser,
+		currentUserStore as currentUser,
 		Divisio,
 		FriendInviter,
 		MatchInfo,

@@ -59,34 +59,8 @@
 		finalizing: false,
 	});
 
-	const replyToPost = $derived(() => {
-		if (!reply) return undefined;
-		return cacheStore.caches.posts.get(reply);
-	});
-
-	const echoPost = $derived(() => {
-		if (!echo) return undefined;
-		return cacheStore.caches.posts.get(echo);
-	});
-
-	$effect(() => {
-		if (reply && !replyToPost) {
-			cacheStore.posts.fetch(reply);
-		}
-	});
-
-	$effect(() => {
-		if (echo && !echoPost) {
-			cacheStore.posts.fetch(echo);
-		}
-	});
-
 	const submitText = $derived(() => {
-		return echoPost
-			? phrasebook.echo
-			: replyToPost
-				? phrasebook.reply
-				: phrasebook.post;
+		return echo ? phrasebook.echo : reply ? phrasebook.reply : phrasebook.post;
 	});
 
 	function clear() {
@@ -129,8 +103,8 @@
 				type,
 				size,
 			})),
-			replyTo: replyToPost?.id,
-			echoing: echoPost?.id,
+			replyTo: reply?.id,
+			echoing: echo?.id,
 			d: void 0,
 		});
 
@@ -154,9 +128,9 @@
 	}
 
 	const placeholder = $derived(() => {
-		return echoPost
+		return echo
 			? phrasebook.postBodyEchoPlaceholder
-			: replyToPost
+			: reply
 				? phrasebook.postBodyReplyPlaceholder
 				: phrasebook.postBodyStandardPlaceholder;
 	});
@@ -170,12 +144,12 @@
 </script>
 
 <div class={styles.PostCreator}>
-	{#if showInset && replyToPost}
-		<DynamicPost post={replyToPost} inset="reply" />
+	{#if showInset && reply}
+		<DynamicPost post={reply} inset="reply" />
 	{/if}
 
-	<div class={classnames({ [styles.newPost]: replyToPost })}>
-		{#if replyToPost}
+	<div class={classnames({ [styles.newPost]: reply })}>
+		{#if reply}
 			<span class={dynaPost.hatchInset}>
 				<Crosshatch width="20px" height="100%" />
 			</span>
@@ -227,8 +201,8 @@
 			<div class={styles.Error}>{error}</div>
 		{/if}
 
-		{#if showInset && echoPost}
-			<DynamicPost post={echoPost} inset="echo" />
+		{#if showInset && echo}
+			<DynamicPost post={echo} inset="echo" />
 		{/if}
 	</div>
 </div>

@@ -7,4 +7,8 @@
 	const { post } = $props<{ post: Post }>();
 </script>
 
-<ReactionButton glyph={echo} onclick={() => shout('echo', post)} />
+<ReactionButton
+	glyph={echo}
+	onClick={() =>
+		window.dispatchEvent(new CustomEvent('echo', { detail: post.id }))}
+/>

@@ -2,7 +2,7 @@
 	import { api, getSessionId } from 'monolith-ts-api';
 	import type { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
 	import { Button } from '../Button';
-	import { currentUser } from '../currentUserStore';
+	import { currentUserStore as currentUser } from '../CacheProvider';
 	import styles from './GroupList.module.sass';
 
 	const { substring, filter } = $props<{
