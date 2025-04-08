@@ -12,7 +12,7 @@
 		: api.listFeedPostsUnauthenticated({});
 </script>
 
-<FeedPage>
+<FeedPage title="For you">
 	{#if $currentUser.loading}
 		Loading user...
 	{:else if $currentUser.error}

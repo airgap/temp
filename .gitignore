@@ -51,3 +51,6 @@ k8s-prd-ca-cert.crt
 .env
 
 **/*~lock~
+
+frames
+venv

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, GroupList } from '@lyku/si-bits';
+	import { Button, GroupList, FeedPage } from '@lyku/si-bits';
 	import type { GroupFilter } from '@lyku/json-models';
 
 	let substring = '';
@@ -9,10 +9,10 @@
 		alert('Coming soon!');
 	}
 </script>
-
-<h2 style="display: flex">
-	Groups <Button onClick={handleAddClick}>+</Button>
-</h2>
+<FeedPage title="Groups">
+	<div>
+		<Button onClick={handleAddClick}>Create +</Button>
+	</div>
 <br />
 <!--
 	<Texticle
@@ -25,4 +25,5 @@
 		on:change={e => filter = e.detail?.value}
 	/>
 	-->
-<GroupList {filter} {substring} />
+	<GroupList {filter} {substring} />
+</FeedPage>

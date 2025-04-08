@@ -123,12 +123,11 @@
 		<DynamicDate time={post.publish} />
 		{#if currentUserStore && currentUserStore.id === author.id}
 			<span class={[styles.dropper, dropped && styles.dropped]}>
-				<div
+				<button
 					class={styles.dropperBackdrop}
 					onclick={() => (dropped = false)}
-					role="button"
 					aria-label="Close"
-				></div>
+				></button>
 				<DotDotDot onClick={() => (dropped = !dropped)} />
 				<div class={styles.dropperMenu}>
 					<ul>

@@ -152,6 +152,7 @@ $width: 80px
 			transform: scale(0)
 			pointer-events: none
 .dropperBackdrop
+	appearance: none
 	position: fixed !important
 	display: block
 	top: 0
@@ -172,6 +173,8 @@ $width: 80px
 	background-position: center
 	border-radius: 10px
 	width: $width
+	transition: all .125s ease-in-out
+	transform-origin: 70% -20px
 	button
 		text-align: left
 		padding: 10px

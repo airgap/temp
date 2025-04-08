@@ -31,7 +31,7 @@
 	}
 </script>
 
-<FeedPage>
+<FeedPage title="Hot">
 	{#if posts}
 		<PostList posts={posts ?? []} cfHash={PUBLIC_CF_HASH} />
 	{:else}

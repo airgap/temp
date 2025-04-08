@@ -12,7 +12,7 @@
 	const { user } = $props<{ user: string }>();
 </script>
 
-<FeedPage>
+<FeedPage title="For you">
 	{#if user.loading}
 		Loading user...
 	{:else if user.error}

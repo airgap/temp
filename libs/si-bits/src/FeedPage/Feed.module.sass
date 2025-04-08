@@ -1,7 +1,8 @@
 @use '../symbols' as *
 .FeedPage
 	width: min($ideal-width, 100%)
-	margin: auto
+	margin-left: auto
+	margin-right: auto
 	padding-left: 10px
 	padding-right: 10px
 .Feed
@@ -9,3 +10,14 @@
 	width: min($ideal-width, 100%)
 .loggedOut
 	padding: 10px
+.title
+	font-family: 'Nabla', system-ui
+	font-size: 4rem
+	font-weight: 400
+	font-variation-settings: "EDPT" 60, "EHLT" 24
+	@media screen and (max-width: $nav-break)
+		margin-bottom: 40px
+	// text-shadow: -1px -1px 10px rgba(255,255,255,.2), 1px 1px 1px rgba(0,0,0,.7)
+	> span
+		filter: grayscale(.8) hue-rotate(180deg)
+		opacity: 0.5
