@@ -23,15 +23,34 @@
         text-align: center
         height: 25px
         margin-top: 5px
+        position: relative
         span
-            display: inline-block
+            display: block
+            position: absolute
             width: 5px
             height: 5px
             background-color: $clickable-color
             // outline: 2px solid $clickable-color
             border-radius: 50%
-            margin: 0 2px
             transition: all $transition-duration ease-in-out
             &:hover
                 outline-color: white
-            
+.one
+    top: 0
+    left: 0
+.two
+    top: 0
+    left: 100%
+.three
+    top: 100%
+    left: 50%
+.DotDotDot:hover
+    .one
+        top: 0
+        left: 100%
+    .two
+        top: 100%
+        left: 50%
+    .three
+        top: 0
+        left: 0

@@ -6,8 +6,8 @@
 
 <Button {onClick} class={styles.DotDotDot}>
 	<div>
-		<span></span>
-		<span></span>
-		<span></span>
+		<span class={styles.one}></span>
+		<span class={styles.two}></span>
+		<span class={styles.three}></span>
 	</div>
 </Button>
