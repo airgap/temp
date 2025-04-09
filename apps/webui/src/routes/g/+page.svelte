@@ -9,12 +9,13 @@
 		alert('Coming soon!');
 	}
 </script>
+
 <FeedPage title="Groups">
 	<div>
 		<Button onClick={handleAddClick}>Create +</Button>
 	</div>
-<br />
-<!--
+	<br />
+	<!--
 	<Texticle
 		on:input={e => substring = e.detail}
 		value={substring}

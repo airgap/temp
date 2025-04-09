@@ -7,7 +7,6 @@
 	// import hot from '../assets/hot.svg?raw';
 	import play from '../assets/play.svg?raw';
 	import { CoolLink } from '../CoolLink';
-	import { NavLogo } from '../NavLogo';
 	import { shout } from '../Sonic';
 	import { UserLoginForm, UserRegistrationForm } from '../authForms';
 	import { phrasebook } from '../phrasebook';
@@ -23,6 +22,7 @@
 	import { ProfilePicture } from '../ProfilePicture';
 	import { Search } from '../Search';
 	import BubbleButton from '../BubbleButton/BubbleButton.svelte';
+	import Cube from '../Cube.svelte';
 	// import { currentUser } from '../currentUserStore';
 	// const user = $currentUser;
 	const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{
@@ -40,7 +40,7 @@
 	<div class={styles.DesktopNavContainer}>
 		<div class={styles.InnerDesktopNav}>
 			<Backdrop />
-			<NavLogo />
+			<Cube />
 			<Search />
 			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}>
 				{phrasebook.navGroups}

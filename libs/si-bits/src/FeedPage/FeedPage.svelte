@@ -1,6 +1,9 @@
 <script lang="ts">
 	import styles from './Feed.module.sass';
-	const { children, title } = $props<{ children?: ComponentType; title?: string }>();
+	const { children, title } = $props<{
+		children?: ComponentType;
+		title?: string;
+	}>();
 </script>
 
 <div class={styles.FeedPage}>
