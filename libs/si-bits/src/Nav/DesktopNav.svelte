@@ -40,7 +40,9 @@
 	<div class={styles.DesktopNavContainer}>
 		<div class={styles.InnerDesktopNav}>
 			<Backdrop />
-			<Cube />
+			<a onclick={() => (location.href = '/hot')} class={styles.cube}>
+				<Cube />
+			</a>
 			<Search />
 			<BubbleButton href="/g/" isActive={/^\/g(\/|$)/.test(url?.pathname)}>
 				{phrasebook.navGroups}

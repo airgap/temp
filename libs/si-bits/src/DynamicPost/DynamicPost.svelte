@@ -52,6 +52,8 @@
 	let error = $state<string>();
 	let showReplyer = $state(false);
 	let dropped = $state(false);
+	let bgx = $state(0);
+	let bgy = $state(0);
 	const urlRegex =
 		/(?:(?:http|ftp|https):\/\/)?(?:[\w-]+(?:(?:\.[\w-]+)+))(?::\d{2,5})?[^ "]*/g;
 	const stripLink = (url: string) =>
@@ -127,8 +129,18 @@
 					class={styles.dropperBackdrop}
 					onclick={() => (dropped = false)}
 					aria-label="Close"
+					style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
 				></button>
-				<DotDotDot onClick={() => (dropped = !dropped)} />
+				<DotDotDot
+					onClick={(e) => {
+						dropped = !dropped;
+						if (dropped) {
+							bgx = e.clientX;
+							bgy = e.clientY;
+						}
+					}}
+					{dropped}
+				/>
 				<div class={styles.dropperMenu}>
 					<ul>
 						<!-- <li><Button>Edit</Button></li> -->

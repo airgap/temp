@@ -1,6 +1,7 @@
 <script lang="ts">
 	import createREGL from 'regl';
 	import { onMount } from 'svelte';
+	let scale = $state(0);
 
 	// Svelte 5: use $props to get component inputs with defaults
 	let {
@@ -244,13 +245,14 @@
 			}
 
 			// Draw all edges and joints
-			drawEdges({ positions: edgePositions, count: edgePositions.length });
+			// drawEdges({ positions: edgePositions, count: edgePositions.length });
 			drawJoints({ positions: jointPositions, count: jointPositions.length });
 			frameHandle = requestAnimationFrame(animate);
 		};
 
 		frameHandle = requestAnimationFrame(animate); // start the loop
 
+		scale = 1;
 		// Cleanup on component destroy (stop animation and release WebGL)
 		return () => {
 			cancelAnimationFrame(frameHandle);
@@ -285,7 +287,7 @@
 	bind:this={canvasElem}
 	width={160}
 	height={160}
-	style="touch-action: none; /* prevent touch scrolling while dragging */"
+	style={`touch-action: none; transition: .25s transform; transform: scale(${scale})`}
 	on:pointerdown={pointerDown}
 	on:pointermove={pointerMove}
 	on:pointerup={pointerUp}

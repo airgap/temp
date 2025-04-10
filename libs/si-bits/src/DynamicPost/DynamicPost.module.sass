@@ -153,6 +153,7 @@ $width: 80px
 			pointer-events: none
 .dropperBackdrop
 	appearance: none
+	border: none
 	position: fixed !important
 	display: block
 	top: 0
@@ -160,7 +161,11 @@ $width: 80px
 	right: 0
 	bottom: 0
 	background: #00000077
-	transition: all .125s ease-in-out
+	transition: opacity .25s ease-in-out
+	// background: radial-gradient(circle, rgba(17,17,17,0.7693671218487395) 0%, rgba(0,0,0,0.22875087535014005) 15%, rgba(0,212,255,0) 100%)
+	// background-position: calc(var(--bgx) - 50vmax) calc(var(--bgy) - 50vmax)
+	// background-repeat: no-repeat
+	// background-size: 100vmax 100vmax
 .dropperMenu
 	// z-index: 1
 	position: absolute
@@ -173,7 +178,7 @@ $width: 80px
 	background-position: center
 	border-radius: 10px
 	width: $width
-	transition: all .125s ease-in-out
+	transition: all .25s ease-in-out
 	transform-origin: 70% -20px
 	button
 		text-align: left
@@ -185,7 +190,7 @@ $width: 80px
 		li
 			padding: 0
 			margin: 0
-			transition: all .125s ease-in-out
+			transition: all .25s ease-in-out
 			+ li
 				border-top: 1px solid #ffffff33
 			&:hover

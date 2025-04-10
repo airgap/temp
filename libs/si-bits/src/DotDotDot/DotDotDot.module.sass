@@ -1,4 +1,7 @@
 @use '../symbols' as *
+$basedot: 7px
+$endpoint: calc(100% - $basedot)
+$midpoint: calc(50% - $basedot / 2)
 .DotDotDot
     width: 40px
     height: 40px
@@ -8,49 +11,94 @@
     padding-top: 0
     border-radius: 50%
     text-align: center
+    padding: 5px
     &:hover
         > div
-            transform: rotate(120deg)
-            scale: 1.25
+            // transform: rotate(120deg)
+            // scale: 1.25
             span
                 box-shadow: 0 0 5px 0 #fff
+                transform: scale(1.25)
     > div
         transition: all .125s ease-in-out
         // background: grey
-        padding-bottom: 2px
         width: 25px
         display: inline-block
         text-align: center
         height: 25px
         margin-top: 5px
         position: relative
+        overflow: visible
         span
             display: block
             position: absolute
-            width: 5px
-            height: 5px
+            width: $basedot
+            height: $basedot
             background-color: $clickable-color
             // outline: 2px solid $clickable-color
             border-radius: 50%
             transition: all $transition-duration ease-in-out
             &:hover
-                outline-color: white
+                //outline-color: white
+                // transform: scale(1.25)
+
 .one
     top: 0
     left: 0
 .two
     top: 0
-    left: 100%
+    left: $endpoint
 .three
-    top: 100%
-    left: 50%
+    top: $endpoint
+    left: $midpoint
 .DotDotDot:hover
     .one
         top: 0
-        left: 100%
+        left: $endpoint
     .two
-        top: 100%
-        left: 50%
+        top: $endpoint
+        left: $midpoint
     .three
         top: 0
         left: 0
+.dropped
+    .three
+        top: 0
+        left: $midpoint
+    .one
+        top: $endpoint
+        left: $endpoint
+    .two
+        top: $endpoint
+        left: 0
+    &:hover
+        .three
+            top: $endpoint
+            left: 0
+        .one
+            top: 0
+            left: $midpoint
+        .two
+            top: $endpoint
+            left: $endpoint
+// Cross through center on click
+//.dropped
+//    .one
+//        top: 0
+//        left: $midpoint
+//    .two
+//        top: $endpoint
+//        left: $endpoint
+//    .three
+//        top: $endpoint
+//        left: 0
+//    &:hover
+//        .one
+//            top: $endpoint
+//            left: 0
+//        .two
+//            top: 0
+//            left: $midpoint
+//        .three
+//            top: $endpoint
+//            left: $endpoint
