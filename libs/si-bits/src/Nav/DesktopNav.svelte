@@ -33,7 +33,6 @@
 		onlogin: () => void;
 		oncreate?: () => void;
 	}>();
-	console.log('DesktopNav user', user);
 </script>
 
 <div class={styles.DesktopNav}>

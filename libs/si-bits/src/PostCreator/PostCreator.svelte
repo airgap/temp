@@ -81,7 +81,7 @@
 			finalizing = true;
 			api.finalizePost({ id }).then((res) => {
 				window.location.pathname = `/${bigintToBase58(id)}`;
-				console.log('ViewPost finalization:', res);
+				console.info('ViewPost finalization:', res);
 				finalizing = false;
 				clear();
 				onsuccess?.();
@@ -117,7 +117,7 @@
 		imageDrafts = result.imageDrafts;
 		videoDrafts = result.videoDrafts;
 		console.log(
-			'ViewPost submitted successfully.',
+			'Draft post submitted successfully.',
 			imageDrafts ?? 'No images',
 			videoDrafts ?? 'No videos',
 		);

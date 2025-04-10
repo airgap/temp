@@ -149,9 +149,7 @@ export function createUserStore() {
 			}
 		}
 
-		// Return what we have now
 		const currentUsersMap = getStoreValue(usersStore);
-		console.log('currentUsersMap', typeof currentUsersMap);
 		return ids.map((id) => currentUsersMap.get(id));
 	}
 

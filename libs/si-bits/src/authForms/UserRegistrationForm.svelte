@@ -38,18 +38,6 @@
 		onsuccess: () => void;
 		onerror: () => void;
 	}>();
-	$effect(() => {
-		console.log('email', email);
-		console.log('username', username);
-		console.log('password', password);
-		console.log('emailValid', emailValid);
-		console.log('usernameValid', usernameValid);
-		console.log('passwordValid', passwordValid);
-		console.log('agreed', agreed);
-	});
-	$effect(() => {
-		console.log('valid', valid);
-	});
 	function handleSubmit() {
 		onsubmit?.();
 		api
@@ -88,14 +76,12 @@
 	oninput={(e) => (password = e.target.value)}
 	onvalidation={(e) => {
 		passwordValid = e;
-		console.log(passwordValid);
 	}}
 />
 
 <Agreeable
 	oninput={(e) => {
 		agreed = e.target.checked;
-		console.log('agreed', agreed);
 	}}
 	{onshowtos}
 ></Agreeable>

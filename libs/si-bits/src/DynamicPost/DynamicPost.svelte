@@ -95,13 +95,6 @@
 			});
 		}
 	};
-
-	$effect(() => {
-		console.log('id', cfHash, 'attachments', post.attachments);
-	});
-	$effect(() => {
-		console.log('dropped', dropped);
-	});
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>

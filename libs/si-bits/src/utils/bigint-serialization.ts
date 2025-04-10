@@ -45,11 +45,9 @@ export const s2u = (s: string): Uint8Array => {
 
 export const serialize = (s: unknown) => {
 	const b = u2s(encode(s, { useBigInt64: true }));
-	console.log('serialized', s);
 	return b;
 };
 
 export const deserialize = (s: string) => {
-	console.log('deserializing', s);
 	return decode(s2u(s), { useBigInt64: true });
 };

@@ -31,7 +31,6 @@ export const flagUnsafeTags = (inputHtml: string): boolean =>
 	Boolean(
 		inputHtml.match(tagReg)?.find((tag) => {
 			const res = !fullSafeTags.includes(tag.toLowerCase());
-			console.log('tag', tag, 'res', res);
 			return res;
 		}),
 	);

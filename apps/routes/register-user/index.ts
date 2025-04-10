@@ -64,13 +64,13 @@ export default handleRegisterUser(async (params, ctx) => {
 		.select(['id'])
 		.where('username', '=', lowerUsername)
 		.executeTakeFirst();
-	if (existingUser) throw new Err(400, strings.emailTaken);
+	if (existingUser) throw new Err(409, strings.usernameTaken);
 	const existingEmail = await db
 		.selectFrom('userHashes')
 		.select(['id'])
 		.where('email', '=', lowerEmail)
 		.executeTakeFirst();
-	if (existingEmail) throw new Err(400, strings.emailTaken);
+	if (existingEmail) throw new Err(409, strings.emailTaken);
 	console.log('Hashing password');
 	const passhash = await bcrypt.hash(password, 10);
 	console.log('Generating jdenticon');

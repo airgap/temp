@@ -15,7 +15,6 @@
 				.listMessages({ channel: channel.id })
 				.then(({ messages: newMessages }) => {
 					messages = newMessages;
-					console.log('messages', messages);
 				});
 		}
 	});

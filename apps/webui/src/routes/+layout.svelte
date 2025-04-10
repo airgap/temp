@@ -22,9 +22,8 @@
 	let echo = $state<bigint>();
 	onMount(() => {
 		initSession();
-		// fucking whatever
+
 		window.addEventListener('replyTo' as any, (event: CustomEvent) => {
-			console.log('replyTo', event.detail);
 			if (!currentUser) {
 				showAuth = true;
 				return;
@@ -33,7 +32,6 @@
 			showCreator = true;
 		});
 		window.addEventListener('echo' as any, (event: CustomEvent) => {
-			console.log('echo', event.detail);
 			if (!currentUser) {
 				showAuth = true;
 				return;

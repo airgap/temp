@@ -23,8 +23,10 @@ export const en_AR = {
 		"Can't be startin' yer stream. The problem's this side o' the ship.",
 	sessionNotFound:
 		"Yer either not aboard or ye fell off the ship. Have ye tried not bein' marooned?",
+	usernameTaken:
+		"Yev already made an account with that username. Try signin' in, perhaps?",
 	emailTaken:
-		"That message in a bottle's already been sent. Try signin' in, perhaps?",
+		"Yev already made an account with that email. Try signin' in, perhaps?",
 	emailNotFound: "By Davy Jones' locker, our log shows ye don't exist.",
 	incorrectPasswordError: "That ain't yer secret code, ye sea dog!",
 	invalidRoute: "That's no charted course. API route be off the map!",

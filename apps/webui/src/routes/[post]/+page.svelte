@@ -18,7 +18,6 @@
 	}>();
 	const { post, error, likes, users, currentUser } = data;
 	userStore.hydrate(users);
-	console.log('likes', likes);
 	myLikeStore.hydrate(likes);
 	if (currentUser) {
 		currentUserStore.preload(currentUser);

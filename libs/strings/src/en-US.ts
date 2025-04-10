@@ -23,6 +23,7 @@ export const en_US = {
 		"Unable to create your stream. Looks like the issue's on my end.",
 	sessionNotFound:
 		"You're either logged out or don't exist. Have you tried existing?",
+	usernameTaken: "That username's already in our system. Try logging in maybe?",
 	emailTaken: "That email's already in our system. Try logging in maybe?",
 	emailNotFound: "According to our records, you don't exist.",
 	incorrectPasswordError: "That's not your password fam",

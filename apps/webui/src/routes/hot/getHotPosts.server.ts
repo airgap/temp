@@ -16,22 +16,12 @@ export async function queryHotPosts(opts: {
 
 	const url = `${opts.ELASTIC_API_ENDPOINT}/posts-*/_search`;
 	const auth = `ApiKey ${opts.ELASTIC_API_KEY}`;
-	console.log('url', url, 'auth', auth);
 
 	const headers = new Headers({
 		'Content-Type': 'application/json',
 		// 'User-Agent': 'Mozilla/5.0',
 		Authorization: auth,
 	});
-	console.log(
-		'FETCH PARAMS',
-		url,
-		{
-			method: 'POST',
-			headers: [...headers.entries()].flat(),
-		},
-		JSON.stringify(body, null, 2),
-	);
 	const res = await fetch(url, {
 		method: 'POST',
 		headers,
@@ -43,8 +33,6 @@ export async function queryHotPosts(opts: {
 	// 	headers: { 'Content-Type': 'application/json' },
 	// 	body: JSON.stringify(body)
 	// });
-	console.log('status', res.status, res.statusText);
-	console.log('ok?', res.ok);
 	if (!res.ok) throw new Error(`Elasticsearch query failed: ${res.statusText}`);
 
 	const result = await res.json();

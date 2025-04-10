@@ -173,7 +173,6 @@ export const api = Object.fromEntries(
 					const route = monolith[routeName] as TsonHandlerModel;
 					const key = onlyKey(routeName as ContractName);
 					const data = key ? { [key]: params } : params;
-					console.log('dddata', data);
 					const body = encode(data, {
 						useBigInt64: true,
 					} as any);
@@ -192,7 +191,6 @@ export const api = Object.fromEntries(
 								JSON.stringify({ sessionId: cookieAdapter.get('sessionId') }),
 							);
 						ws.onmessage = (ev) => {
-							console.log('ws data', ev.data);
 							const json = JSON.parse(ev.data);
 							if (json?.auth) return;
 							for (const listener of listeners) listener(json);
@@ -201,10 +199,7 @@ export const api = Object.fromEntries(
 							listen: (listener: Listener) => listeners.push(listener) && ws,
 						});
 					} else {
-						console.log('fetching', path);
-						console.log('cookieAdapter', cookieAdapter);
 						const bearer = stupidSessionId || cookieAdapter.get('sessionId');
-						console.log('bearer', bearer);
 						const fetchOptions = {
 							method: 'method' in model ? model.method : 'POST',
 							// Only include credentials if it's supported in the environment
@@ -217,36 +212,28 @@ export const api = Object.fromEntries(
 								...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
 							},
 						} satisfies RequestInit;
-						console.log('Fetching', path, fetchOptions);
-						return fe
-							.tch(path, fetchOptions)
-							.then((res) => {
-								console.log('Fetched', path);
-								if (res.status !== 200) console.log('Fetch code:', res.status);
-								if (!res.ok) {
-									switch (res.status) {
-										case 498:
-											console.log('Deleting expired token due to 498');
-											setCookie('sessionId', '', 0);
-											currentPlatform.reload?.();
-									}
-									throw new Error(res.statusText ?? 'No status text in error');
+						return fe.tch(path, fetchOptions).then((res) => {
+							if (res.status !== 200) console.log('Fetch code:', res.status);
+							if (!res.ok) {
+								switch (res.status) {
+									case 498:
+										console.info('Deleting expired token due to 498');
+										setCookie('sessionId', '', 0);
+										currentPlatform.reload?.();
 								}
-								if (!('response' in route && route.response)) return;
-								return typeof route.response === 'object' &&
-									'type' in route.response &&
-									route.response.type === 'string'
-									? res.text()
-									: res.arrayBuffer().then((buf) =>
-											decode(new Uint8Array(buf), {
-												useBigInt64: true,
-											}),
-										);
-							})
-							.catch((err) => {
-								console.log('Err:', err);
-								throw err;
-							});
+								throw new Error(res.statusText ?? 'No status text in error');
+							}
+							if (!('response' in route && route.response)) return;
+							return typeof route.response === 'object' &&
+								'type' in route.response &&
+								route.response.type === 'string'
+								? res.text()
+								: res.arrayBuffer().then((buf) =>
+										decode(new Uint8Array(buf), {
+											useBigInt64: true,
+										}),
+									);
+						});
 					}
 				},
 			];

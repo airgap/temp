@@ -54,7 +54,7 @@ export default defineConfig({
 			treeshake: true,
 		},
 		// Ensure no Node.js APIs are used in client code
-		target: 'esnext',
+		target: 'es2022',
 	},
 	// Prevent Node.js built-ins from being bundled
 	resolve: {

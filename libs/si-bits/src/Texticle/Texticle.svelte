@@ -70,20 +70,15 @@
 				schema.format in formatRegexes &&
 				formatRegexes[schema.format]),
 	);
-	$effect(() => {
-		console.log('finalPattern', finalPattern);
-	});
+	$effect(() => {});
 	function validate(text: string): boolean {
 		if (typeof text !== 'string') return false;
-		console.log('schema', schema);
 		const patternToUse = finalPattern;
-		console.log('patternToUse', patternToUse);
 		if (patternToUse && !RegExp(patternToUse).test(text)) return false;
 		const minlen = minLength ?? schema?.minLength;
 		if (minlen && text.length < minlen) return false;
 		const maxlen = maxLength ?? schema?.maxLength;
 		if (maxlen && text.length > maxlen) return false;
-		console.log('pass');
 		return true;
 	}
 	const isValid = $derived(validate(value));

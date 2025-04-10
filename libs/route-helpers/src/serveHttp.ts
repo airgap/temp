@@ -120,15 +120,11 @@ export const serveHttp = async ({
 					methodsWithBody.includes(model.method.toLocaleUpperCase())) ||
 				'request' in model;
 			// Parse params from MessagePack
-			console.log('methodHasBody', methodHasBody);
 			const arrayBuffer = methodHasBody ? await req.arrayBuffer() : undefined;
-			console.log('arrayBuffer', arrayBuffer);
 			const intArray = arrayBuffer ? new Uint8Array(arrayBuffer) : undefined;
-			console.log('intArray', intArray);
 			const params = intArray?.length
 				? decode(intArray, { useBigInt64: true })
 				: undefined;
-			console.log('params', params);
 			if ('request' in model && methodHasBody) {
 				try {
 					validator.validate(params);
@@ -155,12 +151,7 @@ export const serveHttp = async ({
 					model,
 					elastic,
 				})) as SecureHttpContext<any>;
-				console.log('Encoding');
 				const pack = encode(output, { useBigInt64: true });
-
-				// Route handling here
-
-				console.log('responseHeaders', responseHeaders);
 
 				return new Response(pack, {
 					headers: responseHeaders,

@@ -245,7 +245,7 @@
 			}
 
 			// Draw all edges and joints
-			// drawEdges({ positions: edgePositions, count: edgePositions.length });
+			drawEdges({ positions: edgePositions, count: edgePositions.length });
 			drawJoints({ positions: jointPositions, count: jointPositions.length });
 			frameHandle = requestAnimationFrame(animate);
 		};

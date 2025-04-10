@@ -52,14 +52,10 @@ export function createMyLikesStore() {
 	 * - In SSR: Data will be fetched immediately and synchronously for the current request.
 	 */
 	function get(id: bigint): bigint | undefined {
-		// If we already have the user, return it immediately
-		console.log('get', id);
 		const myLikesMap = getStoreValue(internalStore);
-		console.log('ewewwewwe', Array.from(myLikesMap.entries()));
 		if (myLikesMap.has(id)) {
 			return myLikesMap.get(id) ? id : -id;
 		}
-		console.log('based');
 
 		if (isSSR) {
 			// In SSR mode, fetch immediately and synchronously
@@ -152,9 +148,7 @@ export function createMyLikesStore() {
 			}
 		}
 
-		// Return what we have now
 		const currentLikesMap = getStoreValue(internalStore);
-		console.log('currentLikesMap', typeof currentLikesMap);
 		return ids.map((id) => (currentLikesMap.get(id) ? id : -id));
 	}
 
@@ -228,7 +222,6 @@ export function createMyLikesStore() {
 		internalStore.update((map) => {
 			const newMap = new Map(map); // Create a new map to ensure reactivity
 			newMap.set(like > 0n ? like : -like, like > 0n);
-			console.log('LikeStore Set', like > 0n ? like : -like, like > 0n);
 			return newMap;
 		});
 	}

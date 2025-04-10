@@ -14,7 +14,6 @@ export const load = async ({ params, fetch, parent }: any) => {
 	)
 		throw new Err(404, 'Not a valid post or page');
 	const big = base58ToBigint(postId);
-	console.log('big', big);
 	const post = await db
 		.selectFrom('posts')
 		.where('id', '=', big)
@@ -24,8 +23,6 @@ export const load = async ({ params, fetch, parent }: any) => {
 	// 	p ? { ...p, attachments: p.attachments?.map((a) => BigInt(a)) } : null,
 	// );
 	if (!post) throw new Err(404, 'Post not found');
-	console.log('got post', typeof post.id, '!', post.body);
-	console.log('attachments', typeof post.attachments?.[0]);
 
 	const like =
 		user &&

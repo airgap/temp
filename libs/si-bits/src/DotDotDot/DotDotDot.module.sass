@@ -51,54 +51,13 @@ $midpoint: calc(50% - $basedot / 2)
 .three
     top: $endpoint
     left: $midpoint
-.DotDotDot:hover
-    .one
-        top: 0
-        left: $endpoint
-    .two
-        top: $endpoint
-        left: $midpoint
-    .three
-        top: 0
-        left: 0
 .dropped
+    .one
+        top: $endpoint
+        left: 0
+    .two
+        top: $endpoint
+        left: $endpoint
     .three
         top: 0
         left: $midpoint
-    .one
-        top: $endpoint
-        left: $endpoint
-    .two
-        top: $endpoint
-        left: 0
-    &:hover
-        .three
-            top: $endpoint
-            left: 0
-        .one
-            top: 0
-            left: $midpoint
-        .two
-            top: $endpoint
-            left: $endpoint
-// Cross through center on click
-//.dropped
-//    .one
-//        top: 0
-//        left: $midpoint
-//    .two
-//        top: $endpoint
-//        left: $endpoint
-//    .three
-//        top: $endpoint
-//        left: 0
-//    &:hover
-//        .one
-//            top: $endpoint
-//            left: 0
-//        .two
-//            top: 0
-//            left: $midpoint
-//        .three
-//            top: $endpoint
-//            left: $endpoint
