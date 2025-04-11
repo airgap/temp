@@ -1,25 +1,28 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import classnames from 'classnames';
 	import LoadingOverlay from '../LoadingOverlay/LoadingOverlay.svelte';
 	import type { ComponentType } from 'svelte';
 	import hidden from '../hidden.module.sass';
 	import styles from './Dialog.module.sass';
 
-	type Animation = 'scale' | 'slide-top' | 'slide-bottom';
+	type Animation = 'scale' | 'slide-top' | 'slide-bottom' | 'zoom';
 	const loading = $state(false);
-	const {
-		visible = false,
+	let {
+		visible = $bindable(false),
 		children = [],
-		ondismiss,
 		size = 's',
 		animation = 'scale',
+		pad = 'm',
+		style = '',
+		transform: xfm = '',
 	} = $props<{
 		visible: boolean;
 		children: ComponentType;
-		ondismiss: () => void;
 		size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'fs' | 'tfs';
 		animation?: Animation;
+		pad?: 'z' | 's' | 'm' | 'l';
+		style: string;
+		transform: string;
 	}>();
 	import { spring } from 'svelte/motion';
 
@@ -48,7 +51,9 @@
 	} as const;
 	const animations = {
 		scale: () =>
-			`transform: scale(${$transformSpring / 100}) rotate(${$transformSpring / 5 - 20}deg)`,
+			`transform: ${xfm} translateY(-50%) scale(${$transformSpring / 100}) rotate(${$transformSpring / 5 - 20}deg)`,
+		zoom: () =>
+			`transform: ${xfm} translateY(-50%) scale(${$transformSpring / 200 + 0.5});`,
 		'slide-top': () => `margin-top: ${25 + $transformSpring / 4}vh`,
 		'slide-bottom': () => `margin-top: ${75 - $transformSpring / 4}vh`,
 	} satisfies Record<Animation, () => string>;
@@ -57,8 +62,10 @@
 
 <div
 	class={styles.DialogBackdrop}
-	style="opacity: {$fadeSpring}; pointer-events: {visible ? 'auto' : 'none'}"
-	onclick={ondismiss}
+	style="opacity: {$fadeSpring * 2 - 1}; pointer-events: {visible
+		? 'auto'
+		: 'none'};"
+	onclick={() => (visible = false)}
 	onkeydown={(e) => {
 		if (e.key === 'Escape') {
 			ondismiss();
@@ -68,19 +75,18 @@
 	tabindex="0"
 >
 	<div
-		class={classnames(styles.Dialog, classes[size])}
-		style={`${transform}`}
+		class={[styles.Dialog, classes[size], , pad && styles['pad-' + pad]]}
+		style="{transform}; {style}"
 		onclick={(e) => e.stopPropagation()}
 		tabindex="0"
 		role="dialog"
 		onkeydown={(e) => e.stopPropagation()}
 	>
-		<div
-			class={classnames(styles.interactives, {
-				[hidden.hidden]: loading,
-			})}
-		>
-			<button class={styles.Close} onclick={ondismiss} aria-label="Close"
+		<div class={[styles.interactives, loading && hidden.hidden]}>
+			<button
+				class={styles.Close}
+				onclick={() => (visible = false)}
+				aria-label="Close"
 			></button>
 			{@render children?.()}
 		</div>

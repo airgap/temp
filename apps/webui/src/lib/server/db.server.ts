@@ -13,7 +13,15 @@ types.setTypeParser(types.builtins.INT8, (val) =>
 	val === null ? null : BigInt(val),
 );
 
-types.setTypeParser(1016, (val) => (val === null ? null : 'TEST SUCCESS'));
+types.setTypeParser(1016, (val: string | null) =>
+	val === null || val === '{}'
+		? []
+		: val
+				.slice(1, -1) // Remove surrounding braces
+				.split(',')
+				.map((v) => BigInt(v.trim())),
+);
+
 export const initDialect = (connectionString: string) =>
 	new PostgresDialect({
 		pool: new Pool({

@@ -2,15 +2,19 @@
 	import { onMount } from 'svelte';
 	import { initSession } from 'monolith-ts-api';
 	import {
+		Backdrop,
+		Image,
 		DesktopNav,
 		MobileNav,
-		Backdrop,
 		UserLoginForm,
 		UserRegistrationForm,
 	} from '@lyku/si-bits';
+	import { PUBLIC_CF_HASH } from '$env/static/public';
 	import { page } from '$app/stores';
 	import styles from './App.module.sass';
 	import { Dialog, PostCreator, TermsOfService } from '@lyku/si-bits';
+	import type { Post } from '@lyku/json-models';
+	import type { EventHandler } from 'svelte/elements';
 
 	const currentUser = $page.data.user;
 
@@ -20,25 +24,46 @@
 	let showTos = $state(false);
 	let reply = $state<bigint>();
 	let echo = $state<bigint>();
+	let light = $state<bigint>();
+	let showLightbox = $state<boolean>(false);
 	onMount(() => {
 		initSession();
-
-		window.addEventListener('replyTo' as any, (event: CustomEvent) => {
+		const replier = (event: CustomEvent) => {
 			if (!currentUser) {
 				showAuth = true;
+				showJoin = true;
 				return;
 			}
 			reply = event.detail;
 			showCreator = true;
-		});
-		window.addEventListener('echo' as any, (event: CustomEvent) => {
+		};
+		const echoer = (event: CustomEvent) => {
 			if (!currentUser) {
 				showAuth = true;
+				showJoin = true;
 				return;
 			}
 			echo = event.detail;
+			console.log('echo', echo);
 			showCreator = true;
+		};
+		const lighter = (event: CustomEvent) => {
+			console.log('e', event.detail);
+			light = event.detail;
+			showLightbox = true;
+		};
+		const events = [
+			['replyTo', replier],
+			['echo', echoer],
+			['light', lighter],
+		] as const satisfies [string, EventHandler<any>][];
+		events.forEach(([event, handler]) => {
+			window.addEventListener(event as any, handler);
 		});
+		return () =>
+			events.forEach(([event, handler]) => {
+				window.removeEventListener(event as any, handler);
+			});
 	});
 
 	let showJoin = $state(false);
@@ -96,19 +121,10 @@
 		onlogin={login}
 		oncreate={openCreator}
 	/>
-	<Dialog
-		visible={showCreator}
-		ondismiss={closeCreator}
-		size="l"
-		animation="slide-top"
-	>
+	<Dialog bind:visible={showCreator} size="l" animation="slide-top">
 		<PostCreator onsuccess={closeCreator} {reply} {echo}></PostCreator>
 	</Dialog>
-	<Dialog
-		visible={showAuth}
-		ondismiss={() => (showAuth = false)}
-		animation="slide-top"
-	>
+	<Dialog bind:visible={showAuth} animation="slide-top">
 		{#if showJoin}
 			<UserRegistrationForm
 				onsuccess={() => (showAuth = false)}
@@ -119,12 +135,22 @@
 			<UserLoginForm onsuccess={() => (showAuth = false)} />
 		{/if}
 	</Dialog>
-	<Dialog
-		size="m"
-		visible={showTos}
-		ondismiss={() => (showTos = false)}
-		animation="slide-bottom"
-	>
+	<Dialog size="m" bind:visible={showTos} animation="slide-bottom">
 		<TermsOfService />
+	</Dialog>
+	<Dialog
+		bind:visible={showLightbox}
+		pad="z"
+		style="overflow: hidden; width: auto; max-width: 700px; display: inline-block; position: absolute; left: 50vw"
+		transform="translateX(-50%)"
+		animation="zoom"
+	>
+		<img
+			alt="a pic"
+			src={light
+				? `https://imagedelivery.net/${PUBLIC_CF_HASH}/${light.toString()}/btvprofile`
+				: ''}
+			style="margin-bottom: -5px"
+		/>
 	</Dialog>
 </div>

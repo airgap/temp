@@ -6,6 +6,7 @@ export const en_US_angry = {
 	navRegister: 'join',
 	navLogin: 'login',
 	navWelcome: 'Fuck off,',
+	points: 'clout',
 
 	channelAlreadyExists: 'That channel already exists you fucking imbecile',
 	channelLimitReached: 'You have enough channels already kiddo',

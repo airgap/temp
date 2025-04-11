@@ -11,10 +11,9 @@
 		size?: 'l' | 'm' | 's' | 'full-post';
 		bot?: boolean;
 		shape?: Shape;
-		src?: string;
 	}
 
-	const { size, bot, shape, src, className } = $props<$$Props>();
+	const { size, bot, shape, className, src, onclick } = $props<$$Props>();
 </script>
 
 <img
@@ -24,5 +23,8 @@
 		[styles.circle]: shape === 'circle',
 	})}
 	{src}
+	{onclick}
 	alt="Profile"
+	role="button"
+	style="cursor:pointer"
 />

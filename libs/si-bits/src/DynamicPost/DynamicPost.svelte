@@ -77,7 +77,7 @@
 
 	$effect(() => error && console.error(error));
 
-	$effect(() => console.log('hnng', currentUserStore, showReplyer));
+	$inspect('hnng', currentUserStore, showReplyer);
 
 	$effect(() => {
 		if (!queriedReplies && post.replies) {
@@ -95,6 +95,7 @@
 			});
 		}
 	};
+	console.log('body', post.body);
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>
@@ -107,42 +108,15 @@
 	<span class={styles.pp}>
 		<ProfilePicture
 			size="m"
-			src={author?.profilePicture && formImageUrl(author?.profilePicture)}
+			src={$author?.profilePicture && formImageUrl($author?.profilePicture)}
 		/>
 	</span>
 
 	<span class={styles.text}>
-		<Link class={styles.username} href={`/u/${author.username}`}>
+		<Link class={styles.username} href="/u/{$author?.username}">
 			{$author?.username}
 		</Link>
 		<DynamicDate time={post.publish} />
-		{#if currentUserStore && currentUserStore.id === author.id}
-			<span class={[styles.dropper, dropped && styles.dropped]}>
-				<button
-					class={styles.dropperBackdrop}
-					onclick={() => (dropped = false)}
-					aria-label="Close"
-					style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
-				></button>
-				<DotDotDot
-					onClick={(e) => {
-						dropped = !dropped;
-						if (dropped) {
-							bgx = e.clientX;
-							bgy = e.clientY;
-						}
-					}}
-					{dropped}
-				/>
-				<div class={styles.dropperMenu}>
-					<ul>
-						<!-- <li><Button>Edit</Button></li> -->
-						<li><Button onClick={handleDelete}>Delete</Button></li>
-						<li><Button onClick={() => alert('WIP')}>Share</Button></li>
-					</ul>
-				</div>
-			</span>
-		{/if}
 
 		<span class={styles.PostContent}>
 			{#if post.title}
@@ -188,6 +162,8 @@
 					<Image
 						src={`https://imagedelivery.net/${cfHash}/${at.toString()}/btvprofile`}
 						size="full-post"
+						onclick={() =>
+							window.dispatchEvent(new CustomEvent('light', { detail: at }))}
 					/>
 				{:else if getSupertypeFromAttachmentId(at) === AttachmentType.Video}
 					<Stream
@@ -219,4 +195,31 @@
 		<div class={styles.sep}></div>
 		<PostList posts={replies} inset={1} cfAccountId={cfHash} />
 	{/if}
+	<span class={[styles.dropper, dropped && styles.dropped]}>
+		<button
+			class={styles.dropperBackdrop}
+			onclick={() => (dropped = false)}
+			aria-label="Close"
+			style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
+		></button>
+		<DotDotDot
+			onClick={(e) => {
+				dropped = !dropped;
+				if (dropped) {
+					bgx = e.clientX;
+					bgy = e.clientY;
+				}
+			}}
+			{dropped}
+		/>
+		<div class={styles.dropperMenu}>
+			<ul>
+				<!-- <li><Button>Edit</Button></li> -->
+				{#if $currentUserStore && $currentUserStore.id === author.id}
+					<li><Button onClick={handleDelete}>Delete</Button></li>
+				{/if}
+				<li><Button onClick={() => alert('WIP')}>Share</Button></li>
+			</ul>
+		</div>
+	</span>
 </span>

@@ -9,7 +9,7 @@ export const en_US = {
 	navRegister: 'join',
 	navLogin: 'login',
 	navWelcome: 'Welcome,',
-
+	points: 'points',
 	channelAlreadyExists:
 		'Sorry bro, someone already launched a channel with that name!',
 	channelLimitReached: "Slow down, partner! You've reached your channel limit.",
@@ -99,7 +99,7 @@ export const en_US = {
 
 	bioEmpty: 'Biography shown on your channel page',
 	bioValid: 'Great bio!',
-	bioWip: 'Bios are a work in progress okay?',
+	bioWip: "Coming soon: Bios! They'll go here.",
 
 	tailoredFeedEmpty: 'Your tailored feed is empty!',
 	followOnHot: {

@@ -4,94 +4,86 @@
 		BefriendUser,
 		Center,
 		Divisio,
+		FeedPage,
 		FollowUser,
 		PostList,
 		ProfilePicture,
 		phrasebook,
+		myLikeStore,
+		userStore,
 	} from '@lyku/si-bits';
 	import { page } from '$app/state';
 	import type { Post, User } from '@lyku/json-models';
+	import { PUBLIC_CF_HASH } from '$env/static/public';
+	console.log('fuck');
+	const { data } = $props<{
+		data:
+			| {
+					posts: Post[];
+					users: User[];
+					likes: BigInt[];
+					follows: BigInt[];
+					user: User;
+					target?: User;
+			  }
+			| { error: string };
+	}>();
+	const { posts, users, error, likes, continuation, user, target, follows } =
+		data;
+	console.log('Hydrating users', users.length, likes.length);
+	userStore.hydrate(users);
+	myLikeStore.hydrate(likes);
+	myFollowStore.hydrate(follows);
+	console.log('uuuser', user?.id);
+	if (user) {
+		currentUserStore.preload(user);
+	}
+	console.log('taaaarger', target);
+	console.log('posts', posts);
 
 	// Get identifier from URL path params using SvelteKit's $page store
 	const ident = page.params.slug;
 
-	let posts = $state<Post[]>([]);
-	let user = $state<User | null>(null);
-	let loading = $state(true);
-	let error = $state<Error | null>(null);
-
 	// Computed hang content for the profile
-	const hangContent = $derived(() =>
-		user
-			? {
-					component: Divisio,
-					props: {
-						size: 'm',
-						layout: 'v',
-						class: 'linkBox',
-						children: [FollowUser, BefriendUser],
-					},
-				}
-			: null,
-	);
+	// const hangContent = $derived(() =>
+	// 	target
+	// 		? {
+	// 				component: Divisio,
+	// 				props: {
+	// 					size: 'm',
+	// 					layout: 'v',
+	// 					class: 'linkBox',
+	// 					children: [FollowUser, BefriendUser],
+	// 				},
+	// 			}
+	// 		: null,
+	// );
 
-	// Effect to fetch user data and posts
-	$effect(() => {
-		if (!ident) {
-			loading = false;
-			return;
-		}
-
-		loading = true;
-		error = null;
-
-		Promise.all([api.listUserPosts({ user: ident }), api.getUserByName(ident)])
-			.then(([fetchedPosts, fetchedUser]) => {
-				posts = fetchedPosts;
-				user = fetchedUser;
-			})
-			.catch((e) => {
-				error = e instanceof Error ? e : new Error(String(e));
-			})
-			.finally(() => {
-				loading = false;
-			});
-	});
-
-	// Computed properties for display
-	const username = $derived(user?.username ?? 'User');
-	const profilePicture = $derived(user?.profilePicture);
-	const showPosts = $derived(posts.length > 0);
+	$inspect(target);
+	console.log('error', error);
 </script>
 
-{#if ident}
-	{#if loading}
-		<Center>
-			<div>Loading...</div>
-		</Center>
-	{:else if error}
-		<Center>
-			<div>Error: {error.message}</div>
-		</Center>
-	{:else}
-		<Center>
-			<div class="UserPage">
-				<Divisio size="m" layout="h" {hangContent}>
-					<ProfilePicture size="l" src={profilePicture} />
-					<Divisio size="m" layout="v">
-						<h1>{username}</h1>
-						<p>{phrasebook.bioWip}</p>
-					</Divisio>
+<FeedPage title={target?.username}>
+	{#if ident}
+		{#if error}
+			<Center>
+				<div>Error: {error.message}</div>
+			</Center>
+		{:else}
+			<Divisio size="m" layout="h">
+				<ProfilePicture size="m" src={target?.profilePicture} />
+				<Divisio size="m" layout="v">
+					<p>{phrasebook.bioWip}</p>
 				</Divisio>
-				{#if showPosts}
-					<PostList {posts} />
-				{/if}
-			</div>
-		</Center>
+			</Divisio>
+			{#if posts?.length}
+				<PostList {posts} cfHash={PUBLIC_CF_HASH} />
+			{/if}
+		{/if}
+	{:else}
+		<h1>404</h1>
 	{/if}
-{:else}
-	<h1>404</h1>
-{/if}
+</FeedPage>
 
 <style lang="sass">
   :global(.UserPage)
