@@ -312,4 +312,4 @@ export function createMyFollowStore() {
 }
 
 // Create a singleton instance
-export const myLikeStore = createMyFollowStore();
+export const myFollowStore = createMyFollowStore();

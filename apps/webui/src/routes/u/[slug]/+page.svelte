@@ -9,7 +9,9 @@
 		PostList,
 		ProfilePicture,
 		phrasebook,
+		myFollowStore,
 		myLikeStore,
+		currentUserStore,
 		userStore,
 	} from '@lyku/si-bits';
 	import { page } from '$app/state';
