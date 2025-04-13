@@ -17,8 +17,14 @@
 	import { PostList } from '../PostList';
 	import { ProfilePicture } from '../ProfilePicture';
 	import { formImageUrl } from '../formImageUrl';
-	import { currentUserStore } from '../CacheProvider';
-	import { useUser } from '../CacheProvider';
+	import {
+		currentUserStore,
+		myFriendshipStore,
+		myFollowStore,
+		useUser,
+		useFollow,
+		useFriendship,
+	} from '../CacheProvider';
 	import { PostCreator } from '../PostCreator';
 	import { DotDotDot } from '../DotDotDot';
 	// import { useCurrentUser } from '../currentUserStore';
@@ -62,6 +68,9 @@
 		body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
 	const author = $derived(useUser(post.author));
+	const follow = $derived(useFollow(post.author));
+	const friendship = $derived(useFriendship(post.author));
+	let adderDropped = $state(false);
 	// const [imageIds, videoIds, audioIds, documentIds] =
 	//     $derived(post.attachments?.reduce((acc, id) => {
 	//       const { supertype } = parseAttachmentId(id);
@@ -116,6 +125,89 @@
 		<Link class={styles.username} href="/u/{$author?.username}">
 			{$author?.username}
 		</Link>
+		&middot;
+		<span class={[styles.inlineDropper, adderDropped && styles.dropped]}>
+			<button
+				class={styles.dropperBackdrop}
+				onclick={() => (adderDropped = false)}
+				aria-label="Close"
+				style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
+			></button>
+			<Button
+				onClick={(e) => {
+					adderDropped = !adderDropped;
+					if (adderDropped) {
+						bgx = e.clientX;
+						bgy = e.clientY;
+					}
+				}}
+			>
+				{#if $friendship === 'befriended'}
+					friend
+				{:else if $friendship === 'theyOffered'}
+					wants to be your friend
+				{:else if $follow}
+					followed
+				{:else}
+					add
+				{/if}
+			</Button>
+			<div class={styles.dropperMenu}>
+				<ul>
+					{#if $follow}
+						<li>
+							<Button onClick={() => alert('WIP')}>Invite to group</Button>
+						</li>
+					{:else}
+						<li>
+							<Button
+								onClick={() => {
+									myFollowStore.update(post.author);
+									api.followUser(post.author);
+								}}>Follow</Button
+							>
+						</li>
+					{/if}
+					{#if $friendship === 'befriended'}
+						<li>
+							<Button onClick={() => alert('WIP')}>Invite to game</Button>
+						</li>
+					{:else}
+						<li>
+							<Button
+								onClick={() => {
+									myFriendshipStore.update(post.author, 'youOffered');
+									api.createFriendRequest(post.author);
+								}}>Add friend</Button
+							>
+						</li>
+					{/if}
+					{#if $follow}
+						<li>
+							<Button
+								destructive={true}
+								onClick={() => {
+									myFollowStore.update(-post.author);
+									api.unfollowUser(post.author);
+								}}>Unfollow</Button
+							>
+						</li>
+					{/if}
+					{#if $friendship === 'befriended'}
+						<li>
+							<Button
+								destructive={true}
+								onClick={() => {
+									myFriendshipStore.update(post.author, 'none');
+									api.deleteFriendship(post.author);
+								}}>Remove friend</Button
+							>
+						</li>
+					{/if}
+				</ul>
+			</div>
+		</span>
+		&middot;
 		<DynamicDate time={post.publish} />
 
 		<span class={styles.PostContent}>

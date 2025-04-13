@@ -3,6 +3,7 @@
 
 	let {
 		disabled = false,
+		destructive = false,
 		class: className = '',
 		type = 'button' as 'button' | 'submit' | 'reset',
 		style = {} as Record<string, string>,
@@ -13,7 +14,7 @@
 
 <button
 	{disabled}
-	class={[styles.Button, className]}
+	class={[styles.Button, destructive && styles.destructive, className]}
 	{type}
 	{style}
 	onclick={onClick}

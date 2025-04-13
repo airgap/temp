@@ -33,6 +33,7 @@ export * from './getChannelSensitives';
 export * from './getCurrentUser';
 export * from './getCurrentUserChannels';
 export * from './getFriendshipStatus';
+export * from './getFriendshipStatuses';
 export * from './getGroupMemberships';
 export * from './getGroups';
 export * from './getTtfGame';

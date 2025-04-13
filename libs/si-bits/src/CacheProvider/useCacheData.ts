@@ -1,8 +1,9 @@
 import { derived, type Readable } from 'svelte/store';
 import { userStore } from './UserStore';
-import type { User } from '@lyku/json-models';
+import { myFollowStore } from './MyFollowStore';
+import { myFriendshipStore } from './MyFriendshipStore';
+import type { FriendshipStatus, User } from '@lyku/json-models';
 
-// Detect if we're running in SSR mode
 const isSSR = typeof window === 'undefined';
 
 /**
@@ -23,6 +24,24 @@ export function useUser(id: bigint): Readable<User | undefined> {
  */
 export function useUsers(ids: bigint[]): (User | undefined)[] {
 	return userStore.getMany(ids);
+}
+
+export function useFollow(id: bigint): Readable<boolean | undefined> {
+	return derived(myFollowStore, ($myFollowMap) => $myFollowMap.get(id));
+}
+
+export function useFollows(ids: bigint[]): (bigint | undefined)[] {
+	return myFollowStore.getMany(ids);
+}
+
+export function useFriendship(id: bigint): Readable<boolean | undefined> {
+	return derived(myFollowStore, ($myFollowMap) => $myFollowMap.get(id));
+}
+
+export function useFriendships(
+	ids: bigint[],
+): (FriendshipStatus | undefined)[] {
+	return myFriendshipStore.getMany(ids);
 }
 
 /**
@@ -51,16 +70,6 @@ export function useUsers(ids: bigint[]): (User | undefined)[] {
 
 // 	throw new Error(`useCacheData for type ${type} not implemented`);
 // }
-
-/**
- * Preload users into the cache
- * Useful for initial data loading or prefetching
- *
- * @param users Array of user objects to add to the cache
- */
-export function preloadUsers(users: User[]): void {
-	userStore.preload(users);
-}
 
 /**
  * Wait for all pending SSR requests to complete

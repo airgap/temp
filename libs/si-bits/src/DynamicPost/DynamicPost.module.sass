@@ -45,7 +45,7 @@
 	//&:disabled
 	//    pointer-events: none
 	//    opacity: .5
-	div
+	div.cock
 		margin: 0
 		// top: -4px
 		display: block
@@ -149,14 +149,29 @@ div.body
 	display: flex
 	> span
 		flex: 1
-$width: 80px
+$width: 150px
 .dropper
-	position: relative
 	width: 40px
 	height: 40px
 	position: absolute
 	right: 15px
-	top: 16px
+	top: 20px
+	.dropperMenu
+		left: calc(100% - $width)
+		top: 50px
+.inlineDropper
+	position: relative
+	// top: -5px
+	// left: -5px
+	width: 30px !important
+	height: 30px !important
+	> button
+		// padding-left: 0 !important
+	.dropperMenu
+		left: 0
+		top: 20px
+		transform-origin: 20% 15px
+.dropper, .inlineDropper
 	z-index: 1
 	&:not(.dropped)
 		.dropperBackdrop
@@ -185,8 +200,7 @@ $width: 80px
 	position: absolute
 	top: 0
 	right: 0
-	left: calc(100% - $width)
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5), inset 0 0 100px 0 #333
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5), inset 0 0 0 100px #fff3
 	background: url('../Backdrop/drop.png')
 	background-size: cover
 	background-position: center
@@ -194,9 +208,12 @@ $width: 80px
 	width: $width
 	transition: all .25s ease-in-out
 	transform-origin: 70% -20px
+	overflow: hidden
 	button
 		text-align: left
 		padding: 10px
+		display: block
+		width: 100%
 	ul
 		list-style: none
 		padding: 0

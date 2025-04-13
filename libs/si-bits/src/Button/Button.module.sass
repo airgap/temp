@@ -10,8 +10,6 @@
 	cursor: pointer
 	background: transparent
 	font: inherit
-	display: block
-	width: 100%
 	padding: 5px
 	transition-delay: 0s
 	user-select: none
@@ -21,6 +19,8 @@
 	color: $color
 	text-decoration: none
 	transition: $transition-duration
+	&.destructive
+		color: #b00
 	&:hover
 		color: #FFFFFFCC
 		//color: #FFFFAA

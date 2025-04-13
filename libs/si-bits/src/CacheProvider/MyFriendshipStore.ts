@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { api } from 'monolith-ts-api';
 import { serialize as gSerialize, deserialize as gDeserialize } from '../utils';
-import type { Like } from 'dist/libs/json-models/src';
+import type { FriendshipStatus } from '@lyku/json-models';
 
 // Detect if we're running in SSR mode
 const isSSR = typeof window === 'undefined';
@@ -10,14 +10,14 @@ const isSSR = typeof window === 'undefined';
  * Creates a Svelte store for users that automatically fetches missing users
  * non-redundantly and in batches. Supports both client-side and SSR.
  */
-export function createMyFollowStore() {
+export function createMyFriendshipStore() {
 	// Store all users in a Map
-	const internalStore = writable<Map<bigint, boolean>>(new Map());
+	const internalStore = writable<Map<bigint, FriendshipStatus>>(new Map());
 
 	// Track pending requests to avoid duplicate fetches
-	const pendingRequestsStore = writable<Map<string, Promise<bigint[]>>>(
-		new Map(),
-	);
+	const pendingRequestsStore = writable<
+		Map<string, Promise<FriendshipStatus[]>>
+	>(new Map());
 
 	// Track IDs that need to be fetched in the next batch
 	const pendingIdsStore = writable<Set<bigint>>(new Set());
@@ -47,7 +47,7 @@ export function createMyFollowStore() {
 	}
 
 	/**
-	 * Get a vector by ID. If the vector is not in the cache, it will be fetched.
+	 * Get a status by ID. If the status is not in the cache, it will be fetched.
 	 * - In client-side: Multiple calls during the same render cycle will be batched.
 	 * - In SSR: Data will be fetched immediately and synchronously for the current request.
 	 */
@@ -103,9 +103,9 @@ export function createMyFollowStore() {
 	}
 
 	/**
-	 * Get multiple vectors by ID. Missing vectors will be fetched in a batch.
+	 * Get multiple status by ID. Missing status will be fetched in a batch.
 	 */
-	function getMany(ids: bigint[]): (bigint | undefined)[] {
+	function getMany(ids: bigint[]): (FriendshipStatus | undefined)[] {
 		// Filter out IDs that we don't have yet
 		const usersMap = getStoreValue(internalStore);
 		const missingIds = ids.filter((id) => !usersMap.has(id));
@@ -114,15 +114,16 @@ export function createMyFollowStore() {
 			if (isSSR) {
 				// In SSR mode, fetch immediately and synchronously
 				const promise = api
-					.getFollowVectors(missingIds)
-					.then((vectors) => {
+					.getFriendshipStatuses(missingIds)
+					.then((statuses) => {
 						internalStore.update((map) => {
-							vectors.forEach((vector) => {
-								map.set(vector > 0n ? vector : -vector, vector > 0n);
+							missingIds.forEach((id, i) => {
+								const status = statuses[i];
+								map.set(id, status);
 							});
 							return map;
 						});
-						return vectors;
+						return statuses;
 					})
 					.catch((error) => {
 						console.error('Error fetching users batch:', error);
@@ -148,12 +149,12 @@ export function createMyFollowStore() {
 			}
 		}
 
-		const currentFollowMap = getStoreValue(internalStore);
-		return ids.map((id) => (currentFollowMap.get(id) ? id : -id));
+		const currentFriendMap = getStoreValue(internalStore);
+		return ids.map((id) => currentFriendMap.get(id));
 	}
 
 	/**
-	 * Fetch a batch of vectors from the API (client-side only)
+	 * Fetch a batch of statuses from the API (client-side only)
 	 */
 	async function fetchBatch() {
 		const pendingIdsSet = getStoreValue(pendingIdsStore);
@@ -179,13 +180,14 @@ export function createMyFollowStore() {
 
 			// Create a promise for this batch
 			const promise = api
-				.getFollowVectors(batchIds)
-				.then((vectors) => {
+				.getFriendshipStatuses(batchIds)
+				.then((statuses) => {
 					// Update the store with the fetched users
 					internalStore.update((map) => {
 						const newMap = new Map(map); // Create a new map to ensure reactivity
-						vectors.forEach((vector) => {
-							newMap.set(vector > 0n ? vector : -vector, vector > 0n);
+						batchIds.forEach((id, i) => {
+							const status = statuses[i];
+							newMap.set(id, status);
 						});
 						return newMap;
 					});
@@ -196,10 +198,10 @@ export function createMyFollowStore() {
 						return map;
 					});
 
-					return vectors;
+					return statuses;
 				})
 				.catch((error) => {
-					console.error('Error fetching follows:', error);
+					console.error('Error fetching friends:', error);
 					pendingRequestsStore.update((map) => {
 						map.delete(batchKey);
 						return map;
@@ -216,18 +218,18 @@ export function createMyFollowStore() {
 	}
 
 	/**
-	 * Update or add a vector to the store
+	 * Update or add a status to the store
 	 */
-	function update(vector: bigint) {
+	function update(id: bigint, status: FriendshipStatus) {
 		internalStore.update((map) => {
 			const newMap = new Map(map); // Create a new map to ensure reactivity
-			newMap.set(vector > 0n ? vector : -vector, vector > 0n);
+			newMap.set(id, status);
 			return newMap;
 		});
 	}
 
 	/**
-	 * Remove a vector from the store
+	 * Remove a status from the store
 	 */
 	function remove(id: bigint) {
 		internalStore.update((map) => {
@@ -248,11 +250,11 @@ export function createMyFollowStore() {
 	/**
 	 * Preload the store with users (useful for SSR hydration)
 	 */
-	function preload(initialVectors: bigint[]) {
+	function preload(initialStatuses: [bigint, FriendshipStatus][]) {
 		internalStore.update((map) => {
 			const newMap = new Map(map); // Create a new map to ensure reactivity
-			initialVectors.forEach((vector) => {
-				newMap.set(vector > 0n ? vector : -vector, vector > 0n);
+			initialStatuses.forEach(([id, status]) => {
+				newMap.set(id, status);
 			});
 			return newMap;
 		});
@@ -283,10 +285,10 @@ export function createMyFollowStore() {
 	/**
 	 * Hydrate the store from serialized data
 	 */
-	function hydrate(vectors: bigint[]) {
+	function hydrate(statuses: [bigint, FriendshipStatus][]) {
 		try {
 			// const userData = gDeserialize(serializedData) as User[];
-			preload(vectors);
+			preload(statuses);
 			// console.log('HYDRATED', userData);
 		} catch (error) {
 			console.error('Error hydrating user store:', error);
@@ -312,4 +314,4 @@ export function createMyFollowStore() {
 }
 
 // Create a singleton instance
-export const myFollowStore = createMyFollowStore();
+export const myFriendshipStore = createMyFriendshipStore();
