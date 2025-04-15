@@ -13,7 +13,7 @@ export const getFollowVectors = async (
 		.where('followee', 'in', users)
 		.execute();
 	const followVectors = users.map((a) =>
-		rawFollows.some((f) => f.followee === a.id) ? a.id : -a.id,
+		rawFollows.some((f) => f.followee === a) ? a : -a,
 	);
 	return followVectors;
 };
