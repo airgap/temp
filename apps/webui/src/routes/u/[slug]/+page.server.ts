@@ -1,6 +1,6 @@
 // import type { PageLoad } from './$types';
 import { neon } from '../../../lib/server/db.server';
-import { getAuthorsForPosts } from '../../getAuthorsForPosts';
+import { getAuthors } from '../../getUsers';
 import { getLikesForPosts } from '../../getLikesForPosts';
 export const load = async ({ params, fetch, parent }) => {
 	const { user } = await parent();
@@ -24,7 +24,7 @@ export const load = async ({ params, fetch, parent }) => {
 				.execute()
 		: [];
 
-	const authors = posts?.length ? await getAuthorsForPosts(posts, db) : [];
+	const authors = posts?.length ? await getAuthors(posts, db) : [];
 	const rawFollows = await db
 		.selectFrom('userFollows')
 		.select('followee')
@@ -40,7 +40,7 @@ export const load = async ({ params, fetch, parent }) => {
 	);
 	const rawLikes = await getLikesForPosts(db, posts, user);
 	const likeVectors = posts.map((p) =>
-		rawLikes.some((l) => l.postId === p.id) ? p.id : -p.id,
+		rawLikes.some((l) => l === p.id) ? p.id : -p.id,
 	);
 	// const likemap = likes.reduce((o,l)=>({...o, [l.postId]}))
 	// console.log('OY M8 WE GOT LIKES', )

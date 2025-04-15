@@ -289,7 +289,7 @@ export function createMyLikesStore() {
 			preload(myLikeData);
 			// console.log('HYDRATED', userData);
 		} catch (error) {
-			console.error('Error hydrating user store:', error);
+			console.error('Error hydrating like store:', error);
 		}
 	}
 

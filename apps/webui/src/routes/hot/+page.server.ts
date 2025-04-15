@@ -2,8 +2,18 @@
 import { neon } from '../../lib/server/db.server';
 import { queryHotPosts } from './getHotPosts.server';
 import { ELASTIC_API_ENDPOINT, ELASTIC_API_KEY } from '$env/static/private';
-import { getAuthorsForPosts } from '../getAuthorsForPosts';
+import { getAuthors } from '../getUsers';
 import { getLikesForPosts } from '../getLikesForPosts';
+import { bondIds, dedupe } from '@lyku/helpers';
+import type {
+	FriendRequest,
+	Friendship,
+	FriendshipStatus,
+} from '@lyku/json-models';
+import { dedupeAuthorIds } from '../getDedupedAuthorIds';
+import { getFollowVectors } from '../../getFollowVectors.server';
+import { getFriendshipStatuses } from '../../getFriendshipStatuses.server';
+import { getLikeVectors } from '../../getLikeVectors.server';
 export const load = async ({ params, fetch, parent }) => {
 	const { user } = await parent();
 	const db = neon();
@@ -12,18 +22,14 @@ export const load = async ({ params, fetch, parent }) => {
 		ELASTIC_API_ENDPOINT,
 		ELASTIC_API_KEY,
 	});
-
-	const authors = await getAuthorsForPosts(posts, db);
-	const rawLikes = await getLikesForPosts(db, posts, user);
-	const likeVectors = posts.map((p) =>
-		rawLikes.some((l) => l.postId === p.id) ? p.id : -p.id,
-	);
-	// const likemap = likes.reduce((o,l)=>({...o, [l.postId]}))
-	// console.log('OY M8 WE GOT LIKES', )
+	const postIds = posts.map((p) => p.id);
+	const authorIds = dedupe(posts.map((p) => p.author));
 	return {
 		posts,
 		continuation,
-		users: authors,
-		likes: likeVectors,
+		users: getAuthors(authorIds, db),
+		likes: getLikeVectors(user, postIds, db),
+		follows: getFollowVectors(user.id, authorIds, db),
+		friendships: getFriendshipStatuses(user, authorIds, db),
 	};
 };

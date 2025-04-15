@@ -4,6 +4,8 @@
 		FeedPage,
 		PostList,
 		userStore,
+		myFollowStore,
+		myFriendshipStore,
 		myLikeStore,
 		currentUserStore,
 	} from '@lyku/si-bits';
@@ -22,9 +24,11 @@
 			  }
 			| { error: string };
 	}>();
-	const { posts, users, error, likes, continuation, user } = data;
+	const { posts, users, error, likes, continuation, user, follows, friendships } = data;
 	userStore.hydrate(users);
 	myLikeStore.hydrate(likes);
+	myFollowStore.hydrate(follows);
+	myFriendshipStore.hydrate(friendships);
 	if (user) {
 		currentUserStore.preload(user);
 	}

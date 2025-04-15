@@ -1,5 +1,6 @@
 <script lang="ts">
 	import styles from './Button.module.sass';
+	import {ComingSoon} from '../ComingSoon';
 
 	let {
 		disabled = false,
@@ -9,6 +10,7 @@
 		style = {} as Record<string, string>,
 		children,
 		onClick,
+		comingSoon
 	} = $props();
 </script>
 
@@ -20,4 +22,7 @@
 	onclick={onClick}
 >
 	{@render children?.()}
+	{#if comingSoon}
+		<ComingSoon variant={typeof comingSoon === 'boolean' ?  "full" : comingSoon}/>
+	{/if}
 </button>

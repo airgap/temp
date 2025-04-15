@@ -4,18 +4,15 @@ import type { Kysely } from 'kysely';
 
 export const getLikesForPosts = (
 	db: Kysely<Database>,
-	posts: Post[],
-	user?: User,
+	posts: bigint[],
+	user?: bigint,
 ) =>
 	user && posts.length
 		? db
 				.selectFrom('likes')
-				.where(
-					'postId',
-					'in',
-					posts.map((p) => p.id),
-				)
-				.where('userId', '=', user.id)
+				.where('postId', 'in', posts)
+				.where('userId', '=', user)
 				.select('postId')
 				.execute()
+				.then((posts) => posts.map((post) => post.postId))
 		: [];

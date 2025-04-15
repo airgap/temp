@@ -277,7 +277,7 @@ export function createMyFriendshipStore() {
 	 */
 	function serialize(): string {
 		const storeValue = getStoreValue(internalStore);
-		const booleans = Array.from(storeValue.values());
+		const booleans = Array.from(storeValue.entries());
 
 		return gSerialize(booleans);
 	}
@@ -291,7 +291,7 @@ export function createMyFriendshipStore() {
 			preload(statuses);
 			// console.log('HYDRATED', userData);
 		} catch (error) {
-			console.error('Error hydrating user store:', error);
+			console.error('Error hydrating friendship store:', error);
 		}
 	}
 

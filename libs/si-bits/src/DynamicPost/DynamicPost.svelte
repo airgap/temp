@@ -4,6 +4,7 @@
 	import { Stream } from '@cloudflare/stream-react';
 	import type { Post, User } from '@lyku/json-models';
 	import { AttachmentType } from '@lyku/helpers';
+	import { ComingSoon } from '../ComingSoon';
 	import {
 		getSupertypeFromAttachmentId,
 		parseAttachmentId,
@@ -152,11 +153,11 @@
 					add
 				{/if}
 			</Button>
-			<div class={styles.dropperMenu}>
+			<div class={styles.dropperMenu} style="--width: 230px">
 				<ul>
 					{#if $follow}
 						<li>
-							<Button onClick={() => alert('WIP')}>Invite to group</Button>
+							<Button comingSoon onClick={() => alert('WIP')} >Invite to group</Button>
 						</li>
 					{:else}
 						<li>
@@ -170,7 +171,7 @@
 					{/if}
 					{#if $friendship === 'befriended'}
 						<li>
-							<Button onClick={() => alert('WIP')}>Invite to game</Button>
+							<Button comingSoon onClick={() => alert('WIP')}>Invite to game</Button>
 						</li>
 					{:else}
 						<li>
@@ -304,13 +305,13 @@
 			}}
 			{dropped}
 		/>
-		<div class={styles.dropperMenu}>
+		<div class={styles.dropperMenu} style="--width: 200px">
 			<ul>
 				<!-- <li><Button>Edit</Button></li> -->
 				{#if $currentUserStore && $currentUserStore.id === author.id}
 					<li><Button onClick={handleDelete}>Delete</Button></li>
 				{/if}
-				<li><Button onClick={() => alert('WIP')}>Share</Button></li>
+				<li><Button comingSoon onClick={() => alert('WIP')}>Share</Button></li>
 			</ul>
 		</div>
 	</span>

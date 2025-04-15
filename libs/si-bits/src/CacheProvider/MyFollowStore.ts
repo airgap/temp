@@ -289,7 +289,7 @@ export function createMyFollowStore() {
 			preload(vectors);
 			// console.log('HYDRATED', userData);
 		} catch (error) {
-			console.error('Error hydrating user store:', error);
+			console.error('Error hydrating follow store:', error);
 		}
 	}
 

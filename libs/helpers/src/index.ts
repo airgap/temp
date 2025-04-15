@@ -7,6 +7,7 @@ export * from './buildHotQuery';
 export * from './bondIds';
 export * from './cfloor';
 export * from './convertBases';
+export * from './dedupe';
 export * from './delay';
 export * from './Either';
 export * from './Err';
