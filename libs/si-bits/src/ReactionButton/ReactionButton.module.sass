@@ -29,8 +29,13 @@
 		vertical-align: middle
 	span
 		margin-left: 12px
+	box-shadow: 6px 0 4px -6px #fffA, -6px 0 4px -6px #000A
+	&:first-child
+		box-shadow: 6px 0 4px -6px #fffA
 	+ .Reaction
-		border-left: 1px solid $border-color
+		border-left: 1px solid #fff3
+	&:last-child
+		box-shadow: -6px 0 4px -6px #000A
 	//button
 	//	display: block
 	//	font-family: inherit

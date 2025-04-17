@@ -1,15 +1,17 @@
 import type { Database } from '@lyku/db-config/kysely';
+import type { User } from '@lyku/json-models';
 import type { Kysely } from 'kysely';
 
 export const getFollowVectors = async (
-	user: bigint,
-	users: bigint[],
 	db: Kysely<Database>,
+	users: bigint[],
+	user?: User,
 ) => {
+	if (!user) return [];
 	const rawFollows = await db
 		.selectFrom('userFollows')
 		.select('followee')
-		.where('follower', '=', user)
+		.where('follower', '=', user.id)
 		.where('followee', 'in', users)
 		.execute();
 	const followVectors = users.map((a) =>

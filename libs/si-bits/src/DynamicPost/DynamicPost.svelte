@@ -157,7 +157,9 @@
 				<ul>
 					{#if $follow}
 						<li>
-							<Button comingSoon onClick={() => alert('WIP')} >Invite to group</Button>
+							<Button comingSoon onClick={() => alert('WIP')}
+								>Invite to group</Button
+							>
 						</li>
 					{:else}
 						<li>
@@ -171,7 +173,9 @@
 					{/if}
 					{#if $friendship === 'befriended'}
 						<li>
-							<Button comingSoon onClick={() => alert('WIP')}>Invite to game</Button>
+							<Button comingSoon onClick={() => alert('WIP')}
+								>Invite to game</Button
+							>
 						</li>
 					{:else}
 						<li>

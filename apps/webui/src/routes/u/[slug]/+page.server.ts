@@ -24,7 +24,12 @@ export const load = async ({ params, fetch, parent }) => {
 				.execute()
 		: [];
 
-	const authors = posts?.length ? await getAuthors(posts.map(p=>p.id), db) : [];
+	const authors = posts?.length
+		? await getAuthors(
+				posts.map((p) => p.id),
+				db,
+			)
+		: [];
 	const rawFollows = await db
 		.selectFrom('userFollows')
 		.select('followee')
@@ -38,7 +43,11 @@ export const load = async ({ params, fetch, parent }) => {
 	const followVectors = authors.map((a) =>
 		rawFollows.some((f) => f.followee === a.id) ? a.id : -a.id,
 	);
-	const rawLikes = await getLikesForPosts(db, posts.map(p=>p.id), user);
+	const rawLikes = await getLikesForPosts(
+		db,
+		posts.map((p) => p.id),
+		user,
+	);
 	const likeVectors = posts.map((p) =>
 		rawLikes.some((l) => l === p.id) ? p.id : -p.id,
 	);

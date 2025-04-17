@@ -1,6 +1,9 @@
 import type { Post } from '@lyku/json-models';
 
 export async function elasticate(post: Post): Promise<void> {
+	const publishString = post.publish.toISOString();
+	const [year, month] = publishString.split('T')[0].split('-');
+	const index = `posts-${year}-${month}`;
 	// Convert BigInts to strings for JSON serialization
 	const elasticPost = {
 		id: post.id.toString(),
@@ -12,7 +15,7 @@ export async function elasticate(post: Post): Promise<void> {
 		author: post.author.toString(),
 		likes: post.likes.toString(),
 		loves: post.loves?.toString(),
-		publish: post.publish.toISOString(),
+		publish: post.publish,
 		replies: post.replies.toString(),
 		title: post.title,
 		thread: post.thread?.map((t) => t.toString()),
@@ -28,7 +31,7 @@ export async function elasticate(post: Post): Promise<void> {
 			Number(post.echoes) * 5,
 	};
 
-	const url = `${process.env.ELASTIC_API_ENDPOINT}/posts/_doc/${elasticPost.id}`;
+	const url = `${process.env.ELASTIC_API_ENDPOINT}/${index}/_doc/${elasticPost.id}`;
 	const headers = new Headers({
 		'Content-Type': 'application/json',
 		Authorization: `ApiKey ${process.env.ELASTIC_API_KEY}`,

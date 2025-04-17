@@ -15,8 +15,9 @@ export async function queryHotPosts(opts: {
 	// const url = 'https://broke.lyku.org/posts/hot';
 
 	const url = `${opts.ELASTIC_API_ENDPOINT}/posts-*/_search`;
+	// console.log('uuuh', opts.ELASTIC_API_ENDPOINT);
 	const auth = `ApiKey ${opts.ELASTIC_API_KEY}`;
-
+	// console.log('body', JSON.stringify(body));
 	const headers = new Headers({
 		'Content-Type': 'application/json',
 		// 'User-Agent': 'Mozilla/5.0',

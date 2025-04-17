@@ -1,0 +1,9 @@
+PUT
+{
+  "mappings": {
+    "properties": {
+      "engagement_score": { "type": "float" },
+      "publish": { "type": "date" }
+    }
+  }
+}

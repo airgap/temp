@@ -16,19 +16,42 @@
 	const { data } = $props<{
 		data:
 			| {
-					posts: Post[];
-					users: User[];
-					likes: BigInt[];
+					posts: Promise<Post[]>;
+					users: Promise<User[]>;
+					likes: Promise<BigInt[]>;
+					// follows: Promise<Follow[]>;
 					continuation?: string;
-					user: User;
+					user: Promise<User>;
 			  }
 			| { error: string };
 	}>();
-	const { posts, users, error, likes, continuation, user, follows, friendships } = data;
-	userStore.hydrate(users);
-	myLikeStore.hydrate(likes);
-	myFollowStore.hydrate(follows);
-	myFriendshipStore.hydrate(friendships);
+	const {
+		posts,
+		users,
+		error,
+		likes,
+		continuation,
+		user,
+		follows,
+		friendships,
+	} = data;
+	console.log(
+		'ssssuck',
+		// 'users',
+		// users,
+		// 'likes',
+		// likes,
+		// 'follows',
+		// follows,
+		// 'friendships',
+		// friendships,
+	);
+	[
+		[users, userStore],
+		[likes, myLikeStore],
+		[follows, myFollowStore],
+		[friendships, myFriendshipStore],
+	].forEach(async ([data, store]) => store.hydrate(await data));
 	if (user) {
 		currentUserStore.preload(user);
 	}
