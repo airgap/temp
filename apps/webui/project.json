@@ -61,7 +61,7 @@
 			"options": {
 				"commands": [
 					// "./copydocs.sh",
-					"wrangler pages publish dist/apps/webui/cloudflare --project-name lyku"
+					"wrangler pages deploy dist/apps/webui/cloudflare --project-name lyku"
 				]
 			}
 		}
