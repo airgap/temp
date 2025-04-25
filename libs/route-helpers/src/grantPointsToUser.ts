@@ -37,11 +37,12 @@ export const grantPointsToUser = async (
 		.where('id', '=', userId)
 		.returningAll()
 		.executeTakeFirstOrThrow();
-
+	console.log('change', change);
 	if (change) {
 		const newLevel = getLevelFromPoints(change.points);
 		const oldLevel = getLevelFromPoints(change.points - BigInt(points));
 		if (newLevel > oldLevel) {
+			console.log('Sending notification');
 			await sendNotification(
 				{
 					user: userId,

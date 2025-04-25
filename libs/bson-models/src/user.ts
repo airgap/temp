@@ -55,6 +55,7 @@ export const user = {
 		name: { type: 'text', maxLength: 30, minLength: 3 },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
+		deleted: { type: 'timestamptz' },
 	},
 	required: [
 		'banned',

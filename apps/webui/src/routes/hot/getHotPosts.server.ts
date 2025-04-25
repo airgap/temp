@@ -1,5 +1,10 @@
-import type { Post } from '@lyku/json-models';
-import { buildHotQuery, type DateRange } from '@lyku/helpers';
+import type { Post, Thread } from '@lyku/json-models';
+import {
+	buildBackthreadQuery,
+	buildHotQuery,
+	type DateRange,
+} from '@lyku/helpers';
+import { delasticatePost } from './delasticatePost';
 
 export async function queryHotPosts(opts: {
 	ELASTIC_API_ENDPOINT: string;
@@ -40,32 +45,47 @@ export async function queryHotPosts(opts: {
 	// const result = await opts.proxy.list(body, opts.ELASTIC_API_ENDPOINT, opts.ELASTIC_API_KEY);
 	const hits = result.hits?.hits ?? [];
 
-	const posts: Post[] = hits.map((hit: any) => {
-		const src = hit._source;
-		return {
-			id: BigInt(hit._id),
-			body: src.body,
-			bodyType: src.bodyType,
-			echoes: BigInt(src.echoes),
-			group: src.group ? BigInt(src.group) : undefined,
-			hashtags: src.hashtags?.map(BigInt),
-			author: BigInt(src.author),
-			likes: BigInt(src.likes),
-			loves: src.loves ? BigInt(src.loves) : undefined,
-			publish: new Date(src.publish),
-			replies: BigInt(src.replies),
-			title: src.title,
-			thread: src.thread?.map(BigInt),
-			shortcode: src.shortcode,
-			replyTo: src.replyTo ? BigInt(src.replyTo) : undefined,
-			echoing: src.echoing ? BigInt(src.echoing) : undefined,
-			attachments: src.attachments?.map(BigInt),
-			updated: src.updated ? new Date(src.updated) : undefined,
-		};
-	});
+	const hotPosts: Post[] = hits.map(delasticatePost);
+
+	const responses = await fetch(`${opts.ELASTIC_API_ENDPOINT}/_msearch`, {
+		method: 'POST',
+		body:
+			buildBackthreadQuery(
+				hotPosts.map((p) => ({ id: p.id, score: (p as any).score })),
+			)
+				.map((item) => JSON.stringify(item))
+				.join('\n') + '\n',
+	}).then((res) => res.json());
+
+	const posts: Post[] = [];
+	const threads: Thread[] = [];
+
+	for (let i = 0; i < hotPosts.length; i++) {
+		const focusHit = hotPosts[i];
+		const replyHit = responses[i]?.hits?.hits?.[0];
+
+		const focus = delasticatePost(focusHit);
+		posts.push(focus);
+
+		if (replyHit) {
+			const reply = delasticatePost(replyHit);
+			posts.push(reply);
+
+			threads.push({
+				focus: focus.id,
+				replies: [reply.id],
+				replyTo: focus.replyTo, // optional chaining
+			});
+		} else {
+			threads.push({
+				focus: focus.id,
+				replyTo: focus.replyTo,
+			});
+		}
+	}
 
 	const lastHit = hits[hits.length - 1];
 	const nextToken = lastHit?.sort ?? undefined;
 
-	return { posts, continuation: nextToken };
+	return { posts: hotPosts, continuation: nextToken };
 }

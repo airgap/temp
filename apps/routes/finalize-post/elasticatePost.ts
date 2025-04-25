@@ -1,6 +1,6 @@
 import type { Post } from '@lyku/json-models';
 
-export async function elasticate(post: Post): Promise<void> {
+export async function elasticatePost(post: Post): Promise<void> {
 	const publishString = post.publish.toISOString();
 	const [year, month] = publishString.split('T')[0].split('-');
 	const index = `posts-${year}-${month}`;
@@ -9,14 +9,14 @@ export async function elasticate(post: Post): Promise<void> {
 		id: post.id.toString(),
 		body: post.body,
 		bodyType: post.bodyType,
-		echoes: post.echoes.toString(),
+		echoes: post.echoes,
 		group: post.group?.toString(),
 		hashtags: post.hashtags?.map((h) => h.toString()),
-		author: post.author.toString(),
-		likes: post.likes.toString(),
-		loves: post.loves?.toString(),
+		author: post.author,
+		likes: post.likes,
+		loves: post.loves,
 		publish: post.publish,
-		replies: post.replies.toString(),
+		replies: post.replies,
 		title: post.title,
 		thread: post.thread?.map((t) => t.toString()),
 		shortcode: post.shortcode,
@@ -29,6 +29,7 @@ export async function elasticate(post: Post): Promise<void> {
 			Number(post.likes) +
 			(Number(post.loves) || 0) * 10 +
 			Number(post.echoes) * 5,
+		created: post.created?.toISOString(),
 	};
 
 	const url = `${process.env.ELASTIC_API_ENDPOINT}/${index}/_doc/${elasticPost.id}`;

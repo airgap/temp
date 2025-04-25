@@ -3,8 +3,8 @@
 	import styles from './DynamicDate.module.sass';
 
 	const { time } = $props<{
-		time: Date;
+		time?: Date;
 	}>();
 </script>
 
-<span class={styles.DynamicDate}>{prettyTime(time)}</span>
+<span class={styles.DynamicDate}>{time ? prettyTime(time) : '   '}</span>

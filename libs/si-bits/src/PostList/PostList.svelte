@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Post } from '@lyku/json-models';
+	import { postStore } from '../CacheProvider';
 	import { DynamicPost } from '../DynamicPost';
 	import styles from './PostList.module.sass';
 	import classNames from 'classnames';
@@ -10,7 +11,7 @@
 		placeholder,
 		cfHash,
 	} = $props<{
-		posts: Post[];
+		posts: bigint[];
 		inset?: boolean;
 		placeholder?: any;
 		cfHash: string;
@@ -19,7 +20,7 @@
 
 <div class={classNames(styles.PostList, { [styles.inset]: inset })}>
 	{#if posts?.length}
-		{#each posts as post (post.id)}
+		{#each posts as post}
 			<DynamicPost {post} autoplay={false} {cfHash} />
 		{/each}
 	{:else}

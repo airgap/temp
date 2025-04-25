@@ -105,30 +105,20 @@ div.body
 		height: auto
 		max-height: max(calc(100vh - 200px), 600px)
 		object-fit: cover
-.two, .four, .three span +
-	span
-		width: calc(50% - 5px)
-		margin-top: 5px
-		+ span
-			margin-left: 10px
-.four span:nth-child(3)
-	margin-left: 0
-.five
-	span
-		width: calc(50% - 5px)
-		&:nth-child(2)
-			margin-left: 10px
-		+ span + span
-			margin-top: 5px
-			width: calc(33.33% - 6.66px)
-			+ span
-				margin-left: 10px
-.eight, .nine
-	span
-		margin-top: 10px
-		width: calc(33.33% - 6.66px)
-		&:not(:nth-child(3n+1))
-			margin-left: 10px
+.two img, .four img
+	width: 50%
+.three img, .six img, .nine img
+	width: 33.33%
+.seven img
+	&:nth-child(-n+4)
+		width: 50%
+	&:nth-child(n+5)
+		width: 33.33%
+.five img, .eight img
+	&:nth-child(-n+2)
+		width: 50%
+	&:nth-child(n+3)
+		width: 33.33%
 
 .delete
 	position: absolute

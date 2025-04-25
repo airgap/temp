@@ -3,16 +3,16 @@ import type {
 	FriendRequest,
 	Friendship,
 	FriendshipStatus,
-	User,
 } from '@lyku/json-models';
 import type { Kysely } from 'kysely';
 import { bondIds } from '@lyku/helpers';
 
 export const getFriendshipStatuses = async (
-	user: bigint,
-	authors: bigint[],
 	db: Kysely<Database>,
+	authors: bigint[],
+	user?: bigint,
 ) => {
+	if (!user) return [];
 	const bonds = authors.map((a) => bondIds(a, user));
 	const rawFriendships = bonds.length
 		? await db

@@ -150,7 +150,7 @@
 			src={light
 				? `https://imagedelivery.net/${PUBLIC_CF_HASH}/${light.toString()}/btvprofile`
 				: ''}
-			style="margin-bottom: -5px"
+			style="margin-bottom: -5px; max-width: 100%; max-height: 100%; object-fit: contain"
 		/>
 	</Dialog>
 </div>

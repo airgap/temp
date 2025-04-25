@@ -21,9 +21,9 @@ export default handleLikePost(async (postId, { requester, db, elastic }) => {
 
 	if (!post) throw new Err(404, "Post doesn't exist");
 
-	// if (post.author === requester) {
-	// 	throw new Err(403, 'You cannot like your own post');
-	// }
+	if (post.author === requester) {
+		throw new Err(403, 'You cannot like your own post');
+	}
 
 	// Insert the like
 	await db
@@ -47,15 +47,18 @@ export default handleLikePost(async (postId, { requester, db, elastic }) => {
 
 	// Add point to recipient
 	if (post.author !== requester) await grantPointsToUser(1, post.author, db);
-
+	console.log('Updating post likes in elastic');
+	const [year, month] = post.publish.toISOString().split('T')[0].split('-');
+	const index = `posts-${year}-${month}`;
 	await elastic.update({
-		index: 'posts',
+		index,
 		id: postId.toString(),
 		script: {
 			source: 'ctx._source.likes = (ctx._source.likes ?: 0) + 1',
 			lang: 'painless',
 		},
 	});
+	console.log('Post likes updated in elastic');
 
 	if (
 		post.likes &&

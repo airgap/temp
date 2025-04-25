@@ -1,15 +1,11 @@
 import { postBody } from './postBody';
 import { postTitle } from './postTitle';
 import type {
-	ArrayJsonSchema,
 	BigIntColumnModel,
-	BigSerialColumnModel,
 	EnumColumnModel,
 	PostgresRecordModel,
 } from 'from-schema';
 import { shortcode } from './shortcode';
-import { user } from './user';
-import { group } from './group';
 export const bodyType = {
 	type: 'enum',
 	enum: ['plaintext', 'markdown'],
@@ -42,6 +38,7 @@ export const post = {
 		attachments: { type: 'array', items: { type: 'bigint' }, maxItems: 256 },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
+		deleted: { type: 'timestamptz' },
 	},
 	required: [
 		'id',

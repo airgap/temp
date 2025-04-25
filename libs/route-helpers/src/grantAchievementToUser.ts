@@ -10,6 +10,7 @@ export const grantAchievementToUser = async (
 	user: bigint,
 	db: Kysely<Database>,
 ) => {
+	console.log('Granting achievement to user', user);
 	const ach =
 		typeof achievement === 'bigint'
 			? await db
@@ -19,6 +20,7 @@ export const grantAchievementToUser = async (
 					.executeTakeFirstOrThrow()
 			: achievement;
 	const id = bindIds(ach.id, user);
+	console.log('Achievement', ach);
 	const result = await db
 		.insertInto('achievementGrants')
 		.values({

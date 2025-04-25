@@ -1,5 +1,6 @@
 export * from './arcradius';
 export * from './AttachmentType';
+export * from './buildBackthreadQuery';
 export * from './base58SnowflakeRegex';
 export * from './base58ToBigint';
 export * from './bigintToBase58';

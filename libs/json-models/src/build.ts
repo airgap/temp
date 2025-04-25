@@ -11,6 +11,7 @@ import {
 } from 'from-schema';
 import * as ts from 'typescript';
 import * as module from 'bson-models';
+import * as extras from './extra';
 import * as prettier from 'prettier';
 // import { dbConfig } from '@lyku/db-config';
 
@@ -137,6 +138,20 @@ const jsonify = async () => {
 				} = ${resolvedInsertableTypeString};`,
 			);
 		}
+	}
+	for (const key in extras) {
+		const value = extras[key as keyof typeof extras];
+		const hasProperties = 'properties' in value;
+		// console.log('Typing', tsonSchema);
+		const resolvedTypeString = tsonToType(value);
+		exports.push(`export const ${key} = ${stringifyBON(value)};`);
+
+		dtsExports.push(
+			`export declare const ${key}: ${stringifyBON(value)};\n` +
+				`export type ${
+					key[0].toUpperCase() + key.slice(1)
+				} = ${resolvedTypeString};`,
+		);
 	}
 
 	if (exports.length > 0) {

@@ -38,7 +38,7 @@ export default handleUnlikePost(async (postId, { db, requester, elastic }) => {
 	const post = await db
 		.selectFrom('posts')
 		.where('id', '=', postId)
-		.select(['author'])
+		.select(['author', 'publish'])
 		.executeTakeFirstOrThrow();
 
 	const authorUpdate = await db
@@ -50,8 +50,11 @@ export default handleUnlikePost(async (postId, { db, requester, elastic }) => {
 		.returning(['points'])
 		.executeTakeFirstOrThrow();
 
+	const [year, month] = post.publish.toISOString().split('T')[0].split('-');
+	const index = `posts-${year}-${month}`;
+	console.log('Disliking elastic', index, postId.toString());
 	await elastic.update({
-		index: 'posts',
+		index,
 		id: postId.toString(),
 		script: {
 			source: 'ctx._source.likes = (ctx._source.likes ?: 0) - 1',

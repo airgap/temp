@@ -5,23 +5,24 @@
 	import { api } from 'monolith-ts-api';
 	import type { Post } from '@lyku/json-models';
 	import { cacheStore } from '../CacheProvider/CacheStore';
-	import { myLikeStore } from '../CacheProvider';
+	import { myLikeStore, currentUserStore } from '../CacheProvider';
 	import styles from './LikeButton.module.sass';
 
-	const { post } = $props<{ post: Post }>();
+	const { post } = $props<{ post?: Post }>();
 
-	const liked = $derived(($myLikeStore.get(post.id) ?? 0n) > 0n);
+	const liked = $derived(($myLikeStore.get($post?.id) ?? 0n) > 0n);
 	const like = () => {
-		myLikeStore.update(post.id);
-		api.likePost(post.id);
+		myLikeStore.update($post.id);
+		api.likePost($post.id);
 	};
 	const unlike = () => {
-		myLikeStore.update(-post.id);
-		api.unlikePost(post.id);
+		myLikeStore.update(-$post.id);
+		api.unlikePost($post.id);
 	};
 </script>
 
 <ReactionButton
+	disabled={$post?.author === $currentUserStore?.id}
 	glyph={emptyHeart}
 	onClick={liked ? unlike : like}
 	class={liked && styles.fillMeUp}

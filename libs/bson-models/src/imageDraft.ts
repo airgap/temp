@@ -12,7 +12,7 @@ export const imageDraft = {
 		id: { type: 'bigint', primaryKey: true },
 		uploadURL: { type: 'text' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
-		filename: { type: 'text', maxLength: 100 },
+		filename: { type: 'text', maxLength: 300 },
 	},
 	required: ['id', 'author', 'reason', 'uploadURL', 'created', 'filename'],
 } as const satisfies PostgresRecordModel;

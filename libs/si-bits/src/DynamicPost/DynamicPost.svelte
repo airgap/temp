@@ -25,6 +25,7 @@
 		useUser,
 		useFollow,
 		useFriendship,
+		usePost,
 	} from '../CacheProvider';
 	import { PostCreator } from '../PostCreator';
 	import { DotDotDot } from '../DotDotDot';
@@ -39,20 +40,24 @@
 	const insets = { reply: styles.replied, echo: styles.echoed } as const;
 
 	const {
-		post,
+		post: id,
 		inset = false,
 		showReplies = false,
 		autoplay = false,
 		// author = undefined
 		cfHash,
 	} = $props<{
-		post: Post;
+		post: bigint;
 		inset?: keyof typeof insets | false;
 		showReplies?: boolean;
 		autoplay?: boolean;
 		// author?: User | undefined;
 		cfHash: string;
 	}>();
+
+	console.log('ffffudge');
+
+	const post = $derived(usePost(id));
 
 	let replies = $state<Post[]>([]);
 	let queriedReplies = $state(false);
@@ -68,9 +73,9 @@
 	const stripLinks = (body: string) =>
 		body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 
-	const author = $derived(useUser(post.author));
-	const follow = $derived(useFollow(post.author));
-	const friendship = $derived(useFriendship(post.author));
+	const author = $derived(useUser($post?.author));
+	const follow = $derived(useFollow($post?.author));
+	const friendship = $derived(useFriendship($post?.author));
 	let adderDropped = $state(false);
 	// const [imageIds, videoIds, audioIds, documentIds] =
 	//     $derived(post.attachments?.reduce((acc, id) => {
@@ -90,7 +95,12 @@
 	$inspect('hnng', currentUserStore, showReplyer);
 
 	$effect(() => {
-		if (!queriedReplies && post.replies) {
+		console.log('AUTHOR ID', $post?.author);
+		console.log('AUTHOR', $author);
+	});
+
+	$effect(() => {
+		if (!queriedReplies && $post?.replies) {
 			queriedReplies = true;
 			api.listPostReplies({ id: post.id }).then((posts) => (replies = posts));
 		}
@@ -105,7 +115,10 @@
 			});
 		}
 	};
-	console.log('body', post.body);
+	const itsYou = $derived(
+		$currentUserStore && $author?.id === $currentUserStore?.id,
+	);
+	$inspect(author);
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>
@@ -143,7 +156,9 @@
 					}
 				}}
 			>
-				{#if $friendship === 'befriended'}
+				{#if itsYou}
+					you
+				{:else if $friendship === 'befriended'}
 					friend
 				{:else if $friendship === 'theyOffered'}
 					wants to be your friend
@@ -155,13 +170,18 @@
 			</Button>
 			<div class={styles.dropperMenu} style="--width: 230px">
 				<ul>
+					{#if itsYou}
+						<li>
+							<Button href={`/u/${$author?.username}`}>Edit profile</Button>
+						</li>
+					{/if}
 					{#if $follow}
 						<li>
 							<Button comingSoon onClick={() => alert('WIP')}
 								>Invite to group</Button
 							>
 						</li>
-					{:else}
+					{:else if !itsYou}
 						<li>
 							<Button
 								onClick={() => {
@@ -177,13 +197,39 @@
 								>Invite to game</Button
 							>
 						</li>
-					{:else}
+					{:else if $friendship === 'none' && !itsYou}
 						<li>
 							<Button
 								onClick={() => {
 									myFriendshipStore.update(post.author, 'youOffered');
 									api.createFriendRequest(post.author);
 								}}>Add friend</Button
+							>
+						</li>
+					{:else if $friendship === 'youOffered'}
+						<li>
+							<Button
+								onClick={() => {
+									myFriendshipStore.update(post.author, 'none');
+									api.recindFriendRequest(post.author);
+								}}>Recind friendship offer</Button
+							>
+						</li>
+					{:else if $friendship === 'theyOffered'}
+						<li>
+							<Button
+								onClick={() => {
+									myFriendshipStore.update(post.author, 'befriended');
+									api.acceptFriendRequest(post.author);
+								}}>Accept friend request</Button
+							>
+						</li>
+						<li>
+							<Button
+								onClick={() => {
+									myFriendshipStore.update(post.author, 'none');
+									api.declineFriendRequest(post.author);
+								}}>Ignore friend request</Button
 							>
 						</li>
 					{/if}
@@ -213,33 +259,33 @@
 			</div>
 		</span>
 		&middot;
-		<DynamicDate time={post.publish} />
+		<DynamicDate time={$post?.publish} />
 
 		<span class={styles.PostContent}>
-			{#if post.title}
-				<h1>{post.title}</h1>
+			{#if $post?.title}
+				<h1>{$post.title}</h1>
 			{/if}
 		</span>
 
-		{#if post.body}
+		{#if $post?.body}
 			<div
 				class={[
 					styles.body,
 					{
-						[styles.brief]: post.body.length < 100,
+						[styles.brief]: $post.body.length < 100,
 					},
 				]}
 			>
-				{@html post.body}
+				{@html $post.body}
 			</div>
 		{/if}
 	</span>
 
-	{#if 'attachments' in post}
+	{#if $post && 'attachments' in $post}
 		<div
 			class={[
 				styles.attachments,
-				post.attachments?.length &&
+				$post.attachments.length &&
 					[
 						styles.one,
 						styles.two,
@@ -251,10 +297,10 @@
 						styles.eight,
 						styles.nine,
 						styles.ten,
-					][post.attachments.length - 1],
+					][$post.attachments.length - 1],
 			]}
 		>
-			{#each post.attachments || [] as at}
+			{#each $post.attachments || [] as at}
 				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
 					<Image
 						src={`https://imagedelivery.net/${cfHash}/${at.toString()}/btvprofile`}
@@ -282,9 +328,13 @@
 			<ShareButton {post} />
 		</span>
 
-		{#if showReplyer && currentUserStore}
+		{#if showReplyer && $currentUserStore && $post}
 			<br />
-			<PostCreator showInset={false} reply={post.id} user={currentUserStore} />
+			<PostCreator
+				showInset={false}
+				reply={$post.id}
+				user={$currentUserStore}
+			/>
 		{/if}
 	{/if}
 
@@ -312,10 +362,10 @@
 		<div class={styles.dropperMenu} style="--width: 200px">
 			<ul>
 				<!-- <li><Button>Edit</Button></li> -->
-				{#if $currentUserStore && $currentUserStore.id === author.id}
-					<li><Button onClick={handleDelete}>Delete</Button></li>
-				{/if}
 				<li><Button comingSoon onClick={() => alert('WIP')}>Share</Button></li>
+				{#if itsYou}
+					<li><Button destructive onClick={handleDelete}>Delete</Button></li>
+				{/if}
 			</ul>
 		</div>
 	</span>

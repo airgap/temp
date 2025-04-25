@@ -51,6 +51,7 @@ export * from './notification';
 export * from './passhash';
 export * from './password';
 export * from './post';
+export * from './scoredPost';
 export * from './postBody';
 export * from './postDraft';
 export * from './postTitle';

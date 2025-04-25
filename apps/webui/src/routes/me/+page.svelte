@@ -31,7 +31,7 @@
 					/>
 				</div>
 				<Divisio size="m" layout="v">
-					<h1>{$currentUser.username ?? 'User'}</h1>
+					<h1>{$currentUser?.username ?? 'User'}</h1>
 					<p>{phrasebook.bioWip}</p>
 				</Divisio>
 			</Divisio>

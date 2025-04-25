@@ -93,6 +93,7 @@ export * from './logoutUser';
 export * from './newAiTtfMatch';
 export * from './placePiece';
 export * from './proposeMatch';
+export * from './recindFriendRequest';
 export * from './setChannelLogo';
 export * from './streamCurrentUser';
 export * from './streamTtfMatch';

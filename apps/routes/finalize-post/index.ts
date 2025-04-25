@@ -1,8 +1,7 @@
 import { handleFinalizePost } from '@lyku/handles';
-import { AttachmentType, getSupertypeFromAttachmentId } from '@lyku/helpers';
-import { InsertablePost, User } from '@lyku/json-models/index';
+import { InsertablePost, Post } from '@lyku/json-models/index';
 import { sql } from 'kysely';
-import { elasticate } from './elasticate';
+import { elasticatePost } from './elasticatePost';
 
 export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	const authRes = await db
@@ -38,7 +37,7 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	console.log('post', protopost);
 	const p = await db
 		.insertInto('posts')
-		.values(protopost)
+		.values(protopost as Post)
 		.returningAll()
 		.executeTakeFirstOrThrow();
 	const user = await db
@@ -73,6 +72,6 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 			})
 			.where('id', '=', authRes.echoing)
 			.execute();
-	await elasticate(p);
+	await elasticatePost(p);
 	return p;
 });

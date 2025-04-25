@@ -9,12 +9,6 @@ import {
 } from 'from-schema';
 import * as prettier from 'prettier';
 import * as models from '@lyku/mapi-models';
-import { MonolithTypes } from '@lyku/mapi-types';
-
-type Handle<I, O, H = (input: I) => O> = (handler: H) => {
-	execute: H;
-	validate: (input: unknown) => input is I;
-};
 
 const jsonify = async () => {
 	const handles = [];

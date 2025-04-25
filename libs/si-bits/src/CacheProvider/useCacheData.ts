@@ -2,9 +2,18 @@ import { derived, type Readable } from 'svelte/store';
 import { userStore } from './UserStore';
 import { myFollowStore } from './MyFollowStore';
 import { myFriendshipStore } from './MyFriendshipStore';
-import type { FriendshipStatus, User } from '@lyku/json-models';
+import { postStore } from './PostStore';
+import type { FriendshipStatus, Post, User } from '@lyku/json-models';
 
 const isSSR = typeof window === 'undefined';
+
+export function usePost(id: bigint): Readable<Post | undefined> {
+	return derived(postStore, (map) => map.get(id));
+}
+
+export function usePosts(ids: bigint[]): (Post | undefined)[] {
+	return postStore.getMany(ids);
+}
 
 /**
  * Reactive hook for Svelte components to use the user store
@@ -34,8 +43,12 @@ export function useFollows(ids: bigint[]): (bigint | undefined)[] {
 	return myFollowStore.getMany(ids);
 }
 
-export function useFriendship(id: bigint): Readable<boolean | undefined> {
-	return derived(myFollowStore, ($myFollowMap) => $myFollowMap.get(id));
+export function useFriendship(
+	id: bigint,
+): Readable<FriendshipStatus | undefined> {
+	return derived(myFriendshipStore, ($myFriendshipMap) =>
+		$myFriendshipMap.get(id),
+	);
 }
 
 export function useFriendships(

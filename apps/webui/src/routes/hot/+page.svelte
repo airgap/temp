@@ -8,6 +8,7 @@
 		myFriendshipStore,
 		myLikeStore,
 		currentUserStore,
+		postStore,
 	} from '@lyku/si-bits';
 	import type { Post, User } from '@lyku/json-models';
 	// let postsPromise = api.listHotPosts({});
@@ -16,6 +17,7 @@
 	const { data } = $props<{
 		data:
 			| {
+					order: Promise<bigint[]>;
 					posts: Promise<Post[]>;
 					users: Promise<User[]>;
 					likes: Promise<BigInt[]>;
@@ -26,6 +28,7 @@
 			| { error: string };
 	}>();
 	const {
+		order,
 		posts,
 		users,
 		error,
@@ -51,6 +54,7 @@
 		[likes, myLikeStore],
 		[follows, myFollowStore],
 		[friendships, myFriendshipStore],
+		[posts, postStore],
 	].forEach(async ([data, store]) => store.hydrate(await data));
 	if (user) {
 		currentUserStore.preload(user);
@@ -59,7 +63,7 @@
 
 <FeedPage title="Hot">
 	{#if posts}
-		<PostList posts={posts ?? []} cfHash={PUBLIC_CF_HASH} />
+		<PostList posts={order ?? []} cfHash={PUBLIC_CF_HASH} />
 	{:else}
 		<h3>{String(error)}</h3>
 	{/if}

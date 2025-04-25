@@ -1,10 +1,7 @@
 // import type { PageLoad } from './$types';
-import { neon } from '../../../lib/server/db.server';
-import { getAuthors } from '../../getUsers';
-import { getLikesForPosts } from '../../getLikesForPosts';
+import { neon, getUsers, getLikesForPosts } from '../../../lib/server';
 export const load = async ({ params, fetch, parent }) => {
 	const { user } = await parent();
-	console.log('ACTUALLY FUCKING', user);
 	const { slug } = params;
 	const db = neon();
 	const target = slug
@@ -25,9 +22,9 @@ export const load = async ({ params, fetch, parent }) => {
 		: [];
 
 	const authors = posts?.length
-		? await getAuthors(
-				posts.map((p) => p.id),
+		? await getUsers(
 				db,
+				posts.map((p) => p.id),
 			)
 		: [];
 	const rawFollows = await db

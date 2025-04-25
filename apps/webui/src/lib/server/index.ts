@@ -8,3 +8,10 @@ export const SERVER_ONLY = true;
 
 // Don't re-export database functions to avoid circular dependencies
 // Instead, import them directly from the db.ts file
+export * from './getAuthorsLikesFollowsFriendships.server';
+export * from './getFollowVectors.server';
+export * from './getFriendshipStatuses.server';
+export * from './getLikesForPosts.server';
+export * from './getLikeVectors.server';
+export * from './getUsers.server';
+export * from './db.server';
