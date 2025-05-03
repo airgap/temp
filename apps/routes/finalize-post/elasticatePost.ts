@@ -9,26 +9,20 @@ export async function elasticatePost(post: Post): Promise<void> {
 		id: post.id.toString(),
 		body: post.body,
 		bodyType: post.bodyType,
-		echoes: post.echoes,
+		echoes: post.echoes?.toString(),
 		group: post.group?.toString(),
 		hashtags: post.hashtags?.map((h) => h.toString()),
-		author: post.author,
-		likes: post.likes,
-		loves: post.loves,
-		publish: post.publish,
-		replies: post.replies,
+		author: post.author.toString(),
+		likes: post.likes.toString() ?? '0',
+		loves: post.loves?.toString() ?? '0',
+		publish: post.publish.toISOString(),
+		replies: post.replies?.toString() ?? '0',
 		title: post.title,
-		thread: post.thread?.map((t) => t.toString()),
-		shortcode: post.shortcode,
+		thread: post.thread?.map((t) => t.toString()) ?? [],
 		replyTo: post.replyTo?.toString(),
 		echoing: post.echoing?.toString(),
-		attachments: post.attachments?.map((a) => a.toString()),
+		attachments: post.attachments?.map((a) => a.toString()) ?? [],
 		updated: post.updated?.toISOString(),
-		// Add engagement score for ranking
-		engagement_score:
-			Number(post.likes) +
-			(Number(post.loves) || 0) * 10 +
-			Number(post.echoes) * 5,
 		created: post.created?.toISOString(),
 	};
 
@@ -38,7 +32,7 @@ export async function elasticatePost(post: Post): Promise<void> {
 		Authorization: `ApiKey ${process.env.ELASTIC_API_KEY}`,
 	});
 
-	console.log('Fetching', url);
+	console.log('Fetching', url, elasticPost);
 
 	const res = await fetch(url, {
 		method: 'PUT',
@@ -47,6 +41,8 @@ export async function elasticatePost(post: Post): Promise<void> {
 	});
 
 	if (!res.ok) {
-		throw new Error(`Failed to index post in Elasticsearch: ${res.statusText}`);
+		console.error(`Failed to index post in Elasticsearch: ${res.statusText}`);
+		console.error(await res.text());
+		throw new Error('Fukt');
 	}
 }

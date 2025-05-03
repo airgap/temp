@@ -3,17 +3,13 @@ import path from 'path';
 import {
 	postgresRecordToTson,
 	tsonToType,
-	PostgresRecordModel,
 	postgresColumnToTson,
-	postgresRecordToKysely,
-	postgresColumnToKysely,
 	stringifyBON,
 } from 'from-schema';
 import * as ts from 'typescript';
 import * as module from 'bson-models';
 import * as extras from './extra';
 import * as prettier from 'prettier';
-// import { dbConfig } from '@lyku/db-config';
 
 const pgColumnTypes = [
 	'bigint',

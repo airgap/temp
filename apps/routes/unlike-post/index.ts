@@ -57,7 +57,7 @@ export default handleUnlikePost(async (postId, { db, requester, elastic }) => {
 		index,
 		id: postId.toString(),
 		script: {
-			source: 'ctx._source.likes = (ctx._source.likes ?: 0) - 1',
+			source: `ctx._source.likes = (ctx._source.likes != null ? ctx._source.likes - 1 : -1);`,
 			lang: 'painless',
 		},
 	});

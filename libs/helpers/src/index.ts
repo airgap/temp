@@ -27,6 +27,8 @@ export * from './Only';
 export * from './parseAttachmentId';
 export * from './patchAttachments';
 export * from './prettyTime';
+export * from './reactions';
+export * from './reactionWorth';
 export * from './removeKey';
 export * from './uuidToBase62';
 export * from './onEach';

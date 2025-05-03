@@ -2,7 +2,9 @@ import { decode, encode } from '@msgpack/msgpack';
 import type { SecureHttpContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
+import * as clickhouse from '@clickhouse/client';
 import * as nats from 'nats';
+import * as redis from 'redis';
 import {
 	stringifyBON,
 	type TsonHandlerModel,
@@ -11,6 +13,8 @@ import {
 import { natsPort } from './env';
 import { Err } from '@lyku/helpers';
 import { Client } from '@elastic/elasticsearch';
+import { createClickhouseClient } from './createClickhouseClient';
+import { createRedisClient } from './createRedisClient';
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
 
@@ -20,6 +24,10 @@ const elastic = new Client({
 		apiKey: process.env['ELASTIC_API_KEY'] as string,
 	},
 });
+
+const c = createClickhouseClient();
+
+const r = createRedisClient();
 
 export const serveHttp = async ({
 	execute,
@@ -150,6 +158,9 @@ export const serveHttp = async ({
 					server,
 					model,
 					elastic,
+					clickhouse: c,
+					redis: r,
+					now: new Date(),
 				})) as SecureHttpContext<any>;
 				const pack = encode(output, { useBigInt64: true });
 

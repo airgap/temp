@@ -2,6 +2,8 @@ import { decode } from '@msgpack/msgpack';
 import { encode } from '@msgpack/msgpack';
 import { db } from './db';
 import type { ServerWebSocket } from 'bun';
+import * as redis from 'redis';
+import * as clickhouse from '@clickhouse/client';
 import {
 	type StreamConfig,
 	type TsonStreamHandlerModel,
@@ -10,6 +12,12 @@ import {
 import { en_US } from '@lyku/strings';
 import * as nats from 'nats';
 import { natsPort } from './env';
+import { createClickhouseClient } from './createClickhouseClient';
+import { createRedisClient } from './createRedisClient';
+
+const c = createClickhouseClient();
+
+const r = createRedisClient();
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 type Data = { authenticated: boolean; user?: bigint; sessionId?: string };
@@ -123,6 +131,9 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						onClose: (closer: () => void) => closers.push(closer),
 						onTweak: (tweaker: any) => tweakers.push(tweaker),
 						model,
+						redis: r,
+						clickhouse: c,
+						now: new Date(),
 					});
 
 					// ws.send(encode("Authenticated"));

@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/like-post",
+	"name": "@lyku/react-to-post",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,19 +7,19 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./scripts/build-route like-post"
+				"command": "./scripts/build-route react-to-post"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route like-post --push"
+				"command": "./scripts/dockerize-route react-to-post --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/deploy-route like-post"
+				"command": "./scripts/deploy-route react-to-post"
 			}
 		}
 	}

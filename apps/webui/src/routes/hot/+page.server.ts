@@ -20,7 +20,7 @@ export const load = async ({ params, fetch, parent }) => {
 	const postIds = posts.map((p) => p.id);
 	const authorIds = dedupe(posts.map((p) => p.author));
 	return {
-		order: posts.map((p) => p.id),
+		order: postIds,
 		posts,
 		continuation,
 		users: getUsers(db, authorIds),

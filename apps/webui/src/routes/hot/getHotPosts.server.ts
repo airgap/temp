@@ -5,6 +5,7 @@ import {
 	type DateRange,
 } from '@lyku/helpers';
 import { delasticatePost } from './delasticatePost';
+import { stringifyBON } from 'from-schema';
 
 export async function queryHotPosts(opts: {
 	ELASTIC_API_ENDPOINT: string;
@@ -39,32 +40,33 @@ export async function queryHotPosts(opts: {
 	// 	headers: { 'Content-Type': 'application/json' },
 	// 	body: JSON.stringify(body)
 	// });
-	if (!res.ok) throw new Error(`Elasticsearch query failed: ${res.statusText}`);
-
+	if (!res.ok)
+		throw new Error(`Elasticsearch query failed: ${typeof res.statusText}`);
 	const result = await res.json();
 	// const result = await opts.proxy.list(body, opts.ELASTIC_API_ENDPOINT, opts.ELASTIC_API_KEY);
 	const hits = result.hits?.hits ?? [];
-
 	const hotPosts: Post[] = hits.map(delasticatePost);
-
 	const responses = await fetch(`${opts.ELASTIC_API_ENDPOINT}/_msearch`, {
 		method: 'POST',
 		body:
 			buildBackthreadQuery(
 				hotPosts.map((p) => ({ id: p.id, score: (p as any).score })),
 			)
-				.map((item) => JSON.stringify(item))
+				.map((item) => {
+					return stringifyBON(item);
+				})
 				.join('\n') + '\n',
-	}).then((res) => res.json());
+	}).then(async (res) => {
+		const j = await res.json();
+		return j;
+	});
 
 	const posts: Post[] = [];
 	const threads: Thread[] = [];
 
 	for (let i = 0; i < hotPosts.length; i++) {
-		const focusHit = hotPosts[i];
+		const focus = hotPosts[i];
 		const replyHit = responses[i]?.hits?.hits?.[0];
-
-		const focus = delasticatePost(focusHit);
 		posts.push(focus);
 
 		if (replyHit) {

@@ -61,7 +61,7 @@ spec:
               cpu: '5m'
             limits:
               memory: '200Mi'
-              cpu: '200m'
+              cpu: '20m'
           startupProbe:
             httpGet:
               path: /health

@@ -16,7 +16,8 @@
 		"generate-ingress": "bun scripts/generate-ingress.ts",
 		"apply-ingress": "kubectl apply -f tmp/ingress.yaml",
 		"deploy-ingress": "bun run generate-ingress && bun run apply-ingress",
-		"cloc": "cloc --vcs=git --exclude-list-file=cloc-exclude"
+		"cloc": "cloc --vcs=git --exclude-list-file=cloc-exclude",
+		"template-env": "sed 's/=\\(.*\\)/=/' .env > .env.template"
 	},
 	"private": true,
 	"dependencies": {
@@ -29,6 +30,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.26.9",
 		"@babel/preset-react": "^7.26.3",
+		"@clickhouse/client": "^1.11.1",
 		"@cloudflare/stream-react": "^1.9.3",
 		"@cloudflare/workers-types": "^4.20250303.0",
 		"@elastic/elasticsearch": "^8.17.1",
@@ -133,6 +135,7 @@
 		"react-dom": "18.3.1",
 		"react-refresh": "~0.14.2",
 		"react-select": "^5.10.1",
+		"redis": "^5.0.0",
 		"regl": "^2.1.1",
 		"restore-cursor": "^5.1.0",
 		"rollup": "^4.35.0",
