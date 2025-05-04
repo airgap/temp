@@ -4,10 +4,7 @@ import { bigintToBase58, Err, reactionWorth } from '@lyku/helpers';
 import { sql } from 'kysely';
 import { grantPointsToUser, sendNotification } from '@lyku/route-helpers';
 export default handleReactToPost(
-	async (
-		{ postId, type },
-		{ requester, db, elastic, clickhouse, redis, now },
-	) => {
+	async ({ postId, type }, { requester, db, clickhouse, now }) => {
 		const post = await db
 			.selectFrom('posts')
 			.selectAll()

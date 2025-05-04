@@ -52,7 +52,7 @@ export * from './getUsersByUsername';
 export * from './getUserChannels';
 export * from './joinGroup';
 export * from './leaveGroup';
-export * from './likePost';
+export * from './reactToPost';
 export * from './listAchievements';
 export * from './listChannelVideos';
 export * from './listDevelopers';

@@ -1,5 +1,5 @@
 import type { TsonHandlerModel } from 'from-schema';
-import { post } from '@lyku/json-models';
+import { reactions } from '@lyku/helpers';
 
 export const reactToPost = {
 	request: {
@@ -10,9 +10,7 @@ export const reactToPost = {
 				description: 'The ID of the post to react to',
 			},
 			type: {
-				type: 'string',
-				pattern: '^[👍👎👏👋👌💖♥️🧡💙💜💛💚🤍🖤🤎💔]$',
-				description: 'The type of reaction to leave',
+				enum: reactions,
 			},
 		},
 		required: ['postId', 'type'],

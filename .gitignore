@@ -54,3 +54,4 @@ k8s-prd-ca-cert.crt
 
 frames
 venv
+**/.claude/settings.local.json
