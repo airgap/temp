@@ -18,6 +18,14 @@ esbuild
 		sourcemap: true, // Optional: Generate source maps for easier debugging
 		treeShaking: true, // Ensure tree shaking is enabled
 		metafile: true, // Generate a metafile for analysis
+		
+		// Simply mark all packages as external to allow the router approach to work
+		external: [
+			'@lyku/*',
+			'kysely',
+			'@clickhouse/client',
+			'@elastic/elasticsearch'
+		]
 	})
 	.then(() => {
 		// console.log('Built');

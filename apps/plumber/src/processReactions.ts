@@ -1,7 +1,13 @@
 import { Client } from '@elastic/elasticsearch';
-import { createClickhouseClient } from '@lyku/route-helpers';
+// Import directly from node_modules instead of using the TypeScript path alias
+import { createClient } from '@clickhouse/client';
 
-const clickhouse = createClickhouseClient();
+// Create the clickhouse client directly instead of using route-helpers
+const clickhouse = createClient({
+  url: process.env.CH_ENDPOINT,
+  password: process.env.CH_PASSWORD,
+  username: process.env.CH_USERNAME,
+});
 
 const elastic = new Client({
 	node: process.env.ELASTIC_API_ENDPOINT,
