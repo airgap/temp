@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
-import { createClickhouseClient } from '../../libs/route-helpers/src/createClickhouseClient';
+import { createClickhouseClient } from '@lyku/route-helpers';
 
 const clickhouse = createClickhouseClient();
 

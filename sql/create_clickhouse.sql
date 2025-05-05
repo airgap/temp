@@ -1,75 +1,35 @@
--- Store all user reactions (append-only)
 CREATE TABLE user_post_reactions
 ON CLUSTER default
 (
     postId   UInt64,
     userId   UInt64,
     reaction String,
-    created  DateTime64(3)  -- Using DateTime64 for microsecond precision
+    created  DateTime
 )
-ENGINE = ReplacingMergeTree(created)
-ORDER BY (userId, postId);
+ENGINE = MergeTree
+ORDER BY (postId, userId);
 
--- Materialized view to capture latest reaction per user per post
-CREATE MATERIALIZED VIEW user_latest_reactions
-ON CLUSTER default
-(
-    postId   UInt64,
-    userId   UInt64,
-    reaction String,
-    created  DateTime64(3)
-)
-ENGINE = ReplacingMergeTree(created)
-ORDER BY (userId, postId)
-POPULATE
-AS 
-SELECT
-    postId,
-    userId,
-    reaction,
-    created
-FROM user_post_reactions;
-
--- Aggregated reaction counts 
 CREATE TABLE post_reaction_counts
 ON CLUSTER default
 (
-    postId      UInt64,
-    reaction    String,
-    count       UInt64,
-    updated_at  DateTime64(3)
+    postId   UInt64,
+    reaction String,
+    count    AggregateFunction(count, UInt64)
 )
-ENGINE = ReplacingMergeTree(updated_at)
+ENGINE = AggregatingMergeTree
 ORDER BY (postId, reaction);
 
--- Materialized view to update counts
 CREATE MATERIALIZED VIEW post_reaction_counts_mv
 ON CLUSTER default
 TO post_reaction_counts
 AS
 SELECT
     postId,
-    reaction,
-    count() AS count,
-    now64(3) AS updated_at
-FROM user_latest_reactions
-GROUP BY postId, reaction;
+    argMax(reaction, created) AS reaction,
+    countState() AS count
+FROM user_post_reactions_raw
+GROUP BY postId, userId;
 
--- Create a buffer table for Elasticsearch sync (optional)
-CREATE TABLE post_reaction_counts_buffer
-ON CLUSTER default
-(
-    postId      UInt64,
-    reaction    String,
-    count       UInt64,
-    updated_at  DateTime64(3)
-)
-ENGINE = Buffer(default, post_reaction_counts, 16, 10, 100, 10000, 1000000, 10000000, 100000000);
-
--- Function to refresh counts for Elasticsearch export
-CREATE FUNCTION refresh_reaction_counts_for_elasticsearch AS
-    INSERT INTO post_reaction_counts_buffer
-    SELECT * FROM post_reaction_counts;
 
 
 CREATE TABLE user_point_grants

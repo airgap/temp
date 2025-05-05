@@ -9,13 +9,13 @@ export function processReactionSync() {
 }
 
 async function processPostPoints(postIds: string[]): Promise<string[]> {
-	// Implementation - placeholder
+	// TODO: Flush user 
 	console.log(`Processing post points for ${postIds.length} posts`);
 	return []; // Return affected user IDs
 }
 
 async function processUserAchievements(userIds: string[]): Promise<string[]> {
-	// Implementation - placeholder
+	// TODO: Flush user achievements
 	console.log(`Processing achievements for ${userIds.length} users`);
 	return userIds;
 }

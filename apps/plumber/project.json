@@ -7,7 +7,7 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "bun ibuild.ts apps/plumber/serve.ts dist/apps/plumber"
+				"command": "bun ibuild.ts apps/plumber/src/index.ts dist/apps/plumber"
 			}
 		},
 		"dockerize": {

@@ -16,7 +16,7 @@ done
 # Build the image
 docker build \
     --quiet \
-    -f docker/templates/route.Dockerfile \
+    -f apps/plumber/plumber.Dockerfile \
     -t $REGISTRY/$REPO:plumber \
     .
     # --provenance=mode=max \
