@@ -1,0 +1,39 @@
+flowchart TD
+    User[User] -->|Post Reaction| API[API Gateway]
+    subgraph "Real-time Layer"
+        API --> ReactHandler[Reaction Handler Service]
+        ReactHandler -->|Write| RedisCluster[Redis Cluster\nSharded by Post/User ID]
+        RedisCluster -->|Read| ReactHandler
+    end
+
+    subgraph "Persistence Layer"
+        ReactHandler -->|Async Write| PostgreSQL[(PostgreSQL\nDurability Store)]
+        ReactHandler -->|Failed writes| RetryQueue[Persistence Retry Queue]
+        RetryQueue -->|Process retries| PostgreSQL
+    end
+
+    subgraph "Analytics Layer"
+        ReactHandler -->|Analytics events| ClickHouse[(ClickHouse\nAnalytics Store)]
+    end
+
+    subgraph "Recovery Systems"
+        Scheduler[Scheduled Jobs] -->|Trigger| RedisHealth[Redis Health Check]
+        RedisHealth -->|Monitor| RedisCluster
+        RedisHealth -->|Detect issues| RecoveryProcess[Recovery Process]
+        PostgreSQL -->|Rebuild data| RecoveryProcess
+        RecoveryProcess -->|Restore| RedisCluster
+    end
+
+    subgraph "Monitoring & Alerting"
+        ReactHandler -->|Metrics| Prometheus[Prometheus]
+        RedisCluster -->|Metrics| Prometheus
+        PostgreSQL -->|Metrics| Prometheus
+        RetryQueue -->|Metrics| Prometheus
+        Prometheus -->|Alerts| AlertManager[Alert Manager]
+    end
+
+    subgraph "Reconciliation"
+        Scheduler -->|Periodic| ReconcileJob[Redis-Postgres Reconciliation]
+        PostgreSQL -->|Source of truth| ReconcileJob
+        ReconcileJob -->|Update| RedisCluster
+    end

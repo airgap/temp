@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/plumber",
+	"name": "@lyku/reaction-worker",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,19 +7,19 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "bun ibuild.ts apps/plumber/src/index.ts dist/apps/plumber"
+				"command": "./scripts/build-route reaction-worker"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./apps/plumber/dockerize plumber --push"
+				"command": "./scripts/dockerize-route reaction-worker --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./apps/plumber/deploy"
+				"command": "./scripts/deploy-route reaction-worker"
 			}
 		}
 	}

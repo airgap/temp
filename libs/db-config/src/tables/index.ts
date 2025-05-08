@@ -23,6 +23,7 @@ export * from './notifications';
 export * from './postDrafts';
 export * from './posts';
 export * from './publishers';
+export * from './reactions';
 export * from './scores';
 export * from './sessions';
 export * from './hashtags';

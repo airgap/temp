@@ -35,8 +35,8 @@ spec:
               value: '1'
             - name: FORCE_COLOR
               value: '1'
-            - name: DATABASE_URL
-              value: '${DATABASE_URL}'
+            - name: PG_CONNECTION_STRING
+              value: '${PG_CONNECTION_STRING}'
             - name: CF_API_TOKEN
               value: '${CF_API_TOKEN}'
             - name: CF_ID
@@ -61,21 +61,21 @@ spec:
               cpu: '5m'
             limits:
               memory: '200Mi'
-              cpu: '20m'
+              cpu: '60m'
           startupProbe:
             httpGet:
               path: /health
               port: 3000
             initialDelaySeconds: 10
-            periodSeconds: 5
-            failureThreshold: 30
+            periodSeconds: 10
+            failureThreshold: 300
           livenessProbe:
             httpGet:
               path: /health
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 20
-            failureThreshold: 3
+            failureThreshold: 30
           readinessProbe:
             httpGet:
               path: /health

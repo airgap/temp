@@ -1,0 +1,19 @@
+{
+	"name": "@lyku/queue-system",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/queue-system/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/queue-system",
+				"main": "libs/queue-system/src/index.ts",
+				"tsConfig": "libs/queue-system/tsconfig.lib.json",
+				"assets": ["libs/queue-system/*.md"]
+			}
+		}
+	}
+}

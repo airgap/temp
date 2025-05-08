@@ -1,3 +1,4 @@
+console.log('AHAHHAHAHA');
 import { handleAcceptFriendRequest } from '@lyku/handles';
 import { bondIds, Err } from '@lyku/helpers';
 
