@@ -13,7 +13,7 @@ import { en_US } from '@lyku/strings';
 import * as nats from 'nats';
 import { natsPort } from './env';
 import { createClickhouseClient } from './createClickhouseClient';
-import { createRedisClient } from './createRedisClient';
+import { createRedisClient } from '@lyku/redis-client';
 
 const c = createClickhouseClient();
 

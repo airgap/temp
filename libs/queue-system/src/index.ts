@@ -132,14 +132,14 @@ export class RetryQueue {
 		const now = Date.now();
 		const nextRetryAt = this.calculateNextRetryTime(job.attempts);
 
-		const fullJob: RetryJob = {
+		const fullJob = {
 			...job,
 			id: uuidv4(),
 			createdAt: now,
 			updatedAt: now,
 			nextRetryAt,
 			maxAttempts: job.maxAttempts || this.options.defaultMaxAttempts,
-		};
+		} satisfies RetryJob;
 
 		const pipeline = this.redis.pipeline();
 
@@ -292,6 +292,7 @@ export class RetryQueue {
 	 * Process a single job
 	 */
 	private async processJob(job: RetryJob): Promise<void> {
+		if (!job.id) throw new Error('No job id');
 		const processor = this.processors.get(job.operation);
 
 		if (!processor) {
@@ -414,7 +415,10 @@ export async function addToRetryQueue(
 ): Promise<string> {
 	// This would typically access a singleton/global instance of the queue system
 	// In a real implementation, this would be injected or accessed through a service locator
-	const queueSystem = global.__queueSystem as Record<string, RetryQueue>;
+	const queueSystem = (global as any).__queueSystem as Record<
+		string,
+		RetryQueue
+	>;
 
 	if (!queueSystem || !queueSystem[queueName]) {
 		throw new Error(`Queue ${queueName} not found in the queue system`);
@@ -427,7 +431,7 @@ export async function addToRetryQueue(
  * Initialize the queue system
  */
 export function initializeQueueSystem(
-	redis: RedisClient,
+	redis: Redis,
 	logger: Logger,
 	options: { [queueName: string]: RetryQueueOptions } = {},
 ): Record<string, RetryQueue> {
