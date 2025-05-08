@@ -6,10 +6,11 @@ import { ReactionWorkerService } from '.';
 async function main() {
 	// Read configuration from environment variables
 	const config = {
-		serviceName: process.env.SERVICE_NAME || 'reaction-worker',
+		serviceName: process.env.SERVICE_NAME || 'lyku-reaction-worker',
 		environment: process.env.NODE_ENV || 'development',
-		redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
-		postgresUrl: process.env.POSTGRES_URL || 'postgres://localhost:5432/lyku',
+		redisUrl: process.env.REDIS_CONNECTION_STRING || 'redis://localhost:6379',
+		postgresUrl:
+			process.env.PG_CONNECTION_STRING || 'postgres://localhost:5432/lyku',
 		enableRecovery: process.env.ENABLE_RECOVERY === 'true',
 		enableMonitoring: process.env.ENABLE_MONITORING !== 'false',
 		reconcileIntervalMs: parseInt(
