@@ -56,6 +56,7 @@ export * from './postBody';
 export * from './postDraft';
 export * from './postTitle';
 export * from './publisher';
+export * from './reaction';
 export * from './score';
 export * from './session';
 export * from './sessionId';

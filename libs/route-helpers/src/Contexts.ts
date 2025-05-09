@@ -3,7 +3,7 @@ import { Client } from '@elastic/elasticsearch';
 import type { Database } from '@lyku/db-config/kysely';
 import type { CompactedPhrasebook } from '@lyku/phrasebooks';
 import type { ServerWebSocket, Server } from 'bun';
-import type { RedisClientType } from 'redis';
+import type { Redis } from 'ioredis';
 import type {
 	TsonHttpHandlerModel,
 	TsonStreamHandlerModel,
@@ -22,7 +22,7 @@ type BaseContextFragment<Model extends TsonHandlerModel> = {
 	model: Model;
 	elastic: Client;
 	clickhouse: ClickHouseClient;
-	redis: RedisClientType;
+	redis: Redis;
 	now: Date;
 };
 type HttpContextFragment = {

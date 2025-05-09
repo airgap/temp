@@ -14,7 +14,7 @@ declare global {
 
 		interface Platform {
 			env?: {
-				DATABASE_URL?: string;
+				PG_CONNECTION_STRING?: string;
 				[key: string]: string | undefined;
 			};
 		}
@@ -25,7 +25,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.cookies = event.cookies;
 
 	// Initialize database if we have platform environment
-	if (event.platform?.env?.DATABASE_URL) {
+	if (event.platform?.env?.PG_CONNECTION_STRING) {
 		const db = initDb(event.platform.env.DATABASE_URL);
 		event.locals.db = db;
 	}

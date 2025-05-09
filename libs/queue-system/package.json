@@ -1,0 +1,11 @@
+{
+	"name": "@lyku/queue-system",
+	"version": "0.0.1",
+	"dependencies": {
+		"@lyku/redis-client": "workspace:*"
+	},
+	"type": "module",
+	"main": "./src/index.js",
+	"typings": "./src/index.d.ts",
+	"private": true
+}

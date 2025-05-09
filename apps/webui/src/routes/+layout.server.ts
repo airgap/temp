@@ -3,11 +3,11 @@ import type { Cookies } from '@sveltejs/kit';
 
 // Import environment variables, will be handled by our custom plugin
 // during build time and runtime
-import { DATABASE_URL } from '$env/static/private';
+import { PG_CONNECTION_STRING } from '$env/static/private';
 
 export const load = async ({ cookies }: { cookies: Cookies }) => {
 	const sessionId = cookies.get('sessionId');
-	const db = initDb(DATABASE_URL || process?.env?.DATABASE_URL || '');
+	const db = initDb(PG_CONNECTION_STRING || process?.env?.DATABASE_URL || '');
 	const session = sessionId
 		? await db
 				.selectFrom('sessions')

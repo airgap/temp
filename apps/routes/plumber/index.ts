@@ -1,7 +1,7 @@
 import { processReactions } from './processReactions';
 
 // Single process with modular internal components
-export function processReactionSync() {
+export function flushAll() {
 	return processReactions()
 		.then((postIds) => processPostPoints(postIds))
 		.then((userIds) => processUserAchievements(userIds))
@@ -9,7 +9,7 @@ export function processReactionSync() {
 }
 
 async function processPostPoints(postIds: string[]): Promise<string[]> {
-	// TODO: Flush user 
+	// TODO: Flush user
 	console.log(`Processing post points for ${postIds.length} posts`);
 	return []; // Return affected user IDs
 }

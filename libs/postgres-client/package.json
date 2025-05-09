@@ -1,0 +1,17 @@
+{
+	"name": "@lyku/postgres-client",
+	"version": "0.0.1",
+	"dependencies": {
+		"@swc/helpers": "~0.5.11",
+		"@lyku/defaults": "workspace:*",
+		"@lyku/helpers": "workspace:*",
+		"@lyku/db-config": "workspace:*",
+		"@lyku/bson-models": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"cheerio": "^1.0.0"
+	},
+	"type": "module",
+	"main": "./src/index.js",
+	"typings": "./src/index.d.ts",
+	"private": true
+}
