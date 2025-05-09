@@ -9,7 +9,7 @@
 			"executor": "@nx/js:swc",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"outputPath": "dist/libs/metrics",
+				"outputPath": "dist/libs/postgres-client",
 				"main": "libs/postgres-client/src/index.ts",
 				"tsConfig": "libs/postgres-client/tsconfig.lib.json",
 				"assets": ["libs/postgres-client/*.md"]

@@ -3,7 +3,6 @@ import { encode } from '@msgpack/msgpack';
 import { db } from './db';
 import type { ServerWebSocket } from 'bun';
 import * as redis from 'redis';
-import * as clickhouse from '@clickhouse/client';
 import {
 	type StreamConfig,
 	type TsonStreamHandlerModel,
@@ -11,11 +10,8 @@ import {
 } from 'from-schema';
 import { en_US } from '@lyku/strings';
 import * as nats from 'nats';
-import { natsPort } from './env';
-import { createClickhouseClient } from './createClickhouseClient';
+import { client as clickhouse } from '@lyku/clickhouse-client';
 import { createRedisClient } from '@lyku/redis-client';
-
-const c = createClickhouseClient();
 
 const r = createRedisClient();
 
@@ -32,9 +28,6 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 	tweakValidator?: Model['stream'] extends StreamConfig ? Validator : never;
 	model: Model;
 }) => {
-	const nc = await nats.connect({
-		servers: [natsPort],
-	});
 	const closers: (() => void)[] = [];
 	const tweakers: ((params: any) => void)[] = [];
 	const server = Bun.serve({
@@ -120,19 +113,15 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 					ws.data.authenticated = true;
 
 					onOpen?.(request, {
-						db,
 						strings: en_US,
 						requester: ws.data.user,
 						session: ws.data.sessionId,
 						socket: ws,
 						emit: (data: any) => ws.send(encode(data)),
-						nats: nc,
 						server,
 						onClose: (closer: () => void) => closers.push(closer),
 						onTweak: (tweaker: any) => tweakers.push(tweaker),
 						model,
-						redis: r,
-						clickhouse: c,
 						now: new Date(),
 					});
 

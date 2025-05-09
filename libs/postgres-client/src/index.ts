@@ -84,3 +84,4 @@ export async function testConnection(
 		await pool.end();
 	}
 }
+export const client = neon();

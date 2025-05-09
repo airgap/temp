@@ -4,6 +4,9 @@ import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import * as jdenticon from 'jdenticon';
 import { FormData } from 'formdata-node';
 import { handleRegisterUser } from '@lyku/handles';
+import { client as pg } from '@lyku/postgres-client';
+import { User } from '@lyku/json-models';
+import { Hashdoc } from '@lyku/json-models';
 
 // Custom identicon style
 // https://jdenticon.com/icon-designer.html?config=652966ff0111303054545454
@@ -44,19 +47,21 @@ type UIURFailure = UIURBase & {
 type UrlImageUploadResponse = UIURSuccess | UIURFailure;
 
 export default handleRegisterUser(
-	async ({ email, username, password }, ctx) => {
-		const { db, requester, responseHeaders, strings } = ctx;
+	async (
+		{ email, username, password },
+		{ requester, responseHeaders, strings, request },
+	) => {
 		const lowerEmail = email.toLocaleLowerCase();
 		const lowerUsername = username.toLocaleLowerCase();
 		if (lowerUsername.includes('lyku'))
 			throw new Error('Usernames cannot contain "lyku"');
-		const existingUser = await db
+		const existingUser = await pg
 			.selectFrom('users')
 			.select(['id'])
 			.where('username', '=', lowerUsername)
 			.executeTakeFirst();
 		if (existingUser) throw new Error(strings.emailTaken);
-		const existingEmail = await db
+		const existingEmail = await pg
 			.selectFrom('userHashes')
 			.select(['id'])
 			.where('email', '=', lowerEmail)
@@ -90,7 +95,7 @@ export default handleRegisterUser(
 		);
 
 		const cfres = (await response.json()) as UrlImageUploadResponse;
-		const insertedUser = await db
+		const insertedUser = await pg
 			.insertInto('users')
 			.values({
 				bot: false,
@@ -108,25 +113,22 @@ export default handleRegisterUser(
 				points: 0n,
 				slug: lowerUsername,
 				staff: false,
-			})
+			} as User)
 			.returningAll()
 			.executeTakeFirst();
 		if (!insertedUser) throw new Error(strings.unknownBackendError);
 		const userId = insertedUser.id;
-		await db
+		await pg
 			.insertInto('userHashes')
 			.values({
 				email,
 				username,
 				id: userId,
 				hash: passhash,
-			})
+			} as Hashdoc)
 			.execute();
-		const sessionId = await createSessionForUser(userId, ctx);
-		(responseHeaders as Headers).set(
-			'Set-Cookie',
-			`sessionId=${sessionId}; Path=/;`,
-		);
+		const sessionId = await createSessionForUser(userId, request);
+		responseHeaders.set('Set-Cookie', `sessionId=${sessionId}; Path=/;`);
 		console.log('Logged user in', sessionId);
 		return sessionId;
 	},

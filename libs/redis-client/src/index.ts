@@ -8,3 +8,4 @@ export const createRedisClient = (props: RedisOptions = {}) =>
 		password: process.env['REDIS_PASSWORD'],
 		username: process.env['REDIS_USERNAME'],
 	});
+export const client = createRedisClient();

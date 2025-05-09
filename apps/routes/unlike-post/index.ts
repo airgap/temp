@@ -1,6 +1,7 @@
 import { handleUnlikePost } from '@lyku/handles';
+import { client as elastic } from '@lyku/elasticsearch-client';
 
-export default handleUnlikePost(async (postId, { db, requester, elastic }) => {
+export default handleUnlikePost(async (postId, { db, requester }) => {
 	console.log('unliking post');
 	console.log('got user id', requester);
 

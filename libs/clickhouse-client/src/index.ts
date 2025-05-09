@@ -16,3 +16,4 @@ export const createClickhouseClient = (
 		username,
 		...options,
 	});
+export const client = createClickhouseClient();

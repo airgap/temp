@@ -1,20 +1,25 @@
 import { handleUpdateGroup } from '@lyku/handles';
+import { Err } from '@lyku/helpers';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleUpdateGroup(async (params, ctx) => {
+export default handleUpdateGroup(async (params, { requester }) => {
 	// First check if user owns the group
-	const group = await ctx.db
+	const group = await pg
 		.selectFrom('groups')
 		.where('id', '=', params.id)
-		.where('owner', '=', ctx.requester) // Check ownership
+		.where('owner', '=', requester) // Check ownership
 		.selectAll()
 		.executeTakeFirst();
 
 	if (!group) {
-		throw new Error('Group not found or you do not have permission to edit it');
+		throw new Err(
+			404,
+			'Group not found or you do not have permission to edit it',
+		);
 	}
 
 	// If we get here, user owns the group, so perform update
-	const updatedGroup = await ctx.db
+	const updatedGroup = await pg
 		.updateTable('groups')
 		.set(params)
 		.where('id', '=', params.id)
@@ -22,7 +27,7 @@ export default handleUpdateGroup(async (params, ctx) => {
 		.executeTakeFirst();
 
 	if (!updatedGroup) {
-		throw new Error(ctx.strings.unknownBackendError);
+		throw new Err(500);
 	}
 
 	return updatedGroup;

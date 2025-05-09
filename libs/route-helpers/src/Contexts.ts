@@ -1,28 +1,17 @@
-import { ClickHouseClient } from '@clickhouse/client';
-import { Client } from '@elastic/elasticsearch';
-import type { Database } from '@lyku/db-config/kysely';
 import type { CompactedPhrasebook } from '@lyku/phrasebooks';
 import type { ServerWebSocket, Server } from 'bun';
-import type { Redis } from 'ioredis';
 import type {
 	TsonHttpHandlerModel,
 	TsonStreamHandlerModel,
 	TsonHandlerModel,
 } from 'from-schema';
-import { Kysely } from 'kysely';
-import * as nats from 'nats';
 
 type BaseContextFragment<Model extends TsonHandlerModel> = {
-	db: Kysely<Database>;
 	server: Server;
 	strings: CompactedPhrasebook;
-	nats: nats.NatsConnection;
 	requester?: bigint;
 	session?: string;
 	model: Model;
-	elastic: Client;
-	clickhouse: ClickHouseClient;
-	redis: Redis;
 	now: Date;
 };
 type HttpContextFragment = {

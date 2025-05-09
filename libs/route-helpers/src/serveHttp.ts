@@ -2,26 +2,14 @@ import { decode, encode } from '@msgpack/msgpack';
 import type { SecureHttpContext } from './Contexts';
 import { db } from './db';
 import { getDictionary } from './getDictionary';
-import * as clickhouse from '@clickhouse/client';
-import * as nats from 'nats';
 import {
 	stringifyBON,
 	type TsonHandlerModel,
 	type Validator,
 } from 'from-schema';
-import { natsPort } from './env';
 import { Err } from '@lyku/helpers';
-import { createElasticsearchClient } from '@lyku/elasticsearch-client';
-import { createClickhouseClient } from './createClickhouseClient';
-import { createRedisClient } from '@lyku/redis-client';
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
-
-const elastic = createElasticsearchClient();
-
-const c = createClickhouseClient();
-
-const r = createRedisClient();
 
 export const serveHttp = async ({
 	execute,
@@ -32,11 +20,6 @@ export const serveHttp = async ({
 	validator: Validator;
 	model: TsonHandlerModel;
 }) => {
-	console.log('Connecting to NATS');
-	const nc = await nats.connect({
-		servers: [natsPort],
-	});
-	console.log('Connected to NATS');
 	console.log('Starting HTTP server');
 	const server = Bun.serve({
 		port,
@@ -148,12 +131,8 @@ export const serveHttp = async ({
 					requester: session?.userId, // oh just kill me
 					session: sessionId,
 					responseHeaders,
-					nats: nc,
 					server,
 					model,
-					elastic,
-					clickhouse: c,
-					redis: r,
 					now: new Date(),
 				})) as SecureHttpContext<any>;
 				const pack = encode(output, { useBigInt64: true });

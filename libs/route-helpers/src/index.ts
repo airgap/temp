@@ -1,5 +1,4 @@
 export * from './checkWin';
-export * from './createClickhouseClient';
 export * from './createSessionForUser';
 export * from './delayAttack';
 export * from './dropIfNecessary';

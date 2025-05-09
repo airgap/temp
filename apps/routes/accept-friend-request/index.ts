@@ -1,9 +1,9 @@
-console.log('AHAHHAHAHA');
 import { handleAcceptFriendRequest } from '@lyku/handles';
 import { bondIds, Err } from '@lyku/helpers';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleAcceptFriendRequest(async (user, { requester, db }) => {
-	await db.transaction().execute(async (trx) => {
+export default handleAcceptFriendRequest(async (user, { requester }) => {
+	await pg.transaction().execute(async (trx) => {
 		const insertResult = await trx
 			.insertInto('friendships')
 			.columns(['id', 'users', 'created'])

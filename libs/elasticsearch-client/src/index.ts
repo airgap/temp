@@ -7,3 +7,4 @@ export const createElasticsearchClient = (options: ClientOptions = {}) =>
 		auth: apiKey ? { apiKey } : undefined,
 		...options,
 	});
+export const client = createElasticsearchClient();

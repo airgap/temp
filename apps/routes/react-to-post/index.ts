@@ -1,9 +1,9 @@
 import { handleReactToPost } from '@lyku/handles';
-import { bigintToBase58, Err, reactionWorth } from '@lyku/helpers';
-import { Kysely, sql } from 'kysely';
-import { grantPointsToUser, sendNotification } from '@lyku/route-helpers';
-import { Database } from '@lyku/db-config/kysely';
+import { Err, reactionWorth } from '@lyku/helpers';
 import { Reaction } from '@lyku/json-models';
+import { client as redis } from '@lyku/redis-client';
+import { client as clickhouse } from '@lyku/clickhouse-client';
+import { client, client as pg } from '@lyku/postgres-client';
 
 // Add a retry queue system
 import { addToRetryQueue } from '@lyku/queue-system';
@@ -13,10 +13,7 @@ const REDIS_PERSISTENCE_RETRY_QUEUE = 'redis:persistence:retry';
 const MAX_RETRY_ATTEMPTS = 3;
 
 export default handleReactToPost(
-	async (
-		{ postId, type },
-		{ requester, db, clickhouse, now, redis, logger },
-	) => {
+	async ({ postId, type }, { requester, now, logger }) => {
 		try {
 			// 1. First check if post exists - this is still necessary but can be cached
 			const postCacheKey = `post:${postId}:exists`;
@@ -24,7 +21,7 @@ export default handleReactToPost(
 
 			if (postExists === null) {
 				// Only hit the database if we don't have it cached
-				const post = await db
+				const post = await client
 					.selectFrom('posts')
 					.select(['id', 'author']) // Only select what we need
 					.where('id', '=', postId)
@@ -98,13 +95,12 @@ export default handleReactToPost(
 					userId: requester,
 				});
 				// Fall back to direct DB if Redis fails
-				previousReaction = await getFallbackReaction(db, requester, postId);
+				previousReaction = await getFallbackReaction(requester, postId);
 			}
 
 			// 4. More robust persistence with retries
 			try {
 				await persistReactionToPostgres(
-					db,
 					requester,
 					postId,
 					type,
@@ -182,12 +178,12 @@ export default handleReactToPost(
 			}
 
 			// 7. Return object with success status and reaction information
-			return {
-				success: true,
-				postId,
-				newReaction: type,
-				previousReaction,
-			};
+			// return {
+			// 	success: true,
+			// 	postId,
+			// 	newReaction: type,
+			// 	previousReaction,
+			// };
 		} catch (error) {
 			logger.error('Reaction handler failed', {
 				error,
@@ -201,11 +197,10 @@ export default handleReactToPost(
 
 // Helper to get reaction from DB if Redis fails
 async function getFallbackReaction(
-	db: Kysely<Database>,
 	userId: bigint,
 	postId: bigint,
 ): Promise<Reaction | undefined> {
-	const existingReaction = await db
+	const existingReaction = await client
 		.selectFrom('reactions')
 		.select(['type'])
 		.where('userId', '=', userId)
@@ -217,7 +212,6 @@ async function getFallbackReaction(
 
 // Improved persistence function with proper parameter naming
 async function persistReactionToPostgres(
-	db: Kysely<Database>,
 	userId: bigint,
 	postId: bigint,
 	newReaction: string,
@@ -225,14 +219,14 @@ async function persistReactionToPostgres(
 ) {
 	if (!newReaction) {
 		// Delete the reaction
-		await db
+		await client
 			.deleteFrom('reactions')
 			.where('userId', '=', userId)
 			.where('postId', '=', postId)
 			.execute();
 	} else {
 		// Use upsert pattern for handling both inserts and updates
-		await db
+		await client
 			.insertInto('reactions')
 			.values({
 				userId,
@@ -254,14 +248,12 @@ async function persistReactionToPostgres(
 // Background job to reconcile Redis with PostgreSQL
 // This would be called by a scheduler periodically
 export async function reconcileRedisWithPostgres(
-	db: Kysely<Database>,
-	redis: any,
 	batchSize = 1000,
 	logger: any,
 ) {
 	try {
 		// Get a batch of reactions from Postgres
-		const reactions = await db
+		const reactions = await client
 			.selectFrom('reactions')
 			.select(['userId', 'postId', 'type'])
 			.limit(batchSize)

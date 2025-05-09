@@ -1,10 +1,11 @@
 import { handleUpdateChannel } from '@lyku/handles';
 import { Channel } from '@lyku/json-models';
+import { client as pg } from '@lyku/postgres-client';
 
 export default handleUpdateChannel(
 	async (
 		{ id, name, tagline, bio, bgColor, fgColor, tvColor },
-		{ db, requester, strings },
+		{ requester, strings },
 	) => {
 		const partial = Object.fromEntries(
 			Object.entries({
@@ -19,7 +20,7 @@ export default handleUpdateChannel(
 
 		console.log('Partial channel update', partial);
 
-		const updatedChannel = await db
+		const updatedChannel = await pg
 			.updateTable('channels')
 			.set(partial)
 			.where('id', '=', id)

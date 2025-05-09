@@ -1,16 +1,16 @@
 import { generateSessionId } from './generateSessionId';
-import { MaybeSecureHttpContext } from './Contexts';
+import { client as pg } from '@lyku/postgres-client';
 
 export const createSessionForUser = async (
 	userId: bigint,
-	ctx: MaybeSecureHttpContext<any>,
+	request: Request,
 ): Promise<string> => {
 	const id = generateSessionId();
 	const userLogin = {
 		created: new Date(),
 		ip:
-			(ctx.request.headers.get('CF-Connecting-IP') as string) ??
-			ctx.request.headers.get('location') ??
+			(request.headers.get('CF-Connecting-IP') as string) ??
+			request.headers.get('location') ??
 			'',
 		userId,
 	};
@@ -20,8 +20,8 @@ export const createSessionForUser = async (
 		expiration: new Date(Date.now() + 60 * 60 * 24 * 30 * 1000),
 	};
 	await Promise.all([
-		ctx.db.insertInto('logins').values(userLogin).execute(),
-		ctx.db.insertInto('sessions').values(s).execute(),
+		pg.insertInto('logins').values(userLogin).execute(),
+		pg.insertInto('sessions').values(s).execute(),
 	]);
 	return id;
 };
