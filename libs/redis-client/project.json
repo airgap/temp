@@ -1,7 +1,7 @@
 {
 	"name": "@lyku/redis-client",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "libs/metrics/src",
+	"sourceRoot": "libs/redis-client/src",
 	"projectType": "library",
 	"tags": [],
 	"targets": {

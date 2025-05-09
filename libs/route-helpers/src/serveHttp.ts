@@ -11,18 +11,13 @@ import {
 } from 'from-schema';
 import { natsPort } from './env';
 import { Err } from '@lyku/helpers';
-import { Client } from '@elastic/elasticsearch';
+import { createElasticsearchClient } from '@lyku/elasticsearch-client';
 import { createClickhouseClient } from './createClickhouseClient';
 import { createRedisClient } from '@lyku/redis-client';
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
 
-const elastic = new Client({
-	node: process.env['ELASTIC_API_ENDPOINT'],
-	auth: {
-		apiKey: process.env['ELASTIC_API_KEY'] as string,
-	},
-});
+const elastic = createElasticsearchClient();
 
 const c = createClickhouseClient();
 

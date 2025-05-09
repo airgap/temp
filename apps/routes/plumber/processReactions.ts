@@ -4,9 +4,9 @@ import { createClient } from '@clickhouse/client';
 
 // Create the clickhouse client directly instead of using route-helpers
 const clickhouse = createClient({
-  url: process.env.CH_ENDPOINT,
-  password: process.env.CH_PASSWORD,
-  username: process.env.CH_USERNAME,
+	url: process.env.CH_ENDPOINT,
+	password: process.env.CH_PASSWORD,
+	username: process.env.CH_USERNAME,
 });
 
 const elastic = new Client({

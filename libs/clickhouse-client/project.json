@@ -1,0 +1,19 @@
+{
+	"name": "@lyku/clickhouse-client",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/clickhouse-client/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/clickhouse-client",
+				"main": "libs/clickhouse-client/src/index.ts",
+				"tsConfig": "libs/clickhouse-client/tsconfig.lib.json",
+				"assets": ["libs/clickhouse-client/*.md"]
+			}
+		}
+	}
+}

@@ -19,9 +19,11 @@
 		"esModuleInterop": true,
 		"maxNodeModuleJsDepth": 100,
 		"paths": {
+			"@lyku/clickhouse-client": ["libs/clickhouse-client/src/index.ts"],
 			"@lyku/db-config": ["libs/db-config/src/index.ts"],
 			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely.d.ts"],
 			"@lyku/defaults": ["libs/defaults/src/index.ts"],
+			"@lyku/elasticsearch-client": ["libs/elasticsearch-client/src/index.ts"],
 			"@lyku/get-current-user": ["libs/routes/getCurrentUser/src/index.ts"],
 			"@lyku/handles": ["dist/libs/handles"],
 			"@lyku/helpers": ["libs/helpers/src/index.ts"],
