@@ -2,7 +2,7 @@ import { handleGetPost } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
 import { client as pg } from '@lyku/postgres-client';
 
-export default handleGetPost((id, {  }) =>
+export default handleGetPost((id, {}) =>
 	pg
 		.selectFrom('posts')
 		.selectAll()

@@ -1,11 +1,11 @@
 import { handleBounced } from '@lyku/handles';
 import { BtvGameStats } from '@lyku/json-models/index';
-
-export default handleBounced(async ({ edge, corner }, { db, requester }) => {
+import { client as pg } from '@lyku/postgres-client';
+export default handleBounced(async ({ edge, corner }, { requester }) => {
 	const hit = edge || corner;
 
 	// Get current user stats
-	const oldStats = await db
+	const oldStats = await pg
 		.selectFrom('btvStats')
 		.where('user', '=', requester)
 		.selectAll()
@@ -60,10 +60,11 @@ export default handleBounced(async ({ edge, corner }, { db, requester }) => {
 		highestEdges: newHighestEdges,
 		highestCorners: newHighestCorners,
 		sessionCount: oldStats.sessionCount,
+		created: new Date(),
 	} satisfies BtvGameStats;
 
 	// Update user stats
-	await db
+	await pg
 		.updateTable('btvStats')
 		.set(gameStats)
 		.where('user', '=', requester)

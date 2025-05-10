@@ -2,13 +2,14 @@ import crypto from 'crypto';
 import { Starter } from './Starter';
 import { MatchProposal } from '@lyku/json-models';
 import { AnySecureContext } from '@lyku/route-helpers';
+import { client as pg } from '@lyku/postgres-client';
 export const startTtfMatch: Starter = async (
 	proposal: MatchProposal,
-	{ db, requester }: AnySecureContext<any>,
+	{ requester }: AnySecureContext<any>,
 ) => {
 	const amX = Boolean(crypto.randomInt(0, 1));
 	const X = amX ? requester : proposal.from;
-	const result = await db
+	const result = await pg
 		.insertInto('ttfMatches')
 		.values({
 			X,

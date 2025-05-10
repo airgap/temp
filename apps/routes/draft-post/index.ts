@@ -16,11 +16,7 @@ import {
 	VideoDraft,
 	InsertablePostDraft,
 } from '@lyku/json-models/index';
-import {
-	Err,
-	getSupertypeFromMime,
-	makeAttachmentId,
-} from '@lyku/helpers';
+import { Err, getSupertypeFromMime, makeAttachmentId } from '@lyku/helpers';
 import { AttachmentInitializerProps } from './AttachmentInitializer';
 import { uploadImage } from './uploadImage';
 import { uploadVideo } from './uploadVideo';
@@ -28,10 +24,7 @@ import { uploadVideo } from './uploadVideo';
 type AttachmentDraft = ImageDraft | VideoDraft;
 
 export default handleDraftPost(
-	async (
-		{ attachments, body, replyTo, echoing },
-		{ requester, strings },
-	) => {
+	async ({ attachments, body, replyTo, echoing }, { requester, strings }) => {
 		console.log('Drafting post', requester, body, replyTo, echoing);
 		console.log('id', cfAccountId, 'token', cfApiToken);
 		if (!cfApiToken && attachments?.length)

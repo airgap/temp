@@ -12,5 +12,5 @@ export default handleGetMyLikes(async (ids, { requester }) => {
 		o.set(l.postId, true);
 		return o;
 	}, new Map<bigint, boolean>());
-	return ids.map((id) => ( map.has(id) ?id:-id));
+	return ids.map((id) => (map.has(id) ? id : -id));
 });

@@ -1,7 +1,7 @@
 import { handleGetGroup } from '@lyku/handles';
 import { bindIds } from '@lyku/helpers';
 import { client as pg } from '@lyku/postgres-client';
-export default handleGetGroup(async (id, {  requester }) => {
+export default handleGetGroup(async (id, { requester }) => {
 	const group = await pg
 		.selectFrom('groups')
 		.selectAll()

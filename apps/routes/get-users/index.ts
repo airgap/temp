@@ -1,7 +1,7 @@
 import { handleGetUsers } from '@lyku/handles';
 import { User } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
-export default handleGetUsers(async (users, {  }) => {
+export default handleGetUsers(async (users, {}) => {
 	const unsorted = await pg
 		.selectFrom('users')
 		.selectAll()

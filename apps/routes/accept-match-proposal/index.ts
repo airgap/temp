@@ -1,8 +1,8 @@
 import { handleAcceptMatchProposal } from '@lyku/handles';
 import { gameStarters } from './internalGames';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleAcceptMatchProposal(async (id, ctx) => {
-	const proposal = await ctx.db
+	const proposal = await pg
 		.selectFrom('matchProposals')
 		.where('id', '=', id)
 		.selectAll()
@@ -18,7 +18,7 @@ export default handleAcceptMatchProposal(async (id, ctx) => {
 
 	const matchId = await start(proposal, ctx);
 
-	await ctx.db.deleteFrom('matchProposals').where('id', '=', id).execute();
+	await pg.deleteFrom('matchProposals').where('id', '=', id).execute();
 
 	console.log('Deleted accepted proposal');
 	return BigInt(matchId);
