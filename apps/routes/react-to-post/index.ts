@@ -4,6 +4,7 @@ import { Reaction } from '@lyku/json-models';
 import { client as redis } from '@lyku/redis-client';
 import { client as clickhouse } from '@lyku/clickhouse-client';
 import { client, client as pg } from '@lyku/postgres-client';
+import { defaultLogger as logger } from '@lyku/logger';
 
 // Add a retry queue system
 import { addToRetryQueue } from '@lyku/queue-system';
@@ -13,7 +14,7 @@ const REDIS_PERSISTENCE_RETRY_QUEUE = 'redis:persistence:retry';
 const MAX_RETRY_ATTEMPTS = 3;
 
 export default handleReactToPost(
-	async ({ postId, type }, { requester, now, logger }) => {
+	async ({ postId, type }, { requester, now }) => {
 		try {
 			// 1. First check if post exists - this is still necessary but can be cached
 			const postCacheKey = `post:${postId}:exists`;

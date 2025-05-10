@@ -1,17 +1,17 @@
 import { handleListFriends } from '@lyku/handles';
-
-export default handleListFriends(async (_, { db, requester }) => {
+import { client as pg } from '@lyku/postgres-client';
+export default handleListFriends(async (_, { requester }) => {
 	// Set work_mem higher for this specific query if needed
 	// await db.executeQuery('SET LOCAL work_mem = "100MB"');
 
-	const friends = await db
+	const friends = await pg
 		.selectFrom('users')
 		.selectAll()
 		.innerJoin(
-			db
+			pg
 				.selectFrom('friendLists')
 				.select([
-					db.fn
+					pg.fn
 						.agg('unnest', [(eb) => eb.ref('friendLists.friends')])
 						.as('friendId'),
 				])

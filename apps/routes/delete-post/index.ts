@@ -1,9 +1,10 @@
 import { handleDeletePost } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
 import { deleteFromElastic } from './elasticate';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleDeletePost(async (id, { db, requester, strings }) => {
-	const post = await db
+export default handleDeletePost(async (id, { requester, strings }) => {
+	const post = await pg
 		.selectFrom('posts')
 		.select(['publish'])
 		.where('id', '=', id)
@@ -14,7 +15,7 @@ export default handleDeletePost(async (id, { db, requester, strings }) => {
 		throw new Err(404, strings.noPostByYou);
 	}
 
-	await db
+	await pg
 		.updateTable('posts')
 		.where('id', '=', id)
 		.set({ deleted: new Date() })

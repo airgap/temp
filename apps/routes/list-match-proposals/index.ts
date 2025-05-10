@@ -1,8 +1,8 @@
 import { handleListMatchProposals } from '@lyku/handles';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleListMatchProposals(
-	async ({ game, filter }, { db, requester }) => {
-		let query = db.selectFrom('matchProposals');
+	async ({ game, filter }, { requester }) => {
+		let query = pg.selectFrom('matchProposals');
 		if (game) query = query.where('game', '=', game);
 		query =
 			filter === 'received'
@@ -18,7 +18,7 @@ export default handleListMatchProposals(
 				),
 			),
 		];
-		const users = await db
+		const users = await pg
 			.selectFrom('users')
 			.where('id', 'in', userIds)
 			.selectAll()

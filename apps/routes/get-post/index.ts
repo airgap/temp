@@ -1,8 +1,9 @@
 import { handleGetPost } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleGetPost((id, { db }) =>
-	db
+export default handleGetPost((id, {  }) =>
+	pg
 		.selectFrom('posts')
 		.selectAll()
 		.where('id', '=', id)

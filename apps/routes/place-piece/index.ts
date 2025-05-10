@@ -8,6 +8,7 @@ import {
 	delayAttack,
 	dropIfNecessary,
 } from '@lyku/route-helpers';
+import { client as pg } from '@lyku/postgres-client';
 import { TtfMatch } from '@lyku/json-models';
 import { users, achievements } from '@lyku/stock-docs';
 import { handlePlacePiece } from '@lyku/handles';
@@ -36,8 +37,8 @@ const achievementMap: Map<
 	[users.hardTtfBot.id, achievements.beatTtfHard.id],
 ]);
 export default handlePlacePiece(
-	async ({ match: matchId, square }, { db, requester }) => {
-		const match = await db
+	async ({ match: matchId, square }, { requester }) => {
+		const match = await pg
 			.selectFrom('ttfMatches')
 			.selectAll()
 			.where('id', '=', matchId)
@@ -61,17 +62,17 @@ export default handlePlacePiece(
 			void grantPointsToUser(
 				ttfBotsById.get(oppId)?.points ?? 1,
 				requester,
-				db,
+				pg,
 			);
 			const achievement = achievementMap.get(oppId);
 			if (!achievement) console.log('No achievement to grant');
-			else void grantAchievementToUser(achievement, requester, db);
+			else void grantAchievementToUser(achievement, requester, pg);
 		} else {
 			dropIfNecessary(match);
-			void delayAttack(matchId, db);
+			void delayAttack(matchId, pg);
 		}
 		match.lastTurn = new Date();
-		await db
+		await pg
 			.updateTable('ttfMatches')
 			.set(match)
 			.where('id', '=', matchId)

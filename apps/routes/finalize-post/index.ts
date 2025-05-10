@@ -2,9 +2,10 @@ import { handleFinalizePost } from '@lyku/handles';
 import { InsertablePost, Post } from '@lyku/json-models/index';
 import { sql } from 'kysely';
 import { elasticatePost } from './elasticatePost';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
-	const authRes = await db
+export default handleFinalizePost(async ({ body, id }, { requester }) => {
+	const authRes = await pg
 		.selectFrom('postDrafts')
 		.selectAll()
 		.where('id', '=', id)
@@ -35,18 +36,18 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 	for (const thing of Object.keys(protopost) as (keyof typeof protopost)[])
 		if (typeof protopost[thing] === 'undefined') delete protopost[thing];
 	console.log('post', protopost);
-	const p = await db
+	const p = await pg
 		.insertInto('posts')
 		.values(protopost as Post)
 		.returningAll()
 		.executeTakeFirstOrThrow();
-	const user = await db
+	const user = await pg
 		.selectFrom('users')
 		.selectAll()
 		.where('id', '=', requester)
 		.executeTakeFirstOrThrow();
 	const canSuper = user.lastSuper < new Date(Date.now() - 2 * 60 * 60 * 1000);
-	await db
+	await pg
 		.updateTable('users')
 		.set({
 			postCount: sql`${sql.ref('postCount')} + 1`,
@@ -57,7 +58,7 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 		.execute();
 	console.log('authRes', authRes);
 	if (authRes.replyTo)
-		await db
+		await pg
 			.updateTable('posts')
 			.set({
 				replies: sql`replies + 1`,
@@ -65,7 +66,7 @@ export default handleFinalizePost(async ({ body, id }, { db, requester }) => {
 			.where('id', '=', authRes.replyTo)
 			.execute();
 	if (authRes.echoing)
-		await db
+		await pg
 			.updateTable('posts')
 			.set({
 				echoes: sql`echoes + 1`,

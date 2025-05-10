@@ -1,12 +1,13 @@
 import * as bcrypt from 'bcryptjs';
 import { createSessionForUser } from '@lyku/route-helpers';
 import { handleLoginUser } from '@lyku/handles';
+import { client as db } from '@lyku/postgres-client';
 const smartDelay = (start: number) =>
 	new Promise((resolve) =>
 		setTimeout(resolve, Math.max(0, 1000 - (performance.now() - start))),
 	);
 export default handleLoginUser(async ({ email, password }, ctx) => {
-	const { db, strings } = ctx;
+	const { strings } = ctx;
 	const started = performance.now();
 	const delay = () => smartDelay(started);
 	const lowerEmail = email.toLocaleLowerCase();

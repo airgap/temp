@@ -1,8 +1,8 @@
 import { handleGetChannelSensitives } from '@lyku/handles';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleGetChannelSensitives(
-	async (channelId, { db, requester, strings }) => {
-		const channelBy = await db
+	async (channelId, { requester, strings }) => {
+		const channelBy = await pg
 			.selectFrom('channelSensitives')
 			.selectAll()
 			.where('id', '=', channelId)

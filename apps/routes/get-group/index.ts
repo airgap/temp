@@ -1,8 +1,8 @@
 import { handleGetGroup } from '@lyku/handles';
 import { bindIds } from '@lyku/helpers';
-
-export default handleGetGroup(async (id, { db, requester }) => {
-	const group = await db
+import { client as pg } from '@lyku/postgres-client';
+export default handleGetGroup(async (id, {  requester }) => {
+	const group = await pg
 		.selectFrom('groups')
 		.selectAll()
 		.where('id', '=', id)
@@ -10,7 +10,7 @@ export default handleGetGroup(async (id, { db, requester }) => {
 	if (!group) throw 404;
 	const membership =
 		requester &&
-		(await db
+		(await pg
 			.selectFrom('groupMemberships')
 			.selectAll()
 			.where('id', '=', bindIds(requester, id))

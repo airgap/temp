@@ -2,14 +2,14 @@ import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { run } from '@lyku/route-helpers';
 import { handleConfirmVideoUpload } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleConfirmVideoUpload(
-	async (id, { db, requester, strings }) => {
+	async (id, { requester, strings }) => {
 		console.log('Confirming image upload', id);
 		if (!cfApiToken)
 			throw new Err(500, 'We forgot to enter our Cloudflare password');
 
-		const videoUpload = await db
+		const videoUpload = await pg
 			.selectFrom('videoDrafts')
 			.selectAll()
 			.where('id', '=', id)
@@ -17,7 +17,7 @@ export default handleConfirmVideoUpload(
 			.executeTakeFirst();
 
 		if (!videoUpload) {
-			throw new Error(404, strings.youHaveNoChannelByThatId);
+			throw new Err(404, strings.youHaveNoChannelByThatId);
 		}
 
 		console.log('WHORE', cfAccountId, id);
@@ -27,14 +27,14 @@ export default handleConfirmVideoUpload(
     --url ${url} \\
     --header 'Content-Type: application/json' \\
     --header 'Authorization: Bearer ${cfApiToken}'`;
-		const { stdout } = await run(command);
+		const { stdout } = await run(command) as any;
 		const cfres = JSON.parse(stdout);
 		console.log('CFRES', cfres);
 
 		if (!cfres.success)
 			throw new Err(500, strings.videoUploadAuthorizationError);
 
-		const dbres = await db
+		const dbres = await pg
 			.insertInto('videos')
 			.values({
 				...cfres.result,

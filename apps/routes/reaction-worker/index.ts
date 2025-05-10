@@ -1,6 +1,6 @@
 import { createRedisClient } from '@lyku/redis-client';
 import { createLogger } from '@lyku/logger';
-import { initDb } from '@lyku/postgres-client';
+import { client } from '@lyku/postgres-client';
 import { createMetricsClient } from '@lyku/metrics';
 import { initializeQueueSystem, RetryQueue } from '@lyku/queue-system';
 import {
@@ -56,7 +56,7 @@ export class ReactionWorkerService {
 		});
 
 		// Initialize database connection
-		this.db = initDb();
+		this.db = client;
 
 		// Initialize Redis client with configuration for high availability
 		this.redis = createRedisClient({

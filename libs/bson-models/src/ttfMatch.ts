@@ -18,6 +18,7 @@ export const ttfMatch = {
 		// Timestamp the game was created
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
+		lastTurn: { type: 'timestamptz' },
 		winner: { type: 'bigint' },
 	},
 	required: ['id', 'X', 'O', 'board', 'turn', 'created'],

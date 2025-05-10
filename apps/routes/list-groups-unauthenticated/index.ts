@@ -1,5 +1,5 @@
 import { handleListGroupsUnauthenticated } from '@lyku/handles';
-
-export default handleListGroupsUnauthenticated((_, { db }) =>
-	db.selectFrom('groups').selectAll().execute(),
+import { client as pg } from '@lyku/postgres-client';
+export default handleListGroupsUnauthenticated(() =>
+	pg.selectFrom('groups').selectAll().execute(),
 );

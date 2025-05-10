@@ -1,15 +1,15 @@
 import { handleCreateFriendRequest } from '@lyku/handles';
 import { bondIds } from '@lyku/helpers';
-
-export default handleCreateFriendRequest(async (user, { db, requester }) => {
-	const them = await db
+import { client as pg } from '@lyku/postgres-client';
+export default handleCreateFriendRequest(async (user, { requester }) => {
+	const them = await pg
 		.selectFrom('users')
 		.selectAll()
 		.where('id', '=', user)
 		.executeTakeFirst();
 	if (!them) throw new Error('Target user does not exist');
 	const id = bondIds(requester, user);
-	await db
+	await pg
 		.insertInto('friendRequests')
 		.values({
 			id,

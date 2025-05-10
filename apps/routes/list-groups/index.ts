@@ -1,8 +1,8 @@
 import { handleListGroups } from '@lyku/handles';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleListGroups(
-	async ({ filter, substring }, { db, requester }) => {
-		let groupsQuery = db.selectFrom('groups').selectAll();
+	async ({ filter, substring }, { requester }) => {
+		let groupsQuery = pg.selectFrom('groups').selectAll();
 
 		if (filter === 'iCreated') {
 			groupsQuery = groupsQuery.where('creator', '=', requester);
@@ -20,7 +20,7 @@ export default handleListGroups(
 
 		const groups = await groupsQuery.execute();
 
-		const memberships = await db
+		const memberships = await pg
 			.selectFrom('groupMemberships')
 			.selectAll()
 			.where('user', '=', requester)

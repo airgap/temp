@@ -1,14 +1,14 @@
 import { handleListGroupsImIn } from '@lyku/handles';
-
-export default handleListGroupsImIn((_, { db, requester }) =>
+import { client as pg } from '@lyku/postgres-client';
+export default handleListGroupsImIn((_, { requester }) =>
 	Promise.all([
-		db
+		pg
 			.selectFrom('groups')
 			.selectAll()
 			.innerJoin('groupMemberships', 'groupMemberships.group', 'groups.id')
 			.where('groupMemberships.user', '=', requester)
 			.execute(),
-		db
+		pg
 			.selectFrom('groupMemberships')
 			.selectAll()
 			.where('user', '=', requester)

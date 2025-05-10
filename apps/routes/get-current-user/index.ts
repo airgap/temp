@@ -1,8 +1,10 @@
 import { handleGetCurrentUser } from '@lyku/handles';
 
+import { client as pg } from '@lyku/postgres-client';
+
 console.log('get-current-user');
-export default handleGetCurrentUser(async (_, { db, requester, strings }) => {
-	const user = await db
+export default handleGetCurrentUser(async (_, { requester, strings }) => {
+	const user = await pg
 		.selectFrom('users')
 		.selectAll()
 		.where('id', '=', requester)

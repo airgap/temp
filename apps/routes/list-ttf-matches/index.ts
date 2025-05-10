@@ -1,6 +1,7 @@
 import { handleListTtfMatches } from '@lyku/handles';
+import { client as db } from '@lyku/postgres-client';
 
-export default handleListTtfMatches(({ finished }, { db, requester }) =>
+export default handleListTtfMatches(({ finished }, { requester }) =>
 	db
 		.selectFrom('ttfMatches')
 		.where(({ or, eb }) =>

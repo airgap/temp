@@ -33,6 +33,7 @@
 			"@lyku/mapi-models": ["libs/mapi-models/src/index.ts"],
 			"@lyku/mapi-types": ["dist/libs/mapi-types/index.d.ts"],
 			"@lyku/metrics": ["libs/metrics/src/index.ts"],
+			"@lyku/nats-client": ["libs/nats-client/src/index.ts"],
 			"@lyku/phrasebooks": ["libs/phrasebooks/src/index.ts"],
 			"@lyku/postgres-client": ["libs/postgres-client/src/index.ts"],
 			"@lyku/queue-system": ["libs/queue-system/src/index.ts"],

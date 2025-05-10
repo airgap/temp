@@ -1,8 +1,8 @@
 import { bindIds } from '@lyku/helpers';
 import { handleGetMyLikes } from '@lyku/handles';
-
-export default handleGetMyLikes(async (ids, { db, requester }) => {
-	const likes = await db
+import { client as pg } from '@lyku/postgres-client';
+export default handleGetMyLikes(async (ids, { requester }) => {
+	const likes = await pg
 		.selectFrom('likes')
 		.selectAll()
 		.where('postId', 'in', ids)
@@ -12,5 +12,5 @@ export default handleGetMyLikes(async (ids, { db, requester }) => {
 		o.set(l.postId, true);
 		return o;
 	}, new Map<bigint, boolean>());
-	return ids.map((id) => ({ id, liked: map.has(id) }));
+	return ids.map((id) => ( map.has(id) ?id:-id));
 });

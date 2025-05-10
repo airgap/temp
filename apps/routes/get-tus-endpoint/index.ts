@@ -1,10 +1,11 @@
 import { handleGetTusEndpoint } from '@lyku/handles';
 import { base58SnowflakeRegex } from '@lyku/helpers';
+import { client as pg } from '@lyku/postgres-client';
 export default handleGetTusEndpoint(
-	async (_, { db, request, strings, responseHeaders }) => {
+	async (_, { request, strings, responseHeaders }) => {
 		const id = request.url?.match(base58SnowflakeRegex)?.[0];
 		if (!id) throw new Error('No ID specified');
-		const draft = await db
+		const draft = await pg
 			.selectFrom('videoDrafts')
 			.select('uploadURL')
 			.where('id', '=', id)

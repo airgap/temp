@@ -9,6 +9,7 @@ import {
 	shortenLinksInBody,
 } from '@lyku/route-helpers';
 import { handleDraftPost } from '@lyku/handles';
+import { client as pg } from '@lyku/postgres-client';
 import {
 	ImageDraft,
 	PostDraft,
@@ -19,7 +20,6 @@ import {
 	Err,
 	getSupertypeFromMime,
 	makeAttachmentId,
-	Supertype,
 } from '@lyku/helpers';
 import { AttachmentInitializerProps } from './AttachmentInitializer';
 import { uploadImage } from './uploadImage';
@@ -30,7 +30,7 @@ type AttachmentDraft = ImageDraft | VideoDraft;
 export default handleDraftPost(
 	async (
 		{ attachments, body, replyTo, echoing },
-		{ db, requester, strings },
+		{ requester, strings },
 	) => {
 		console.log('Drafting post', requester, body, replyTo, echoing);
 		console.log('id', cfAccountId, 'token', cfApiToken);
@@ -43,11 +43,11 @@ export default handleDraftPost(
 		// const imageUploads: ImageUpload[] = [];
 		const reversion = replyTo ?? echoing;
 		if (reversion)
-			await db
+			await pg
 				.selectFrom('posts')
 				.where('id', '=', reversion)
 				.executeTakeFirst();
-		const draft: PostDraft = await db
+		const draft: PostDraft = await pg
 			.insertInto('postDrafts')
 			.values({
 				author: requester,
@@ -93,9 +93,9 @@ export default handleDraftPost(
 				console.log('D4');
 			}
 			if (imageDrafts.length)
-				await db.insertInto('imageDrafts').values(imageDrafts).execute();
+				await pg.insertInto('imageDrafts').values(imageDrafts).execute();
 			if (videoDrafts.length)
-				await db.insertInto('videoDrafts').values(videoDrafts).execute();
+				await pg.insertInto('videoDrafts').values(videoDrafts).execute();
 			console.log(
 				imageDrafts.length,
 				'images and',
@@ -108,7 +108,7 @@ export default handleDraftPost(
 		if (body) {
 			console.log('body', body);
 			if (flagUnsafeHtml(body)) throw new Err(400, 'Invalid HTML detected');
-			body = await shortenLinksInBody(body, draft.id, requester, db);
+			body = await shortenLinksInBody(body, draft.id, requester, pg);
 		}
 		const webuiPath = `${dev ? 'http' : 'https'}://${webuiDomain}/p/${
 			draft.id
@@ -118,7 +118,7 @@ export default handleDraftPost(
 		if (replyTo) draft.replyTo = replyTo;
 		else if (echoing) draft.echoing = echoing;
 		console.log('draft', draft);
-		await db
+		await pg
 			.updateTable('postDrafts')
 			.set(draft)
 			.where('id', '=', draft.id)

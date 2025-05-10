@@ -1,5 +1,5 @@
 import { handleListGames } from '@lyku/handles';
-
-export default handleListGames(async (_, { db }) =>
-	db.selectFrom('games').selectAll().execute(),
+import { client as pg } from '@lyku/postgres-client';
+export default handleListGames(async (_, { requester }) =>
+	pg.selectFrom('games').selectAll().execute(),
 );

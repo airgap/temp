@@ -1,7 +1,7 @@
 import { handleListGroupsICreated } from '@lyku/handles';
-
-export default handleListGroupsICreated((_, { db, requester }) =>
-	db
+import { client as pg } from '@lyku/postgres-client';
+export default handleListGroupsICreated((_, { requester }) =>
+	pg
 		.selectFrom('groups')
 		.selectAll()
 		.where('creator', '=', requester)

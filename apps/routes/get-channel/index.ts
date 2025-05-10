@@ -1,7 +1,7 @@
 import { handleGetChannel } from '@lyku/handles';
-
-export default handleGetChannel(async (params, { db, strings }) => {
-	const selection = db.selectFrom('channels').selectAll();
+import { client as pg } from '@lyku/postgres-client';
+export default handleGetChannel(async (params, { strings }) => {
+	const selection = pg.selectFrom('channels').selectAll();
 	const channelBy =
 		'id' in params
 			? selection.where('id', '=', params.id)

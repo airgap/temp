@@ -1,8 +1,9 @@
 import { handleGetUserByName } from '@lyku/handles';
 import { Err } from '@lyku/helpers';
+import { client as pg } from '@lyku/postgres-client';
 
-export default handleGetUserByName(async (username, { db }) => {
-	const user = await db
+export default handleGetUserByName(async (username, {  }) => {
+	const user = await pg
 		.selectFrom('users')
 		.selectAll()
 		.where('slug', '=', username.toLocaleLowerCase())

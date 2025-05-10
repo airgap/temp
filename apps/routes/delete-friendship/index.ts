@@ -1,8 +1,8 @@
 import { handleDeleteFriendship } from '@lyku/handles';
 import { bondIds, Err } from '@lyku/helpers';
-
-export default handleDeleteFriendship(async (user, { db, requester }) => {
-	const res = await db
+import { client as pg } from '@lyku/postgres-client';
+export default handleDeleteFriendship(async (user, { requester }) => {
+	const res = await pg
 		.deleteFrom('friendships')
 		.where('id', '=', bondIds(requester, user))
 		.executeTakeFirst();

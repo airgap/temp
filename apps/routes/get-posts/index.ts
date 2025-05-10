@@ -1,5 +1,5 @@
 import { handleGetPosts } from '@lyku/handles';
-
-export default handleGetPosts(async (ids, { db }) =>
-	db.selectFrom('posts').selectAll().where('id', 'in', ids).execute(),
+import { client as pg } from '@lyku/postgres-client';
+export default handleGetPosts(async (ids, {  }) =>
+	pg.selectFrom('posts').selectAll().where('id', 'in', ids).execute(),
 );

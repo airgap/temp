@@ -1,20 +1,20 @@
 import { handleFollowUser } from '@lyku/handles';
 import { bindIds } from '@lyku/helpers';
-
-export default handleFollowUser(async (user, { db, requester }) => {
+import { client as pg } from '@lyku/postgres-client';
+export default handleFollowUser(async (user, { requester }) => {
 	const id = bindIds(requester, user);
-	const them = await db
+	const them = await pg
 		.selectFrom('users')
 		.selectAll()
 		.where('id', '=', user)
 		.executeTakeFirst();
-	const follow = await db
+	const follow = await pg
 		.selectFrom('userFollows')
 		.selectAll()
 		.where('id', '=', id)
 		.executeTakeFirst();
 	if (them && !follow) {
-		await db
+		await pg
 			.insertInto('userFollows')
 			.values({
 				id,

@@ -1,7 +1,7 @@
 import { handleGetFollowVectors } from '@lyku/handles';
-
-export default handleGetFollowVectors(async (users, { db, requester }) => {
-	const follows = await db
+import { client as pg } from '@lyku/postgres-client';
+export default handleGetFollowVectors(async (users, { requester }) => {
+	const follows = await pg
 		.selectFrom('userFollows')
 		.select('followee')
 		.where('followee', 'in', users)

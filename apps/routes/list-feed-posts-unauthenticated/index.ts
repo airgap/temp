@@ -1,11 +1,8 @@
 import { handleListFeedPostsUnauthenticated } from '@lyku/handles';
-
+import { client as pg } from '@lyku/postgres-client';
 export default handleListFeedPostsUnauthenticated(
-	async (
-		{ before, tags, groups, authors, count },
-		{ db, requester, model },
-	) => {
-		let query = db.selectFrom('posts').selectAll().orderBy('publish', 'desc');
+	async ({ before, tags, groups, authors, count }, { requester, model }) => {
+		let query = pg.selectFrom('posts').selectAll().orderBy('publish', 'desc');
 
 		if (before) {
 			query = query.where('publish', '<', new Date(before));
@@ -18,7 +15,7 @@ export default handleListFeedPostsUnauthenticated(
 		if (tags) {
 			query = query.where((eb) =>
 				eb.exists(
-					db
+					pg
 						.selectFrom('hashtags')
 						.select('id')
 						.where('lowerText', 'in', tags)

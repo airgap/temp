@@ -1,7 +1,7 @@
 import { handleListPostReplies } from '@lyku/handles';
-import { sql } from 'kysely';
+import { client as db } from '@lyku/postgres-client';
 
-export default handleListPostReplies(async ({ id, before, tags }, { db }) => {
+export default handleListPostReplies(async ({ id, before, tags }) => {
 	let query = db
 		.selectFrom('posts')
 		.selectAll()

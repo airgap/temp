@@ -1,7 +1,7 @@
 import { handleDeclineFriendRequest } from '@lyku/handles';
 import { bondIds } from '@lyku/helpers';
-
-export default handleDeclineFriendRequest(async (user, { db, requester }) => {
+import { client as pg } from '@lyku/postgres-client';
+export default handleDeclineFriendRequest(async (user, { requester }) => {
 	const bond = bondIds(requester, user);
-	await db.deleteFrom('friendRequests').where('id', '=', bond).execute();
+	await pg.deleteFrom('friendRequests').where('id', '=', bond).execute();
 });
