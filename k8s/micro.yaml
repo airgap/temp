@@ -53,6 +53,8 @@ spec:
               value: '${SERVICE_DOMAIN}'
             - name: NODE_TLS_REJECT_UNAUTHORIZED
               value: '0'
+            - name: REDIS_CONNECTION_STRING
+              value: '${REDIS_CONNECTION_STRING}'
           ports:
             - containerPort: 3000
           resources:

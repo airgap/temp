@@ -21,10 +21,10 @@ esbuild
 
 		// Simply mark all packages as external to allow the router approach to work
 		external: [
-			'@lyku/*',
-			'kysely',
-			'@clickhouse/client',
-			'@elastic/elasticsearch',
+			// '@lyku/*',
+			// 'kysely',
+			// '@clickhouse/client',
+			// '@elastic/elasticsearch',
 		],
 	})
 	.then(() => {
