@@ -1,18 +1,8 @@
-import { Client } from '@elastic/elasticsearch';
-// Import directly from node_modules instead of using the TypeScript path alias
-import { createClient } from '@clickhouse/client';
-
-// Create the clickhouse client directly instead of using route-helpers
-const clickhouse = createClient({
-	url: process.env.CH_ENDPOINT,
-	password: process.env.CH_PASSWORD,
-	username: process.env.CH_USERNAME,
-});
-
-const elastic = new Client({
-	node: process.env.ELASTIC_API_ENDPOINT,
-	auth: { apiKey: process.env.ELASTIC_API_KEY ?? '' },
-});
+import { client as clickhouse } from '@lyku/clickhouse-client';
+import { client as elastic } from '@lyku/elasticsearch-client';
+import { client as postgres } from '@lyku/postgres-client';
+import { client as redis } from '@lyku/redis-client';
+import { defaultLogger as logger } from '@lyku/logger';
 
 interface ReactionRecord {
 	postId: string;
@@ -21,6 +11,9 @@ interface ReactionRecord {
 	updated_at: string;
 }
 
+// Constants for viral post handling
+const VIRAL_POST_THRESHOLD = 10000; // Threshold for considering a post viral
+
 interface PostMetadata {
 	id: string;
 	publish: string;
@@ -28,9 +21,11 @@ interface PostMetadata {
 
 export async function processReactions() {
 	try {
-		console.log('Processing reactions');
+		logger.info('Processing reactions for Elasticsearch indexing');
 		const lastProcessedTime = await getLastProcessedTime();
-		console.log('Last processing time:', lastProcessedTime);
+		logger.info('Last processing time:', { lastProcessedTime });
+
+		// Get posts with updated reaction counts
 		const result = await clickhouse.query({
 			query: `
         SELECT
@@ -46,19 +41,31 @@ export async function processReactions() {
 			format: 'JSONEachRow',
 		});
 		const reactionData = (await result.json()) as ReactionRecord[];
-		console.log('Results', reactionData.length);
+		logger.info('Found updated reaction records', {
+			count: reactionData.length,
+		});
 		if (reactionData.length === 0) return [];
 
+		// Organize reaction data by post
 		const postMap = new Map<
 			string,
-			{ reactions: Record<string, number>; updated_at: string }
+			{
+				reactions: Record<string, number>;
+				updated_at: string;
+				isViral: boolean;
+			}
 		>();
 
+		// Initial pass to collect reaction counts by post
 		for (const record of reactionData) {
 			const postId = record.postId.toString();
 
 			if (!postMap.has(postId)) {
-				postMap.set(postId, { reactions: {}, updated_at: record.updated_at });
+				postMap.set(postId, {
+					reactions: {},
+					updated_at: record.updated_at,
+					isViral: false, // Will check viral status later
+				});
 			}
 
 			postMap.get(postId)!.reactions[record.reaction] = Number(record.count);
@@ -72,6 +79,10 @@ export async function processReactions() {
 		const affectedPostIds = Array.from(postMap.keys());
 		if (affectedPostIds.length === 0) return [];
 
+		// Check for viral posts by getting total reaction counts
+		await identifyViralPosts(postMap);
+
+		// Get metadata needed for Elasticsearch indexing
 		const postMetadata = await fetchPostMetadata(affectedPostIds);
 		const bulkOperations = [];
 
@@ -84,17 +95,51 @@ export async function processReactions() {
 			const publishDate = new Date(metadata.publish);
 			const index = `posts-${publishDate.getFullYear()}-${publishDate.getMonth() + 1}`;
 
-			bulkOperations.push({ update: { _index: index, _id: postId } });
-			bulkOperations.push({
-				script: {
-					source: 'ctx._source.reactions = params.reactions',
-					params: { reactions: data.reactions },
-				},
-			});
+			// For viral posts, we need special handling in Elasticsearch
+			if (data.isViral) {
+				// Add viral flag to Elasticsearch document
+				bulkOperations.push({ update: { _index: index, _id: postId } });
+				bulkOperations.push({
+					script: {
+						source:
+							'ctx._source.reactions = params.reactions; ctx._source.isViralPost = true; ctx._source.totalReactions = params.totalReactions',
+						params: {
+							reactions: data.reactions,
+							totalReactions: Object.values(data.reactions).reduce(
+								(sum, count) => sum + count,
+								0,
+							),
+						},
+					},
+				});
+			} else {
+				// Standard update for regular posts
+				bulkOperations.push({ update: { _index: index, _id: postId } });
+				bulkOperations.push({
+					script: {
+						source:
+							'ctx._source.reactions = params.reactions; ctx._source.isViralPost = false',
+						params: { reactions: data.reactions },
+					},
+				});
+			}
 		}
 
 		if (bulkOperations.length > 0) {
-			await elastic.bulk({ operations: bulkOperations, refresh: true });
+			// Execute Elasticsearch bulk operation
+			const bulkResponse = await elastic.bulk({
+				operations: bulkOperations,
+				refresh: true,
+			});
+			logger.info('Elasticsearch bulk update complete', {
+				totalItems: bulkOperations.length / 2,
+				errors: bulkResponse.errors,
+			});
+
+			// Update Redis viral flags for affected posts
+			await updateRedisViralFlags(postMap);
+
+			// Update checkpoint
 			await updateLastProcessedTime(
 				reactionData[reactionData.length - 1].updated_at,
 			);
@@ -102,8 +147,96 @@ export async function processReactions() {
 
 		return affectedPostIds;
 	} catch (error) {
-		console.error('Error processing reactions:', error);
+		logger.error('Error processing reactions:', { error });
 		throw error;
+	}
+}
+
+/**
+ * Identifies which posts are viral based on reaction counts
+ * and updates the postMap with this information
+ */
+async function identifyViralPosts(
+	postMap: Map<
+		string,
+		{ reactions: Record<string, number>; updated_at: string; isViral: boolean }
+	>,
+): Promise<void> {
+	try {
+		// Get total reaction counts for all posts in the map
+		const postIds = Array.from(postMap.keys());
+
+		if (postIds.length === 0) return;
+
+		// Convert string post IDs to proper format for SQL query
+		const postIdParams = postIds.map((id) => `'${id}'`).join(',');
+
+		// Get total reaction counts from database
+		const reactionCounts = await postgres
+			.selectFrom('reactions')
+			.select(['postId', postgres.fn.count<string>('userId').as('total_count')])
+			.whereRef('postId', 'in', postgres.raw(`(${postIdParams})`))
+			.groupBy(['postId'])
+			.execute();
+
+		// Update the postMap with viral status
+		for (const { postId, total_count } of reactionCounts) {
+			const postIdStr = postId.toString();
+			if (postMap.has(postIdStr)) {
+				const count = parseInt(total_count, 10);
+				postMap.get(postIdStr)!.isViral = count >= VIRAL_POST_THRESHOLD;
+
+				logger.info(`Post ${postIdStr} has ${count} reactions`, {
+					isViral: postMap.get(postIdStr)!.isViral,
+				});
+			}
+		}
+	} catch (error) {
+		logger.error('Error identifying viral posts:', { error });
+		// Continue processing even if this fails - we'll assume posts are not viral
+	}
+}
+
+/**
+ * Updates Redis viral flags for all affected posts
+ */
+async function updateRedisViralFlags(
+	postMap: Map<
+		string,
+		{ reactions: Record<string, number>; updated_at: string; isViral: boolean }
+	>,
+): Promise<void> {
+	try {
+		// Use pipelining for efficient Redis updates
+		const pipeline = redis.pipeline();
+
+		for (const [postId, data] of postMap.entries()) {
+			const postShardId = Number(BigInt(postId) % 100n);
+			const viralFlagKey = `post:${postShardId}:${postId}:viral`;
+			const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+
+			if (data.isViral) {
+				// Set viral flag and total reactions count
+				const totalReactions = Object.values(data.reactions).reduce(
+					(sum, count) => sum + count,
+					0,
+				);
+				pipeline.set(viralFlagKey, '1', 'EX', 86400);
+				pipeline.set(totalReactionsKey, totalReactions.toString(), 'EX', 86400);
+			} else {
+				// Remove viral flag if it exists (post might have been viral before)
+				pipeline.del(viralFlagKey);
+				pipeline.del(totalReactionsKey);
+			}
+		}
+
+		await pipeline.exec();
+		logger.info('Updated Redis viral flags for affected posts', {
+			count: postMap.size,
+		});
+	} catch (error) {
+		logger.error('Error updating Redis viral flags:', { error });
+		// Non-critical operation, continue even if this fails
 	}
 }
 
@@ -127,14 +260,14 @@ async function fetchPostMetadata(postIds: string[]): Promise<PostMetadata[]> {
 
 		return (await result.json()) as PostMetadata[];
 	} catch (error) {
-		console.error('Error fetching post metadata:', error);
+		logger.error('Error fetching post metadata:', { error, postIds });
 		return [];
 	}
 }
 
 async function getLastProcessedTime(): Promise<string> {
 	try {
-		console.log('Getting last processed time');
+		logger.info('Getting last processed time from ClickHouse');
 		const result = await clickhouse.query({
 			query: `
         SELECT max(processed_time) AS last_time
@@ -142,11 +275,13 @@ async function getLastProcessedTime(): Promise<string> {
       `,
 			format: 'JSONEachRow',
 		});
-		console.log('Hit clickhouse');
+
 		const data = (await result.json()) as [] | [{ last_time: string }];
-		return data[0]?.last_time || '1970-01-01 00:00:00.000';
+		const lastTime = data[0]?.last_time || '1970-01-01 00:00:00.000';
+		logger.info('Retrieved last processed time', { lastTime });
+		return lastTime;
 	} catch (error) {
-		console.error('Error getting last processed time:', error);
+		logger.error('Error getting last processed time:', { error });
 		return '1970-01-01 00:00:00.000';
 	}
 }
@@ -159,8 +294,9 @@ async function updateLastProcessedTime(time: string): Promise<void> {
         VALUES (toDateTime64('${time}', 3))
       `,
 		});
+		logger.info('Updated last processed time', { time });
 	} catch (error) {
-		console.error('Error updating last processed time:', error);
+		logger.error('Error updating last processed time:', { error, time });
 		throw error;
 	}
 }

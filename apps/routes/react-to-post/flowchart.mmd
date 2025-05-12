@@ -1,13 +1,38 @@
 flowchart TD
     User[User] -->|Post Reaction| API[API Gateway]
-    subgraph "Real-time Layer"
+    
+    subgraph "Data Classification"
         API --> ReactHandler[Reaction Handler Service]
-        ReactHandler -->|Write| RedisCluster[Redis Cluster\nSharded by Post/User ID]
-        RedisCluster -->|Read| ReactHandler
+        ReactHandler -->|Check Post Popularity| PostClassifier[Post Type Classifier]
+        PostClassifier -->|< 10K reactions| RegularPostFlow[Regular Post Flow]
+        PostClassifier -->|≥ 10K reactions| ViralPostFlow[Viral Post Flow]
+    end
+    
+    subgraph "Regular Post Processing"
+        RegularPostFlow -->|Full Data Caching| RegularRedis[Redis Cluster\nComplete Reaction Data]
+        RegularRedis -->|Read/Write| RegularPostFlow
+    end
+
+    subgraph "Viral Post Processing"
+        ViralPostFlow -->|Limited Sample Caching| ViralRedis[Redis Cluster\nSampled + Aggregated Data]
+        ViralRedis -->|Check Sample| ReactionCheck{Reaction in Cache?}
+        ReactionCheck -->|Yes| CachedProcess[Process Cached Reaction]
+        ReactionCheck -->|No| DBFallback[Database Fallback]
+        DBFallback -->|Read| PostgreSQL
+        DBFallback -->|Update Sample| ViralRedis
+        CachedProcess --> UpdateCounters[Update Counters]
+        DBFallback --> UpdateCounters
+    end
+
+    subgraph "Redis Storage Strategy"
+        RegularRedis -->|Stores| CompleteData[Complete User-Reaction Mappings]
+        ViralRedis -->|Stores| AggregatedData[Aggregated Counts]
+        ViralRedis -->|Stores| SampleData[1000 Most Recent Reactions]
+        ViralRedis -->|Stores| ViralFlags[Viral Post Flags]
     end
 
     subgraph "Persistence Layer"
-        ReactHandler -->|Async Write| PostgreSQL[(PostgreSQL\nDurability Store)]
+        ReactHandler -->|Async Write| PostgreSQL[(PostgreSQL\nSource of Truth)]
         ReactHandler -->|Failed writes| RetryQueue[Persistence Retry Queue]
         RetryQueue -->|Process retries| PostgreSQL
     end
@@ -18,22 +43,36 @@ flowchart TD
 
     subgraph "Recovery Systems"
         Scheduler[Scheduled Jobs] -->|Trigger| RedisHealth[Redis Health Check]
-        RedisHealth -->|Monitor| RedisCluster
+        RedisHealth -->|Monitor| RegularRedis
+        RedisHealth -->|Monitor| ViralRedis
         RedisHealth -->|Detect issues| RecoveryProcess[Recovery Process]
-        PostgreSQL -->|Rebuild data| RecoveryProcess
-        RecoveryProcess -->|Restore| RedisCluster
+        PostgreSQL -->|Rebuild Regular Data| RecoveryProcess
+        PostgreSQL -->|Rebuild Sampled Data| RecoveryProcess
+        RecoveryProcess -->|Restore| RegularRedis
+        RecoveryProcess -->|Restore| ViralRedis
     end
 
     subgraph "Monitoring & Alerting"
         ReactHandler -->|Metrics| Prometheus[Prometheus]
-        RedisCluster -->|Metrics| Prometheus
+        RegularRedis -->|Metrics| Prometheus
+        ViralRedis -->|Metrics| Prometheus
         PostgreSQL -->|Metrics| Prometheus
         RetryQueue -->|Metrics| Prometheus
         Prometheus -->|Alerts| AlertManager[Alert Manager]
     end
 
     subgraph "Reconciliation"
-        Scheduler -->|Periodic| ReconcileJob[Redis-Postgres Reconciliation]
-        PostgreSQL -->|Source of truth| ReconcileJob
-        ReconcileJob -->|Update| RedisCluster
+        Scheduler -->|Periodic| PostIdentifier[Post Popularity Identifier]
+        PostIdentifier -->|Regular Posts| RegularReconcile[Full Data Reconciliation]
+        PostIdentifier -->|Viral Posts| ViralReconcile[Sampled Data Reconciliation]
+        PostgreSQL -->|Source of truth| RegularReconcile
+        PostgreSQL -->|Source of truth| ViralReconcile
+        RegularReconcile -->|Update| RegularRedis
+        ViralReconcile -->|Update| ViralRedis
+    end
+
+    subgraph "Memory Management"
+        Scheduler -->|Hourly| TTLEnforcer[TTL Enforcer]
+        TTLEnforcer -->|Set Expiration| RegularRedis
+        TTLEnforcer -->|Set Expiration| ViralRedis
     end

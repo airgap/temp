@@ -49,10 +49,30 @@ export default handleReactToPost(
 			const userReactionsKey = `user:${userShardId}:${requester}:reactions`;
 			const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
 
-			// 3. Improved Redis Lua script with better error handling
+			// 3. Improved Redis Lua script with better error handling and viral post handling
 			const luaScript = `
+        -- Check if reaction set exists for this post
+        local setExists = redis.call('EXISTS', KEYS[1])
+        
+        -- If set doesn't exist, return special flag to load from DB
+        if setExists == 0 then
+          return 'LOAD_FROM_DB'
+        end
+        
+        -- Check if this is a viral post (too many reactions to cache them all)
+        local isViralPost = redis.call('EXISTS', KEYS[4]) == 1
+        
         -- Get previous reaction
         local previousReaction = redis.call('HGET', KEYS[1], ARGV[1])
+        
+        -- For viral posts, we need special handling
+        if isViralPost then
+          -- If user's reaction isn't in our sample, check DB directly
+          if not previousReaction and ARGV[2] ~= '' then
+            -- For viral posts without cached entry, return flag to check DB
+            return 'CHECK_DB_VIRAL'
+          end
+        end
 
         -- If there was a previous reaction, decrement its count
         if previousReaction then
@@ -67,28 +87,109 @@ export default handleReactToPost(
 
           -- Increment count
           redis.call('HINCRBY', KEYS[3], ARGV[2], 1)
+          
+          -- For viral posts, also increment total count if it's a new reaction
+          if isViralPost and not previousReaction then
+            redis.call('INCR', KEYS[5])
+          end
         else
           -- Remove reaction
           redis.call('HDEL', KEYS[1], ARGV[1])
           redis.call('HDEL', KEYS[2], ARGV[3])
+          
+          -- For viral posts, also decrement total count if removing reaction
+          if isViralPost and previousReaction then
+            redis.call('DECR', KEYS[5])
+          end
         end
 
         return previousReaction
       `;
 
+			// Additional keys for viral post handling
+			const viralFlagKey = `post:${postShardId}:${postId}:viral`;
+			const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+
 			// Execute the script atomically with proper error handling
 			let previousReaction: Reaction | undefined;
 			try {
-				previousReaction = (await redis.eval(
+				const result = await redis.eval(
 					luaScript,
-					3, // Number of keys
+					5, // Number of keys (increased to support viral post flags)
 					postReactionsKey, // KEYS[1]
 					userReactionsKey, // KEYS[2]
 					reactionCountsKey, // KEYS[3]
+					viralFlagKey, // KEYS[4]
+					totalReactionsKey, // KEYS[5]
 					requester.toString(), // ARGV[1]
 					type || '', // ARGV[2]
 					postId.toString(), // ARGV[3]
-				)) as Reaction | undefined;
+				);
+
+				// Check if we need to load the reaction set from the database
+				if (result === 'LOAD_FROM_DB') {
+					logger.info('Loading reaction set from database', { postId });
+
+					// Load and cache the post's reaction set
+					await loadReactionSetFromDB(postId);
+
+					// Retry the operation now that data is cached
+					previousReaction = (await redis.eval(
+						luaScript,
+						5, // Updated number of keys
+						postReactionsKey,
+						userReactionsKey,
+						reactionCountsKey,
+						viralFlagKey,
+						totalReactionsKey,
+						requester.toString(),
+						type || '',
+						postId.toString(),
+					)) as Reaction | undefined;
+				} else if (result === 'CHECK_DB_VIRAL') {
+					// Special case for viral posts where user's reaction isn't in cached sample
+					logger.info('Viral post: checking database for user reaction', {
+						postId,
+						userId: requester,
+					});
+
+					// Check if user has a previous reaction directly from DB
+					previousReaction = await getFallbackReaction(requester, postId);
+
+					// Update Redis counters directly
+					const pipeline = redis.pipeline();
+
+					// If there was a previous reaction, decrement its count
+					if (previousReaction) {
+						pipeline.hincrby(reactionCountsKey, previousReaction, -1);
+					}
+
+					// If adding a new reaction
+					if (type) {
+						// Always update the user's reaction in Redis sample for future lookups
+						pipeline.hset(postReactionsKey, requester.toString(), type);
+						pipeline.hset(userReactionsKey, postId.toString(), type);
+
+						// Increment count for the new reaction
+						pipeline.hincrby(reactionCountsKey, type, 1);
+
+						// Update total count if needed
+						if (!previousReaction) {
+							pipeline.incr(totalReactionsKey);
+						}
+					} else if (previousReaction) {
+						// Removing reaction
+						pipeline.hdel(postReactionsKey, requester.toString());
+						pipeline.hdel(userReactionsKey, postId.toString());
+
+						// Decrement total count
+						pipeline.decr(totalReactionsKey);
+					}
+
+					await pipeline.exec();
+				} else {
+					previousReaction = result as Reaction | undefined;
+				}
 			} catch (redisError) {
 				logger.error('Redis reaction operation failed', {
 					error: redisError,
@@ -211,6 +312,135 @@ async function getFallbackReaction(
 	return existingReaction?.type;
 }
 
+// Helper to load a post's reaction set from database and cache in Redis
+async function loadReactionSetFromDB(postId: bigint): Promise<void> {
+	// For viral posts, only load reaction counts and recent reactions
+	// Check reaction count first to determine if this is a viral post
+	const reactionCount = await client
+		.selectFrom('reactions')
+		.select(client.fn.count<number>('userId').as('count'))
+		.where('postId', '=', postId)
+		.executeTakeFirst();
+
+	const count = reactionCount?.count ?? 0;
+	const isViralPost = count > 10000; // Threshold for viral posts
+
+	// Prepare for batch updates
+	const postShardId = Number(postId % 100n);
+	const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
+	const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
+	const viralFlagKey = `post:${postShardId}:${postId}:viral`;
+
+	// For viral posts, take a different approach
+	if (isViralPost) {
+		logger.info('Viral post detected, loading optimized reaction data', {
+			postId,
+			reactionCount: count,
+		});
+
+		// Set a flag indicating this is a viral post
+		await redis.set(viralFlagKey, '1', 'EX', 86400);
+
+		// 1. Get reaction counts by type
+		const reactionTypeCounts = await client
+			.selectFrom('reactions')
+			.select(['type'])
+			.select(client.fn.count<number>('userId').as('count'))
+			.where('postId', '=', postId)
+			.groupBy(['type'])
+			.execute();
+
+		// 2. Only load most recent reactions (up to 1000)
+		const recentReactions = await client
+			.selectFrom('reactions')
+			.select(['userId', 'type'])
+			.where('postId', '=', postId)
+			.orderBy('updated', 'desc')
+			.limit(1000)
+			.execute();
+
+		// Create a pipeline for efficiency
+		const pipeline = redis.pipeline();
+
+		// Store the total count for reference
+		pipeline.set(
+			`post:${postShardId}:${postId}:total_reactions`,
+			count.toString(),
+			'EX',
+			86400,
+		);
+
+		// Add reaction counts
+		for (const { type, count } of reactionTypeCounts) {
+			pipeline.hset(reactionCountsKey, type, count.toString());
+		}
+
+		// Store only recent reactions in the post reactions hash
+		for (const reaction of recentReactions) {
+			// Update post reactions hash with recent reactions
+			pipeline.hset(
+				postReactionsKey,
+				reaction.userId.toString(),
+				reaction.type,
+			);
+
+			// Update user reaction hash
+			const userShardId = Number(reaction.userId % 100n);
+			const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+			pipeline.hset(userReactionsKey, postId.toString(), reaction.type);
+		}
+
+		// Set TTL for the cached data (24 hours)
+		pipeline.expire(postReactionsKey, 86400);
+		pipeline.expire(reactionCountsKey, 86400);
+
+		// Execute pipeline
+		await pipeline.exec();
+		return;
+	}
+
+	// For normal posts, load all reactions
+	const reactions = await client
+		.selectFrom('reactions')
+		.select(['userId', 'type'])
+		.where('postId', '=', postId)
+		.execute();
+
+	if (reactions.length === 0) return;
+
+	// Create counts by reaction type
+	const reactionCounts: Record<string, number> = {};
+
+	// Create a pipeline for efficiency
+	const pipeline = redis.pipeline();
+
+	// Add each reaction to the Redis hash
+	for (const reaction of reactions) {
+		// Update post reactions hash
+		pipeline.hset(postReactionsKey, reaction.userId.toString(), reaction.type);
+
+		// Update user reaction hash
+		const userShardId = Number(reaction.userId % 100n);
+		const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+		pipeline.hset(userReactionsKey, postId.toString(), reaction.type);
+
+		// Count reactions by type
+		reactionCounts[reaction.type] = (reactionCounts[reaction.type] || 0) + 1;
+	}
+
+	// Add reaction counts to Redis
+	for (const [reactionType, count] of Object.entries(reactionCounts)) {
+		pipeline.hset(reactionCountsKey, reactionType, count.toString());
+	}
+
+	// Set TTL for the cached data (24 hours)
+	pipeline.expire(postReactionsKey, 86400);
+	pipeline.expire(reactionCountsKey, 86400);
+
+	// Execute all commands atomically
+	await pipeline.exec();
+}
+
 // Improved persistence function with proper parameter naming
 async function persistReactionToPostgres(
 	userId: bigint,
@@ -261,9 +491,72 @@ export async function reconcileRedisWithPostgres(
 			.orderBy('updated', 'desc')
 			.execute();
 
+		// Group reactions by postId to update counts efficiently
+		const postReactionsMap = new Map<string, Map<string, string>>();
+		const postCountMap = new Map<string, Record<string, number>>();
+		const postTotalReactionCount = new Map<string, number>();
+
+		for (const reaction of reactions) {
+			const postIdStr = reaction.postId.toString();
+
+			// Initialize maps for this post if not already done
+			if (!postReactionsMap.has(postIdStr)) {
+				postReactionsMap.set(postIdStr, new Map());
+				postCountMap.set(postIdStr, {});
+				postTotalReactionCount.set(postIdStr, 0);
+			}
+
+			// Store reactions and update counts
+			postReactionsMap
+				.get(postIdStr)!
+				.set(reaction.userId.toString(), reaction.type);
+
+			const counts = postCountMap.get(postIdStr)!;
+			counts[reaction.type] = (counts[reaction.type] || 0) + 1;
+
+			// Increment total reaction count for this post
+			postTotalReactionCount.set(
+				postIdStr,
+				(postTotalReactionCount.get(postIdStr) || 0) + 1,
+			);
+		}
+
 		// Process in batches with a pipeline for efficiency
 		const pipeline = redis.pipeline();
 
+		// Check for viral posts
+		for (const [postIdStr, totalCount] of postTotalReactionCount.entries()) {
+			// For posts in our batch, get their total reaction count from DB
+			const postId = BigInt(postIdStr);
+
+			// If our sample suggests this might be a viral post, check full count
+			if (totalCount > 100) {
+				const fullCountResult = await client
+					.selectFrom('reactions')
+					.select(client.fn.count<number>('userId').as('count'))
+					.where('postId', '=', postId)
+					.executeTakeFirst();
+
+				const fullCount = fullCountResult?.count ?? 0;
+
+				// If this is a viral post (has more than 10,000 reactions)
+				if (fullCount > 10000) {
+					const postShardId = Number(postId % 100n);
+					const viralFlagKey = `post:${postShardId}:${postId}:viral`;
+					const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+
+					// Set the viral flag and total reactions count
+					pipeline.set(viralFlagKey, '1', 'EX', 86400);
+					pipeline.set(totalReactionsKey, fullCount.toString(), 'EX', 86400);
+
+					logger.info(
+						`Marked post ${postId} as viral with ${fullCount} reactions`,
+					);
+				}
+			}
+		}
+
+		// First pass: individual user reactions
 		for (const reaction of reactions) {
 			const userShardId = Number(reaction.userId % 100n);
 			const postShardId = Number(reaction.postId % 100n);
@@ -282,6 +575,27 @@ export async function reconcileRedisWithPostgres(
 				reaction.postId.toString(),
 				reaction.type,
 			);
+		}
+
+		// Second pass: reaction counts by post
+		for (const [postIdStr, counts] of postCountMap.entries()) {
+			const postId = BigInt(postIdStr);
+			const postShardId = Number(postId % 100n);
+			const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
+
+			// Delete existing counts to avoid stale data
+			pipeline.del(reactionCountsKey);
+
+			// Set the counts for each reaction type
+			for (const [reactionType, count] of Object.entries(counts)) {
+				pipeline.hset(reactionCountsKey, reactionType, count.toString());
+			}
+
+			// Set TTL for these keys
+			pipeline.expire(reactionCountsKey, 86400); // 24 hours
+
+			const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
+			pipeline.expire(postReactionsKey, 86400); // 24 hours
 		}
 
 		await pipeline.exec();
