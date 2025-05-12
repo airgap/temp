@@ -1,0 +1,19 @@
+{
+	"name": "@lyku/ttf-ais",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/ttf-ais/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/ttf-ais",
+				"main": "libs/ttf-ais/src/index.ts",
+				"tsConfig": "libs/ttf-ais/tsconfig.lib.json",
+				"assets": ["libs/ttf-ais/*.md"]
+			}
+		}
+	}
+}
