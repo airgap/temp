@@ -1,11 +1,11 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/libs/helpers",
 		"declaration": true,
 		"types": ["node"]
 	},
-	"include": ["src/**/*.ts", "src/getSupertypeFromMime.ts"],
+	"include": ["src/**/*.ts"],
 	"exclude": [
 		"vite.config.ts",
 		"vite.config.mts",

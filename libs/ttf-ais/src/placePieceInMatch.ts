@@ -1,5 +1,5 @@
 import type { TtfMatch } from '@lyku/json-models';
-import type { Player } from './Player';
+import type { Player } from '@lyku/helpers';
 
 export const placePieceInMatch = (
 	iAm: Player,

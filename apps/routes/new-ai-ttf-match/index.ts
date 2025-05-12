@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { delayAttack, ttfBots } from '@lyku/route-helpers';
+import { delayAttack, ttfBots } from '@lyku/ttf-ais';
 import { handleNewAiTtfMatch } from '@lyku/handles';
 import { client as db } from '@lyku/postgres-client';
 

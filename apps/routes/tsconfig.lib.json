@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/routes",
 		"declaration": true,
 		"types": ["node"]
 	},

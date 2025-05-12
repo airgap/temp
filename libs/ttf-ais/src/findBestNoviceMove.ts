@@ -1,4 +1,9 @@
-import type { BoardWithCountdown, MaybeMove, Move, Player } from '../Player';
+import type {
+	BoardWithCountdown,
+	MaybeMove,
+	Move,
+	Player,
+} from '@lyku/helpers';
 
 type Combo = [Move, Move, Move];
 export function findBestNoviceMove(

@@ -4,7 +4,7 @@ import type {
 	Move,
 	Player,
 	Square,
-} from '../Player';
+} from '@lyku/helpers';
 
 export function findBestHardMove(
 	board: BoardWithCountdown,

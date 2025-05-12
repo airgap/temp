@@ -8,7 +8,9 @@
 		"@lyku/db-config": "workspace:*",
 		"@lyku/bson-models": "workspace:*",
 		"@lyku/json-models": "workspace:*",
-		"cheerio": "^1.0.0"
+		"cheerio": "^1.0.0",
+		"@lyku/logger": "workspace:*",
+		"@lyku/postgres-client": "workspace:*"
 	},
 	"type": "module",
 	"main": "./src/index.js",

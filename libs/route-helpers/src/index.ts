@@ -1,7 +1,4 @@
-export * from './checkWin';
 export * from './createSessionForUser';
-export * from './delayAttack';
-export * from './dropIfNecessary';
 export * from './env';
 export * from './run';
 export * from './flagUnsafeHtml';
@@ -13,9 +10,7 @@ export * from './grantAchievementToUser';
 export * from './grantPointsToUser';
 export * from './getCookie';
 export * from './getDictionary';
-export * from './internalUsers';
 export * from './isSessionId';
-export * from './placePieceInMatch';
 export * from './sendNotification';
 export * from './serveHttp';
 export * from './serveWebsocket';

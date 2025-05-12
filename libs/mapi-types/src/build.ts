@@ -69,5 +69,4 @@ export type MonolithTypes = {
 fs.mkdirSync('../../dist/libs/mapi-types', { recursive: true });
 fs.copyFileSync('package.json', '../../dist/libs/mapi-types/package.json');
 const cock = await prettier.format(functions, { parser: 'typescript' });
-console.log('cock', typeof cock, cock);
 fs.writeFileSync('../../dist/libs/mapi-types/index.d.ts', cock);

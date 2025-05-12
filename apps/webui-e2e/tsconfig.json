@@ -2,7 +2,7 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"allowJs": true,
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/apps/webui-e2e",
 		"sourceMap": false,
 		"module": "commonjs"
 	},

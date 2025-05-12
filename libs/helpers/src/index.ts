@@ -26,6 +26,7 @@ export * from './makeDonut';
 export * from './Only';
 export * from './parseAttachmentId';
 export * from './patchAttachments';
+export * from './Player';
 export * from './prettyTime';
 export * from './reactions';
 export * from './reactionWorth';

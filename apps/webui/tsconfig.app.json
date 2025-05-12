@@ -1,7 +1,7 @@
 {
 	"extends": "../../dist/apps/webui/tsconfig.json",
 	"compilerOptions": {
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/apps/webui",
 		"baseUrl": "../..",
 		"types": [
 			"node",

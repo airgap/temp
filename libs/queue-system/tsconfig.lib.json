@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/libs/queue-system",
 		"declaration": true,
 		"types": ["bun", "bun-types"]
 	},

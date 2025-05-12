@@ -1,13 +1,12 @@
+import { grantPointsToUser, grantAchievementToUser } from '@lyku/route-helpers';
 import {
 	ttfBotsById,
 	ttfBots,
-	grantPointsToUser,
-	grantAchievementToUser,
-	placePieceInMatch,
-	checkWin,
 	delayAttack,
 	dropIfNecessary,
-} from '@lyku/route-helpers';
+	placePieceInMatch,
+	checkWin,
+} from '@lyku/ttf-ais';
 import { client as pg } from '@lyku/postgres-client';
 import { TtfMatch } from '@lyku/json-models';
 import { users, achievements } from '@lyku/stock-docs';

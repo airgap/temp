@@ -4,5 +4,9 @@
 	"type": "module",
 	"main": "./src/index.js",
 	"typings": "./src/index.d.ts",
-	"private": true
+	"private": true,
+	"devDependencies": {
+		"@lyku/db-config": "workplace:*",
+		"@lyku/helpers": "workplace:*"
+	}
 }

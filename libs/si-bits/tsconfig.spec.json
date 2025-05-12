@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"outDir": "../../dist/out-tsc",
+		"outDir": "../../dist/libs/si-bits",
 		"types": [
 			"vitest/globals",
 			"vitest/importMeta",
