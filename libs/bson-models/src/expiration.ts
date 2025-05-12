@@ -1,5 +1,5 @@
-import type { DateColumnModel } from 'from-schema';
+import type { Timestamptz } from 'from-schema';
 
 export const expiration = {
-	type: 'date',
-} as const satisfies DateColumnModel;
+	type: 'timestamptz',
+} as const satisfies Timestamptz;

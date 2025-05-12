@@ -17,13 +17,19 @@ export const buildTableCreationCommand = (
 					})
 					.join(', ')
 			: '';
-	const { primaryKey } = model;
+	const { primaryKey, unique } = model;
 	const primary = primaryKey
 		? `, PRIMARY KEY (${[primaryKey]
 				.flat()
 				.map((k) => `"${k}"`)
 				.join(', ')})`
 		: '';
-	const createTableQuery = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columns} ${primary});`;
+	const uni = unique
+		? `, UNIQUE (${[unique]
+				.flat()
+				.map((k) => `"${k}"`)
+				.join(', ')})`
+		: '';
+	const createTableQuery = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columns} ${primary} ${uni});`;
 	return createTableQuery;
 };

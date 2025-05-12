@@ -41,6 +41,12 @@ spec:
               value: '${CF_API_TOKEN}'
             - name: CF_ID
               value: '${CF_ID}'
+            - name: CH_ENDPOINT
+              value: '${CH_ENDPOINT}'
+            - name: CH_USERNAME
+              value: '${CH_USERNAME}'
+            - name: CH_PASSWORD
+              value: '${CH_PASSWORD}'
             - name: ELASTIC_API_ENDPOINT
               value: '${ELASTIC_API_ENDPOINT}'
             - name: ELASTIC_API_KEY

@@ -229,9 +229,6 @@ CREATE INDEX IF NOT EXISTS "idx_channels_live" ON "channels" ("live");
 CREATE INDEX IF NOT EXISTS "idx_channels_created" ON "channels" ("created");
 
 
-CREATE INDEX IF NOT EXISTS "idx_channels_totalStreamTime" ON "channels" ("totalStreamTime");
-
-
 ---- Create triggers
 CREATE OR REPLACE FUNCTION channels_trigger_1_fn () RETURNS TRIGGER AS $$
 BEGIN
@@ -644,7 +641,7 @@ CREATE TABLE IF NOT EXISTS "imageDrafts" (
   "id" BIGINT PRIMARY KEY NOT NULL,
   "uploadURL" TEXT NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "filename" TEXT CHECK (length("filename") <= 100) NOT NULL
+  "filename" TEXT CHECK (length("filename") <= 300) NOT NULL
 );
 
 
@@ -982,7 +979,8 @@ CREATE TABLE IF NOT EXISTS "posts" (
   "echoing" BIGINT,
   "attachments" BIGINT[] CHECK (array_length("attachments", 1) <= 256),
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated" TIMESTAMPTZ
+  "updated" TIMESTAMPTZ,
+  "deleted" TIMESTAMPTZ
 );
 
 
@@ -1063,6 +1061,25 @@ DROP TRIGGER IF EXISTS publishers_trigger_1 ON "publishers";
 CREATE TRIGGER publishers_trigger_1 BEFORE
 UPDATE ON "publishers" FOR EACH ROW
 EXECUTE FUNCTION publishers_trigger_1_fn ();
+-----------------------------
+--------  reactions  --------
+-----------------------------
+---- Create table
+CREATE TABLE IF NOT EXISTS "reactions" (
+  "userId" BIGINT NOT NULL,
+  "postId" BIGINT NOT NULL,
+  "created" TIMESTAMPTZ NOT NULL,
+  "updated" TIMESTAMPTZ,
+  "type" TEXT NOT NULL,
+  UNIQUE ("userId", "postId")
+);
+
+
+---- Create indexes
+CREATE INDEX IF NOT EXISTS "idx_reactions_userId" ON "reactions" ("userId");
+
+
+CREATE INDEX IF NOT EXISTS "idx_reactions_postId" ON "reactions" ("postId");
 ------------------------------
 ----------  scores  ----------
 ------------------------------
@@ -1214,6 +1231,7 @@ CREATE TABLE IF NOT EXISTS "ttfMatches" (
   "whoseTurn" BIGINT,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated" TIMESTAMPTZ,
+  "lastTurn" TIMESTAMPTZ,
   "winner" BIGINT
 );
 
@@ -1391,6 +1409,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "name" TEXT CHECK (length("name") <= 30) CHECK (length("name") >= 3),
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated" TIMESTAMPTZ,
+  "deleted" TIMESTAMPTZ,
   PRIMARY KEY ("id")
 );
 

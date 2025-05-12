@@ -2,6 +2,7 @@ import { processReactions } from './processReactions';
 
 // Single process with modular internal components
 export function flushAll() {
+	console.log('Flushing...');
 	return processReactions()
 		.then((postIds) => processPostPoints(postIds))
 		.then((userIds) => processUserAchievements(userIds))

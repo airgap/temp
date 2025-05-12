@@ -28,11 +28,12 @@ interface PostMetadata {
 
 export async function processReactions() {
 	try {
+		console.log('Processing reactions');
 		const lastProcessedTime = await getLastProcessedTime();
-
+		console.log('Last processing time:', lastProcessedTime);
 		const result = await clickhouse.query({
 			query: `
-        SELECT 
+        SELECT
           postId,
           reaction,
           count,
@@ -44,8 +45,8 @@ export async function processReactions() {
       `,
 			format: 'JSONEachRow',
 		});
-
 		const reactionData = (await result.json()) as ReactionRecord[];
+		console.log('Results', reactionData.length);
 		if (reactionData.length === 0) return [];
 
 		const postMap = new Map<
@@ -112,7 +113,7 @@ async function fetchPostMetadata(postIds: string[]): Promise<PostMetadata[]> {
 	try {
 		// For ClickHouse, use the IN operator with a tuple of values
 		const query = `
-      SELECT 
+      SELECT
         toString(id) AS id,
         publish
       FROM posts
@@ -133,6 +134,7 @@ async function fetchPostMetadata(postIds: string[]): Promise<PostMetadata[]> {
 
 async function getLastProcessedTime(): Promise<string> {
 	try {
+		console.log('Getting last processed time');
 		const result = await clickhouse.query({
 			query: `
         SELECT max(processed_time) AS last_time
@@ -140,7 +142,7 @@ async function getLastProcessedTime(): Promise<string> {
       `,
 			format: 'JSONEachRow',
 		});
-
+		console.log('Hit clickhouse');
 		const data = (await result.json()) as [] | [{ last_time: string }];
 		return data[0]?.last_time || '1970-01-01 00:00:00.000';
 	} catch (error) {

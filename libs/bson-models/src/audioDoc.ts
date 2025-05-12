@@ -7,7 +7,7 @@ export const audioDoc = {
 		title: { type: 'text', maxLength: 50 },
 		description: { type: 'text', maxLength: 1000 },
 		duration: { type: 'double precision' },
-		created: { type: 'date' },
+		created: { type: 'timestamptz' },
 		author: { type: 'bigint' },
 		updated: { type: 'timestamptz' },
 	},

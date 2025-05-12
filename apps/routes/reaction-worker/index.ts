@@ -7,7 +7,7 @@ import {
 	ReactionPersistenceProcessor,
 	RedisRecoveryService,
 } from './recovery-systems';
-import { Kysely } from 'kysely';
+import { Kysely, sql } from 'kysely';
 import { Database } from '@lyku/db-config/kysely';
 
 /**
@@ -184,6 +184,16 @@ export class ReactionWorkerService {
 			this.healthCheckInterval = null;
 		}
 
+		// Stop HTTP health check server if it exists
+		if (this.healthServer) {
+			try {
+				await this.healthServer.stop();
+				this.logger.info('Stopped health check HTTP server');
+			} catch (error) {
+				this.logger.error('Error stopping health check server', { error });
+			}
+		}
+
 		// Stop queue processing
 		for (const [queueName, queue] of Object.entries(this.queueSystem)) {
 			queue.stop();
@@ -250,11 +260,7 @@ export class ReactionWorkerService {
 
 			// Check Database
 			const dbStartTime = Date.now();
-			await this.db
-				.selectFrom('reactions')
-				.select(sql`1`)
-				.limit(1)
-				.execute();
+			await this.db.selectFrom('reactions').limit(1).execute();
 			const dbLatency = Date.now() - dbStartTime;
 			this.metrics.recordGauge('db_ping_latency_ms', dbLatency);
 
@@ -296,14 +302,22 @@ export class ReactionWorkerService {
 	/**
 	 * Register Kubernetes health check endpoints
 	 */
-	private registerK8sHealthCheck(): void {
-		// This would typically be done via an HTTP server
-		// For simplicity, we're just logging that it would be registered
-		this.logger.info('Kubernetes health checks would be registered here');
+	private healthServer: { stop: () => Promise<void> } | null = null;
 
-		// In a real implementation, you would:
-		// 1. Create an Express/Fastify/Koa HTTP server
-		// 2. Add /health, /readiness, and /liveness endpoints
-		// 3. Return status based on Redis and DB connectivity
+	private async registerK8sHealthCheck(): Promise<void> {
+		try {
+			// Dynamically import the HTTP server to avoid dependency cycles
+			const { startHealthCheckServer } = await import('./http-server');
+
+			// Start HTTP server on port 8080 or from environment variable
+			const httpPort = parseInt(process.env.HEALTH_CHECK_PORT || '8080', 10);
+			this.healthServer = startHealthCheckServer(httpPort, this);
+
+			this.logger.info(
+				`Kubernetes health check server started on port ${httpPort}`,
+			);
+		} catch (error) {
+			this.logger.error('Failed to start health check server', { error });
+		}
 	}
 }

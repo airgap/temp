@@ -21,7 +21,7 @@ async function main() {
 			process.env.HEALTH_CHECK_INTERVAL_MS || '60000',
 			10,
 		), // 1 minute
-		k8sEnabled: process.env.K8S_ENABLED === 'true',
+		k8sEnabled: process.env.K8S_ENABLED !== 'false', // Enable by default
 	};
 
 	// Create and start worker service
@@ -45,10 +45,6 @@ async function main() {
 		process.exit(1);
 	}
 }
-
-// Start the service
-if (require.main === module) {
-	main().catch(console.error);
-}
+main().catch(console.error);
 
 export { ReactionWorkerService };
