@@ -13,7 +13,7 @@
 	const liked = $derived(($myLikeStore.get($post?.id) ?? 0n) > 0n);
 	const like = () => {
 		myLikeStore.update($post.id);
-		api.likePost($post.id);
+		api.reactToPost({ postId: $post.id, type: '👍' });
 	};
 	const unlike = () => {
 		myLikeStore.update(-$post.id);

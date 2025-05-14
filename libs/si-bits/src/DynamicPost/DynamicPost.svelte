@@ -90,7 +90,7 @@
 	// const [audios] = [[]]; //useCacheData('audios', audioIds);
 	// const [documents] = [[]]; //useCacheData('documents', documentIds);
 
-	$effect(() => error && console.error(error));
+	$effect(() => error && console.error('DynamicPost error:', error?.message));
 
 	$inspect('hnng', currentUserStore, showReplyer);
 

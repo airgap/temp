@@ -7,7 +7,9 @@ import { PG_CONNECTION_STRING } from '$env/static/private';
 
 export const load = async ({ cookies }: { cookies: Cookies }) => {
 	const sessionId = cookies.get('sessionId');
-	const db = initDb(PG_CONNECTION_STRING || process?.env?.DATABASE_URL || '');
+	const db = initDb(
+		PG_CONNECTION_STRING || process?.env?.PG_CONNECTION_STRING || '',
+	);
 	const session = sessionId
 		? await db
 				.selectFrom('sessions')

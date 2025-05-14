@@ -15,6 +15,7 @@ export async function queryHotPosts(opts: {
 	size?: number;
 	continuation?: unknown[];
 }): Promise<{ posts: Post[]; continuation?: unknown[] }> {
+	console.log('Querying hot posts');
 	const { dateRange, continuation } = opts ?? {};
 
 	const body = buildHotQuery(opts);

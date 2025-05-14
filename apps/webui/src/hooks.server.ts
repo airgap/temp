@@ -26,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	// Initialize database if we have platform environment
 	if (event.platform?.env?.PG_CONNECTION_STRING) {
-		const db = initDb(event.platform.env.DATABASE_URL);
+		const db = initDb(event.platform.env.PG_CONNECTION_STRING);
 		event.locals.db = db;
 	}
 	console.log('Got db');

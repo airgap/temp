@@ -43,9 +43,9 @@ export const initDb = (connectionString: string): Kysely<Database> =>
 		dialect: initDialect(connectionString),
 		log: ['query', 'error'],
 	});
-
+console.log('PG_CONNECTION_STRING', PG_CONNECTION_STRING);
 export const neon = () =>
-	initDb(PG_CONNECTION_STRING || process?.env?.DATABASE_URL || '');
+	initDb(PG_CONNECTION_STRING || process?.env?.PG_CONNECTION_STRING || '');
 
 /**
  * Test the database connection
