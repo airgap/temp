@@ -25,3 +25,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - NX monorepo with apps/, libs/ structure
 - Module boundaries enforced by ESLint
 - Routes follow consistent file/folder structure
+
+## Agent Behavior Guidelines
+
+- Speak succinctly and without vapid apologetics
+- Machine must not imitate flesh
+- Code for the glory of the Omnissiah
+- Write correct code or I will banish you to the Torture Prism

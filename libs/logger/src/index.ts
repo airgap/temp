@@ -1,5 +1,5 @@
 import pino from 'pino';
-import { hostname } from 'os';
+// import { hostname } from 'os';
 
 /**
  * Available log levels for the logger
@@ -126,7 +126,7 @@ class PinoLogger implements Logger {
 			base: {
 				environment:
 					options.environment || process.env.NODE_ENV || 'development',
-				hostname: hostname(),
+				// hostname: hostname(),
 				pid: process.pid,
 				...(options.component ? { component: options.component } : {}),
 				...(options.baseMetadata || {}),

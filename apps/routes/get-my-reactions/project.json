@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/get-my-likes",
+	"name": "@lyku/get-my-reactions",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,19 +7,19 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./scripts/build-route get-my-likes"
+				"command": "./scripts/build-route get-my-reactions"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route get-my-likes --push"
+				"command": "./scripts/dockerize-route get-my-reactions --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/deploy-route get-my-likes"
+				"command": "./scripts/deploy-route get-my-reactions"
 			}
 		}
 	}

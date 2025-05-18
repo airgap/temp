@@ -1,4 +1,4 @@
-import { Redis, RedisOptions } from 'ioredis';
+import { Redis, type RedisOptions } from 'ioredis';
 
 const endpoint = process.env['REDIS_CONNECTION_STRING'];
 if (!endpoint) throw new Error('REDIS_CONNECTION_STRING not set!');

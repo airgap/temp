@@ -9,12 +9,8 @@ export const listGroupsImIn = {
 				type: 'array',
 				items: group,
 			},
-			groupMemberships: {
-				type: 'array',
-				items: groupMembership,
-			},
 		},
-		required: ['groups', 'groupMemberships'],
+		required: ['groups'],
 	},
 	authenticated: true,
 	throws: [400, 401, 500],

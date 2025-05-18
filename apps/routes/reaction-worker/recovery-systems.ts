@@ -245,11 +245,8 @@ export class RedisRecoveryService {
 			const pipeline = this.redis.pipeline();
 
 			for (const reaction of reactions) {
-				const userShardId = Number(reaction.userId % 100n);
-				const postShardId = Number(reaction.postId % 100n);
-
-				const postReactionsKey = `post:${postShardId}:${reaction.postId}:reactions`;
-				const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+				const postReactionsKey = `post:{${reaction.postId}}:reactions`;
+				const userReactionsKey = `user:{${reaction.userId}}:reactions`;
 
 				// Set the reaction in Redis
 				pipeline.hset(
@@ -278,7 +275,7 @@ export class RedisRecoveryService {
 	private async rebuildReactionCounts(): Promise<void> {
 		// First clear all reaction count keys to avoid stale data
 		// This is a pattern scan that finds all reaction count keys
-		const keys = await this.scanAllKeys('post:*:*:reaction_counts');
+		const keys = await this.scanAllKeys('post:*:reaction_counts');
 
 		if (keys.length > 0) {
 			const pipeline = this.redis.pipeline();
@@ -294,8 +291,8 @@ export class RedisRecoveryService {
 			this.logger.info(`Cleared ${keys.length} reaction count keys`);
 		}
 
-		// Now rebuild from the post:*:*:reactions keys
-		const reactionKeys = await this.scanAllKeys('post:*:*:reactions');
+		// Now rebuild from the post:*:reactions keys
+		const reactionKeys = await this.scanAllKeys('post:*:reactions');
 
 		// Process in batches for efficiency
 		const batchSize = 100;
@@ -323,13 +320,19 @@ export class RedisRecoveryService {
 
 		for (const reactionKey of reactionKeys) {
 			try {
-				// Extract postId from key pattern: post:shardId:postId:reactions
+				// Extract postId from key pattern: post:{postId}:reactions
 				const parts = reactionKey.split(':');
-				if (parts.length !== 4) continue;
+				// Skip if not in the expected format
+				if (parts.length < 3) continue;
 
-				const shardId = parts[1];
-				const postId = parts[2];
-				const countKey = `post:${shardId}:${postId}:reaction_counts`;
+				// Extract postId from the pattern - handle both old and new formats
+				const postIdStr = parts[1].includes('{')
+					? parts[1].replace('{', '').replace('}', '')
+					: parts.length === 4
+						? parts[2]
+						: parts[1];
+
+				const countKey = `post:{${postIdStr}}:reaction_counts`;
 
 				// Get all reactions for this post
 				const reactions = await this.redis.hgetall(reactionKey);
@@ -386,9 +389,8 @@ export class RedisRecoveryService {
 	 * Can be used to detect data consistency issues
 	 */
 	async checkPostKeysExist(postId: bigint): Promise<boolean> {
-		const postShardId = Number(postId % 100n);
-		const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
-		const countKey = `post:${postShardId}:${postId}:reaction_counts`;
+		const postReactionsKey = `post:{${postId}}:reactions`;
+		const countKey = `post:{${postId}}:reaction_counts`;
 
 		try {
 			// Check if either key exists
@@ -409,9 +411,8 @@ export class RedisRecoveryService {
 	 */
 	async reconcilePostReactions(postId: bigint): Promise<void> {
 		try {
-			const postShardId = Number(postId % 100n);
-			const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
-			const countKey = `post:${postShardId}:${postId}:reaction_counts`;
+			const postReactionsKey = `post:{${postId}}:reactions`;
+			const countKey = `post:{${postId}}:reaction_counts`;
 
 			// Get all reactions for this post from PostgreSQL
 			const dbReactions = await this.db
@@ -467,8 +468,7 @@ export class RedisRecoveryService {
 						pipeline.hset(postReactionsKey, userId, type);
 
 						// Also update user's reactions
-						const userShardId = Number(BigInt(userId) % 100n);
-						const userReactionsKey = `user:${userShardId}:${userId}:reactions`;
+						const userReactionsKey = `user:{${userId}}:reactions`;
 						pipeline.hset(userReactionsKey, postId.toString(), type);
 					}
 				}
@@ -567,7 +567,7 @@ async function getSampleKeyCount(redis: any): Promise<number> {
 		const [cursor, keys] = await redis.scan(
 			0,
 			'MATCH',
-			`post:${shard}:*:reactions`,
+			`post:*:reactions`,
 			'COUNT',
 			'1000',
 		);

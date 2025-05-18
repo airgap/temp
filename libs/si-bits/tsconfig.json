@@ -11,6 +11,7 @@
 		"noPropertyAccessFromIndexSignature": true,
 		"types": ["svelte"],
 		"verbatimModuleSyntax": true,
+		"target": "ES2023",
 		"paths": {
 			"@lyku/defaults": ["dist/libs/defaults"],
 			"@lyku/strings": ["dist/libs/strings"],

@@ -24,7 +24,7 @@ export const serveHttp = async ({
 	const server = Bun.serve({
 		port,
 		async fetch(req) {
-			// console.log('--- New request ---');
+			console.log('New request ->', req.url);
 			const responseHeaders = new Headers();
 			const origin = req.headers.get('origin');
 			let allow;

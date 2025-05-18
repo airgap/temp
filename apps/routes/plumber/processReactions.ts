@@ -211,9 +211,8 @@ async function updateRedisViralFlags(
 		const pipeline = redis.pipeline();
 
 		for (const [postId, data] of postMap.entries()) {
-			const postShardId = Number(BigInt(postId) % 100n);
-			const viralFlagKey = `post:${postShardId}:${postId}:viral`;
-			const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+			const viralFlagKey = `post:{${postId}}:viral`;
+			const totalReactionsKey = `post:{${postId}}:total_reactions`;
 
 			if (data.isViral) {
 				// Set viral flag and total reactions count

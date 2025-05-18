@@ -8,6 +8,7 @@ import { defaultLogger as logger } from '@lyku/logger';
 
 // Add a retry queue system
 import { addToRetryQueue } from '@lyku/queue-system';
+import { parseBON, stringifyBON } from 'from-schema';
 
 // Constants for configuration
 const REDIS_PERSISTENCE_RETRY_QUEUE = 'redis:persistence:retry';
@@ -16,10 +17,11 @@ const MAX_RETRY_ATTEMPTS = 3;
 export default handleReactToPost(
 	async ({ postId, type }, { requester, now }) => {
 		try {
+			console.log('Reacting to', postId);
 			// 1. First check if post exists - this is still necessary but can be cached
-			const postCacheKey = `post:${postId}:exists`;
+			const postCacheKey = `post:{${postId}}:exists`;
 			let postExists = await redis.get(postCacheKey);
-
+			console.log('postExists', postExists);
 			if (postExists === null) {
 				// Only hit the database if we don't have it cached
 				const post = await client
@@ -28,43 +30,43 @@ export default handleReactToPost(
 					.where('id', '=', postId)
 					.executeTakeFirst();
 
-				if (!post) throw new Err(404, "Post doesn't exist");
-				postExists = JSON.stringify({ id: post.id, author: post.author });
+				if (!post) throw new Err(404, "Post doesn't exist in postgres");
+				postExists = stringifyBON({ id: post.id, author: post.author });
 
 				// Cache the existence check with expiration
 				await redis.set(postCacheKey, postExists, 'EX', 3600); // 1 hour cache
 			}
 
-			const post = JSON.parse(postExists);
+			const { author, id } = parseBON(postExists) as {
+				id: bigint;
+				author: bigint;
+			};
 
-			if (post.author === requester) {
+			if (author === requester) {
 				throw new Err(403, 'You cannot like your own post');
 			}
 
-			// 2. Sharded Redis key - for better distribution across Redis cluster
-			const userShardId = Number(requester % 100n); // Simple sharding by user ID
-			const postShardId = Number(postId % 100n); // Simple sharding by post ID
-
-			const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
-			const userReactionsKey = `user:${userShardId}:${requester}:reactions`;
-			const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
+			// 2. Redis keys using hash tags for proper Redis cluster sharding
+			const postReactionsKey = `post:{${postId}}:reactions`;
+			const userReactionsKey = `user:{${requester}}:reactions`;
+			const reactionCountsKey = `post:{${postId}}:reaction_counts`;
 
 			// 3. Improved Redis Lua script with better error handling and viral post handling
 			const luaScript = `
         -- Check if reaction set exists for this post
         local setExists = redis.call('EXISTS', KEYS[1])
-        
+
         -- If set doesn't exist, return special flag to load from DB
         if setExists == 0 then
           return 'LOAD_FROM_DB'
         end
-        
+
         -- Check if this is a viral post (too many reactions to cache them all)
         local isViralPost = redis.call('EXISTS', KEYS[4]) == 1
-        
+
         -- Get previous reaction
         local previousReaction = redis.call('HGET', KEYS[1], ARGV[1])
-        
+
         -- For viral posts, we need special handling
         if isViralPost then
           -- If user's reaction isn't in our sample, check DB directly
@@ -87,7 +89,7 @@ export default handleReactToPost(
 
           -- Increment count
           redis.call('HINCRBY', KEYS[3], ARGV[2], 1)
-          
+
           -- For viral posts, also increment total count if it's a new reaction
           if isViralPost and not previousReaction then
             redis.call('INCR', KEYS[5])
@@ -96,7 +98,7 @@ export default handleReactToPost(
           -- Remove reaction
           redis.call('HDEL', KEYS[1], ARGV[1])
           redis.call('HDEL', KEYS[2], ARGV[3])
-          
+
           -- For viral posts, also decrement total count if removing reaction
           if isViralPost and previousReaction then
             redis.call('DECR', KEYS[5])
@@ -107,8 +109,8 @@ export default handleReactToPost(
       `;
 
 			// Additional keys for viral post handling
-			const viralFlagKey = `post:${postShardId}:${postId}:viral`;
-			const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+			const viralFlagKey = `post:{${postId}}:viral`;
+			const totalReactionsKey = `post:{${postId}}:total_reactions`;
 
 			// Execute the script atomically with proper error handling
 			let previousReaction: Reaction | undefined;
@@ -232,11 +234,11 @@ export default handleReactToPost(
 			// 5. ClickHouse operations in try/catch
 			try {
 				await clickhouse.insert({
-					table: 'user_post_reactions_toilet',
+					table: 'user_post_reactions_raw',
 					values: [
 						{
-							userId: requester,
-							postId: postId,
+							userId: requester.toString(),
+							postId: postId.toString(),
 							reaction: type,
 							created: now,
 							updated: now,
@@ -245,7 +247,7 @@ export default handleReactToPost(
 				});
 			} catch (chError) {
 				logger.error('ClickHouse insert failed', {
-					error: chError,
+					error: chError?.message,
 					postId,
 					userId: requester,
 				});
@@ -253,15 +255,15 @@ export default handleReactToPost(
 			}
 
 			// 6. Point allocation with better error handling
-			if (post.author !== requester && type) {
+			if (author !== requester && type) {
 				try {
 					await clickhouse.insert({
-						table: 'user_point_grants_toilet',
+						table: 'user_point_grants_raw',
 						values: [
 							{
-								userId: post.author,
+								userId: author,
 								reason: 'post_reacted',
-								key: `${requester}-${post.id}`,
+								key: `${requester}-${id}`,
 								points: reactionWorth(type),
 								created: now,
 								updated: now,
@@ -272,7 +274,7 @@ export default handleReactToPost(
 					logger.error('Failed to grant points for reaction', {
 						error: pointsError,
 						postId,
-						authorId: post.author,
+						authorId: author,
 						userId: requester,
 					});
 					// Points can be reconciled later through analytics
@@ -326,10 +328,9 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 	const isViralPost = count > 10000; // Threshold for viral posts
 
 	// Prepare for batch updates
-	const postShardId = Number(postId % 100n);
-	const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
-	const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
-	const viralFlagKey = `post:${postShardId}:${postId}:viral`;
+	const postReactionsKey = `post:{${postId}}:reactions`;
+	const reactionCountsKey = `post:{${postId}}:reaction_counts`;
+	const viralFlagKey = `post:{${postId}}:viral`;
 
 	// For viral posts, take a different approach
 	if (isViralPost) {
@@ -364,7 +365,7 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 
 		// Store the total count for reference
 		pipeline.set(
-			`post:${postShardId}:${postId}:total_reactions`,
+			`post:{${postId}}:total_reactions`,
 			count.toString(),
 			'EX',
 			86400,
@@ -385,8 +386,7 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 			);
 
 			// Update user reaction hash
-			const userShardId = Number(reaction.userId % 100n);
-			const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+			const userReactionsKey = `user:{${reaction.userId}}:reactions`;
 			pipeline.hset(userReactionsKey, postId.toString(), reaction.type);
 		}
 
@@ -420,8 +420,7 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 		pipeline.hset(postReactionsKey, reaction.userId.toString(), reaction.type);
 
 		// Update user reaction hash
-		const userShardId = Number(reaction.userId % 100n);
-		const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+		const userReactionsKey = `user:{${reaction.userId}}:reactions`;
 		pipeline.hset(userReactionsKey, postId.toString(), reaction.type);
 
 		// Count reactions by type
@@ -541,9 +540,9 @@ export async function reconcileRedisWithPostgres(
 
 				// If this is a viral post (has more than 10,000 reactions)
 				if (fullCount > 10000) {
-					const postShardId = Number(postId % 100n);
-					const viralFlagKey = `post:${postShardId}:${postId}:viral`;
-					const totalReactionsKey = `post:${postShardId}:${postId}:total_reactions`;
+					const viralFlagKey = `post:{${postId}}:viral`;
+					const totalReactionsKey = `post:{${postId}}:total_reactions`;
+					const postReactionsKey = `post:{${postId}}:reactions`;
 
 					// Set the viral flag and total reactions count
 					pipeline.set(viralFlagKey, '1', 'EX', 86400);
@@ -558,11 +557,8 @@ export async function reconcileRedisWithPostgres(
 
 		// First pass: individual user reactions
 		for (const reaction of reactions) {
-			const userShardId = Number(reaction.userId % 100n);
-			const postShardId = Number(reaction.postId % 100n);
-
-			const postReactionsKey = `post:${postShardId}:${reaction.postId}:reactions`;
-			const userReactionsKey = `user:${userShardId}:${reaction.userId}:reactions`;
+			const postReactionsKey = `post:{${reaction.postId}}:reactions`;
+			const userReactionsKey = `user:{${reaction.userId}}:reactions`;
 
 			// Set the reaction in Redis
 			pipeline.hset(
@@ -580,8 +576,7 @@ export async function reconcileRedisWithPostgres(
 		// Second pass: reaction counts by post
 		for (const [postIdStr, counts] of postCountMap.entries()) {
 			const postId = BigInt(postIdStr);
-			const postShardId = Number(postId % 100n);
-			const reactionCountsKey = `post:${postShardId}:${postId}:reaction_counts`;
+			const reactionCountsKey = `post:{${postId}}:reaction_counts`;
 
 			// Delete existing counts to avoid stale data
 			pipeline.del(reactionCountsKey);
@@ -594,7 +589,7 @@ export async function reconcileRedisWithPostgres(
 			// Set TTL for these keys
 			pipeline.expire(reactionCountsKey, 86400); // 24 hours
 
-			const postReactionsKey = `post:${postShardId}:${postId}:reactions`;
+			const postReactionsKey = `post:{${postId}}:reactions`;
 			pipeline.expire(postReactionsKey, 86400); // 24 hours
 		}
 

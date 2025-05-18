@@ -23,7 +23,9 @@
 			"@lyku/db-config": ["dist/libs/db-config"],
 			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"],
 			"@lyku/helpers": ["libs/helpers"],
-			"@lyku/defaults": ["libs/defaults"]
+			"@lyku/defaults": ["libs/defaults"],
+			"@lyku/logger": ["libs/logger/src"],
+			"@lyku/redis-client": ["libs/redis-client/src"]
 		}
 	},
 	"include": [

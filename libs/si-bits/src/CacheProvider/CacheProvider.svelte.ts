@@ -82,11 +82,6 @@ const cacheConfigMap = {
 		getAll: api.getGroups,
 		key: 'id',
 	} as const satisfies RecordCacheConfig<Group, 'id'>,
-
-	groupMemberships: {
-		getAll: api.getGroupMemberships,
-		key: 'id',
-	} as const satisfies RecordCacheConfig<GroupMembership, 'id'>,
 } as const;
 
 type CacheConfigs = typeof cacheConfigMap;
