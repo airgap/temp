@@ -1,8 +1,9 @@
 import { decode, encode } from '@msgpack/msgpack';
 import type { SecureHttpContext } from './Contexts';
-import { db } from './db';
+import { client as pg } from '@lyku/postgres-client';
 import { getDictionary } from './getDictionary';
 import {
+	parsePossibleBON,
 	stringifyBON,
 	type TsonHandlerModel,
 	type Validator,
@@ -10,6 +11,8 @@ import {
 import { Err } from '@lyku/helpers';
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
+import { client as redis } from '@lyku/redis-client';
+import { type Session } from '@lyku/json-models';
 
 export const serveHttp = async ({
 	execute,
@@ -80,19 +83,27 @@ export const serveHttp = async ({
 				});
 
 			const sessionId = auth?.substring(7) || cookieSessionId;
+			let session: { userId: bigint } | Session | null = null;
 			if (needsAuth && !sessionId)
 				return new Response('SessionId required but not provided', {
 					status: 403,
 					headers: responseHeaders,
 				});
-
-			const session = sessionId
-				? await db
-						.selectFrom('sessions')
-						.select('userId')
-						.where('id', '=', sessionId)
-						.executeTakeFirst()
-				: null;
+			if (sessionId) {
+				session = await redis
+					.get(`session:${sessionId}`)
+					.then(parsePossibleBON<Session>);
+				if (session) {
+					session ??=
+						(await pg
+							.selectFrom('sessions')
+							.select('userId')
+							.where('id', '=', sessionId)
+							.executeTakeFirst()) ?? null;
+					if (session)
+						await redis.set(`session:${sessionId}`, stringifyBON(session));
+				}
+			}
 
 			if (needsAuth && !session)
 				return new Response('Invalid session', {
@@ -125,7 +136,6 @@ export const serveHttp = async ({
 			const phrasebook = getDictionary(req);
 			try {
 				const output = (await execute(params ?? {}, {
-					db,
 					strings: phrasebook,
 					request: req,
 					requester: session?.userId, // oh just kill me
