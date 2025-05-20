@@ -1,23 +1,8 @@
 import type { Database } from '@lyku/db-config/kysely';
 import type { Kysely } from 'kysely';
+import { initRedis } from '../../initRedis.server';
 // import { defaultLogger as logger } from '@lyku/logger';
-import RedisClient from '../../redis-client';
-import {
-	// REDIS_PASSWORD,
-	// REDIS_USERNAME,
-	REDIS_CONNECTION_STRING,
-} from '$env/static/private';
-const endpoint = REDIS_CONNECTION_STRING; //process.env['REDIS_CONNECTION_STRING'];
-if (!endpoint) throw new Error('REDIS_CONNECTION_STRING not set!');
 const logger = console;
-
-export const redis = new RedisClient({
-	url: endpoint,
-	// password: process.env['REDIS_PASSWORD'],
-	// username: process.env['REDIS_USERNAME'],
-	database: 0,
-	timeout: 5000,
-});
 export const getLikesForPosts = async (
 	db: Kysely<Database>,
 	posts: bigint[],
@@ -39,6 +24,8 @@ export const getLikesForPosts = async (
 	// Try to get user's reactions from Redis first
 	const userShardId = Number(user % 100n);
 	const userReactionsKey = `user:${userShardId}:${user}:reactions`;
+
+	const redis = initRedis();
 
 	try {
 		// Check if user's reactions key exists in Redis

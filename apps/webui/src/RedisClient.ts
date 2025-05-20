@@ -26,7 +26,13 @@ class RedisClient {
 	 * @param {number} [options.database=0] - Redis database index
 	 * @param {number} [options.timeout=5000] - Connection timeout in ms
 	 */
-	constructor(options) {
+	constructor(options: {
+		url: string;
+		password?: string;
+		username?: string;
+		database?: number;
+		timeout?: number;
+	}) {
 		if (!options || !options.url) {
 			throw new Error('Redis connection URL is required');
 		}
@@ -44,7 +50,7 @@ class RedisClient {
 		// Extract host and port from URL
 		const url = new URL(this.url);
 		this.host = url.hostname;
-		this.port = url.port || 6379;
+		this.port = url.port ? parseInt(url.port, 10) : 6379;
 
 		// If Redis URL includes a path with a number, treat it as database index
 		if (url.pathname && url.pathname.length > 1) {
@@ -55,13 +61,24 @@ class RedisClient {
 		}
 	}
 
+	// Private properties
+	private url: string;
+	private password?: string;
+	private username?: string;
+	private database: number;
+	private timeout: number;
+	private encoder: TextEncoder;
+	private decoder: TextDecoder;
+	private host: string;
+	private port: number;
+
 	/**
 	 * Encodes a Redis command according to RESP
 	 *
 	 * @param {string[]} args - Command arguments (e.g. ['SET', 'key', 'value'])
 	 * @returns {Uint8Array} - Encoded command ready to send to Redis
 	 */
-	encodeCommand(args) {
+	private encodeCommand(args: string[]): Uint8Array {
 		let command = RESP.ARRAY + args.length + RESP.CRLF;
 
 		for (const arg of args) {
@@ -77,9 +94,9 @@ class RedisClient {
 	 * Parses a Redis response according to RESP
 	 *
 	 * @param {string} response - Raw Redis response
-	 * @returns {*} - Parsed Redis response
+	 * @returns {any} - Parsed Redis response
 	 */
-	parseResponse(response) {
+	private parseResponse(response: string): any {
 		if (!response || response.length === 0) {
 			return null;
 		}
@@ -156,9 +173,9 @@ class RedisClient {
 	 * Sends a Redis command and returns the parsed response
 	 *
 	 * @param {string[]} args - Command arguments (e.g. ['SET', 'key', 'value'])
-	 * @returns {Promise<*>} - Parsed Redis response
+	 * @returns {Promise<any>} - Parsed Redis response
 	 */
-	async sendCommand(args) {
+	private async sendCommand(args: string[]): Promise<any> {
 		const encodedCommand = this.encodeCommand(args);
 
 		// Use fetch API to send the command to Redis
@@ -168,8 +185,6 @@ class RedisClient {
 		try {
 			// We're using a RESTful interface to Redis via the Fetch API
 			// This assumes you've set up a proxy or service that accepts Redis commands over HTTP
-			// For a direct TCP connection, you would need to use raw TCP sockets
-			// which are available in some Cloudflare worker environments
 			const response = await fetch(`https://${this.host}:${this.port}/redis`, {
 				method: 'POST',
 				headers: {
@@ -211,11 +226,20 @@ class RedisClient {
 	 * @param {boolean} [options.xx] - Only set if key exists
 	 * @returns {Promise<string>} - "OK" if successful
 	 */
-	async set(key, value, options = {}) {
+	async set(
+		key: string,
+		value: string,
+		options: {
+			ex?: number;
+			px?: number;
+			nx?: boolean;
+			xx?: boolean;
+		} = {},
+	): Promise<string> {
 		const args = ['SET', key, value];
 
-		if (options.ex) args.push('EX', options.ex);
-		if (options.px) args.push('PX', options.px);
+		if (options.ex) args.push('EX', options.ex.toString());
+		if (options.px) args.push('PX', options.px.toString());
 		if (options.nx) args.push('NX');
 		if (options.xx) args.push('XX');
 
@@ -228,7 +252,7 @@ class RedisClient {
 	 * @param {string} key - Key to get
 	 * @returns {Promise<string|null>} - Value of key or null if key does not exist
 	 */
-	async get(key) {
+	async get(key: string): Promise<string | null> {
 		return this.sendCommand(['GET', key]);
 	}
 
@@ -238,7 +262,7 @@ class RedisClient {
 	 * @param {...string} keys - Keys to delete
 	 * @returns {Promise<number>} - Number of keys deleted
 	 */
-	async del(...keys) {
+	async del(...keys: string[]): Promise<number> {
 		return this.sendCommand(['DEL', ...keys]);
 	}
 
@@ -248,7 +272,7 @@ class RedisClient {
 	 * @param {...string} keys - Keys to check
 	 * @returns {Promise<number>} - Number of keys that exist
 	 */
-	async exists(...keys) {
+	async exists(...keys: string[]): Promise<number> {
 		return this.sendCommand(['EXISTS', ...keys]);
 	}
 
@@ -259,8 +283,8 @@ class RedisClient {
 	 * @param {number} seconds - Expiry time in seconds
 	 * @returns {Promise<number>} - 1 if successful, 0 if key does not exist
 	 */
-	async expire(key, seconds) {
-		return this.sendCommand(['EXPIRE', key, seconds]);
+	async expire(key: string, seconds: number): Promise<number> {
+		return this.sendCommand(['EXPIRE', key, seconds.toString()]);
 	}
 
 	/**
@@ -269,7 +293,7 @@ class RedisClient {
 	 * @param {string} key - Key to get TTL for
 	 * @returns {Promise<number>} - TTL in seconds, -1 if no expiry, -2 if key does not exist
 	 */
-	async ttl(key) {
+	async ttl(key: string): Promise<number> {
 		return this.sendCommand(['TTL', key]);
 	}
 
@@ -279,7 +303,7 @@ class RedisClient {
 	 * @param {string} key - Key to increment
 	 * @returns {Promise<number>} - New value
 	 */
-	async incr(key) {
+	async incr(key: string): Promise<number> {
 		return this.sendCommand(['INCR', key]);
 	}
 
@@ -289,7 +313,7 @@ class RedisClient {
 	 * @param {string} key - Key to decrement
 	 * @returns {Promise<number>} - New value
 	 */
-	async decr(key) {
+	async decr(key: string): Promise<number> {
 		return this.sendCommand(['DECR', key]);
 	}
 
@@ -300,8 +324,8 @@ class RedisClient {
 	 * @param {number} increment - Increment value
 	 * @returns {Promise<number>} - New value
 	 */
-	async incrby(key, increment) {
-		return this.sendCommand(['INCRBY', key, increment]);
+	async incrby(key: string, increment: number): Promise<number> {
+		return this.sendCommand(['INCRBY', key, increment.toString()]);
 	}
 
 	/**
@@ -311,25 +335,22 @@ class RedisClient {
 	 * @param {number} decrement - Decrement value
 	 * @returns {Promise<number>} - New value
 	 */
-	async decrby(key, decrement) {
-		return this.sendCommand(['DECRBY', key, decrement]);
+	async decrby(key: string, decrement: number): Promise<number> {
+		return this.sendCommand(['DECRBY', key, decrement.toString()]);
 	}
 
 	/**
 	 * HSET key field value [field value ...]
 	 *
 	 * @param {string} key - Hash key
-	 * @param {string} field - Field to set
-	 * @param {string} value - Value to set
-	 * @param {Array} [entries] - Additional field-value pairs
-	 * @returns {Promise<number>} - Number of fields set
+	 * @param {Array} [entries] - Field-value pairs
+	 * @returns {number | Promise<number>} - Number of fields set
 	 */
-	async hset(key, field, value, ...entries) {
-		const args = ['HSET', key, field, value];
-		if (entries && entries.length > 0) {
-			args.push(...entries);
-		}
-		return this.sendCommand(args);
+	hset(key: string, ...entries: string[]): number | Promise<number> {
+		if (!entries.length) return 0;
+		if (entries.length % 2 !== 0)
+			throw new Error('Invalid number of arguments');
+		return this.sendCommand(['HSET', key, ...entries]);
 	}
 
 	/**
@@ -339,7 +360,7 @@ class RedisClient {
 	 * @param {string} field - Field to get
 	 * @returns {Promise<string|null>} - Value of field or null if field does not exist
 	 */
-	async hget(key, field) {
+	async hget(key: string, field: string): Promise<string | null> {
 		return this.sendCommand(['HGET', key, field]);
 	}
 
@@ -347,17 +368,29 @@ class RedisClient {
 	 * HGETALL key
 	 *
 	 * @param {string} key - Hash key
-	 * @returns {Promise<Object>} - Object with all fields and values
+	 * @returns {Promise<Record<string, string>|null>} - Object with all fields and values
 	 */
-	async hgetall(key) {
+	async hgetall(key: string): Promise<Record<string, string> | null> {
 		const result = await this.sendCommand(['HGETALL', key]);
 		if (!result) return null;
 
-		const obj = {};
+		const obj: Record<string, string> = {};
 		for (let i = 0; i < result.length; i += 2) {
 			obj[result[i]] = result[i + 1];
 		}
 		return obj;
+	}
+
+	/**
+	 * HMGET key field [field ...]
+	 *
+	 * @param {string} key - Hash key
+	 * @param {...string} fields - Fields to get
+	 * @returns {Promise<Array<string|null>>} - Array of values, null for non-existing fields
+	 */
+	async hmget(key: string, ...fields: string[]): Promise<Array<string | null>> {
+		if (!fields.length) return [];
+		return this.sendCommand(['HMGET', key, ...fields]);
 	}
 
 	/**
@@ -367,7 +400,7 @@ class RedisClient {
 	 * @param {...string} fields - Fields to delete
 	 * @returns {Promise<number>} - Number of fields deleted
 	 */
-	async hdel(key, ...fields) {
+	async hdel(key: string, ...fields: string[]): Promise<number> {
 		return this.sendCommand(['HDEL', key, ...fields]);
 	}
 
@@ -378,7 +411,7 @@ class RedisClient {
 	 * @param {...string} values - Values to push
 	 * @returns {Promise<number>} - Length of list after push
 	 */
-	async lpush(key, ...values) {
+	async lpush(key: string, ...values: string[]): Promise<number> {
 		return this.sendCommand(['LPUSH', key, ...values]);
 	}
 
@@ -389,7 +422,7 @@ class RedisClient {
 	 * @param {...string} values - Values to push
 	 * @returns {Promise<number>} - Length of list after push
 	 */
-	async rpush(key, ...values) {
+	async rpush(key: string, ...values: string[]): Promise<number> {
 		return this.sendCommand(['RPUSH', key, ...values]);
 	}
 
@@ -399,7 +432,7 @@ class RedisClient {
 	 * @param {string} key - List key
 	 * @returns {Promise<string|null>} - Value popped or null if list is empty
 	 */
-	async lpop(key) {
+	async lpop(key: string): Promise<string | null> {
 		return this.sendCommand(['LPOP', key]);
 	}
 
@@ -409,7 +442,7 @@ class RedisClient {
 	 * @param {string} key - List key
 	 * @returns {Promise<string|null>} - Value popped or null if list is empty
 	 */
-	async rpop(key) {
+	async rpop(key: string): Promise<string | null> {
 		return this.sendCommand(['RPOP', key]);
 	}
 
@@ -421,8 +454,8 @@ class RedisClient {
 	 * @param {number} stop - Stop index
 	 * @returns {Promise<string[]>} - List of values
 	 */
-	async lrange(key, start, stop) {
-		return this.sendCommand(['LRANGE', key, start, stop]);
+	async lrange(key: string, start: number, stop: number): Promise<string[]> {
+		return this.sendCommand(['LRANGE', key, start.toString(), stop.toString()]);
 	}
 
 	/**
@@ -432,7 +465,7 @@ class RedisClient {
 	 * @param {...string} members - Members to add
 	 * @returns {Promise<number>} - Number of members added
 	 */
-	async sadd(key, ...members) {
+	async sadd(key: string, ...members: string[]): Promise<number> {
 		return this.sendCommand(['SADD', key, ...members]);
 	}
 
@@ -443,7 +476,7 @@ class RedisClient {
 	 * @param {...string} members - Members to remove
 	 * @returns {Promise<number>} - Number of members removed
 	 */
-	async srem(key, ...members) {
+	async srem(key: string, ...members: string[]): Promise<number> {
 		return this.sendCommand(['SREM', key, ...members]);
 	}
 
@@ -453,8 +486,73 @@ class RedisClient {
 	 * @param {string} key - Set key
 	 * @returns {Promise<string[]>} - List of members
 	 */
-	async smembers(key) {
+	async smembers(key: string): Promise<string[]> {
 		return this.sendCommand(['SMEMBERS', key]);
+	}
+
+	/**
+	 * ZRANGE key min max [WITHSCORES] [LIMIT offset count] [BYSCORE | BYLEX] [REV]
+	 *
+	 * @template T - Boolean type parameter (true if withScores is true, false otherwise)
+	 * @param {string} key - Sorted set key
+	 * @param {string|number} min - Minimum score or index
+	 * @param {string|number} max - Maximum score or index
+	 * @param {Object} [options] - Additional options
+	 * @param {T} [options.withScores] - Include scores in the result
+	 * @param {boolean} [options.byScore] - Query by score values, not by index
+	 * @param {boolean} [options.byLex] - Query by lexicographical ordering
+	 * @param {boolean} [options.rev] - Return elements in reverse order
+	 * @param {Object} [options.limit] - Limit options
+	 * @param {number} [options.limit.offset] - Skip offset results
+	 * @param {number} [options.limit.count] - Return at most count results
+	 * @returns {Promise<string[]>} - List of members when withScores is false
+	 * @returns {Promise<Array<[string, string]>>} - Array of [member, score] pairs when withScores is true
+	 */
+	async zrange<T extends boolean = false>(
+		key: string,
+		min: string | number,
+		max: string | number,
+		options: {
+			withScores?: T;
+			byScore?: boolean;
+			byLex?: boolean;
+			rev?: boolean;
+			limit?: {
+				offset: number;
+				count: number;
+			};
+		} = {} as any,
+	): Promise<T extends true ? Array<[string, string]> : string[]> {
+		const args = ['ZRANGE', key, min.toString(), max.toString()];
+
+		// Only one of BYSCORE or BYLEX can be specified
+		if (options.byScore) args.push('BYSCORE');
+		else if (options.byLex) args.push('BYLEX');
+
+		if (options.rev) args.push('REV');
+
+		if (options.withScores) args.push('WITHSCORES');
+
+		if (options.limit) {
+			args.push(
+				'LIMIT',
+				options.limit.offset.toString(),
+				options.limit.count.toString(),
+			);
+		}
+
+		const result = await this.sendCommand(args);
+
+		// If we asked for scores, convert the flat array into pairs of [member, score]
+		if (options.withScores && Array.isArray(result)) {
+			const pairs: Array<[string, string]> = [];
+			for (let i = 0; i < result.length; i += 2) {
+				pairs.push([result[i], result[i + 1]]);
+			}
+			return pairs as any;
+		}
+
+		return result as any;
 	}
 
 	/**
@@ -462,7 +560,7 @@ class RedisClient {
 	 *
 	 * @returns {Promise<string>} - "PONG"
 	 */
-	async ping() {
+	async ping(): Promise<string> {
 		return this.sendCommand(['PING']);
 	}
 }

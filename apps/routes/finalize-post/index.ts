@@ -3,6 +3,8 @@ import { InsertablePost, Post } from '@lyku/json-models/index';
 import { sql } from 'kysely';
 import { elasticatePost } from './elasticatePost';
 import { client as pg } from '@lyku/postgres-client';
+import { client as redis } from '@lyku/redis-client';
+import { client as clickhouse } from '@lyku/clickhouse-client';
 
 export default handleFinalizePost(async ({ body, id }, { requester }) => {
 	const authRes = await pg
@@ -74,5 +76,8 @@ export default handleFinalizePost(async ({ body, id }, { requester }) => {
 			.where('id', '=', authRes.echoing)
 			.execute();
 	await elasticatePost(p);
+	const stringId = id.toString();
+	await redis.zadd(`user:${requester}:recentPosts`, stringId, stringId);
+	await clickhouse.insert({ table: 'posts', values: [p] });
 	return p;
 });

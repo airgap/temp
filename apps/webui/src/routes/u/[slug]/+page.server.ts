@@ -1,17 +1,38 @@
 // import type { PageLoad } from './$types';
+import { initRedis } from '../../../initRedis.server';
 import { neon, getUsers, getLikesForPosts } from '../../../lib/server';
+import { type User } from '@lyku/json-models';
+import { parsePossibleBON } from 'from-schema';
+import { Err } from '@lyku/helpers';
 export const load = async ({ params, fetch, parent }) => {
+	const getUserBySlugFromPg = () =>
+		db
+			.selectFrom('users')
+			.selectAll()
+			.where('slug', '=', slug.toLocaleLowerCase())
+			.executeTakeFirst();
 	const { user } = await parent();
 	const { slug } = params;
 	const db = neon();
-	const target = slug
-		? await db
-				.selectFrom('users')
-				.selectAll()
-				.where('slug', '=', slug.toLocaleLowerCase())
-				.executeTakeFirst()
-		: undefined;
-
+	const redis = initRedis();
+	let target: User | null = null;
+	let userId = await redis.hget('userIds', slug);
+	if (!userId) {
+		const target = await getUserBySlugFromPg();
+		if (!target) throw new Err(404);
+		void redis.hset('users', target.id.toString(), JSON.stringify(target));
+		void redis.hset('userIds', slug, target.id.toString());
+	}
+	if (userId)
+		target = await redis.hget('users', userId).then(parsePossibleBON<User>);
+	if (!target) {
+		if (!target) throw new Err(404);
+		// if (!userId) await redis.hset('userIds', slug, target.id.toString());
+	}
+	const postIds = await redis.zrange(`user:${target}:recentPosts`, 0, 50, {
+		rev: true,
+		withScores: true,
+	});
 	const posts = target
 		? await db
 				.selectFrom('posts')
@@ -24,6 +45,7 @@ export const load = async ({ params, fetch, parent }) => {
 	const authors = posts?.length
 		? await getUsers(
 				db,
+				redis,
 				posts.map((p) => p.id),
 			)
 		: [];

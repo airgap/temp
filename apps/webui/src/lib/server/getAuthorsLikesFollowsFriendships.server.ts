@@ -6,15 +6,17 @@ import { getLikeVectors } from './getLikeVectors.server';
 import type { Kysely } from 'kysely';
 import type { Database } from '@lyku/db-config/kysely';
 import type { Post } from '@lyku/json-models';
+import { initRedis } from '../../initRedis.server';
 export const getAuthorsLikesFollowsFriendships = async (
 	db: Kysely<Database>,
 	posts: Post[],
 	user?: bigint,
 ) => {
+	const redis = initRedis();
 	const postIds = posts.map((p) => p.id);
 	const authorIds = dedupe(posts.map((p) => p.author));
 	return {
-		users: getUsers(db, authorIds),
+		users: getUsers(db, redis, authorIds),
 		likes: getLikeVectors(db, postIds, user),
 		follows: getFollowVectors(db, authorIds, user),
 		friendships: getFriendshipStatuses(db, authorIds, user),

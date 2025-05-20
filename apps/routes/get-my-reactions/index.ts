@@ -7,7 +7,7 @@ import { client as redis } from '@lyku/redis-client';
 export default handleGetMyReactions(async (ids, { requester }) => {
 	// Return empty object if no post IDs provided
 	if (ids.length === 0) {
-		return {};
+		return [];
 	}
 
 	const map = new Map<bigint, Reaction>();
