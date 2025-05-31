@@ -1,0 +1,24 @@
+#!/bin/bash
+# deploy-redis.sh
+
+# Set KUBECONFIG to the specified file
+configLocation=~/lyk8s-kubeconfig.yaml
+export config=--kubeconfig=${configLocation}
+
+echo "Deploying Redis to Kubernetes cluster..."
+
+# Apply the Redis resources
+kubectl apply -f k8s/redis.yaml ${config}
+
+# Wait for Redis to be ready
+echo "Waiting for Redis deployment to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/redis ${config}
+
+# Check the status
+echo "Redis deployment status:"
+kubectl get deployment redis ${config}
+kubectl get service redis ${config}
+kubectl get pvc redis-pvc ${config}
+
+echo "Redis deployed successfully!"
+echo "Internal service URL: redis.default.svc.cluster.local:6379"

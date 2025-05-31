@@ -1,5 +1,5 @@
 # Production stage
-FROM oven/bun:1-slim
+FROM oven/bun:latest
 WORKDIR /app
 ARG ROUTE_NAME
 

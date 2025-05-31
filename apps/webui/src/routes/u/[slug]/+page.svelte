@@ -9,18 +9,19 @@
 		PostList,
 		ProfilePicture,
 		phrasebook,
-		myFollowStore,
-		myLikeStore,
-		currentUserStore,
+		myFolloweeStore,
+		myFollowerStore,
 		userStore,
+		postStore,
 	} from '@lyku/si-bits';
 	import { page } from '$app/state';
-	import type { Post, User } from '@lyku/json-models';
+	import type { Post, Thread, User } from '@lyku/json-models';
 	import { PUBLIC_CF_HASH } from '$env/static/public';
 	console.log('fuck');
 	const { data } = $props<{
 		data:
 			| {
+					threads: Thread[];
 					posts: Post[];
 					users: User[];
 					likes: BigInt[];
@@ -30,15 +31,26 @@
 			  }
 			| { error: string };
 	}>();
-	const { posts, users, error, likes, continuation, user, target, follows } =
-		data;
+	const {
+		threads,
+		posts,
+		users,
+		error,
+		likes,
+		continuation,
+		user,
+		target,
+		follows,
+	} = data;
+	users.forEach((u) => userStore.set(u.id, u));
+	posts.forEach((p) => postStore.set(p.id, p));
 	console.log('Hydrating users', users.length, likes.length);
-	userStore.hydrate(users);
-	myLikeStore.hydrate(likes);
-	myFollowStore.hydrate(follows);
+	// userStore.hydrate(users);
+	// myLikeStore.hydrate(likes);
+	// myFollowStore.hydrate(follows);
 	console.log('uuuser', user?.id);
 	if (user) {
-		currentUserStore.preload(user);
+		userStore.set(-1n, user);
 	}
 	console.log('taaaarger', target);
 	console.log('posts', posts);

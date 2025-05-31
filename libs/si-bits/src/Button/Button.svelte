@@ -3,23 +3,19 @@
 	import { ComingSoon } from '../ComingSoon';
 
 	let {
-		disabled = false,
 		destructive = false,
 		class: className = '',
-		type = 'button' as 'button' | 'submit' | 'reset',
-		style = {} as Record<string, string>,
 		children,
 		onClick,
 		comingSoon,
+		...rest
 	} = $props();
 </script>
 
 <button
-	{disabled}
 	class={[styles.Button, destructive && styles.destructive, className]}
-	{type}
-	{style}
 	onclick={onClick}
+	{...rest}
 >
 	{@render children?.()}
 	{#if comingSoon}

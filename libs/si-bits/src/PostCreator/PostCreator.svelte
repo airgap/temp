@@ -21,18 +21,16 @@
 	import chevvy from '../assets/chevvy.svg?raw';
 	import { phrasebook } from '../phrasebook';
 	import styles from './PostCreator.module.sass';
-	import { cacheStore } from '../CacheProvider/CacheStore';
 	import classnames from 'classnames';
 	import { bigintToBase58 } from '@lyku/helpers';
+	import { userStore } from '../CacheProvider';
 
 	const {
-		user,
 		reply = undefined,
 		echo = undefined,
 		showInset = undefined,
 		onsuccess = undefined,
 	} = $props<{
-		user: User;
 		reply?: bigint;
 		echo?: bigint;
 		showInset?: boolean;
@@ -141,6 +139,7 @@
 			files = [...files, ...Array.from(target.files)];
 		}
 	}
+	const user = $derived(userStore.get(-1n));
 </script>
 
 <div class={styles.PostCreator}>

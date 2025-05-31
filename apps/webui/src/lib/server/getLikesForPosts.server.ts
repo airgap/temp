@@ -1,10 +1,11 @@
 import type { Database } from '@lyku/db-config/kysely';
 import type { Kysely } from 'kysely';
-import { initRedis } from '../../initRedis.server';
+import type RedisClient from '../../RedisClient';
 // import { defaultLogger as logger } from '@lyku/logger';
 const logger = console;
 export const getLikesForPosts = async (
 	db: Kysely<Database>,
+	redis: RedisClient,
 	posts: bigint[],
 	user?: bigint,
 ) => {
@@ -24,8 +25,6 @@ export const getLikesForPosts = async (
 	// Try to get user's reactions from Redis first
 	const userShardId = Number(user % 100n);
 	const userReactionsKey = `user:${userShardId}:${user}:reactions`;
-
-	const redis = initRedis();
 
 	try {
 		// Check if user's reactions key exists in Redis

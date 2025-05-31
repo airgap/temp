@@ -27,7 +27,10 @@ export default defineConfig({
 		outDir: '../../dist/apps/webui',
 		emptyOutDir: true,
 		rollupOptions: {
+			// Mark Cloudflare-specific modules as external to prevent bundling
+			external: ['cloudflare:sockets'],
 			output: {
+				// Handle external modules in a way compatible with Cloudflare Workers
 				manualChunks: (id) => {
 					// Create separate chunks for large third-party libraries
 					if (id.includes('node_modules')) {

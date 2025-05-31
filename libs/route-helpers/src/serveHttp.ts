@@ -55,6 +55,7 @@ export const serveHttp = async ({
 			);
 			responseHeaders.set('Access-Control-Allow-Credentials', 'true');
 			if (req.method === 'OPTIONS') {
+				console.log('Returning OPTIONS');
 				return new Response(null, {
 					status: 204,
 					headers: responseHeaders,
@@ -64,7 +65,7 @@ export const serveHttp = async ({
 			const needsAuth = model.authenticated;
 			// HTTP handler
 			if (req.url.endsWith('/health')) {
-				// console.log('Health check');
+				console.log('Health check');
 				return new Response(':D', { status: 200, headers: responseHeaders });
 			}
 			console.log('req', req.url);
@@ -76,40 +77,49 @@ export const serveHttp = async ({
 				.find((c) => c.trim().startsWith('sessionId='))
 				?.split('=')[1];
 
-			if (needsAuth && !auth && !cookieSessionId)
+			if (needsAuth && !auth && !cookieSessionId) {
+				console.warn('Unauthorized');
 				return new Response('Unauthorized', {
 					status: 401,
 					headers: responseHeaders,
 				});
+			}
 
 			const sessionId = auth?.substring(7) || cookieSessionId;
 			let session: { userId: bigint } | Session | null = null;
-			if (needsAuth && !sessionId)
+			if (needsAuth && !sessionId) {
+				console.warn('SessionId required but not provided');
 				return new Response('SessionId required but not provided', {
 					status: 403,
 					headers: responseHeaders,
 				});
+			}
 			if (sessionId) {
+				console.log('Getting session from redis');
 				session = await redis
 					.get(`session:${sessionId}`)
 					.then(parsePossibleBON<Session>);
-				if (session) {
-					session ??=
+				console.log('Session from redis:', session?.userId);
+				if (!session) {
+					session =
 						(await pg
 							.selectFrom('sessions')
 							.select('userId')
 							.where('id', '=', sessionId)
 							.executeTakeFirst()) ?? null;
+					console.log('Session after pg call', session?.userId);
 					if (session)
 						await redis.set(`session:${sessionId}`, stringifyBON(session));
 				}
 			}
 
-			if (needsAuth && !session)
+			if (needsAuth && !session) {
+				console.log('Session required but null');
 				return new Response('Invalid session', {
 					status: 403,
 					headers: responseHeaders,
 				});
+			}
 
 			const methodHasBody =
 				('method' in model &&
@@ -135,6 +145,7 @@ export const serveHttp = async ({
 			}
 			const phrasebook = getDictionary(req);
 			try {
+				console.log('Executing route');
 				const output = (await execute(params ?? {}, {
 					strings: phrasebook,
 					request: req,
@@ -146,7 +157,7 @@ export const serveHttp = async ({
 					now: new Date(),
 				})) as SecureHttpContext<any>;
 				const pack = encode(output, { useBigInt64: true });
-
+				console.log('Route executed successfully');
 				return new Response(pack, {
 					headers: responseHeaders,
 				});

@@ -2,8 +2,9 @@
 	import { api, getSessionId } from 'monolith-ts-api';
 	import type { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
 	import { Button } from '../Button';
-	import { currentUserStore as currentUser } from '../CacheProvider';
+	// import { currentUserStore as currentUser } from '../CacheProvider';
 	import styles from './GroupList.module.sass';
+	import { userStore } from '../CacheProvider';
 
 	const { substring, filter } = $props<{
 		substring?: string;
@@ -37,7 +38,7 @@
 		{#each groups as g (g.id)}
 			<li>
 				<h3>{g.name}</h3>
-				{#if $currentUser && memberships.find((m) => m.group === g.id) && g.owner !== $currentUser.id}
+				{#if userStore.get(-1n) && memberships.find((m) => m.group === g.id) && g.owner !== userStore.get(-1n)?.id}
 					<Button onClick={() => alert('Coming soon!')}>Leave</Button>
 				{:else}
 					<Button onClick={() => alert('Coming soon!')}>Join</Button>

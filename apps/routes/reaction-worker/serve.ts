@@ -8,7 +8,8 @@ async function main() {
 	const config = {
 		serviceName: process.env.SERVICE_NAME || 'lyku-reaction-worker',
 		environment: process.env.NODE_ENV || 'development',
-		redisUrl: process.env.REDIS_CONNECTION_STRING || 'redis://localhost:6379',
+		redisUrl:
+			process.env.REDIS_INTERNAL_CONNECTION_STRING || 'redis://redis:6379',
 		postgresUrl:
 			process.env.PG_CONNECTION_STRING || 'postgres://localhost:5432/lyku',
 		enableRecovery: process.env.ENABLE_RECOVERY === 'true',

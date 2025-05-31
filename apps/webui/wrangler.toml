@@ -1,13 +1,19 @@
+name = "lyku"
 compatibility_flags = ["nodejs_compat"]
-compatibility_date = "2024-09-23"
-services = [
-  { binding = "ES_PROXY", service = "elasticsearch-proxy" }
-]
-[env.production]
-name = "lyku-webui"
+compatibility_date = "2025-05-22"
+services = [{ binding = "ES_PROXY", service = "elasticsearch-proxy" }]
 
-[site]
-bucket = "./dist/apps/webui/"
+kv_namespaces = [{ binding = "lykv", id = "164c14c84e554671bb10aeef1dea86d2" }]
+
+# [env.production]
+# name = "lyku-webui"
+
+# [site]
+# bucket = "./dist/apps/webui/"
+
+[assets]
+directory = "../../dist/apps/webui/output/client"
+not_found_handling = "single-page-application"
 
 [build]
 command = "bun run build"
@@ -15,6 +21,10 @@ command = "bun run build"
 [build.upload]
 format = "modules"
 dir = "./dist/apps/webui/"
+
+[observability]
+enabled = true
+head_sampling_rate = 1 # optional. default = 1.
 
 # Optional: Configure environment variables
 # [vars]

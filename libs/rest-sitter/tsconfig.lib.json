@@ -1,0 +1,20 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"outDir": "../../dist/libs/rest-sitter",
+		"declaration": true,
+		"declarationMap": true,
+		"types": ["node"],
+		"sourceMap": true,
+		"composite": true,
+		"preserveSymlinks": true,
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
+	"references": [
+		{
+			"path": "../defaults/tsconfig.lib.json"
+		}
+	]
+}

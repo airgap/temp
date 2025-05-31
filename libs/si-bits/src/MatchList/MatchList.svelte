@@ -7,13 +7,11 @@
 	import { localizeUsername } from '../localizeUsername';
 	import styles from './MatchList.module.sass';
 	import { Divisio } from '../Divisio';
-	import { cacheStore } from '../CacheProvider';
 
 	const { user, onclose } = $props<{ user: User; onclose: () => void }>();
 
 	let matches = $state<TtfMatch[]>([]);
 	let queried = $state(false);
-	let users = $state<User[]>();
 
 	$effect(() => {
 		if (!queried) {
@@ -31,7 +29,6 @@
 
 	$effect(() => {
 		const userIds = matches.flatMap((m) => [m.X, m.O]);
-		users = cacheStore.users.get(userIds);
 	});
 </script>
 
@@ -49,7 +46,7 @@
 				{#each matches as match}
 					{@const mine = match.whoseTurn === user.id}
 					{@const theirId = mine ? match.O : match.X}
-					{@const them = users?.find((u) => u.id === theirId)}
+					{@const them = userStore.get(theirId)}
 					{#if !them}
 						<tr><td>They are absent</td></tr>
 					{:else}

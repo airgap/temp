@@ -3,7 +3,6 @@
 	import { PostCreator } from '../PostCreator';
 	import { PostList } from '../PostList';
 	import { phrasebook } from '../phrasebook';
-	import { currentUser } from '../currentUserStore';
 	import { Crosshatch } from '../Crosshatch';
 	import { FeedPage } from '../FeedPage';
 

@@ -1,0 +1,119 @@
+---
+# Secret for basic auth
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-proxy-auth
+type: Opaque
+stringData:
+  # username: redis
+  # password: 3DTGeRwetRQkIX6ZeH25/VwLXVkhzfl+e+SG02Jftqs=
+  auth: cmVkaXM6M0RUR2VSd2V0UlFrSVg2WmVIMjUvVndMWFZraHpmbCtlK1NHMDJKZnRxcz0=
+---
+# ConfigMap for Webdis configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webdis-config
+data:
+  webdis.json: |
+    {
+      "redis_host": "redis",
+      "redis_port": 6379,
+      "redis_auth": null,
+      "http_host": "0.0.0.0",
+      "http_port": 7379,
+      "threads": 5,
+      "pool_size": 20,
+      "daemonize": false,
+      "websockets": false,
+      "database": 0,
+      "acl": [
+        {
+          "disabled": ["FLUSHDB", "FLUSHALL", "KEYS", "CONFIG", "SHUTDOWN"],
+          "http_basic_auth": "cmVkaXM6M0RUR2VSd2V0UlFrSVg2WmVIMjUvVndMWFZraHpmbCtlK1NHMDJKZnRxcz0=",
+          "enabled": ["*"]
+        }
+      ],
+      "verbosity": 6,
+      "logfile": "stdout"
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-proxy-secure
+  labels:
+    app: redis-proxy-secure
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-proxy-secure
+  template:
+    metadata:
+      labels:
+        app: redis-proxy-secure
+    spec:
+      containers:
+        - name: webdis
+          image: nicolas/webdis:latest
+          ports:
+            - containerPort: 7379
+              name: http
+          volumeMounts:
+            - name: webdis-config
+              mountPath: /etc/webdis
+              readOnly: true
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '50m'
+            limits:
+              memory: '128Mi'
+              cpu: '200m'
+      volumes:
+        - name: webdis-config
+          configMap:
+            name: webdis-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-proxy-secure
+  labels:
+    app: redis-proxy-secure
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 7379
+      protocol: TCP
+      name: http
+  selector:
+    app: redis-proxy-secure
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: redis-proxy-secure
+  annotations:
+    cert-manager.io/issuer: 'letsencrypt-nginx'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - redis.lyku.org
+      secretName: redis-proxy-tls
+  rules:
+    - host: redis.lyku.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: redis-proxy-secure
+                port:
+                  number: 80

@@ -1,0 +1,22 @@
+#!/bin/bash
+# update-redis-for-k8s.sh
+
+configLocation=~/lyk8s-kubeconfig.yaml
+export config=--kubeconfig=${configLocation}
+
+echo "Updating all Kubernetes deployments to use internal Redis..."
+
+# Get all deployments that start with lyku-
+deployments=$(kubectl get deployments ${config} -o json | jq -r '.items[] | select(.metadata.name | startswith("lyku-")) | .metadata.name')
+
+for deployment in $deployments; do
+    echo "Updating $deployment to use internal Redis..."
+
+    # Update the REDIS_CONNECTION_STRING environment variable
+    kubectl set env deployment/$deployment REDIS_INTERNAL_CONNECTION_STRING="redis://redis:6379" ${config}
+done
+
+echo "All deployments updated to use internal Redis!"
+echo ""
+echo "Checking deployment status..."
+kubectl get deployments ${config} | grep lyku-

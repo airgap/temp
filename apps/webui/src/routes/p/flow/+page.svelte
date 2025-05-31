@@ -2,7 +2,6 @@
 	import {
 		AchievementList,
 		Button,
-		currentUserStore as currentUser,
 		Divisio,
 		FriendInviter,
 		MatchInfo,
@@ -21,7 +20,7 @@
 	const { id } = games.ticTacFlow;
 
 	// State management
-	let user = $state($currentUser);
+	let user = userStore.get(-1n);
 	let matchId = $state(BigInt(window.location.hash.substring(1) || '0'));
 	let match = $state<TtfMatch | undefined>(undefined);
 	let showInvites = $state(false);

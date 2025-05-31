@@ -23,10 +23,9 @@
 	import { Search } from '../Search';
 	import BubbleButton from '../BubbleButton/BubbleButton.svelte';
 	import Cube from '../Cube.svelte';
-	// import { currentUser } from '../currentUserStore';
-	// const user = $currentUser;
-	const { user, sessionId, url, onjoin, onlogin, oncreate } = $props<{
-		user?: User;
+	import { userStore } from '../CacheProvider';
+	const user = $derived(userStore.get(-1n));
+	const { sessionId, url, onjoin, onlogin, oncreate } = $props<{
 		sessionId: string;
 		url?: URL;
 		onjoin: () => void;

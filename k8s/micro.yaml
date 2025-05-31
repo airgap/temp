@@ -59,8 +59,14 @@ spec:
               value: '${SERVICE_DOMAIN}'
             - name: NODE_TLS_REJECT_UNAUTHORIZED
               value: '0'
-            - name: REDIS_CONNECTION_STRING
-              value: '${REDIS_CONNECTION_STRING}'
+            - name: REDIS_INTERNAL_CONNECTION_STRING
+              value: '${REDIS_INTERNAL_CONNECTION_STRING}'
+            - name: ORIGIN_CERTIFICATE
+              value: |
+                ${ORIGIN_CERTIFICATE}
+            - name: PRIVATE_KEY
+              value: |
+                ${PRIVATE_KEY}
           ports:
             - containerPort: 3000
           resources:

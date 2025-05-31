@@ -1,8 +1,16 @@
 import { apiPorts } from '@lyku/defaults';
 
 const { env } = process;
-export const originCertificate = env['ORIGIN_CERTIFICATE'];
-export const privateKey = env['PRIVATE_KEY'];
+export const originCertificate = Buffer.from(
+	env['ORIGIN_CERTIFICATE'] ?? '',
+	'base64',
+).toString();
+export const privateKey = Buffer.from(
+	env['PRIVATE_KEY'] ?? '',
+	'base64',
+).toString();
+console.log('originCertificate', originCertificate);
+console.log('privateKey', privateKey);
 export const servicePort = env['SERVICE_PORT'] || apiPorts.http;
 export const cfAccountId = env['CF_ID'];
 export const cfApiToken = env['CF_API_TOKEN'];

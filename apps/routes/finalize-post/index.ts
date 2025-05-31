@@ -78,6 +78,6 @@ export default handleFinalizePost(async ({ body, id }, { requester }) => {
 	await elasticatePost(p);
 	const stringId = id.toString();
 	await redis.zadd(`user:${requester}:recentPosts`, stringId, stringId);
-	await clickhouse.insert({ table: 'posts', values: [p] });
+	// await clickhouse.insert({ table: 'posts', values: [p] });
 	return p;
 });

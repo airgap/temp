@@ -1,21 +1,25 @@
 import { handleGetCurrentUser } from '@lyku/handles';
-
+import { client as redis } from '@lyku/redis-client';
 import { client as pg } from '@lyku/postgres-client';
+import { parseBON, stringifyBON } from 'from-schema';
+import { User } from '@lyku/json-models';
+import { Err } from '@lyku/helpers';
 
-console.log('get-current-user');
-export default handleGetCurrentUser(async (_, { requester, strings }) => {
-	const user = await pg
-		.selectFrom('users')
-		.selectAll()
-		.where('id', '=', requester)
-		.executeTakeFirst();
-	if (!user) {
-		throw new Error('User not found');
+export default handleGetCurrentUser(async (_, { requester }) => {
+	let user: User | undefined = undefined;
+	const text = await redis.get(`user:${requester}`);
+	if (text) user = parseBON<User>(text);
+	else {
+		user = await pg
+			.selectFrom('users')
+			.where('id', '=', requester)
+			.selectAll()
+			.executeTakeFirst();
+		if (user) {
+			await redis.set(`user:${requester}`, stringifyBON(user));
+		}
 	}
-	console.log('user', user);
-	Object.entries(user).forEach(([key, value]) => {
-		console.log(typeof value, key, '=', value);
-	});
+	if (!user) throw new Err(500, 'Session exists but user does not');
 	return user;
 });
 

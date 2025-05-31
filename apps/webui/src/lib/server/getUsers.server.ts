@@ -1,6 +1,8 @@
 import type { Database } from '@lyku/db-config/kysely';
 import type { Kysely } from 'kysely';
 import type RedisClient from '../../RedisClient';
+import type { RedisClientType } from 'redis';
+import { parseBON } from 'from-schema';
 
 export const getUsers = async (
 	db: Kysely<Database>,
@@ -8,11 +10,11 @@ export const getUsers = async (
 	users: bigint[],
 ) => {
 	if (!users.length) return [];
-
+	console.log('ass');
 	// Try to get users from Redis cache first
 	const userIds = users.map((id) => id.toString());
 	const userStrings = await redis.hmget(`users`, ...userIds);
-
+	console.log('fuck');
 	// Process cache results
 	const result = [];
 	const missingUserIds: bigint[] = [];
@@ -27,9 +29,9 @@ export const getUsers = async (
 		const userIdStr = userIds[i];
 		const cachedUser = userStrings[i];
 
-		if (cachedUser) {
+		if (typeof cachedUser === 'string') {
 			// Add user from cache
-			result[i] = JSON.parse(cachedUser);
+			result[i] = parseBON(cachedUser);
 		} else {
 			// Mark this position as needing to be filled from DB
 			missingUserIds.push(userId);
@@ -66,7 +68,7 @@ export const getUsers = async (
 		// Update cache with missing users if we found any
 		if (cacheUpdates.length > 0) {
 			try {
-				await redis.hset('users', ...cacheUpdates);
+				// await redis.hSet('users', cacheUpdates);
 			} catch (error) {
 				console.error('Failed to update user cache', error);
 				// Non-critical error, continue with results

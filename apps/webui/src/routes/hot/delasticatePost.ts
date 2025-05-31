@@ -30,11 +30,11 @@ type HotHit = {
 };
 export const delasticatePost = (hit: HotHit): ScoredPost => {
 	const src = hit._source;
-	console.log('hit', stringifyBON(hit));
-	console.log('source', stringifyBON(hit._source));
-	console.log('echoes', typeof src.echoes);
-	console.log('hashtags', typeof src.hashtags);
-	console.log('author', typeof src.author);
+	// console.log('hit', stringifyBON(hit));
+	// console.log('source', stringifyBON(hit._source));
+	// console.log('echoes', typeof src.echoes);
+	// console.log('hashtags', typeof src.hashtags);
+	// console.log('author', typeof src.author);
 	return {
 		id: BigInt(hit._id),
 		body: src.body ?? undefined,

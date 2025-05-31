@@ -1,51 +1,81 @@
-// import type { PageLoad } from './$types';
-import {
-	neon,
-	getUsers,
-	getFollowVectors,
-	getFriendshipStatuses,
-	getLikeVectors,
-} from '../../lib/server';
-import { queryHotPosts } from './getHotPosts.server';
-import { ELASTIC_API_ENDPOINT, ELASTIC_API_KEY } from '$env/static/private';
-import { dedupe } from '@lyku/helpers';
-import RedisClient from '../../RedisClient';
-import { initRedis } from '../../initRedis.server';
+import { encode, decode } from '@msgpack/msgpack';
 
-export const load = async ({ params, fetch, parent }) => {
-	console.log('Loading /hot for');
+export const load = async ({ params, parent, cookies }) => {
+	console.log('Loading /hot');
 	const { user } = await parent();
 	console.log('Username:', user?.username);
-	const db = neon();
-	console.log('Querying neon');
-	const { posts, continuation } = await queryHotPosts({
-		fetch,
-		ELASTIC_API_ENDPOINT,
-		ELASTIC_API_KEY,
-	});
-	console.log('Got posts');
-	const postIds = posts.map((p) => p.id);
-	const authorIds = dedupe(posts.map((p) => p.author));
-	console.log('Returning everything');
 
-	// Create a Redis client instance
-	const redis = initRedis();
+	const start = Date.now();
+	console.log('Start es req at', start);
 
-	// Get data in parallel
-	const [users, likes, follows, friendships] = await Promise.all([
-		getUsers(db, redis, authorIds),
-		getLikeVectors(db, postIds, user?.id),
-		getFollowVectors(db, authorIds, user?.id),
-		getFriendshipStatuses(db, authorIds, user?.id),
-	]);
+	try {
+		// Get session ID from cookies
+		const sessionId = cookies.get('sessionId');
 
-	return {
-		order: postIds,
-		posts,
-		continuation,
-		users,
-		likes,
-		follows,
-		friendships,
-	};
+		// Make direct API call using the platform's fetch
+		const res = await fetch('https://api.lyku.org/list-hot-posts', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-msgpack',
+				...(sessionId ? { Authorization: `Bearer ${sessionId}` } : {}),
+				'User-Agent': 'Mozilla/5.0 (compatible; Lyku/1.0; +https://lyku.org)',
+			},
+			body: encode({}),
+		});
+
+		if (!res.ok) {
+			throw new Error(`API request failed: ${res.status} ${res.statusText}`);
+		}
+
+		const buffer = await res.arrayBuffer();
+		const response = decode(new Uint8Array(buffer), {
+			useBigInt64: true,
+		}) as any;
+
+		const end = Date.now();
+		console.log('time', end - start);
+		console.log('buffer', buffer.byteLength);
+		console.log('response', response);
+
+		// // Map the actual API response to the expected format
+		const ret = {
+			posts: response.posts || [],
+			continuation: response.continuation || '',
+			followers: response.followers || [],
+			followees: response.followees || [],
+			friendships: response.friendships || response.friends || [],
+			reactions: response.reactions || [],
+			users: response.users || response.authors || [],
+		};
+		console.log(
+			'posts',
+			response.posts,
+			'continuation',
+			response.continuation,
+			'users',
+			response.users,
+			'friendships',
+			response.friendships,
+			'followers',
+			response.followers,
+			'followees',
+			response.followees,
+			'reactions',
+			response.reactions,
+			'end',
+		);
+		return ret;
+	} catch (error) {
+		console.error('Failed to fetch hot posts:', error);
+		// Return empty data on error
+		return {
+			posts: [],
+			continuation: '',
+			followers: [],
+			followees: [],
+			friendships: [],
+			reactions: [],
+			users: [],
+		};
+	}
 };

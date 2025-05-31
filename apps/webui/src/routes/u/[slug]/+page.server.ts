@@ -11,10 +11,9 @@ export const load = async ({ params, fetch, parent }) => {
 			.selectAll()
 			.where('slug', '=', slug.toLocaleLowerCase())
 			.executeTakeFirst();
-	const { user } = await parent();
+	const { user, redis, pg } = await parent();
+	const db = pg;
 	const { slug } = params;
-	const db = neon();
-	const redis = initRedis();
 	let target: User | null = null;
 	let userId = await redis.hget('userIds', slug);
 	if (!userId) {
@@ -64,6 +63,7 @@ export const load = async ({ params, fetch, parent }) => {
 	);
 	const rawLikes = await getLikesForPosts(
 		db,
+		redis,
 		posts.map((p) => p.id),
 		user,
 	);

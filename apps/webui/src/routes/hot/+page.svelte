@@ -4,10 +4,10 @@
 		FeedPage,
 		PostList,
 		userStore,
-		myFollowStore,
+		myFolloweeStore,
+		myFollowerStore,
 		myFriendshipStore,
-		myLikeStore,
-		currentUserStore,
+		myReactionStore,
 		postStore,
 	} from '@lyku/si-bits';
 	import type { Post, User } from '@lyku/json-models';
@@ -17,29 +17,32 @@
 	const { data } = $props<{
 		data:
 			| {
-					order: Promise<bigint[]>;
+					// order: Promise<bigint[]>;
 					posts: Promise<Post[]>;
 					users: Promise<User[]>;
 					likes: Promise<BigInt[]>;
 					// follows: Promise<Follow[]>;
 					continuation?: string;
 					user: Promise<User>;
+					reactions: string[];
 			  }
 			| { error: string };
 	}>();
 	const {
-		order,
+		// order,
 		posts,
 		users,
 		error,
-		likes,
-		continuation,
+		reactions,
+		// continuation,
 		user,
-		follows,
+		followees,
+		followers,
 		friendships,
 	} = data;
 	console.log(
 		'ssssuck',
+		user,
 		// 'users',
 		// users,
 		// 'likes',
@@ -50,20 +53,40 @@
 		// friendships,
 	);
 	[
-		[users, userStore],
-		[likes, myLikeStore],
-		[follows, myFollowStore],
-		[friendships, myFriendshipStore],
+		// [user, currentUserStore],
+		// [users, userStore],
+		// [reactions, myReactionStore],
+		// [followees, myFolloweeStore],
+		// [followers, myFollowerStore],
+		// [friendships, myFriendshipStore],
 		[posts, postStore],
-	].forEach(async ([data, store]) => store.hydrate(await data));
-	if (user) {
-		currentUserStore.preload(user);
-	}
+	].forEach(async ([data, store]) => {
+		const r = await data;
+		console.log('hydrating', r.length);
+		// store.hydrate(r);
+		r.forEach((d) => store.set(d.id, d));
+		console.log('hydrated', r.length);
+	});
+	followees?.forEach((f) => myFolloweeStore.set(f, true));
+	followers?.forEach((f) => myFollowerStore.set(f, true));
+	console.log('uuuu', users);
+	users.forEach((u) => userStore.set(u.id, u));
+	user?.then((u) => {
+		console.log('u', u);
+		userStore.set(-1n, u);
+	});
+	// userStore.set(-1n,await user);
+	// currentUserStore.me = user;
+	reactions.forEach((r, i) => myReactionStore.set(posts[i].id, r));
+	console.log('user', user);
 </script>
 
 <FeedPage title="Hot">
 	{#if posts}
-		<PostList posts={order ?? []} cfHash={PUBLIC_CF_HASH} />
+		<PostList
+			threads={posts.map((p) => ({ focus: p.id })) ?? []}
+			cfHash={PUBLIC_CF_HASH}
+		/>
 	{:else}
 		<h3>{String(error)}</h3>
 	{/if}

@@ -19,17 +19,16 @@
 	import { ProfilePicture } from '../ProfilePicture';
 	import { formImageUrl } from '../formImageUrl';
 	import {
-		currentUserStore,
 		myFriendshipStore,
-		myFollowStore,
-		useUser,
-		useFollow,
-		useFriendship,
-		usePost,
+		myFolloweeStore,
+		// useUser,
+		// useFollow,
+		// useFriendship,
+		userStore,
+		postStore,
 	} from '../CacheProvider';
 	import { PostCreator } from '../PostCreator';
 	import { DotDotDot } from '../DotDotDot';
-	// import { useCurrentUser } from '../currentUserStore';
 	import { LikeButton } from '../LikeButton';
 	import { EchoButton } from '../EchoButton';
 	import { ReplyButton } from '../ReplyButton';
@@ -57,7 +56,7 @@
 
 	console.log('ffffudge');
 
-	const post = $derived(usePost(id));
+	const post = $derived(postStore.get(id));
 
 	let replies = $state<Post[]>([]);
 	let queriedReplies = $state(false);
@@ -72,10 +71,14 @@
 		url.split(/:\/\//)[1].replace(/:[0-9]{2,5}/, '');
 	const stripLinks = (body: string) =>
 		body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
-
-	const author = $derived(useUser($post?.author));
-	const follow = $derived(useFollow($post?.author));
-	const friendship = $derived(useFriendship($post?.author));
+	$inspect(userStore);
+	console.log('fffa');
+	// $effect(() => console.log('bbb', userStore));
+	const author = $derived(userStore.get(post?.author));
+	const follow = myFolloweeStore.get(author?.id);
+	console.log('anal beads', post?.author, author);
+	// const follow = $derived(followStore.get($post?.author));
+	const friendship = myFriendshipStore.get(post?.author);
 	let adderDropped = $state(false);
 	// const [imageIds, videoIds, audioIds, documentIds] =
 	//     $derived(post.attachments?.reduce((acc, id) => {
@@ -92,15 +95,15 @@
 
 	$effect(() => error && console.error('DynamicPost error:', error?.message));
 
-	$inspect('hnng', currentUserStore, showReplyer);
+	$inspect('hnng', userStore.get(-1n), showReplyer);
 
 	$effect(() => {
-		console.log('AUTHOR ID', $post?.author);
-		console.log('AUTHOR', $author);
+		console.log('AUTHOR ID', post?.author);
+		console.log('AUTHOR', author);
 	});
 
 	$effect(() => {
-		if (!queriedReplies && $post?.replies) {
+		if (!queriedReplies && post?.replies) {
 			queriedReplies = true;
 			api.listPostReplies({ id: post.id }).then((posts) => (replies = posts));
 		}
@@ -110,13 +113,13 @@
 		e.preventDefault();
 		if (window.confirm('Really delete?')) {
 			api.deletePost(post.id).then(() => {
-				window.alert('ViewPost deleted');
+				window.alert('Post deleted.');
 				window.location.reload();
 			});
 		}
 	};
 	const itsYou = $derived(
-		$currentUserStore && $author?.id === $currentUserStore?.id,
+		userStore.get(-1n) && author?.id === userStore.get(-1n)?.id,
 	);
 	$inspect(author);
 </script>
@@ -131,13 +134,13 @@
 	<span class={styles.pp}>
 		<ProfilePicture
 			size="m"
-			src={$author?.profilePicture && formImageUrl($author?.profilePicture)}
+			src={author?.profilePicture && formImageUrl(author?.profilePicture)}
 		/>
 	</span>
 
 	<span class={styles.text}>
-		<Link class={styles.username} href="/u/{$author?.username}">
-			{$author?.username}
+		<Link class={styles.username} href="/u/{author?.username}">
+			{author?.username}
 		</Link>
 		&middot;
 		<span class={[styles.inlineDropper, adderDropped && styles.dropped]}>
@@ -158,11 +161,11 @@
 			>
 				{#if itsYou}
 					you
-				{:else if $friendship === 'befriended'}
+				{:else if friendship === 'befriended'}
 					friend
-				{:else if $friendship === 'theyOffered'}
+				{:else if friendship === 'theyOffered'}
 					wants to be your friend
-				{:else if $follow}
+				{:else if follow}
 					followed
 				{:else}
 					add
@@ -172,10 +175,13 @@
 				<ul>
 					{#if itsYou}
 						<li>
-							<Button href={`/u/${$author?.username}`}>Edit profile</Button>
+							<Button
+								onClick={() => (window.location = `/u/${author?.username}`)}
+								>Edit profile</Button
+							>
 						</li>
 					{/if}
-					{#if $follow}
+					{#if follow}
 						<li>
 							<Button comingSoon onClick={() => alert('WIP')}
 								>Invite to group</Button
@@ -185,41 +191,41 @@
 						<li>
 							<Button
 								onClick={() => {
-									myFollowStore.update(post.author);
+									followStore.set(post.author, true);
 									api.followUser(post.author);
 								}}>Follow</Button
 							>
 						</li>
 					{/if}
-					{#if $friendship === 'befriended'}
+					{#if friendship === 'befriended'}
 						<li>
 							<Button comingSoon onClick={() => alert('WIP')}
 								>Invite to game</Button
 							>
 						</li>
-					{:else if $friendship === 'none' && !itsYou}
+					{:else if friendship === 'none' && !itsYou}
 						<li>
 							<Button
 								onClick={() => {
-									myFriendshipStore.update(post.author, 'youOffered');
+									myFriendshipStore.set(post.author, 'youOffered');
 									api.createFriendRequest(post.author);
 								}}>Add friend</Button
 							>
 						</li>
-					{:else if $friendship === 'youOffered'}
+					{:else if friendship === 'youOffered'}
 						<li>
 							<Button
 								onClick={() => {
-									myFriendshipStore.update(post.author, 'none');
+									myFriendshipStore.set(post.author, 'none');
 									api.recindFriendRequest(post.author);
 								}}>Recind friendship offer</Button
 							>
 						</li>
-					{:else if $friendship === 'theyOffered'}
+					{:else if friendship === 'theyOffered'}
 						<li>
 							<Button
 								onClick={() => {
-									myFriendshipStore.update(post.author, 'befriended');
+									myFriendshipStore.set(post.author, 'befriended');
 									api.acceptFriendRequest(post.author);
 								}}>Accept friend request</Button
 							>
@@ -233,23 +239,23 @@
 							>
 						</li>
 					{/if}
-					{#if $follow}
+					{#if follow}
 						<li>
 							<Button
 								destructive={true}
 								onClick={() => {
-									myFollowStore.update(-post.author);
+									myFollowStore.set(post.author, false);
 									api.unfollowUser(post.author);
 								}}>Unfollow</Button
 							>
 						</li>
 					{/if}
-					{#if $friendship === 'befriended'}
+					{#if friendship === 'befriended'}
 						<li>
 							<Button
 								destructive={true}
 								onClick={() => {
-									myFriendshipStore.update(post.author, 'none');
+									myFriendshipStore.set(post.author, 'none');
 									api.deleteFriendship(post.author);
 								}}>Remove friend</Button
 							>
@@ -259,33 +265,33 @@
 			</div>
 		</span>
 		&middot;
-		<DynamicDate time={$post?.publish} />
+		<DynamicDate time={post?.publish} />
 
 		<span class={styles.PostContent}>
-			{#if $post?.title}
-				<h1>{$post.title}</h1>
+			{#if post?.title}
+				<h1>{post.title}</h1>
 			{/if}
 		</span>
 
-		{#if $post?.body}
+		{#if post?.body}
 			<div
 				class={[
 					styles.body,
 					{
-						[styles.brief]: $post.body.length < 100,
+						[styles.brief]: post.body.length < 100,
 					},
 				]}
 			>
-				{@html $post.body}
+				{@html post.body}
 			</div>
 		{/if}
 	</span>
 
-	{#if $post && 'attachments' in $post}
+	{#if post && 'attachments' in post}
 		<div
 			class={[
 				styles.attachments,
-				$post.attachments.length &&
+				post.attachments.length &&
 					[
 						styles.one,
 						styles.two,
@@ -297,10 +303,10 @@
 						styles.eight,
 						styles.nine,
 						styles.ten,
-					][$post.attachments.length - 1],
+					][post.attachments.length - 1],
 			]}
 		>
-			{#each $post.attachments || [] as at}
+			{#each post.attachments || [] as at}
 				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
 					<Image
 						src={`https://imagedelivery.net/${cfHash}/${at.toString()}/btvprofile`}
@@ -328,12 +334,12 @@
 			<ShareButton {post} />
 		</span>
 
-		{#if showReplyer && $currentUserStore && $post}
+		{#if showReplyer && userStore.get(-1n) && post}
 			<br />
 			<PostCreator
 				showInset={false}
-				reply={$post.id}
-				user={$currentUserStore}
+				reply={post.id}
+				user={userStore.get(-1n)}
 			/>
 		{/if}
 	{/if}

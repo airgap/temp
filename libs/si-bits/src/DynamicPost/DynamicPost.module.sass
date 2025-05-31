@@ -162,7 +162,7 @@ $width: var(--width)
 		top: 20px
 		transform-origin: 20% 15px
 .dropper, .inlineDropper
-	z-index: 1
+	// z-index: 1
 	&:not(.dropped)
 		.dropperBackdrop
 			opacity: 0
@@ -171,6 +171,8 @@ $width: var(--width)
 			transform: scale(0)
 			pointer-events: none
 .dropperBackdrop
+	backdrop-filter: blur(20px)
+	z-index: 10
 	appearance: none
 	border: none
 	position: fixed !important
@@ -186,7 +188,7 @@ $width: var(--width)
 	// background-repeat: no-repeat
 	// background-size: 100vmax 100vmax
 .dropperMenu
-	// z-index: 1
+	z-index: 11
 	position: absolute
 	top: 0
 	right: 0
@@ -199,7 +201,7 @@ $width: var(--width)
 	transition: all .25s ease-in-out
 	transform-origin: 70% -20px
 	overflow: hidden
-	button
+	button, a
 		text-align: left
 		padding: 10px
 		display: block

@@ -3,12 +3,13 @@ import { Err, reactionWorth } from '@lyku/helpers';
 import { Reaction } from '@lyku/json-models';
 import { client as redis } from '@lyku/redis-client';
 import { client as clickhouse } from '@lyku/clickhouse-client';
-import { client, client as pg } from '@lyku/postgres-client';
-import { defaultLogger as logger } from '@lyku/logger';
+import { client as pg } from '@lyku/postgres-client';
+import { defaultLogger, defaultLogger as logger } from '@lyku/logger';
 
 // Add a retry queue system
 import { addToRetryQueue } from '@lyku/queue-system';
-import { parseBON, stringifyBON } from 'from-schema';
+import { parseBON, parsePossibleBON, stringifyBON } from 'from-schema';
+import { User } from '@lyku/json-models';
 
 // Constants for configuration
 const REDIS_PERSISTENCE_RETRY_QUEUE = 'redis:persistence:retry';
@@ -19,28 +20,25 @@ export default handleReactToPost(
 		try {
 			console.log('Reacting to', postId);
 			// 1. First check if post exists - this is still necessary but can be cached
-			const postCacheKey = `post:{${postId}}:exists`;
-			let postExists = await redis.get(postCacheKey);
-			console.log('postExists', postExists);
-			if (postExists === null) {
+			const postCacheKey = `post:{${postId}}`;
+			let post = await redis.get(postCacheKey).then(parsePossibleBON<User>);
+			console.log('post', post);
+			if (post === null) {
 				// Only hit the database if we don't have it cached
-				const post = await client
+				post = await pg
 					.selectFrom('posts')
-					.select(['id', 'author']) // Only select what we need
+					.selectAll() // Only select what we need
 					.where('id', '=', postId)
 					.executeTakeFirst();
 
 				if (!post) throw new Err(404, "Post doesn't exist in postgres");
-				postExists = stringifyBON({ id: post.id, author: post.author });
+				const ps = stringifyBON({ id: post.id, author: post.author });
 
 				// Cache the existence check with expiration
-				await redis.set(postCacheKey, postExists, 'EX', 3600); // 1 hour cache
+				await redis.set(postCacheKey, ps, 'EX', 3600); // 1 hour cache
 			}
 
-			const { author, id } = parseBON(postExists) as {
-				id: bigint;
-				author: bigint;
-			};
+			const { author, id } = post;
 
 			if (author === requester) {
 				throw new Err(403, 'You cannot like your own post');
@@ -53,6 +51,15 @@ export default handleReactToPost(
 
 			// 3. Improved Redis Lua script with better error handling and viral post handling
 			const luaScript = `
+		-- KEYS[1] = postReactionsKey
+		-- KEYS[2] = userReactionsKey
+		-- KEYS[3] = reactionCountsKey
+		-- KEYS[4] = viralFlagKey
+		-- KEYS[5] = totalReactionsKey
+		-- ARGV[1] = requester.toString()
+		-- ARGV[2] = type || ''
+		-- ARGV[3] = postId.toString()
+
         -- Check if reaction set exists for this post
         local setExists = redis.call('EXISTS', KEYS[1])
 
@@ -115,9 +122,7 @@ export default handleReactToPost(
 			// Execute the script atomically with proper error handling
 			let previousReaction: Reaction | undefined;
 			try {
-				const result = await redis.eval(
-					luaScript,
-					5, // Number of keys (increased to support viral post flags)
+				const args = [
 					postReactionsKey, // KEYS[1]
 					userReactionsKey, // KEYS[2]
 					reactionCountsKey, // KEYS[3]
@@ -126,6 +131,12 @@ export default handleReactToPost(
 					requester.toString(), // ARGV[1]
 					type || '', // ARGV[2]
 					postId.toString(), // ARGV[3]
+				];
+				console.info('args', args);
+				const result = await redis.eval(
+					luaScript,
+					5, // Number of keys (increased to support viral post flags)
+					...args,
 				);
 
 				// Check if we need to load the reaction set from the database
@@ -304,7 +315,7 @@ async function getFallbackReaction(
 	userId: bigint,
 	postId: bigint,
 ): Promise<Reaction | undefined> {
-	const existingReaction = await client
+	const existingReaction = await pg
 		.selectFrom('reactions')
 		.select(['type'])
 		.where('userId', '=', userId)
@@ -318,9 +329,9 @@ async function getFallbackReaction(
 async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 	// For viral posts, only load reaction counts and recent reactions
 	// Check reaction count first to determine if this is a viral post
-	const reactionCount = await client
+	const reactionCount = await pg
 		.selectFrom('reactions')
-		.select(client.fn.count<number>('userId').as('count'))
+		.select(pg.fn.count<number>('userId').as('count'))
 		.where('postId', '=', postId)
 		.executeTakeFirst();
 
@@ -343,16 +354,16 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 		await redis.set(viralFlagKey, '1', 'EX', 86400);
 
 		// 1. Get reaction counts by type
-		const reactionTypeCounts = await client
+		const reactionTypeCounts = await pg
 			.selectFrom('reactions')
 			.select(['type'])
-			.select(client.fn.count<number>('userId').as('count'))
+			.select(pg.fn.count<number>('userId').as('count'))
 			.where('postId', '=', postId)
 			.groupBy(['type'])
 			.execute();
 
 		// 2. Only load most recent reactions (up to 1000)
-		const recentReactions = await client
+		const recentReactions = await pg
 			.selectFrom('reactions')
 			.select(['userId', 'type'])
 			.where('postId', '=', postId)
@@ -400,7 +411,7 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 	}
 
 	// For normal posts, load all reactions
-	const reactions = await client
+	const reactions = await pg
 		.selectFrom('reactions')
 		.select(['userId', 'type'])
 		.where('postId', '=', postId)
@@ -449,14 +460,14 @@ async function persistReactionToPostgres(
 ) {
 	if (!newReaction) {
 		// Delete the reaction
-		await client
+		await pg
 			.deleteFrom('reactions')
 			.where('userId', '=', userId)
 			.where('postId', '=', postId)
 			.execute();
 	} else {
 		// Use upsert pattern for handling both inserts and updates
-		await client
+		await pg
 			.insertInto('reactions')
 			.values({
 				userId,
@@ -472,132 +483,5 @@ async function persistReactionToPostgres(
 				}),
 			)
 			.execute();
-	}
-}
-
-// Background job to reconcile Redis with PostgreSQL
-// This would be called by a scheduler periodically
-export async function reconcileRedisWithPostgres(
-	batchSize = 1000,
-	logger: any,
-) {
-	try {
-		// Get a batch of reactions from Postgres
-		const reactions = await client
-			.selectFrom('reactions')
-			.select(['userId', 'postId', 'type'])
-			.limit(batchSize)
-			.orderBy('updated', 'desc')
-			.execute();
-
-		// Group reactions by postId to update counts efficiently
-		const postReactionsMap = new Map<string, Map<string, string>>();
-		const postCountMap = new Map<string, Record<string, number>>();
-		const postTotalReactionCount = new Map<string, number>();
-
-		for (const reaction of reactions) {
-			const postIdStr = reaction.postId.toString();
-
-			// Initialize maps for this post if not already done
-			if (!postReactionsMap.has(postIdStr)) {
-				postReactionsMap.set(postIdStr, new Map());
-				postCountMap.set(postIdStr, {});
-				postTotalReactionCount.set(postIdStr, 0);
-			}
-
-			// Store reactions and update counts
-			postReactionsMap
-				.get(postIdStr)!
-				.set(reaction.userId.toString(), reaction.type);
-
-			const counts = postCountMap.get(postIdStr)!;
-			counts[reaction.type] = (counts[reaction.type] || 0) + 1;
-
-			// Increment total reaction count for this post
-			postTotalReactionCount.set(
-				postIdStr,
-				(postTotalReactionCount.get(postIdStr) || 0) + 1,
-			);
-		}
-
-		// Process in batches with a pipeline for efficiency
-		const pipeline = redis.pipeline();
-
-		// Check for viral posts
-		for (const [postIdStr, totalCount] of postTotalReactionCount.entries()) {
-			// For posts in our batch, get their total reaction count from DB
-			const postId = BigInt(postIdStr);
-
-			// If our sample suggests this might be a viral post, check full count
-			if (totalCount > 100) {
-				const fullCountResult = await client
-					.selectFrom('reactions')
-					.select(client.fn.count<number>('userId').as('count'))
-					.where('postId', '=', postId)
-					.executeTakeFirst();
-
-				const fullCount = fullCountResult?.count ?? 0;
-
-				// If this is a viral post (has more than 10,000 reactions)
-				if (fullCount > 10000) {
-					const viralFlagKey = `post:{${postId}}:viral`;
-					const totalReactionsKey = `post:{${postId}}:total_reactions`;
-					const postReactionsKey = `post:{${postId}}:reactions`;
-
-					// Set the viral flag and total reactions count
-					pipeline.set(viralFlagKey, '1', 'EX', 86400);
-					pipeline.set(totalReactionsKey, fullCount.toString(), 'EX', 86400);
-
-					logger.info(
-						`Marked post ${postId} as viral with ${fullCount} reactions`,
-					);
-				}
-			}
-		}
-
-		// First pass: individual user reactions
-		for (const reaction of reactions) {
-			const postReactionsKey = `post:{${reaction.postId}}:reactions`;
-			const userReactionsKey = `user:{${reaction.userId}}:reactions`;
-
-			// Set the reaction in Redis
-			pipeline.hset(
-				postReactionsKey,
-				reaction.userId.toString(),
-				reaction.type,
-			);
-			pipeline.hset(
-				userReactionsKey,
-				reaction.postId.toString(),
-				reaction.type,
-			);
-		}
-
-		// Second pass: reaction counts by post
-		for (const [postIdStr, counts] of postCountMap.entries()) {
-			const postId = BigInt(postIdStr);
-			const reactionCountsKey = `post:{${postId}}:reaction_counts`;
-
-			// Delete existing counts to avoid stale data
-			pipeline.del(reactionCountsKey);
-
-			// Set the counts for each reaction type
-			for (const [reactionType, count] of Object.entries(counts)) {
-				pipeline.hset(reactionCountsKey, reactionType, count.toString());
-			}
-
-			// Set TTL for these keys
-			pipeline.expire(reactionCountsKey, 86400); // 24 hours
-
-			const postReactionsKey = `post:{${postId}}:reactions`;
-			pipeline.expire(postReactionsKey, 86400); // 24 hours
-		}
-
-		await pipeline.exec();
-		logger.info(
-			`Reconciled ${reactions.length} reactions from Postgres to Redis`,
-		);
-	} catch (error) {
-		logger.error('Reconciliation job failed', { error });
 	}
 }

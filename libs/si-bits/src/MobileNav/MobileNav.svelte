@@ -10,10 +10,10 @@
 	import play from '../assets/play.svg?raw';
 	import styles from './MobileNav.module.sass';
 	import { ProfilePicture } from '../ProfilePicture';
-	import { cacheStore } from '../CacheProvider';
+	import { userStore } from '../CacheProvider';
 	import search from '../assets/search.svg?raw';
 	import Cube from '../Cube.svelte';
-	const user = cacheStore.currentUser;
+	const user = userStore.get(-1n);
 	let profile = $derived(user?.profilePicture);
 
 	const { url, joinOrLogin, onSearchClick } = $props<{

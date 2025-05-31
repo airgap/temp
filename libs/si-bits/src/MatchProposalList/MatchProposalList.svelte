@@ -7,7 +7,7 @@
 	import { localizeUsername } from '../localizeUsername';
 	import styles from './MatchProposalList.module.sass';
 	import { Divisio } from '../Divisio';
-	import { cacheStore } from '../CacheProvider';
+	import { userStore } from '../CacheProvider';
 
 	const { user, onClose } = $props<{ user: User; onClose: () => void }>();
 
@@ -31,7 +31,7 @@
 	const userList = $derived([
 		...new Set(proposals.map((p) => p.from).concat(proposals.map((p) => p.to))),
 	]);
-	const users = $derived(cacheStore.users.get(userList));
+	const users = $derived(userStore.get(userList));
 </script>
 
 <div class={styles.MatchList}>

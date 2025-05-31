@@ -1,0 +1,10 @@
+#!/bin/bash
+# test-redis.sh
+
+configLocation=~/lyk8s-kubeconfig.yaml
+export config=--kubeconfig=${configLocation}
+
+echo "Testing Redis connection from within the cluster..."
+
+# Create a test pod and run redis-cli
+kubectl run redis-test --rm -it --image=redis:7-alpine --restart=Never ${config} -- redis-cli -h redis.default.svc.cluster.local -p 6379 ping

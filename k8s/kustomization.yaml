@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ./micro.yaml
+  # - ./redis.yaml
 
 patches:
   - target:

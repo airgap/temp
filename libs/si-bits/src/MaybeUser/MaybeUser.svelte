@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { User } from '@lyku/json-models';
-	import { currentUserStore } from '../CacheProvider/CurrentUserStore';
+	import { userStore } from '../CacheProvider';
 	import { sessionId } from 'monolith-ts-api';
 
 	// Track loading and error states
@@ -11,7 +11,7 @@
 	$effect(() => {
 		loading = true;
 		error = null;
-		const user = currentUserStore.get();
+		const user = userStore.get(-1n);
 		if (user !== undefined) {
 			loading = false;
 		}
@@ -36,13 +36,13 @@
 	{meanwhile()}
 {:else if error && failed}
 	{failed(error)}
-{:else if $currentUserStore && loggedIn && sessionId}
-	{loggedIn($currentUserStore)}
+{:else if userStore.get(-1n) && loggedIn && sessionId}
+	{loggedIn(userStore.get(-1n))}
 {:else if !sessionId && loggedOut}
 	{loggedOut()}
 {:else if catchall}
 	{catchall({
-		user: $currentUserStore,
+		user: userStore.get(-1n),
 		loading,
 		error,
 	})}

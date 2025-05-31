@@ -1,6 +1,7 @@
 import { createRedisClient } from '@lyku/redis-client';
 import { createLogger } from '@lyku/logger';
-import { client } from '@lyku/postgres-client';
+import { client as pg } from '@lyku/postgres-client';
+import { client as redis } from '@lyku/redis-client';
 import { createMetricsClient } from '@lyku/metrics';
 import { initializeQueueSystem, RetryQueue } from '@lyku/queue-system';
 import {
@@ -9,6 +10,7 @@ import {
 } from './recovery-systems';
 import { Kysely, sql } from 'kysely';
 import { Database } from '@lyku/db-config/kysely';
+import { reconcileRedisWithPostgres } from './reconcileRedisWithPostgres';
 
 /**
  * Reaction Worker Service
@@ -48,7 +50,7 @@ export class ReactionWorkerService {
 		// Initialize logger
 		this.logger = createLogger({
 			level: this.config.environment === 'production' ? 'info' : 'debug',
-			serviceName: this.config.serviceName,
+			name: this.config.serviceName,
 		});
 
 		this.logger.info('Initializing reaction worker service', {
@@ -56,17 +58,10 @@ export class ReactionWorkerService {
 		});
 
 		// Initialize database connection
-		this.db = client;
+		this.db = pg;
 
 		// Initialize Redis client with configuration for high availability
-		this.redis = createRedisClient({
-			url: this.config.redisUrl,
-			cluster: true,
-			commandTimeout: 5000,
-			retryStrategy: (times) => Math.min(times * 50, 2000),
-			enableKeyspaceEvents: true,
-			tls: this.config.environment === 'production',
-		});
+		this.redis = redis;
 
 		// Initialize metrics client
 		this.metrics = createMetricsClient(
@@ -224,11 +219,8 @@ export class ReactionWorkerService {
 			this.logger.info('Starting reconciliation job');
 			const startTime = Date.now();
 
-			// Import the reconcile function from the handler
-			const { reconcileRedisWithPostgres } = await import('./reaction-handler');
-
 			// Run reconciliation
-			await reconcileRedisWithPostgres(this.db, this.redis, 1000, this.logger);
+			await reconcileRedisWithPostgres(1000, this.logger);
 
 			const duration = Date.now() - startTime;
 			this.metrics.recordHistogram('reconciliation_duration_ms', duration);

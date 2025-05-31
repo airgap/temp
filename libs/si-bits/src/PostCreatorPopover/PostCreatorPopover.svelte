@@ -4,10 +4,10 @@
 	import type { Post } from '@lyku/json-models';
 	import { listen, shout } from '../Sonic';
 	import styles from './PostCreatorPopover.module.sass';
-	import { cacheStore } from '../CacheProvider';
+	import { userStore } from '../CacheProvider';
 
 	let echoing = $state<Post>();
-	const user = cacheStore.currentUser;
+	const user = userStore.get(-1n);
 
 	listen('echo', (post) => {
 		echoing = post;

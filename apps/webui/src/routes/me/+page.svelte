@@ -7,7 +7,7 @@
 		ImageUpload,
 		phrasebook,
 		shout,
-		currentUserStore as currentUser,
+		userStore,
 	} from '@lyku/si-bits';
 
 	import styles from './Profile.module.sass';
@@ -18,7 +18,7 @@
 	}
 </script>
 
-{#if $currentUser}
+{#if userStore.get(-1n)}
 	<Center>
 		<Divisio size="m" layout="v">
 			<Divisio size="m" layout="h">
@@ -26,12 +26,12 @@
 					<ImageUpload
 						shape="squircle"
 						reason="ProfilePicture"
-						image={$currentUser.profilePicture}
+						image={userStore.get(-1n)?.profilePicture}
 						onUpload={handleUpload}
 					/>
 				</div>
 				<Divisio size="m" layout="v">
-					<h1>{$currentUser?.username ?? 'User'}</h1>
+					<h1>{userStore.get(-1n)?.username ?? 'User'}</h1>
 					<p>{phrasebook.bioWip}</p>
 				</Divisio>
 			</Divisio>
