@@ -22,7 +22,7 @@
 	}>();
 	const { posts, thread, error, reactions, users, user } = data;
 	users.forEach((u) => userStore.set(u.id, u));
-	user.then((u) => users.set(-1n, u));
+	user.then((u) => userStore.set(-1n, u));
 	posts.forEach((p) => postStore.set(p.id, p));
 	reactions.forEach((r) => myReactionStore.set(r.id, r.type));
 	// userStore.hydrate(users);

@@ -26,7 +26,7 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 	console.log('Starting parallel database queries...');
 	const dbStartTime = Date.now();
 
-	const [authors, reactions, followees, friendships] = (await Promise.all([
+	const [users, reactions, followees, friendships] = (await Promise.all([
 		// Get authors
 		authorIds.length
 			? pg
@@ -80,18 +80,19 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 	];
 
 	console.log(`Database queries took ${Date.now() - dbStartTime}ms`);
-	console.log('Authors:', authors.length);
+	console.log('Authors:', users.length);
 	console.log('Reactions:', reactions.length);
 	console.log('Followees:', followees.length);
 	console.log('Responding');
 	// Build response with normalized data
 	const response = {
 		posts,
-		authors,
+		users,
 		reactions,
 		followees: followees.map((f) => f.followee),
 		followers: [],
 		friends: friendships,
+		thread: { focus: post },
 	};
 	console.log('Returning', posts.length, 'posts');
 	return response;
