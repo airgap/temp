@@ -7,8 +7,12 @@ export const loginUser = {
 		properties: {
 			email,
 			password,
+			captcha: {
+				type: 'string',
+				maxLength: 2000,
+			},
 		},
-		required: ['email', 'password'],
+		required: ['email', 'password', 'captcha'],
 	},
 	response: {
 		type: 'object',

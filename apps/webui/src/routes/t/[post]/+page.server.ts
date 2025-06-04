@@ -1,5 +1,4 @@
 import { base58ToBigint, Err } from '@lyku/helpers';
-import { neon } from '../../lib/server/db.server';
 import { decode, encode } from '@msgpack/msgpack';
 
 export const load = async ({ params, fetch, parent }: any) => {

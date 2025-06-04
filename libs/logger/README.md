@@ -54,7 +54,7 @@ The library provides several context types for different scenarios:
 import { createSessionForUser, generateSessionId } from '@lyku/route-helpers';
 
 // Create a new session
-const sessionId = await createSessionForUser(userId, context);
+const sessionId = await createSessionForUser(userId, context.request);
 
 // Validate session ID
 if (isSessionId(token)) {

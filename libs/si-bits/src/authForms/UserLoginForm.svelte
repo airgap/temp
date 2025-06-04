@@ -5,6 +5,7 @@
 	import { shout } from '../Sonic';
 	import { SubmitButton } from '../SubmitButton';
 	import { phrasebook } from '../phrasebook';
+	import HCaptcha from '../HCaptcha.svelte';
 
 	// Props
 	const { onsubmit, onsuccess, onerror } = $props<{
@@ -12,6 +13,8 @@
 		onsuccess: () => void;
 		onerror: () => void;
 	}>();
+	let captcha = $state();
+	let captchaValid = $state();
 
 	// Form state
 	let email = $state('');
@@ -21,7 +24,7 @@
 	let error = $state<Error | null>(null);
 
 	// Computed form validity
-	const isFormValid = $derived(emailValid && passwordValid);
+	const isFormValid = $derived(emailValid && passwordValid && captchaValid);
 
 	// Event handlers
 	function handleEmailInput(e: CustomEvent<string>) {
@@ -45,7 +48,11 @@
 			onsubmit();
 			error = null;
 
-			const { sessionId } = await api.loginUser({ email, password });
+			const { sessionId } = await api.loginUser({
+				email,
+				password,
+				captcha: captcha,
+			});
 			setCookie('sessionId', sessionId, 365);
 			onsuccess();
 			window.location.reload();
@@ -64,6 +71,7 @@
 	oninput={handlePasswordInput}
 	onvalidation={handlePasswordValidation}
 />
+<HCaptcha bind:token={captcha} bind:isValid={captchaValid} />
 
 {#if error}
 	<div class="error">

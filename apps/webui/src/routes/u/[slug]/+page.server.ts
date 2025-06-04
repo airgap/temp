@@ -1,11 +1,12 @@
 import { decode, encode } from '@msgpack/msgpack';
 export const load = async ({ params, fetch, parent }) => {
-	const body = encode({ post: params.slut }, { useBigInt64: true });
+	const body = encode({ user: params.slug }, { useBigInt64: true });
 	console.log('body', body);
-	const res = fetch('https://api.lyku.org/list-user-posts-with-meta', {
+	const res = await fetch('https://api.lyku.org/list-user-posts-with-meta', {
 		method: 'POST',
 		body,
-	})
+	});
+	console.log('Res ok?', res.ok);
 	if (!res.ok) {
 		throw new Error(`API request failed: ${res.status} ${res.statusText}`);
 	}

@@ -1,6 +1,6 @@
 <script lang="ts">
+	import styles from './Divisio.module.sass';
 	import type { Property } from 'csstype';
-	import type { ComponentType, CSSProperties } from 'react';
 	import { type Size, sizes } from '../sizes';
 
 	const layouts = { h: 'row', v: 'column' } as const;
@@ -14,28 +14,28 @@
 		alignItems,
 		style = {},
 		children,
+		...rest
 	} = $props<{
 		size: Size;
 		layout: Layout;
 		fill: boolean;
 		hang: any;
 		alignItems: Property.AlignItems | undefined;
-		style: CSSProperties;
-		children?: ComponentType;
+		children?: any;
+		style?: Record<string, string>;
 	}>();
 </script>
 
 <div
+	class={styles.Divisio}
 	style="
-        position: relative;
-        display: flex;
         flex-direction: {layouts[layout]};
         gap: {sizes[size]};
         {fill ? 'width: 100%;' : ''}
         align-items: {alignItems || ''};
         {Object.entries(style)
 		.map(([key, value]) => `${key}: ${value};`)
-		.join(' ')}
+		.join(' ')};
     "
 >
 	{@render children?.()}

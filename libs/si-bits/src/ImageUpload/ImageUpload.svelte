@@ -10,6 +10,7 @@
 		VideoDraft,
 	} from '@lyku/json-models';
 	import styles from './ImageUpload.module.sass';
+	import { defaultImages } from './defaultImages';
 
 	import times from '../times.svg?raw';
 	import bg from '../Backdrop/blu.jpg';

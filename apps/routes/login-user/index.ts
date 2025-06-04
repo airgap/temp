@@ -1,17 +1,26 @@
 import * as bcrypt from 'bcryptjs';
-import { createSessionForUser } from '@lyku/route-helpers';
+import { createSessionForUser, verifyHCaptcha } from '@lyku/route-helpers';
 import { handleLoginUser } from '@lyku/handles';
-import { client as db } from '@lyku/postgres-client';
+import { client as pg } from '@lyku/postgres-client';
+import { Err } from '@lyku/helpers';
 const smartDelay = (start: number) =>
 	new Promise((resolve) =>
 		setTimeout(resolve, Math.max(0, 1000 - (performance.now() - start))),
 	);
-export default handleLoginUser(async ({ email, password }, ctx) => {
+export default handleLoginUser(async ({ email, password, captcha }, ctx) => {
 	const { strings } = ctx;
+
+	const address = ctx.server.requestIP(ctx.request);
+	console.log('Address:', address);
+	if (!address) throw new Err(500, 'Unable to get client IP address');
+	await verifyHCaptcha({
+		remoteip: address.address,
+		response: captcha,
+	});
 	const started = performance.now();
 	const delay = () => smartDelay(started);
 	const lowerEmail = email.toLocaleLowerCase();
-	const existing = await db
+	const existing = await pg
 		.selectFrom('userHashes')
 		.selectAll()
 		.where('email', '=', lowerEmail)
@@ -31,7 +40,7 @@ export default handleLoginUser(async ({ email, password }, ctx) => {
 		await delay();
 		throw new Error(strings.incorrectPasswordError);
 	}
-	const sessionId = await createSessionForUser(existing.id, ctx);
+	const sessionId = await createSessionForUser(existing.id, ctx.request);
 	(ctx.responseHeaders as any).set('Set-Cookie', `sessionId=${sessionId}`);
 	console.log('Logged user in');
 	return { sessionId };

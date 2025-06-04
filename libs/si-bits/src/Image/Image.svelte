@@ -3,25 +3,28 @@
 	import { formImageUrl } from '../formImageUrl';
 	import styles from './Image.module.sass';
 	import face from '../face.png';
+	import { type ImageShape } from './ImageShape';
 
-	type Shape = 'circle' | 'square' | 'squircle' | 'rounded';
-
-	interface $$Props
+	interface Props
 		extends Omit<svelte.JSX.ImgHTMLAttributes<HTMLImageElement>, 'id' | 'src'> {
 		size?: 'l' | 'm' | 's' | 'full-post';
 		bot?: boolean;
-		shape?: Shape;
+		shape?: ImageShape;
 	}
 
-	const { size, bot, shape, className, src, onclick } = $props<$$Props>();
+	const { size, bot, shape, className, src, onclick } = $props<Props>();
 </script>
 
 <img
-	class={classnames(styles.Image, className, size && styles[size], {
-		[styles.bot]: bot,
-		[styles.squircle]: shape === 'squircle',
-		[styles.circle]: shape === 'circle',
-	})}
+	class={[
+		styles.Image,
+		className,
+		size && styles[size],
+		bot && styles.bot,
+		shape === 'squircle' && styles.squircle,
+		shape === 'circle' && styles.circle,
+		shape === 'rounded' && styles.rounded,
+	]}
 	{src}
 	{onclick}
 	alt="Profile"

@@ -3,5 +3,5 @@
 </script>
 
 <button>
-	{@render children()}
+	{@render children?.()}
 </button>

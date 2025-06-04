@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Image } from '../Image';
+	import { Image, type ImageShape } from '../Image';
 	import styles from '../Image/Image.module.sass';
 	import smile from '../smile.png';
 
@@ -7,13 +7,13 @@
 		src = smile,
 		alt,
 		size,
-	} = $props<{ src?: string; alt?: string; size?: number }>();
+		shape = 'circle',
+	} = $props<{
+		src?: string;
+		alt?: string;
+		size?: number;
+		shape?: ImageShape;
+	}>();
 </script>
 
-<Image
-	class={styles.ProfilePicture}
-	shape="circle"
-	src={src ?? smile}
-	{alt}
-	{size}
-/>
+<Image class={styles.ProfilePicture} {shape} src={src ?? smile} {alt} {size} />

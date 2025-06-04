@@ -35,6 +35,8 @@ spec:
               value: '1'
             - name: FORCE_COLOR
               value: '1'
+            - name: HCAPTCHA_SECRET
+              value: '${HCAPTCHA_SECRET}'
             - name: PG_CONNECTION_STRING
               value: '${PG_CONNECTION_STRING}'
             - name: CF_API_TOKEN

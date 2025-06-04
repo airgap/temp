@@ -5,7 +5,7 @@
 	import { phrasebook } from '../phrasebook';
 	import styles from './UserList.module.sass';
 
-	const { users, mine } = $props<{
+	const { users, mine, children } = $props<{
 		users: User[] | undefined;
 		mine: boolean | undefined;
 	}>();

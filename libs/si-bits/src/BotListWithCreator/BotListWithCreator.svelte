@@ -12,9 +12,9 @@
 	let bots = $state<any[]>([]);
 
 	// Fetch bots on component mount
-	api.listMyBots().then((result) => {
-		bots = result;
-	});
+	// api.listMyBots().then((result) => {
+	// 	bots = result;
+	// });
 
 	async function handleCreateBot() {
 		try {

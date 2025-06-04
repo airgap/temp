@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcryptjs';
-import { createSessionForUser } from '@lyku/route-helpers';
+import { createSessionForUser, verifyHCaptcha } from '@lyku/route-helpers';
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import * as jdenticon from 'jdenticon';
-import { FormData } from 'formdata-node';
 import { handleRegisterUser } from '@lyku/handles';
+import { client as pg } from '@lyku/postgres-client';
 import { Err } from '@lyku/helpers';
 import {
 	InsertableUser,
@@ -53,19 +53,26 @@ type UrlImageUploadResponse = UIURSuccess | UIURFailure;
 
 export default handleRegisterUser(async (params, ctx) => {
 	console.log('params', params);
-	const { email, username, password } = params;
-	const { db, requester, responseHeaders, strings } = ctx;
+	const address = ctx.server.requestIP(ctx.request);
+	console.log('Address:', address);
+	if (!address) throw new Err(500, 'Unable to get client IP address');
+	const { email, username, password, captcha } = params;
+	await verifyHCaptcha({
+		remoteip: address.address,
+		response: captcha,
+	});
+	const { responseHeaders, strings } = ctx;
 	const lowerEmail = email.toLocaleLowerCase();
 	const lowerUsername = username.toLocaleLowerCase();
 	if (lowerUsername.includes('lyku'))
 		throw new Err(400, 'Usernames cannot contain "lyku"');
-	const existingUser = await db
+	const existingUser = await pg
 		.selectFrom('users')
 		.select(['id'])
 		.where('username', '=', lowerUsername)
 		.executeTakeFirst();
 	if (existingUser) throw new Err(409, strings.usernameTaken);
-	const existingEmail = await db
+	const existingEmail = await pg
 		.selectFrom('userHashes')
 		.select(['id'])
 		.where('email', '=', lowerEmail)
@@ -94,7 +101,7 @@ export default handleRegisterUser(async (params, ctx) => {
 	console.log('Uploaded jdenticon', cfres);
 
 	// Start transaction for all database operations
-	const result = await db.transaction().execute(async (trx) => {
+	const result = await pg.transaction().execute(async (trx) => {
 		const insertedUser = await trx
 			.insertInto('users')
 			.values({
@@ -167,7 +174,7 @@ export default handleRegisterUser(async (params, ctx) => {
 			} satisfies InsertableMembershipList)
 			.execute();
 
-		const sessionId = await createSessionForUser(insertedUser.id, ctx);
+		const sessionId = await createSessionForUser(insertedUser.id, ctx.request);
 		const origin = ctx.request.headers.get('origin');
 		const domain = origin?.startsWith('https://lyku.org')
 			? `Domain=lyku.org;`

@@ -71,10 +71,7 @@
 	followers?.forEach((f) => myFollowerStore.set(f, true));
 	console.log('uuuu', users);
 	users.forEach((u) => userStore.set(u.id, u));
-	user?.then((u) => {
-		console.log('u', u);
-		userStore.set(-1n, u);
-	});
+	if (user) userStore.set(-1n, user);
 	// userStore.set(-1n,await user);
 	// currentUserStore.me = user;
 	reactions.forEach((r, i) => myReactionStore.set(posts[i].id, r));

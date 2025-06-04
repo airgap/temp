@@ -6,13 +6,14 @@
 		Divisio,
 		FeedPage,
 		FollowUser,
-		PostList,
-		ProfilePicture,
-		phrasebook,
+		Link,
 		myFolloweeStore,
 		myFollowerStore,
-		userStore,
+		phrasebook,
+		PostList,
 		postStore,
+		ProfilePicture,
+		userStore,
 	} from '@lyku/si-bits';
 	import { page } from '$app/state';
 	import type { Post, Thread, User } from '@lyku/json-models';
@@ -27,7 +28,7 @@
 					likes: BigInt[];
 					follows: BigInt[];
 					user: User;
-					target?: User;
+					target?: bigint;
 			  }
 			| { error: string };
 	}>();
@@ -42,16 +43,15 @@
 		target,
 		follows,
 	} = data;
-	users.forEach((u) => userStore.set(u.id, u));
-	posts.forEach((p) => postStore.set(p.id, p));
-	console.log('Hydrating users', users.length, likes.length);
+	$inspect(data);
+	users?.forEach((u) => userStore.set(u.id, u));
+	posts?.forEach((p) => postStore.set(p.id, p));
+	// console.log('Hydrating users', users?.length, likes?.length);
 	// userStore.hydrate(users);
 	// myLikeStore.hydrate(likes);
 	// myFollowStore.hydrate(follows);
-	console.log('uuuser', user?.id);
-	if (user) {
-		userStore.set(-1n, user);
-	}
+	// console.log('uuuser', user?.id);
+	if (user) userStore.set(-1n, user);
 	console.log('taaaarger', target);
 	console.log('posts', posts);
 
@@ -72,27 +72,38 @@
 	// 			}
 	// 		: null,
 	// );
-
-	$inspect(target);
-	console.log('error', error);
+	const u = $derived(userStore.get(target));
+	$effect(() => console.log('is me?', u && userStore.get(-1n)?.id === u?.id));
 </script>
 
-<FeedPage title={target?.username}>
+{#snippet actions()}
+	{#if u && userStore.get(-1n)?.id === u?.id}
+		<Link href="/u/{userStore.get(-1n).username}/edit"
+			><span style="display:inline-block; transform: scaleX(-1.2) scaleY(1.2)"
+				>✎</span
+			> Edit</Link
+		>
+	{/if}
+{/snippet}
+
+<FeedPage title={u?.username} {actions}>
 	{#if ident}
 		{#if error}
 			<Center>
 				<div>Error: {error.message}</div>
 			</Center>
 		{:else}
-			<Divisio size="m" layout="h">
-				<ProfilePicture size="m" src={target?.profilePicture} />
-				<Divisio size="m" layout="v">
-					<p>{phrasebook.bioWip}</p>
+			<Divisio size="l" layout="v">
+				<Divisio size="l" layout="h">
+					<ProfilePicture size="l" src={u?.profilePicture} shape="rounded" />
+					<Divisio size="l" layout="v">
+						<p>{phrasebook.bioWip}</p>
+					</Divisio>
 				</Divisio>
-			</Divisio>
-			{#if posts?.length}
-				<PostList {posts} cfHash={PUBLIC_CF_HASH} />
-			{/if}
+				{#if threads?.length}
+					<PostList {threads} cfHash={PUBLIC_CF_HASH} />
+				{/if}</Divisio
+			>
 		{/if}
 	{:else}
 		<h1>404</h1>

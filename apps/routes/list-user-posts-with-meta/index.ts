@@ -1,6 +1,6 @@
 import { handleListUserPostsWithMeta } from '@lyku/handles';
-import { bondIds, Err, Reaction } from '@lyku/helpers';
-import { User } from '@lyku/json-models';
+import { bondIds, Err } from '@lyku/helpers';
+import { User, Reaction } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
 import { parsePossibleBON } from 'from-schema';
@@ -31,7 +31,7 @@ export default handleListUserPostsWithMeta(
 			author = await pg
 				.selectFrom('users')
 				.where('id', '=', uid)
-				.select('id')
+				.selectAll()
 				.executeTakeFirst()
 				.then((r) => r?.id);
 		}
@@ -39,7 +39,7 @@ export default handleListUserPostsWithMeta(
 		const query = pg
 			.selectFrom('posts')
 			.selectAll()
-			.where('author', '=', author)
+			.where('author', '=', uid)
 			.where('publish', '<', new Date())
 			.orderBy('publish', 'desc');
 		const filtered = before ? query.where('id', '<', before) : query;
@@ -54,7 +54,7 @@ export default handleListUserPostsWithMeta(
 		console.log('Starting parallel database queries...');
 		const dbStartTime = Date.now();
 
-		const [authors, reactions, followees, friendships] = (await Promise.all([
+		const [users, reactions, followees, friendships] = (await Promise.all([
 			// Get authors
 			authorIds.length
 				? pg
@@ -74,7 +74,8 @@ export default handleListUserPostsWithMeta(
 							'in',
 							posts.map((p) => p.id),
 						)
-						.select(['postId', 'type'])
+						.selectAll()
+						// .select(['postId', 'type'])
 						.execute()
 				: Promise.resolve([]),
 
@@ -100,26 +101,24 @@ export default handleListUserPostsWithMeta(
 						)
 						.execute()
 				: Promise.resolve([]),
-		])) as [
-			User[],
-			{ postId: bigint; type: string }[],
-			{ followee: bigint }[],
-			User[],
-		];
+		])) as [User[], Reaction[], { followee: bigint }[], User[]];
 
 		console.log(`Database queries took ${Date.now() - dbStartTime}ms`);
-		console.log('Authors:', authors.length);
+		console.log('Authors:', users.length);
 		console.log('Reactions:', reactions.length);
 		console.log('Followees:', followees.length);
 		console.log('Responding');
+		if (!users.length) users.push(author);
 		// Build response with normalized data
 		const response = {
 			posts,
-			authors,
+			users,
 			reactions,
 			followees: followees.map((f) => f.followee),
 			followers: [],
-			friends: friendships,
+			friendships: friendships,
+			target: uid,
+			threads: posts.map((p) => ({ focus: p.id })),
 		};
 		console.log('Listing', posts.length, 'posts');
 		return response;

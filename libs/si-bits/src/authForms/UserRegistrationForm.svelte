@@ -10,6 +10,7 @@
 	import { phrasebook } from '../phrasebook';
 	import { createEventDispatcher } from 'svelte';
 	import { Dialog } from '../Dialog';
+	import HCaptcha from '../HCaptcha.svelte';
 	let {
 		email,
 		username,
@@ -29,8 +30,10 @@
 		agreed: false,
 		error: undefined,
 	});
+	let captcha = $state();
+	let captchaValid = $state();
 	const valid = $derived(
-		emailValid && usernameValid && passwordValid && agreed,
+		emailValid && usernameValid && passwordValid && agreed && captchaValid,
 	);
 
 	const { onsubmit, onsuccess, onerror, onshowtos } = $props<{
@@ -46,6 +49,7 @@
 				username,
 				password,
 				agreed: agreed as true,
+				captcha: captcha,
 			})
 			.then((sessionId) => {
 				// setCookie('sessionId', sessionId, 365);
@@ -78,7 +82,7 @@
 		passwordValid = e;
 	}}
 />
-
+<HCaptcha bind:token={captcha} bind:isValid={captchaValid} />
 <Agreeable
 	oninput={(e) => {
 		agreed = e.target.checked;

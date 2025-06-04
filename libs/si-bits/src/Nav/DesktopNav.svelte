@@ -32,6 +32,7 @@
 		onlogin: () => void;
 		oncreate?: () => void;
 	}>();
+	$effect(() => console.log('user', user));
 </script>
 
 <div class={styles.DesktopNav}>
@@ -58,7 +59,7 @@
 							<img src={pen} alt="Pen post" />
 						</Link>
 						<!--{phrasebook.navWelcome}-->
-						<Link href="/u/{user.slug}">
+						<Link data-sveltekit-reload href="/u/{user.username}">
 							<!--<span>{user.username}!</span>-->
 							<ProfilePicture
 								shape="circle"
