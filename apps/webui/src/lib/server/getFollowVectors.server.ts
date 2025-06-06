@@ -1,4 +1,4 @@
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import type { Kysely } from 'kysely';
 
 export const getFollowVectors = async (

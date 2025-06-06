@@ -10,6 +10,7 @@
 		"@lyku/mapi-models": "workspace:*",
 		"@lyku/monolith-ts-api": "workspace:*",
 		"@lyku/db-config": "workspace:*",
+		"@lyku/db-types": "workspace:*",
 		"@lyku/route-helpers": "workspace:*",
 		"@lyku/logger": "workspace:*"
 	}

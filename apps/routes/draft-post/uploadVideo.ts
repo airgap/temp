@@ -1,7 +1,9 @@
+import Mux from '@mux/mux-node';
 import { VideoDraft } from '@lyku/json-models';
 import { AttachmentInitializer } from './AttachmentInitializer';
 import { makeAttachmentId, AttachmentType } from '@lyku/helpers';
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
+import { client as mux } from '@lyku/mux-client';
 
 export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 	author,
@@ -16,25 +18,17 @@ export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 		post,
 	};
 
-	const response = await Bun.fetch(endpoint, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${cfApiToken}`,
-			'Tus-Resumable': '1.0.0',
-			'Upload-Metadata': 'maxDurationSeconds NjAw',
-			'Upload-Length': size?.toString() ?? '',
+	const upload = await mux.video.uploads.create({
+		cors_origin: 'https://lyku.org',
+		new_asset_settings: {
+			playback_policy: ['public'],
+			video_quality: 'basic',
+			passthrough: id.toString(),
 		},
-		body: (() => {
-			const formData = new FormData();
-			formData.append('requireSignedURLs', 'false');
-			formData.append('metadata', JSON.stringify(metadata));
-			formData.append('id', id.toString());
-			return formData;
-		})(),
 	});
 
 	// Get the upload URL and ID from headers
-	const uploadURL = response.headers.get('location');
+	const uploadURL = upload.url;
 	// const id = response.headers.get('stream-media-id');
 
 	console.log('CFRES', id, uploadURL);

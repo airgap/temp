@@ -1,6 +1,6 @@
 import type { OneOfTsonSchema, PostgresRecordModel } from 'from-schema';
 import { imageDoc } from './imageDoc';
-import { cloudflareVideoDoc } from './videoDoc';
+import { videoDoc } from './videoDoc';
 
 export const attachment = {
 	description: 'Media attachment for posts',

@@ -1,5 +1,3 @@
-import { CompactedPhrasebook } from '@lyku/phrasebooks';
-
 import {
 	cfAccountId,
 	cfApiToken,
@@ -24,7 +22,10 @@ import { uploadVideo } from './uploadVideo';
 type AttachmentDraft = ImageDraft | VideoDraft;
 
 export default handleDraftPost(
-	async ({ attachments, body, replyTo, echoing }, { requester, strings }) => {
+	async (
+		{ attachments, body, replyTo, echoing },
+		{ requester, strings, now },
+	) => {
 		console.log('Drafting post', requester, body, replyTo, echoing);
 		console.log('id', cfAccountId, 'token', cfApiToken);
 		if (!cfApiToken && attachments?.length)
@@ -40,12 +41,13 @@ export default handleDraftPost(
 				.selectFrom('posts')
 				.where('id', '=', reversion)
 				.executeTakeFirst();
-		const draft: PostDraft = await pg
+		const draft = await pg
 			.insertInto('postDrafts')
 			.values({
 				author: requester,
 				body,
-			} as PostDraft)
+				created: now,
+			} satisfies InsertablePostDraft)
 			.returningAll()
 			.executeTakeFirstOrThrow();
 		const atAts: AttachmentDraft[] = [];

@@ -18,14 +18,6 @@
 				"external": ["bson-models", "@lyku/stock-docs"],
 				"rollupConfig": "libs/db-config/rollup.config.ts"
 			}
-		},
-		"generate-types": {
-			"dependsOn": ["build"],
-			"executor": "nx:run-commands",
-			"options": {
-				"outputPath": "dist/libs/db-config/kysely.d.ts",
-				"command": "bun libs/db-config/kysely.ts"
-			}
 		}
 	}
 }

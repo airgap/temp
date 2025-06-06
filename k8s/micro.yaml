@@ -53,6 +53,10 @@ spec:
               value: '${ELASTIC_API_ENDPOINT}'
             - name: ELASTIC_API_KEY
               value: '${ELASTIC_API_KEY}'
+            - name: MUX_TOKEN_ID
+              value: '${MUX_TOKEN_ID}'
+            - name: MUX_TOKEN_SECRET
+              value: '${MUX_TOKEN_SECRET}'
             - name: PUBLIC_CF_HASH
               value: '${PUBLIC_CF_HASH}'
             - name: WEBUI_DOMAIN

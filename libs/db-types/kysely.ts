@@ -1,5 +1,5 @@
 import prettier from 'prettier';
-import { dbConfig } from './src';
+import { dbConfig } from '@lyku/db-config';
 import { postgresRecordToKysely } from 'from-schema';
 import { join } from 'path';
 
@@ -38,7 +38,7 @@ const ktsPath = join(
 	'..',
 	'dist',
 	'libs',
-	'db-config',
+	'db-types',
 	`kysely.d.ts`,
 );
 await Bun.write(ktsPath, formattedKtsContent);

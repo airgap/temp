@@ -9,7 +9,7 @@ import {
 	RedisRecoveryService,
 } from './recovery-systems';
 import { Kysely, sql } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import { reconcileRedisWithPostgres } from './reconcileRedisWithPostgres';
 
 /**

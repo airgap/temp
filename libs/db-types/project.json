@@ -1,0 +1,16 @@
+{
+	"name": "@lyku/db-types",
+	"$schema": "../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/db-types/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"options": {
+				"outputPath": "dist/libs/db-types/kysely.d.ts",
+				"command": "bun libs/db-types/kysely.ts"
+			}
+		}
+	}
+}

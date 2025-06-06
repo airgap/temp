@@ -2,7 +2,7 @@
 import type { Cookies } from '@sveltejs/kit';
 import { KVNamespace, DurableObjectNamespace } from '@cloudflare/workers-types';
 import type { Kysely } from 'kysely';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 
 declare global {
 	namespace App {

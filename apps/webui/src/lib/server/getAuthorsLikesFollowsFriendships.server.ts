@@ -4,7 +4,7 @@ import { getFollowVectors } from './getFollowVectors.server';
 import { getFriendshipStatuses } from './getFriendshipStatuses.server';
 import { getLikeVectors } from './getLikeVectors.server';
 import type { Kysely } from 'kysely';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import type { Post } from '@lyku/json-models';
 import type RedisClient from '../../RedisClient';
 export const getAuthorsLikesFollowsFriendships = async (

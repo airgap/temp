@@ -1,5 +1,5 @@
 import { Kysely } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import { JobProcessor } from '@lyku/queue-system';
 import { MetricsClient } from '@lyku/metrics';
 

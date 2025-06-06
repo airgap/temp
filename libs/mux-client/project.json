@@ -1,0 +1,19 @@
+{
+	"name": "@lyku/mux-client",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/mux-client/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:swc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/mux-client",
+				"main": "libs/mux-client/src/index.ts",
+				"tsConfig": "libs/mux-client/tsconfig.lib.json",
+				"assets": ["libs/mux-client/*.md"]
+			}
+		}
+	}
+}

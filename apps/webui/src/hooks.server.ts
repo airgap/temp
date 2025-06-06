@@ -2,7 +2,7 @@ import { setCookieAdapter } from 'monolith-ts-api';
 import type { Handle } from '@sveltejs/kit';
 import { initDb } from './lib/server/db.server';
 import type { Kysely } from 'kysely';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 
 // Extend the Locals interface to include the database
 declare global {

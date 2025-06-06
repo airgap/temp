@@ -1,4 +1,4 @@
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import type { Kysely } from 'kysely';
 import { getLikesForPosts } from './getLikesForPosts.server';
 import type RedisClient from '../../RedisClient';

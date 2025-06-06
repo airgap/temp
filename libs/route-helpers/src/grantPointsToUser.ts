@@ -4,7 +4,7 @@ import type { Achievement } from '@lyku/json-models';
 import { grantAchievementToUser } from './grantAchievementToUser';
 import { sendNotification } from './sendNotification';
 import { sql } from 'kysely';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import type { Kysely } from 'kysely';
 const {
 	reachLevel10,

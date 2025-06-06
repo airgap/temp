@@ -11,7 +11,7 @@ declare module '$lib/server' {
 // Mark the database module as server-only
 declare module '$lib/server/db' {
 	import type { Kysely } from 'kysely';
-	import type { Database } from '@lyku/db-config/kysely';
+	import type { Database } from '@lyku/db-types';
 
 	export function initDb(pgConnectionString: string): Kysely<Database>;
 	export function getDb(pgConnectionString?: string): Kysely<Database>;

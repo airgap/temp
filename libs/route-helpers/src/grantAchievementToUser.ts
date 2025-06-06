@@ -3,7 +3,7 @@ import { grantPointsToUser } from './grantPointsToUser';
 import { sendNotification } from './sendNotification';
 import type { Kysely } from 'kysely';
 import { bindIds } from '@lyku/helpers';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 
 export const grantAchievementToUser = async (
 	achievement: bigint | Achievement,

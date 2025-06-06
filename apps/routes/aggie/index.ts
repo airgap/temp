@@ -8,7 +8,7 @@ import { client as redis } from '@lyku/redis-client';
 import { createMetricsClient } from '@lyku/metrics';
 import { delasticatePost } from './delasticatePost';
 import { Kysely } from 'kysely';
-import { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import { buildHotQuery } from './buildHotQuery';
 import { stringifyBON } from 'from-schema';
 

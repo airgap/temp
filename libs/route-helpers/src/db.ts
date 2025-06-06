@@ -1,6 +1,6 @@
 import { PostgresDialect } from 'kysely';
 
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import { Kysely } from 'kysely';
 import { Pool, PoolConfig, types } from 'pg';
 import { dbConnectionString } from './env';

@@ -7,5 +7,5 @@ dist
 .vscode
 tmp
 rethinkdb_data
-libs/route-helpers/src/ais
+libs/ttf-ais/src
 .nx

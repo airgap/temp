@@ -6,7 +6,7 @@
 	"typings": "./src/index.d.ts",
 	"private": true,
 	"devDependencies": {
-		"@lyku/db-config": "workplace:*",
+		"@lyku/db-types": "workplace:*",
 		"@lyku/helpers": "workplace:*"
 	}
 }

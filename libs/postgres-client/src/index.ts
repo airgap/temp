@@ -3,7 +3,7 @@
 // The .server.ts extension ensures this file is only used on the server
 
 import { PostgresDialect } from 'kysely';
-import type { Database } from '@lyku/db-config/kysely';
+import type { Database } from '@lyku/db-types';
 import { Kysely } from 'kysely';
 
 import { Pool, types } from '@neondatabase/serverless';

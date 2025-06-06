@@ -1,5 +1,5 @@
 import type { TsonHandlerModel } from 'from-schema';
-import { cloudflareVideoDoc, channelId } from '@lyku/json-models';
+import { videoDoc, channelId } from '@lyku/json-models';
 
 export const listChannelVideos = {
 	request: {
@@ -17,7 +17,7 @@ export const listChannelVideos = {
 	response: {
 		description: "The channel's videos",
 		type: 'array',
-		items: cloudflareVideoDoc,
+		items: videoDoc,
 	},
 	authenticated: false,
 	throws: [400, 401, 404, 500],

@@ -1,5 +1,5 @@
 const { serve } = Bun;
-import { Database } from '@lyku/db-config/kysely'; // this is the Database interface we defined earlier
+import { Database } from '@lyku/db-types'; // this is the Database interface we defined earlier
 import { Pool } from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import { CompactedPhrasebook, getPhrasebook } from '@lyku/phrasebooks';

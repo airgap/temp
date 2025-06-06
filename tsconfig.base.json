@@ -21,7 +21,7 @@
 		"paths": {
 			"@lyku/clickhouse-client": ["libs/clickhouse-client/src/index.ts"],
 			"@lyku/db-config": ["libs/db-config/src/index.ts"],
-			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely.d.ts"],
+			"@lyku/db-types": ["dist/libs/db-types/kysely.d.ts"],
 			"@lyku/defaults": ["libs/defaults/src/index.ts"],
 			"@lyku/elasticsearch-client": ["libs/elasticsearch-client/src/index.ts"],
 			"@lyku/get-current-user": ["libs/routes/getCurrentUser/src/index.ts"],
@@ -33,6 +33,7 @@
 			"@lyku/mapi-models": ["libs/mapi-models/src/index.ts"],
 			"@lyku/mapi-types": ["dist/libs/mapi-types/index.d.ts"],
 			"@lyku/metrics": ["libs/metrics/src/index.ts"],
+			"@lyku/mux-client": ["libs/mux-client/src/index.ts"],
 			"@lyku/nats-client": ["libs/nats-client/src/index.ts"],
 			"@lyku/phrasebooks": ["libs/phrasebooks/src/index.ts"],
 			"@lyku/postgres-client": ["libs/postgres-client/src/index.ts"],

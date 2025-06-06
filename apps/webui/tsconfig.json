@@ -21,7 +21,7 @@
 			"@lyku/strings": ["dist/libs/strings"],
 			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
 			"@lyku/db-config": ["dist/libs/db-config"],
-			"@lyku/db-config/kysely": ["dist/libs/db-config/kysely"],
+			"@lyku/db-types": ["dist/libs/db-types/kysely"],
 			"@lyku/helpers": ["libs/helpers"],
 			"@lyku/defaults": ["libs/defaults"],
 			"@lyku/logger": ["libs/logger/src"],
