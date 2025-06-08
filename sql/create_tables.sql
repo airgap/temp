@@ -288,6 +288,69 @@ DROP TRIGGER IF EXISTS developers_trigger_1 ON "developers";
 CREATE TRIGGER developers_trigger_1 BEFORE
 UPDATE ON "developers" FOR EACH ROW
 EXECUTE FUNCTION developers_trigger_1_fn ();
+------------------------------
+--------  fileDrafts  --------
+------------------------------
+---- Create table
+CREATE TABLE IF NOT EXISTS "fileDrafts" (
+  "creator" BIGINT NOT NULL,
+  "post" BIGINT NOT NULL,
+  "id" BIGINT NOT NULL,
+  "uploadURL" TEXT NOT NULL,
+  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "filename" TEXT CHECK (length("filename") <= 100),
+  "type" TEXT CHECK (length("type") <= 100) NOT NULL,
+  "host" TEXT CHECK (length("host") <= 100) NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+
+---- Create indexes
+CREATE INDEX IF NOT EXISTS "idx_fileDrafts_creator" ON "fileDrafts" ("creator");
+
+
+CREATE INDEX IF NOT EXISTS "idx_fileDrafts_type" ON "fileDrafts" ("type");
+
+
+CREATE INDEX IF NOT EXISTS "idx_fileDrafts_post" ON "fileDrafts" ("post");
+
+
+CREATE INDEX IF NOT EXISTS "idx_fileDrafts_created" ON "fileDrafts" ("created");
+
+
+CREATE INDEX IF NOT EXISTS "idx_fileDrafts_creator" ON "fileDrafts" ("creator");
+-----------------------------
+----------  files  ----------
+-----------------------------
+---- Create table
+CREATE TABLE IF NOT EXISTS "files" (
+  "id" BIGINT NOT NULL,
+  "duration" DOUBLE PRECISION,
+  "hostId" TEXT CHECK (length("hostId") <= 100) NOT NULL,
+  "width" INTEGER NOT NULL,
+  "height" INTEGER NOT NULL,
+  "modified" TIMESTAMPTZ,
+  "size" INTEGER,
+  "status" TEXT NOT NULL,
+  "thumbnail" TEXT,
+  "creator" BIGINT NOT NULL,
+  "post" BIGINT,
+  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated" TIMESTAMPTZ,
+  "type" TEXT CHECK (length("type") <= 100) NOT NULL,
+  "host" TEXT CHECK (length("host") <= 100) NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+
+---- Create indexes
+CREATE INDEX IF NOT EXISTS "idx_files_creator" ON "files" ("creator");
+
+
+CREATE INDEX IF NOT EXISTS "idx_files_id" ON "files" ("id");
+
+
+CREATE INDEX IF NOT EXISTS "idx_files_post" ON "files" ("post");
 -----------------------------
 -------  friendLists  -------
 -----------------------------
@@ -450,11 +513,11 @@ EXECUTE FUNCTION games_trigger_1_fn ();
 ------------------------------
 ---- Create table
 CREATE TABLE IF NOT EXISTS "groupMemberships" (
-  "id" TEXT PRIMARY KEY NOT NULL,
   "group" BIGINT NOT NULL,
   "user" BIGINT NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
+  "updated" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY ("group", "user")
 );
 
 
@@ -621,57 +684,6 @@ DROP TRIGGER IF EXISTS hashtags_trigger_1 ON "hashtags";
 CREATE TRIGGER hashtags_trigger_1 BEFORE
 UPDATE ON "hashtags" FOR EACH ROW
 EXECUTE FUNCTION hashtags_trigger_1_fn ();
------------------------------
--------  imageDrafts  -------
------------------------------
----- Create table
-CREATE TABLE IF NOT EXISTS "imageDrafts" (
-  "author" BIGINT NOT NULL,
-  "channel" BIGINT,
-  "post" BIGINT,
-  "reason" TEXT CHECK (
-    "reason" IN (
-      'PostAttachment',
-      'ChannelLogo',
-      'ProfilePicture',
-      'ActiveChannelBackground',
-      'AwayChannelBackground'
-    )
-  ) NOT NULL,
-  "id" BIGINT PRIMARY KEY NOT NULL,
-  "uploadURL" TEXT NOT NULL,
-  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "filename" TEXT CHECK (length("filename") <= 300) NOT NULL
-);
-
-
----- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_imageDrafts_author" ON "imageDrafts" ("author");
-------------------------------
-----------  images  ----------
-------------------------------
----- Create table
-CREATE TABLE IF NOT EXISTS "images" (
-  "id" BIGINT PRIMARY KEY NOT NULL,
-  "requireSignedURLs" BOOLEAN NOT NULL,
-  "variants" TEXT[],
-  "channel" TEXT,
-  "uploader" BIGINT,
-  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
----- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_images_uploader" ON "images" ("uploader");
-
-
-CREATE INDEX IF NOT EXISTS "idx_images_created" ON "images" ("created");
-
-
-CREATE INDEX IF NOT EXISTS "idx_images_variants" ON "images" ("variants");
-
-
-CREATE INDEX IF NOT EXISTS "idx_images_channel" ON "images" ("channel");
 ------------------------------
 -------  leaderboards  -------
 ------------------------------
@@ -1443,53 +1455,3 @@ DROP TRIGGER IF EXISTS users_trigger_1 ON "users";
 CREATE TRIGGER users_trigger_1 BEFORE
 UPDATE ON "users" FOR EACH ROW
 EXECUTE FUNCTION users_trigger_1_fn ();
------------------------------
--------  videoDrafts  -------
------------------------------
----- Create table
-CREATE TABLE IF NOT EXISTS "videoDrafts" (
-  "user" BIGINT NOT NULL,
-  "channel" BIGINT,
-  "post" BIGINT NOT NULL,
-  "id" BIGINT PRIMARY KEY NOT NULL,
-  "uploadURL" TEXT NOT NULL,
-  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "filename" TEXT CHECK (length("filename") <= 100)
-);
-
-
----- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_videoDrafts_user" ON "videoDrafts" ("user");
-------------------------------
-----------  videos  ----------
-------------------------------
----- Create table
-CREATE TABLE IF NOT EXISTS "videos" (
-  "id" BIGINT PRIMARY KEY NOT NULL,
-  "allowedOrigins" TEXT[] NOT NULL,
-  "duration" DOUBLE PRECISION NOT NULL,
-  "width" INTEGER NOT NULL,
-  "height" INTEGER NOT NULL,
-  "modified" TIMESTAMPTZ NOT NULL,
-  "preview" TEXT NOT NULL,
-  "readyToStream" BOOLEAN NOT NULL,
-  "requireSignedURLs" BOOLEAN NOT NULL,
-  "size" INTEGER NOT NULL,
-  "state" TEXT NOT NULL,
-  "pctComplete" TEXT NOT NULL,
-  "errorReasonCode" TEXT NOT NULL,
-  "errorReasonText" TEXT NOT NULL,
-  "thumbnail" TEXT NOT NULL,
-  "thumbnailTimestampPct" DOUBLE PRECISION NOT NULL,
-  "creator" TEXT NOT NULL,
-  "uploaded" TIMESTAMPTZ NOT NULL,
-  "uid" VARCHAR CHECK (length("uid") <= 32) NOT NULL,
-  "author" BIGINT NOT NULL,
-  "post" BIGINT,
-  "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated" TIMESTAMPTZ
-);
-
-
----- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_videos_author" ON "videos" ("author");

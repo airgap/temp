@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+		fileStore,
 		myReactionStore,
 		userStore,
 		PostList,
@@ -24,6 +25,7 @@
 	users.forEach((u) => userStore.set(u.id, u));
 	if (user) userStore.set(-1n, user);
 	posts.forEach((p) => postStore.set(p.id, p));
+	data.files.forEach((f) => fileStore.set(f.id, f));
 	reactions.forEach((r) => myReactionStore.set(r.id, r.type));
 </script>
 

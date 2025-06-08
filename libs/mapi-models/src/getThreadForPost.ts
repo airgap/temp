@@ -6,6 +6,7 @@ import {
 	reaction,
 	friendshipStatus,
 	thread,
+	fileDoc,
 } from '@lyku/json-models';
 import type { TsonHandlerModel } from 'from-schema';
 
@@ -38,6 +39,10 @@ export const getThreadForPost = {
 			followees: {
 				type: 'array',
 				items: { type: 'bigint' },
+			},
+			files: {
+				type: 'array',
+				items: fileDoc,
 			},
 		},
 	},

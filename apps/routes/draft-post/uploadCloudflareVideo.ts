@@ -39,7 +39,7 @@ export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 
 	console.log('CFRES', id, uploadURL);
 	if (!(uploadURL && id)) throw new Error('500');
-	console.log('VIDEO VIDEO');
+	console.log('CLOUDFLARE VIDEO');
 	return {
 		id,
 		uploadURL,

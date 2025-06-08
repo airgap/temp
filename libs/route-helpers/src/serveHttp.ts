@@ -25,6 +25,7 @@ export const serveHttp = async ({
 }) => {
 	console.log('Starting HTTP server');
 	const server = Bun.serve({
+		idleTimeout: 120,
 		port,
 		async fetch(req) {
 			console.log('New request ->', req.url);

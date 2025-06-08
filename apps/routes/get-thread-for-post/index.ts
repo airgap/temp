@@ -1,5 +1,6 @@
 import { handleGetThreadForPost } from '@lyku/handles';
 import { bondIds, Err, Reaction } from '@lyku/helpers';
+import { FileDoc } from '@lyku/json-models';
 import { User } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
@@ -26,7 +27,9 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 	console.log('Starting parallel database queries...');
 	const dbStartTime = Date.now();
 
-	const [users, reactions, followees, friendships] = (await Promise.all([
+	const fileIds = posts.flatMap((p) => p.attachments ?? []);
+
+	const [users, reactions, followees, friendships, files] = (await Promise.all([
 		// Get authors
 		authorIds.length
 			? pg
@@ -72,11 +75,15 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 					)
 					.execute()
 			: Promise.resolve([]),
+		fileIds.length
+			? pg.selectFrom('files').selectAll().where('id', 'in', fileIds).execute()
+			: [],
 	])) as [
 		User[],
 		{ postId: bigint; type: string }[],
 		{ followee: bigint }[],
 		User[],
+		FileDoc[],
 	];
 
 	console.log(`Database queries took ${Date.now() - dbStartTime}ms`);
@@ -93,6 +100,7 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 		followers: [],
 		friends: friendships,
 		thread: { focus: post },
+		files,
 	};
 	console.log('Returning', posts.length, 'posts');
 	return response;

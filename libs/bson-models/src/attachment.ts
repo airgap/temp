@@ -1,6 +1,4 @@
-import type { OneOfTsonSchema, PostgresRecordModel } from 'from-schema';
-import { imageDoc } from './imageDoc';
-import { videoDoc } from './videoDoc';
+import type { PostgresRecordModel } from 'from-schema';
 
 export const attachment = {
 	description: 'Media attachment for posts',
@@ -9,7 +7,6 @@ export const attachment = {
 		postId: { type: 'bigint' },
 		contentId: { type: 'varchar', maxLength: 64 },
 		orderNum: { type: 'smallint' },
-		type: { type: 'smallint' },
 		provider: { type: 'smallint' },
 		providerId: { type: 'varchar', maxLength: 255 },
 		metadata: { type: 'jsonb' },
@@ -18,7 +15,7 @@ export const attachment = {
 		height: { type: 'integer' },
 		duration: { type: 'double precision' },
 		size: { type: 'bigint' },
-		mimeType: { type: 'varchar', maxLength: 100 },
+		type: { type: 'varchar', maxLength: 100 },
 		filename: { type: 'varchar', maxLength: 255 },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },

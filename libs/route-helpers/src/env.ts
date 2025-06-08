@@ -9,8 +9,8 @@ export const privateKey = Buffer.from(
 	env['PRIVATE_KEY'] ?? '',
 	'base64',
 ).toString();
-console.log('originCertificate', originCertificate);
-console.log('privateKey', privateKey);
+// console.log('originCertificate', originCertificate);
+// console.log('privateKey', privateKey);
 export const servicePort = env['SERVICE_PORT'] || apiPorts.http;
 export const cfAccountId = env['CF_ID'];
 export const cfApiToken = env['CF_API_TOKEN'];

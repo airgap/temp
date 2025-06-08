@@ -5,6 +5,7 @@
 	import type { Post, User } from '@lyku/json-models';
 	import { AttachmentType } from '@lyku/helpers';
 	import { ComingSoon } from '../ComingSoon';
+	import '@mux/mux-player';
 	import {
 		getSupertypeFromAttachmentId,
 		parseAttachmentId,
@@ -19,6 +20,7 @@
 	import { ProfilePicture } from '../ProfilePicture';
 	import { formImageUrl } from '../formImageUrl';
 	import {
+		fileStore,
 		myFriendshipStore,
 		myFolloweeStore,
 		// useUser,
@@ -76,7 +78,6 @@
 	// $effect(() => console.log('bbb', userStore));
 	const author = $derived(userStore.get(post?.author));
 	const follow = myFolloweeStore.get(author?.id);
-	console.log('anal beads', post?.author, author);
 	// const follow = $derived(followStore.get($post?.author));
 	const friendship = myFriendshipStore.get(post?.author);
 	let adderDropped = $state(false);
@@ -122,6 +123,12 @@
 		userStore.get(-1n) && author?.id === userStore.get(-1n)?.id,
 	);
 	$inspect(author);
+
+	$effect(() => console.log('fileStore', fileStore));
+
+	// onMount(async () => {
+	//    await import("@mux/mux-player");
+	//  });
 </script>
 
 <span class={classnames(styles.DynamicPost, inset && insets[inset])}>
@@ -315,12 +322,17 @@
 							window.dispatchEvent(new CustomEvent('light', { detail: at }))}
 					/>
 				{:else if getSupertypeFromAttachmentId(at) === AttachmentType.Video}
-					<Stream
-						src={videos?.find((v) => v.id === at)?.id.toString()}
+					<mux-player
+						playback-id={fileStore.get(at)?.hostId}
+						metadata-video-title={fileStore.get(at)?.title}
+						metadata-viewer-user-id={post.author}
+					></mux-player>
+					<!-- <Stream
+						src={files.get(id).hostID}
 						controls={true}
 						{autoplay}
 						onabort={() => (error = 'Video failed to load')}
-					/>
+					/> -->
 				{/if}
 			{/each}
 		</div>

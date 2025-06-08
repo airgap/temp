@@ -46,6 +46,7 @@ export const load = async ({ params, parent, cookies }) => {
 			friendships: response.friendships || response.friends || [],
 			reactions: response.reactions || [],
 			users: response.users || response.authors || [],
+			files: response.files || [],
 		};
 		console.log(
 			'posts',
@@ -62,6 +63,8 @@ export const load = async ({ params, parent, cookies }) => {
 			response.followees,
 			'reactions',
 			response.reactions,
+			'files',
+			response.files,
 			'end',
 		);
 		return ret;
@@ -76,6 +79,7 @@ export const load = async ({ params, parent, cookies }) => {
 			friendships: [],
 			reactions: [],
 			users: [],
+			files: [],
 		};
 	}
 };

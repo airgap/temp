@@ -1,5 +1,5 @@
 import type { TsonHandlerModel } from 'from-schema';
-import { like, user, post } from '@lyku/json-models';
+import { fileDoc, user, post } from '@lyku/json-models';
 import { reactions } from '@lyku/helpers';
 
 export const listHotPosts = {
@@ -32,6 +32,10 @@ export const listHotPosts = {
 				items: {
 					type: 'bigint',
 				},
+			},
+			files: {
+				type: 'array',
+				items: fileDoc,
 			},
 		},
 	},

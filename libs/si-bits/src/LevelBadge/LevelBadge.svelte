@@ -44,22 +44,22 @@
 			<clipPath id="${fillClipId}">
 				<rect x="0" y="${yPos}" width="${sizeValue}" height="${fillHeight}" />
 			</clipPath>
-			
+
 			<!-- Clip path for the non-filled area -->
 			<clipPath id="${nonFillClipId}">
 				<rect x="0" y="0" width="${sizeValue}" height="${yPos}" />
 			</clipPath>
 		</defs>
-		
+
 		<!-- Background circle -->
-		<circle cx="${half}" cy="${half}" r="${half - 1}" fill="#652966" />
-		
+		<circle cx="${half}" cy="${half}" r="${half - 1}" fill="#ffffff17" />
+
 		<!-- Fill that rises from bottom -->
 		<circle cx="${half}" cy="${half}" r="${half - 1}" fill="white" clip-path="url(#${fillClipId})" />
-		
+
 		<!-- Text for filled area - in background color -->
 		<text x="${half}" y="${half}" text-anchor="middle" dy=".375em" fill="#652966" font-size="${half}" clip-path="url(#${fillClipId})">${level}</text>
-		
+
 		<!-- Text for non-filled area - in fill color -->
 		<text x="${half}" y="${half}" text-anchor="middle" dy=".375em" fill="#ffffff" font-size="${half}" clip-path="url(#${nonFillClipId})">${level}</text>
 	`);

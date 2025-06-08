@@ -78,6 +78,7 @@
 			console.log('Finalizing post', id);
 			finalizing = true;
 			api.finalizePost({ id }).then((res) => {
+				if(!body.includes('test'))
 				window.location.pathname = `/t/${bigintToBase58(id)}`;
 				console.info('ViewPost finalization:', res);
 				finalizing = false;
@@ -90,6 +91,7 @@
 	const postable = $derived(() => {
 		return (files.length || body?.length > 0) && !error;
 	});
+	let packs = $state([]);
 
 	async function post() {
 		console.log('submitting', body, 'with', files);
@@ -105,6 +107,7 @@
 			echoing: echo?.id,
 			d: void 0,
 		});
+		console.log('Draft result:', result);
 
 		if (!result.id) {
 			error = result.error ?? phrasebook.unknownFrontendError;
@@ -112,12 +115,10 @@
 		}
 
 		id = result.id;
-		imageDrafts = result.imageDrafts;
-		videoDrafts = result.videoDrafts;
+		packs = result.packs;
 		console.log(
 			'Draft post submitted successfully.',
-			imageDrafts ?? 'No images',
-			videoDrafts ?? 'No videos',
+			packs ?? 'No images or videos',
 		);
 	}
 
@@ -171,9 +172,7 @@
 
 		<div class={styles.imageList}>
 			{#each files as file, f}
-				{@const pack =
-					imageDrafts?.find((d) => d.filename === file.name) ??
-					videoDrafts?.find((d) => d.filename === file.name)}
+				{@const pack = packs[f]}
 				<ImageUpload
 					key={file.name}
 					reason="PostAttachment"

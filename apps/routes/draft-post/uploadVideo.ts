@@ -12,11 +12,7 @@ export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 	orderNum,
 }): Promise<VideoDraft> => {
 	const id = makeAttachmentId(post, orderNum, AttachmentType.Video);
-	const endpoint = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/stream?direct_user=true`;
-	const metadata = {
-		author,
-		post,
-	};
+	console.log('Made video attachment ID', id, id.toString());
 
 	const upload = await mux.video.uploads.create({
 		cors_origin: 'https://lyku.org',
@@ -33,12 +29,14 @@ export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 
 	console.log('CFRES', id, uploadURL);
 	if (!(uploadURL && id)) throw new Error('500');
-	console.log('VIDEO VIDEO');
+	console.log('MUX VIDEO');
 	return {
 		id,
 		uploadURL,
-		user: author,
+		creator: author,
 		post,
 		created: new Date(),
+		type: 'video',
+		host: 'mux',
 	};
 };

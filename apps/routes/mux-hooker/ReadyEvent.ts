@@ -21,6 +21,16 @@ export type ReadyEvent = {
 		duration: number;
 		created_at: string;
 		aspect_ratio: string;
+		resolution_tier: '720p';
+		passthrough?: string;
+		progress?: {
+			state: 'completed' | string;
+			progress: number;
+		};
+		playback_ids: {
+			policy: 'private' | 'public';
+			id: string;
+		}[];
 	};
 	created_at: string;
 	accessor_source: null;

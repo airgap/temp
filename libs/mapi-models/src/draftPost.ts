@@ -1,8 +1,7 @@
 import type { TsonHandlerModel } from 'from-schema';
 import {
 	attachmentMime,
-	imageDraft,
-	videoDraft,
+	fileDraft,
 	error,
 	post,
 	postDraft,
@@ -47,13 +46,9 @@ export const draftPost = {
 				...postDraft.properties.id,
 				description: "Your draft post's UUID",
 			},
-			imageDrafts: {
+			packs: {
 				type: 'array',
-				items: imageDraft,
-			},
-			videoDrafts: {
-				type: 'array',
-				items: videoDraft,
+				items: fileDraft,
 			},
 			error,
 		},

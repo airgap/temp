@@ -23,8 +23,8 @@ export function getDocumentCookie(cookies: string, cname: string) {
 	return '';
 }
 
-import { local, socketPrefix, updateHostname } from './apiHost';
-
+import { local, socketPrefix, updateHostname, apiHost } from './apiHost';
+export * from './apiHost';
 // Platform interface for SSR compatibility
 interface Platform {
 	browser: boolean;

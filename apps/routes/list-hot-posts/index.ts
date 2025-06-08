@@ -3,11 +3,9 @@
 // import { zstdDecompressSync } from 'node:zlib';
 import { client as redis } from '@lyku/redis-client';
 import { client as pg } from '@lyku/postgres-client';
-import { Reaction } from '@lyku/json-models';
+import { FileDoc, Post, Reaction, User } from '@lyku/json-models';
 import { bondIds } from '@lyku/helpers';
 import { parsePossibleBON } from 'from-schema';
-import { Post } from '@lyku/json-models';
-import { User } from '@lyku/json-models';
 import { handleListHotPosts } from '@lyku/handles';
 import { defaultLogger } from '@lyku/logger';
 
@@ -50,67 +48,79 @@ export default handleListHotPosts(async (_, { requester }) => {
 	const authorIds = [...new Set(posts.map((p) => p.author))];
 	console.log('Author IDs:', authorIds);
 
+	const fileIds = posts.flatMap((p) => p.attachments);
+
 	// Run all database queries in parallel
 	console.log('Starting parallel database queries...');
 	const dbStartTime = Date.now();
 
-	const [authors, reactions, followees, friendships] = (await Promise.all([
-		// Get authors
-		authorIds.length
-			? pg
-					.selectFrom('users')
-					.where('id', 'in', authorIds)
-					.selectAll()
-					.execute()
-			: Promise.resolve([]),
+	const [authors, reactions, followees, friendships, files] =
+		(await Promise.all([
+			// Get authors
+			authorIds.length
+				? pg
+						.selectFrom('users')
+						.where('id', 'in', authorIds)
+						.selectAll()
+						.execute()
+				: Promise.resolve([]),
 
-		// Get reactions if authenticated
-		requester && posts.length
-			? pg
-					.selectFrom('reactions')
-					.where('userId', '=', requester)
-					.where(
-						'postId',
-						'in',
-						posts.map((p) => p.id),
-					)
-					.select(['postId', 'type'])
-					.execute()
-			: Promise.resolve([]),
+			// Get reactions if authenticated
+			requester && posts.length
+				? pg
+						.selectFrom('reactions')
+						.where('userId', '=', requester)
+						.where(
+							'postId',
+							'in',
+							posts.map((p) => p.id),
+						)
+						.select(['postId', 'type'])
+						.execute()
+				: Promise.resolve([]),
 
-		// Get followees if authenticated
-		requester && authorIds.length
-			? pg
-					.selectFrom('userFollows')
-					.select(['followee'])
-					.where('followee', 'in', authorIds)
-					.where('follower', '=', requester)
-					.execute()
-			: Promise.resolve([]),
+			// Get followees if authenticated
+			requester && authorIds.length
+				? pg
+						.selectFrom('userFollows')
+						.select(['followee'])
+						.where('followee', 'in', authorIds)
+						.where('follower', '=', requester)
+						.execute()
+				: Promise.resolve([]),
 
-		// Get friendships if authenticated
-		requester && authorIds.length
-			? pg
-					.selectFrom('friendships')
-					.select('users')
-					.where(
-						'id',
-						'in',
-						authorIds.map((a) => bondIds(a, requester)),
-					)
-					.execute()
-			: Promise.resolve([]),
-	])) as [
-		User[],
-		{ postId: bigint; type: string }[],
-		{ followee: bigint }[],
-		User[],
-	];
+			// Get friendships if authenticated
+			requester && authorIds.length
+				? pg
+						.selectFrom('friendships')
+						.select('users')
+						.where(
+							'id',
+							'in',
+							authorIds.map((a) => bondIds(a, requester)),
+						)
+						.execute()
+				: Promise.resolve([]),
+			fileIds.length
+				? pg
+						.selectFrom('files')
+						.selectAll()
+						.where('id', 'in', fileIds)
+						.execute()
+				: [],
+		])) as [
+			User[],
+			{ postId: bigint; type: string }[],
+			{ followee: bigint }[],
+			User[],
+			FileDoc[],
+		];
 
 	console.log(`Database queries took ${Date.now() - dbStartTime}ms`);
 	console.log('Authors:', authors.length);
 	console.log('Reactions:', reactions.length);
 	console.log('Followees:', followees.length);
+	console.log('Files:', files.length);
 
 	const map = new Map(reactions.map((r: Reaction) => [r.postId, r.type]));
 	console.log('Responding');
@@ -124,6 +134,7 @@ export default handleListHotPosts(async (_, { requester }) => {
 		friends: friendships.map((f) =>
 			f.users[0] === requester ? f.users[1] : f.users[0],
 		),
+		files,
 	};
 
 	console.log('Hot posts:', posts.length);

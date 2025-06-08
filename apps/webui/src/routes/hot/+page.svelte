@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
 	import {
 		FeedPage,
 		PostList,
 		userStore,
+		fileStore,
 		myFolloweeStore,
 		myFollowerStore,
 		myFriendshipStore,
 		myReactionStore,
 		postStore,
 	} from '@lyku/si-bits';
-	import type { Post, User } from '@lyku/json-models';
+	import type { FileDoc, Post, User } from '@lyku/json-models';
 	// let postsPromise = api.listHotPosts({});
 	import { PUBLIC_CF_HASH } from '$env/static/public';
 
@@ -25,11 +25,13 @@
 					continuation?: string;
 					user: Promise<User>;
 					reactions: string[];
+					files: Promise<File[]>;
 			  }
 			| { error: string };
 	}>();
 	const {
 		// order,
+		files,
 		posts,
 		users,
 		error,
@@ -41,7 +43,7 @@
 		friendships,
 	} = data;
 	console.log(
-		'ssssuck',
+		'User',
 		user,
 		// 'users',
 		// users,
@@ -69,6 +71,11 @@
 	});
 	followees?.forEach((f) => myFolloweeStore.set(f, true));
 	followers?.forEach((f) => myFollowerStore.set(f, true));
+	files?.forEach((f) => {
+		console.log('Filing', f.id);
+		fileStore.set(f.id, f);
+	});
+	console.log('files', files);
 	console.log('uuuu', users);
 	users.forEach((u) => userStore.set(u.id, u));
 	if (user) userStore.set(-1n, user);

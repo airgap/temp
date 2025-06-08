@@ -9,10 +9,10 @@ export default handleConfirmVideoUpload(async (id, { requester, strings }) => {
 		throw new Err(500, 'We forgot to enter our Cloudflare password');
 
 	const videoUpload = await pg
-		.selectFrom('videoDrafts')
+		.selectFrom('fileDrafts')
 		.selectAll()
 		.where('id', '=', id)
-		.where('user', '=', requester)
+		.where('creator', '=', requester)
 		.executeTakeFirst();
 
 	if (!videoUpload) {
@@ -33,14 +33,13 @@ export default handleConfirmVideoUpload(async (id, { requester, strings }) => {
 	if (!cfres.success) throw new Err(500, strings.videoUploadAuthorizationError);
 
 	const dbres = await pg
-		.insertInto('videos')
+		.insertInto('files')
 		.values({
 			...cfres.result,
 			id,
-			authorId: requester,
-			supertype: 'video',
-			uploaded: new Date(),
-			...(videoUpload.channel ? { channelId: videoUpload.channel } : {}),
+			creator: requester,
+			created: new Date(),
+			// ...(videoUpload.channel ? { channelId: videoUpload.channel } : {}),
 		})
 		.returning('id')
 		.executeTakeFirst();

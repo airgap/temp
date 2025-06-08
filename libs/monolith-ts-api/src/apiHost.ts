@@ -23,7 +23,7 @@ const apiDomain = local
 				'8444.use.devtunnels.ms',
 			)
 		: `api.${getHostname()}`;
-// export const apiHost = `${apiDomain}:${port}`;
+export const apiHost = `${apiDomain}:${port}`;
 export const socketPrefix = local ? 'ws' : 'wss';
 // console.log('apiHost', apiHost);
 export const buildShortlink = (code: FromBsonSchema<typeof shortcode>) =>

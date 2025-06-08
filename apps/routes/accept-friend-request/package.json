@@ -1,6 +1,7 @@
 {
-	"dependencies": {
+	"devDependencies": {
 		"@lyku/handles": "workspace:*",
-		"@lyku/helpers": "workspace:*"
+		"@lyku/helpers": "workspace:*",
+		"@lyku/postgres-client": "workspace:*"
 	}
 }

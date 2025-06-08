@@ -3,7 +3,9 @@
 	import * as tus from 'tus-js-client';
 	import classnames from 'classnames';
 	import { imageAndVideoMimes, imageMimes } from '@lyku/defaults';
-	import { api, currentPlatform } from 'monolith-ts-api';
+	import { api, apiHost, currentPlatform } from 'monolith-ts-api';
+	// import Chunks from './Chunks.svelte';
+	import ChunkViz from './ChunkViz.svelte';
 	import type {
 		ImageDraft,
 		ImageUploadReason,
@@ -11,6 +13,7 @@
 	} from '@lyku/json-models';
 	import styles from './ImageUpload.module.sass';
 	import { defaultImages } from './defaultImages';
+	import * as UpChunk from '@mux/upchunk';
 
 	import times from '../times.svg?raw';
 	import bg from '../Backdrop/blu.jpg';
@@ -37,7 +40,7 @@
 		image,
 		file,
 		removeClicked,
-		attachmentUploadPack,
+		attachmentUploadPack = $bindable(),
 		onFinished,
 		children,
 	} = $props<{
@@ -59,15 +62,18 @@
 
 	// State
 	let imageState = $state<string>();
+	let upload = $state<UpChunk>();
 	let base64 = $state<string>();
 	let uploadUrl = $state<string>();
 	let fileState = $state<File>(file);
+	let pack = $state<FileDraft>();
 	let workingState = $state(working);
 	let inputId = $props.id();
 	let formRef: HTMLFormElement;
-	let pack = $state<{ url: string; id: string }>();
 	let submitting = $state(false);
 	let succeeded = $state(false);
+	let uploaded = $state(false);
+	let processed = $state(false);
 
 	const readFile = (file: File): Promise<string> =>
 		new Promise((r, j) => {
@@ -137,31 +143,64 @@
 
 	// Handle upload
 	$effect(() => {
+		console.log('bahaha', pack, fileState, submitting, succeeded);
 		if (pack && fileState && !submitting && !succeeded) {
 			submitting = true;
+			processed = false;
+			uploaded = false;
 			const data = new FormData();
 			data.append('file', fileState);
 
 			if (fileState.type.startsWith('video/')) {
-				const upload = new tus.Upload(fileState, {
-					endpoint: `://${apiHost}/getTusEndpoint/${pack.id}`,
-					onSuccess: () =>
-						api.confirmVideoUpload(pack.id).then(() => {
-							onFinished?.();
-							onUpload?.(pack.url);
-							imageState = pack.url;
-							succeeded = true;
-							if (reason === 'AwayChannelBackground') window.location.reload();
-						}),
+				upload = UpChunk.createUpload({
+					endpoint: pack.url, // Authenticated url
+					file: fileState, // File object with your video file’s properties
+					chunkSize: 30720//Math.min(30720, file.size/4), // Uploads the file in ~30 MB chunks
 				});
-				upload.start();
+
+				// Subscribe to events
+				upload.on('error', (error) => {
+					submitting = false;
+					// setStatusMessage(error.detail);
+				});
+
+				upload.on('progress', (progress) => {
+					// setProgress(progress.detail);
+				});
+
+				upload.on('success', () => {
+					console.info('Video upload succeeded');
+					uploaded = true;
+
+					console.log('Getting file');
+					api.getFile({ file: pack.id, wait: true }).then(() => {
+						processed = true;
+						console.log('GetFile succeeded');
+						// api.confirmVideoUpload(pack.id).then(() => {
+						onFinished?.();
+						onUpload?.(pack.url);
+						imageState = pack.url;
+						succeeded = true;
+						// if (reason === 'AwayChannelBackground') window.location.reload();
+						// });
+					});
+					// 	// api.confirmVideoUpload(pack.id).then(() => {
+					// 	onFinished?.();
+					// 	onUpload?.(pack.url);
+					// 	imageState = pack.url;
+					// 	succeeded = true;
+					// 	// if (reason === 'AwayChannelBackground') window.location.reload();
+					// 	// });
+				});
 			} else if (fileState.type.startsWith('image/')) {
 				fetch(pack.url, {
 					method: 'POST',
 					body: data,
 				}).then((r) =>
 					r.json().then(async (cfres) => {
+						uploaded = true;
 						await api.confirmImageUpload(pack.id);
+						processed = true;
 						onFinished?.();
 						onUpload?.(pack.url);
 						imageState = pack.url;
@@ -215,7 +254,7 @@
 		</span>
 	{/if}
 
-	<Loading floating={true} visible={workingState} reverse={!pack} />
+	<!-- <Loading floating={true} visible={workingState} reverse={!pack} /> -->
 
 	<img
 		class={classnames(styles.Success, {
@@ -233,7 +272,8 @@
 		class={classnames(styles.fileInput, className)}
 		onchange={(event) => imageSelected(event.target as HTMLInputElement)}
 	/>
-
+	<!-- <Chunks {uploaded} {processed} {upload} {file} /> -->
+<ChunkViz {upload} {file} />
 	<div class={styles.buttons}>
 		{#if !(workingState || succeeded)}
 			{#if base64}

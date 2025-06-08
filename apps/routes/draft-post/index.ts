@@ -8,18 +8,11 @@ import {
 } from '@lyku/route-helpers';
 import { handleDraftPost } from '@lyku/handles';
 import { client as pg } from '@lyku/postgres-client';
-import {
-	ImageDraft,
-	PostDraft,
-	VideoDraft,
-	InsertablePostDraft,
-} from '@lyku/json-models/index';
+import { FileDraft, InsertablePostDraft } from '@lyku/json-models/index';
 import { Err, getSupertypeFromMime, makeAttachmentId } from '@lyku/helpers';
 import { AttachmentInitializerProps } from './AttachmentInitializer';
 import { uploadImage } from './uploadImage';
 import { uploadVideo } from './uploadVideo';
-
-type AttachmentDraft = ImageDraft | VideoDraft;
 
 export default handleDraftPost(
 	async (
@@ -31,8 +24,8 @@ export default handleDraftPost(
 		if (!cfApiToken && attachments?.length)
 			throw new Err(500, 'We forgot to enter our Cloudflare password');
 		console.log('YAY we entered our cloudflare password');
-		const imageDrafts: ImageDraft[] = [];
-		const videoDrafts: VideoDraft[] = [];
+		const imageDrafts: FileDraft[] = [];
+		const videoDrafts: FileDraft[] = [];
 		// const attachmentIds: bigint[] = attachments.map(a => makeAttachmentId(a.type, a.size));
 		// const imageUploads: ImageUpload[] = [];
 		const reversion = replyTo ?? echoing;
@@ -50,13 +43,14 @@ export default handleDraftPost(
 			} satisfies InsertablePostDraft)
 			.returningAll()
 			.executeTakeFirstOrThrow();
-		const atAts: AttachmentDraft[] = [];
+		const atAts: FileDraft[] = [];
 		console.log('Mapping attachment ids');
 		const attachmentIds: bigint[] =
 			attachments?.map((a, i) =>
 				makeAttachmentId(draft.id, i, getSupertypeFromMime(a.type)),
 			) ?? [];
 		console.log('Mapped att ids');
+		const packs: FileDraft[] = [];
 		if (attachments?.length) {
 			for (let a = 0; a < attachments.length; a++) {
 				console.log('Drafting upload', a, 'of', attachments.length);
@@ -76,27 +70,33 @@ export default handleDraftPost(
 				switch (supertype) {
 					case 'image':
 						console.log('D3A1');
-						imageDrafts.push(await uploadImage(init));
+						const draft = await uploadImage(init);
+						packs.push(draft);
+						imageDrafts.push(draft);
 						console.log('D3A2');
 						break;
 					case 'video':
 						console.log('D3B1');
-						videoDrafts.push(await uploadVideo(init));
+						const pack = await uploadVideo(init);
+						packs.push(pack);
+						videoDrafts.push(pack);
 						console.log('D3B2');
 						break;
 				}
 				console.log('D4');
 			}
-			if (imageDrafts.length)
-				await pg.insertInto('imageDrafts').values(imageDrafts).execute();
-			if (videoDrafts.length)
-				await pg.insertInto('videoDrafts').values(videoDrafts).execute();
-			console.log(
-				imageDrafts.length,
-				'images and',
-				videoDrafts.length,
-				'videos drafted',
-			);
+			if (packs.length)
+				await pg.insertInto('fileDrafts').values(packs).execute();
+			// if (imageDrafts.length)
+			// 	await pg.insertInto('imageDrafts').values(imageDrafts).execute();
+			// if (videoDrafts.length)
+			// 	await pg.insertInto('videoDrafts').values(videoDrafts).execute();
+			// console.log(
+			// 	imageDrafts.length,
+			// 	'images and',
+			// 	videoDrafts.length,
+			// 	'videos drafted',
+			// );
 			atAts.push(...imageDrafts, ...videoDrafts);
 		}
 		console.log('atAts', atAts);
@@ -119,8 +119,7 @@ export default handleDraftPost(
 			.where('id', '=', draft.id)
 			.execute();
 		return {
-			imageDrafts,
-			videoDrafts,
+			packs,
 			// userId,
 			id: draft.id,
 		};

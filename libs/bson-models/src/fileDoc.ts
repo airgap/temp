@@ -1,9 +1,10 @@
 import type { PostgresRecordModel } from 'from-schema';
 
-export const videoDoc = {
+export const fileDoc = {
 	properties: {
-		id: { type: 'bigint', primaryKey: true },
+		id: { type: 'bigint' },
 		duration: { type: 'double precision' },
+		hostId: { type: 'text', maxLength: 100 },
 		width: { type: 'integer' },
 		height: { type: 'integer' },
 		// meta: {
@@ -18,9 +19,12 @@ export const videoDoc = {
 		post: { type: 'bigint' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
+		type: { type: 'text', maxLength: 100 },
+		host: { type: 'text', maxLength: 100 },
 	},
 	required: [
 		'creator',
+		'hostId',
 		'supertype',
 		'width',
 		'height',
@@ -28,6 +32,8 @@ export const videoDoc = {
 		'creator',
 		'id',
 		'created',
+		'type',
+		'host',
 	],
 } as const satisfies PostgresRecordModel;
 // console.log('videoDoc', videoDoc);

@@ -6,7 +6,7 @@ export default handleGetTusEndpoint(
 		const id = request.url?.match(base58SnowflakeRegex)?.[0];
 		if (!id) throw new Error('No ID specified');
 		const draft = await pg
-			.selectFrom('videoDrafts')
+			.selectFrom('fileDrafts')
 			.select('uploadURL')
 			.where('id', '=', id)
 			.executeTakeFirst();

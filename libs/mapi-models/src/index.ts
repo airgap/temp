@@ -22,6 +22,7 @@ export * from './finalizePost';
 export * from './followUser';
 export * from './friendshipStatusFor';
 export * from './getFollowVectors';
+export * from './getFile';
 export * from './getVideo';
 export * from './getVideos';
 export * from './getImage';
