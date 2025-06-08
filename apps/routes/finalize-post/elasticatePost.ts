@@ -24,6 +24,8 @@ export async function elasticatePost(post: Post): Promise<void> {
 		attachments: post.attachments?.map((a) => a.toString()) ?? [],
 		updated: post.updated?.toISOString(),
 		created: post.created?.toISOString(),
+		banned: post.banned?.toISOString(),
+		deleted: post.id?.toISOString(),
 	};
 
 	const url = `${process.env.ELASTIC_API_ENDPOINT}/${index}/_doc/${elasticPost.id}`;

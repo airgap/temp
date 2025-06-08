@@ -78,8 +78,8 @@
 			console.log('Finalizing post', id);
 			finalizing = true;
 			api.finalizePost({ id }).then((res) => {
-				if(!body.includes('test'))
-				window.location.pathname = `/t/${bigintToBase58(id)}`;
+				if (!body.includes('test'))
+					window.location.pathname = `/t/${bigintToBase58(id)}`;
 				console.info('ViewPost finalization:', res);
 				finalizing = false;
 				clear();

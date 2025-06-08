@@ -1,10 +1,8 @@
 import type { User } from '@lyku/json-models';
 import { defaultDate } from '../defaultDate';
 export const noviceTtfBot = {
-	banned: false,
 	bot: true,
 	chatColor: 'FFFFFF',
-	confirmed: false,
 	id: 10n,
 	joined: defaultDate,
 	lastLogin: defaultDate,

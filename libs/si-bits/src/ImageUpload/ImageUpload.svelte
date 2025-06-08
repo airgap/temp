@@ -151,11 +151,23 @@
 			const data = new FormData();
 			data.append('file', fileState);
 
+			console.log('Getting file');
+			api.getFile({ file: pack.id, wait: true }).then(() => {
+				processed = true;
+				console.log('GetFile succeeded');
+				// api.confirmVideoUpload(pack.id).then(() => {
+				onFinished?.();
+				onUpload?.(pack.url);
+				imageState = pack.url;
+				succeeded = true;
+				// if (reason === 'AwayChannelBackground') window.location.reload();
+				// });
+			});
 			if (fileState.type.startsWith('video/')) {
 				upload = UpChunk.createUpload({
 					endpoint: pack.url, // Authenticated url
 					file: fileState, // File object with your video file’s properties
-					chunkSize: 30720//Math.min(30720, file.size/4), // Uploads the file in ~30 MB chunks
+					chunkSize: 30720, //Math.min(30720, file.size/4), // Uploads the file in ~30 MB chunks
 				});
 
 				// Subscribe to events
@@ -171,19 +183,6 @@
 				upload.on('success', () => {
 					console.info('Video upload succeeded');
 					uploaded = true;
-
-					console.log('Getting file');
-					api.getFile({ file: pack.id, wait: true }).then(() => {
-						processed = true;
-						console.log('GetFile succeeded');
-						// api.confirmVideoUpload(pack.id).then(() => {
-						onFinished?.();
-						onUpload?.(pack.url);
-						imageState = pack.url;
-						succeeded = true;
-						// if (reason === 'AwayChannelBackground') window.location.reload();
-						// });
-					});
 					// 	// api.confirmVideoUpload(pack.id).then(() => {
 					// 	onFinished?.();
 					// 	onUpload?.(pack.url);
@@ -200,12 +199,12 @@
 					r.json().then(async (cfres) => {
 						uploaded = true;
 						await api.confirmImageUpload(pack.id);
-						processed = true;
-						onFinished?.();
-						onUpload?.(pack.url);
-						imageState = pack.url;
-						succeeded = true;
-						if (reason === 'AwayChannelBackground') window.location.reload();
+						// processed = true;
+						// onFinished?.();
+						// onUpload?.(pack.url);
+						// imageState = pack.url;
+						// succeeded = true;
+						// if (reason === 'AwayChannelBackground') window.location.reload();
 					}),
 				);
 			}
@@ -273,7 +272,7 @@
 		onchange={(event) => imageSelected(event.target as HTMLInputElement)}
 	/>
 	<!-- <Chunks {uploaded} {processed} {upload} {file} /> -->
-<ChunkViz {upload} {file} />
+	<ChunkViz {upload} {file} />
 	<div class={styles.buttons}>
 		{#if !(workingState || succeeded)}
 			{#if base64}

@@ -91,6 +91,15 @@ export default handleGetThreadForPost(async ({ post }, { requester }) => {
 	console.log('Reactions:', reactions.length);
 	console.log('Followees:', followees.length);
 	console.log('Responding');
+
+	for (const post of posts)
+		if (post.deleted)
+			Object.assign(post, {
+				body: '[deleted]',
+				author: -2n,
+				hashtags: [],
+				attachments: [],
+			});
 	// Build response with normalized data
 	const response = {
 		posts,

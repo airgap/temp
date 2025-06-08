@@ -1,17 +1,18 @@
 import type { User } from '@lyku/json-models';
 import { defaultDate } from '../defaultDate';
-export const guestUser = {
+export const deleted = {
 	bot: true,
 	chatColor: 'FFFFFF',
-	id: 1n,
+	id: -2n,
 	joined: defaultDate,
 	lastLogin: defaultDate,
 	live: false,
 	postCount: 0n,
-	username: 'lykuGuest',
-	profilePicture: '/bots/grin-zoom.png',
+	username: 'deleted',
+	name: '[deleted]',
+	profilePicture: '/bots/smile-zoom.png',
 	points: 0n,
-	slug: 'lykuguest',
+	slug: 'deleted',
 	staff: true,
 	groupLimit: 0,
 	lastSuper: defaultDate,

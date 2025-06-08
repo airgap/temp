@@ -20,7 +20,7 @@ describe('hilbert', () => {
 			expect(hilbert(4, 1)).toEqual({ x: 1, y: 0 });
 			expect(hilbert(4, 2)).toEqual({ x: 1, y: 1 });
 			expect(hilbert(4, 3)).toEqual({ x: 0, y: 1 });
-			
+
 			// Second quadrant
 			expect(hilbert(4, 4)).toEqual({ x: 0, y: 2 });
 			expect(hilbert(4, 5)).toEqual({ x: 0, y: 3 });
@@ -108,7 +108,7 @@ describe('hilbert', () => {
 		it('should produce unique coordinates for sequential indices', () => {
 			const seen = new Set<string>();
 			const gridSize = 4;
-			
+
 			for (let i = 0; i < gridSize * gridSize; i++) {
 				const { x, y } = hilbert(gridSize, i);
 				const key = `${x},${y}`;
@@ -125,13 +125,13 @@ describe('hilbert', () => {
 			for (let i = 0; i < gridSize * gridSize - 1; i++) {
 				const curr = hilbert(gridSize, i);
 				const next = hilbert(gridSize, i + 1);
-				
+
 				// Manhattan distance between consecutive points
 				const distance = Math.abs(curr.x - next.x) + Math.abs(curr.y - next.y);
-				
+
 				// Adjacent points in Hilbert curve should be neighbors (distance = 1)
 				expect(distance).toBe(1);
-				
+
 				totalDistance += distance;
 				count++;
 			}
@@ -142,7 +142,9 @@ describe('hilbert', () => {
 
 		it('should fill space without gaps for complete traversal', () => {
 			const gridSize = 4;
-			const visited = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
+			const visited = Array(gridSize)
+				.fill(null)
+				.map(() => Array(gridSize).fill(false));
 
 			for (let i = 0; i < gridSize * gridSize; i++) {
 				const { x, y } = hilbert(gridSize, i);
@@ -179,11 +181,11 @@ describe('hilbert', () => {
 		it('should handle large numbers of calls efficiently', () => {
 			const start = Date.now();
 			const iterations = 10000;
-			
+
 			for (let i = 0; i < iterations; i++) {
 				hilbert(256, i % (256 * 256));
 			}
-			
+
 			const elapsed = Date.now() - start;
 			// Should complete 10k iterations in under 100ms
 			expect(elapsed).toBeLessThan(100);
@@ -194,10 +196,22 @@ describe('hilbert', () => {
 		it('should produce consistent results for known patterns', () => {
 			// 4x4 grid full traversal
 			const expected4x4 = [
-				{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 },
-				{ x: 0, y: 2 }, { x: 0, y: 3 }, { x: 1, y: 3 }, { x: 1, y: 2 },
-				{ x: 2, y: 2 }, { x: 2, y: 3 }, { x: 3, y: 3 }, { x: 3, y: 2 },
-				{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 0 }, { x: 3, y: 0 }
+				{ x: 0, y: 0 },
+				{ x: 1, y: 0 },
+				{ x: 1, y: 1 },
+				{ x: 0, y: 1 },
+				{ x: 0, y: 2 },
+				{ x: 0, y: 3 },
+				{ x: 1, y: 3 },
+				{ x: 1, y: 2 },
+				{ x: 2, y: 2 },
+				{ x: 2, y: 3 },
+				{ x: 3, y: 3 },
+				{ x: 3, y: 2 },
+				{ x: 3, y: 1 },
+				{ x: 2, y: 1 },
+				{ x: 2, y: 0 },
+				{ x: 3, y: 0 },
 			];
 
 			expected4x4.forEach((expected, index) => {

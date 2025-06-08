@@ -14,10 +14,10 @@ export const userId = {
 export const user = {
 	properties: {
 		banned: {
-			type: 'boolean',
+			type: 'timestamptz',
 		},
 		confirmed: {
-			type: 'boolean',
+			type: 'timestamptz',
 		},
 		bot: {
 			type: 'boolean',
@@ -58,8 +58,6 @@ export const user = {
 		deleted: { type: 'timestamptz' },
 	},
 	required: [
-		'banned',
-		'confirmed',
 		'bot',
 		'chatColor',
 		'id',

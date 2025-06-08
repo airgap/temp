@@ -1,3 +1,4 @@
+export * from './deleted';
 export * from './easyTtfBot';
 export * from './guestUser';
 export * from './hardTtfBot';
