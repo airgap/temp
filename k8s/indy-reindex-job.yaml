@@ -1,0 +1,84 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: indy-reindex
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 3600 # Clean up after 1 hour
+  backoffLimit: 3 # Retry 3 times on failure
+  activeDeadlineSeconds: 7200 # Kill job after 2 hours
+  template:
+    metadata:
+      labels:
+        app: indy-reindex
+        job: elasticsearch-reindex
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: indy
+          image: registry.digitalocean.com/lyku/lyku:indy
+          imagePullPolicy: Always
+          command: ['bun', './serve.js']
+          envFrom:
+            - secretRef:
+                name: doppler-token-secret
+          env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: BUN_LOG_LEVEL
+              value: 'debug'
+            - name: BUN_FORCE_TTY
+              value: '1'
+            - name: FORCE_COLOR
+              value: '1'
+            - name: HCAPTCHA_SECRET
+              value: '${HCAPTCHA_SECRET}'
+            - name: PG_CONNECTION_STRING
+              value: '${PG_CONNECTION_STRING}'
+            - name: CF_API_TOKEN
+              value: '${CF_API_TOKEN}'
+            - name: CF_ID
+              value: '${CF_ID}'
+            - name: CH_ENDPOINT
+              value: '${CH_ENDPOINT}'
+            - name: CH_USERNAME
+              value: '${CH_USERNAME}'
+            - name: CH_PASSWORD
+              value: '${CH_PASSWORD}'
+            - name: ELASTIC_API_ENDPOINT
+              value: '${ELASTIC_API_ENDPOINT}'
+            - name: ELASTIC_API_KEY
+              value: '${ELASTIC_API_KEY}'
+            - name: MUX_TOKEN_ID
+              value: '${MUX_TOKEN_ID}'
+            - name: MUX_TOKEN_SECRET
+              value: '${MUX_TOKEN_SECRET}'
+            - name: PUBLIC_CF_HASH
+              value: '${PUBLIC_CF_HASH}'
+            - name: WEBUI_DOMAIN
+              value: '${WEBUI_DOMAIN}'
+            - name: SERVICE_DOMAIN
+              value: '${SERVICE_DOMAIN}'
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: '0'
+            - name: REDIS_INTERNAL_CONNECTION_STRING
+              value: '${REDIS_INTERNAL_CONNECTION_STRING}'
+            - name: ORIGIN_CERTIFICATE
+              value: |
+                ${ORIGIN_CERTIFICATE}
+            - name: PRIVATE_KEY
+              value: |
+                ${PRIVATE_KEY}
+            - name: START_DATE
+              value: '${START_DATE}'
+            - name: END_DATE
+              value: '${END_DATE}'
+          resources:
+            requests:
+              memory: '2Gi'
+              cpu: '500m'
+            limits:
+              memory: '4Gi'
+              cpu: '2000m'
+      imagePullSecrets:
+        - name: lyku

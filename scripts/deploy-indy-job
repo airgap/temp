@@ -1,0 +1,49 @@
+#!/bin/bash
+set -euo pipefail
+
+# Deploy Elasticsearch reindex job for indy route
+ROUTE_NAME="indy"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TIMESTAMP=$(date +%Y%m%d%H%M%S)
+JOB_NAME="indy-reindex-${TIMESTAMP}"
+
+# Build and push Docker image
+echo "Building and pushing Docker image for ${ROUTE_NAME}..."
+nx dockerize @lyku/${ROUTE_NAME}
+
+# Image is hardcoded in the manifest
+
+# Optional environment variables for date range
+START_DATE="${START_DATE:-}"
+END_DATE="${END_DATE:-}"
+
+# Set default date range if not provided
+if [ -z "${START_DATE}" ]; then
+    export START_DATE="2020-01-01"
+fi
+if [ -z "${END_DATE}" ]; then
+    export END_DATE=$(date +%Y-%m-%d)
+fi
+
+# Create temporary job manifest with unique name and substitute variables
+TMP_MANIFEST="/tmp/${JOB_NAME}.yaml"
+envsubst < "${PROJECT_ROOT}/k8s/indy-reindex-job.yaml" > "${TMP_MANIFEST}"
+
+# Replace job name to make it unique
+sed -i "s/name: indy-reindex/name: ${JOB_NAME}/" "${TMP_MANIFEST}"
+
+# Deploy the job
+echo "Deploying reindex job ${JOB_NAME}..."
+kubectl apply -f "${TMP_MANIFEST}"
+
+# Clean up
+rm "${TMP_MANIFEST}"
+
+echo "Job ${JOB_NAME} deployed successfully!"
+echo ""
+echo "Monitor the job with:"
+echo "  kubectl get job ${JOB_NAME}"
+echo "  kubectl logs -f job/${JOB_NAME}"
+echo ""
+echo "Delete the job when complete with:"
+echo "  kubectl delete job ${JOB_NAME}"

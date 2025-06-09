@@ -187,7 +187,16 @@ export class HotPostAggregationService {
 			// const compressed = await compress(Buffer.from(stringified));
 			console.log('Caching');
 			const posted = await redis.set('hot_posts', stringified);
-			await redis.set('hot_posts_ts', Date.now());
+			const pageSize = 20;
+			const pageCount = Math.ceil(hits.length / pageSize);
+			const pages = Array(pageCount);
+			for (let i = 0; i < pageCount; i++) pages[i] = hits.slice(i, pageSize);
+			await Promise.all([
+				redis.set('hot_posts_ts', Date.now()),
+				...pages.map((page, p) =>
+					redis.set(`hot_posts:page:${p}`, stringifyBON(page)),
+				),
+			]);
 			console.log('posted', posted);
 
 			const duration = Date.now() - startTime;

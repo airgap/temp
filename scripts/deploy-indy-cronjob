@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+# Deploy Elasticsearch reindex CronJob for indy route
+ROUTE_NAME="indy"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Build and push Docker image
+echo "Building and pushing Docker image for ${ROUTE_NAME}..."
+nx dockerize @lyku/${ROUTE_NAME}
+
+# Image is hardcoded in the manifest
+
+# Optional schedule override (default: daily at 2 AM)
+SCHEDULE="${SCHEDULE:-0 2 * * *}"
+
+# Create temporary manifest and substitute environment variables
+TMP_MANIFEST="/tmp/indy-reindex-cronjob.yaml"
+envsubst < "${PROJECT_ROOT}/k8s/indy-reindex-cronjob.yaml" > "${TMP_MANIFEST}"
+
+# Update schedule if provided
+sed -i "s|schedule: \"0 2 \* \* \*\"|schedule: \"${SCHEDULE}\"|g" "${TMP_MANIFEST}"
+
+# Deploy the CronJob
+echo "Deploying reindex CronJob..."
+kubectl apply -f "${TMP_MANIFEST}"
+
+# Clean up
+rm "${TMP_MANIFEST}"
+
+echo "CronJob deployed successfully!"
+echo ""
+echo "View CronJob status with:"
+echo "  kubectl get cronjob indy-reindex-scheduled"
+echo "  kubectl get jobs -l app=indy-reindex"
+echo ""
+echo "Update or delete with:"
+echo "  kubectl edit cronjob indy-reindex-scheduled"
+echo "  kubectl delete cronjob indy-reindex-scheduled"

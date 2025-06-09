@@ -35,6 +35,7 @@ export const buildHotQuery = ({
 						filter: [
 							{ range: { publish: { gte: rangeMap[dateRange], lte: 'now' } } },
 						],
+						must_not: [{ exists: { field: 'deleted' } }],
 					},
 				},
 				score_mode: 'multiply',
