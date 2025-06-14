@@ -1,164 +1,243 @@
-##### Note: this README is mostly LLM generated from the source code as this project is not even closed to finished yet and I'm not manually maintaining a README until everything's somewhat stable.
+# LYKU Logger
 
-# Route Helpers
-
-A collection of utility functions and types for building HTTP and WebSocket servers in TypeScript, with a focus on type safety and real-time communication.
+A comprehensive logging library for LYKU services with support for structured logging, ClickHouse integration, and request tracing.
 
 ## Key Features
 
-- Type-safe HTTP and WebSocket server setup
-- Session management and authentication
-- Database integration with Kysely
-- MessagePack encoding/decoding
-- NATS integration for pub/sub messaging
-- Internationalization support
-- Tic Tac Flow game logic helpers
-- Achievement and points system
-- Notification system
+- **Structured Logging**: Uses Pino for high-performance structured logging
+- **ClickHouse Integration**: Automatic log shipping to ClickHouse for analytics
+- **Request Tracing**: Built-in HTTP request logging middleware
+- **Child Loggers**: Create contextual loggers with additional metadata
+- **Security**: Automatic redaction of sensitive fields
+- **Production Ready**: Environment-specific configurations
 
-## Core Components
-
-### Server Setup
+## Quick Start
 
 ```typescript
-import { serveHttp, serveWebsocket } from '@lyku/route-helpers';
+import { createLogger, createClickHouseLogger } from '@lyku/logger';
 
-// HTTP Server
-serveHttp({
-	execute: handler,
-	validator: myValidator,
-	model: myModel,
+// Basic logger
+const logger = createLogger({
+	name: 'my-service',
+	level: 'info',
+	component: 'api',
 });
 
-// WebSocket Server
-serveWebsocket({
-	onOpen: wsHandler,
-	validator: myValidator,
-	tweakValidator: myTweakValidator,
-	model: myModel,
+// Logger with ClickHouse integration
+const clickhouseLogger = createClickHouseLogger({
+	name: 'my-service',
+	level: 'info',
+	enableClickHouse: true,
+	clickHouseTable: 'application_logs',
 });
+
+logger.info('Service started', { port: 3000 });
+logger.error('Database connection failed', { error: 'Connection timeout' });
 ```
 
-### Context Types
-
-The library provides several context types for different scenarios:
-
-- `SecureContext` - For authenticated requests
-- `MaybeSecureContext` - For optionally authenticated requests
-- `HttpContextFragment` - HTTP-specific context
-- `SecurityContextFragment` - Authentication-related context
-
-### Session Management
+## Logger Options
 
 ```typescript
-import { createSessionForUser, generateSessionId } from '@lyku/route-helpers';
+interface LoggerOptions {
+	name?: string; // Service name (default: 'lyku-service')
+	level?: LogLevel; // Log level (default: 'info' in production, 'debug' otherwise)
+	component?: string; // Component name within the service
+	environment?: string; // Environment (default: process.env.NODE_ENV)
+	pretty?: boolean; // Pretty print logs (default: false in production)
+	baseMetadata?: Record<string, any>; // Additional metadata for all logs
+	redactFields?: string[]; // Fields to redact (default includes passwords, tokens, etc.)
 
-// Create a new session
-const sessionId = await createSessionForUser(userId, context.request);
-
-// Validate session ID
-if (isSessionId(token)) {
-	// Process authenticated request
+	// ClickHouse options
+	enableClickHouse?: boolean; // Enable ClickHouse logging (default: false)
+	clickHouseTable?: string; // ClickHouse table name (default: 'logs')
+	clickHouseBatchSize?: number; // Batch size for ClickHouse (default: 100)
+	clickHouseBatchInterval?: number; // Batch interval in ms (default: 5000)
 }
 ```
 
-### Database Integration
+## ClickHouse Integration
+
+### Setup
+
+First, initialize the ClickHouse table:
 
 ```typescript
-import { db } from '@lyku/route-helpers';
+import { initializeClickHouseLogging } from '@lyku/logger';
 
-// Query example
-const result = await db.selectFrom('users').selectAll().where('id', '=', userId).executeTakeFirst();
+// Initialize the logs table
+await initializeClickHouseLogging('application_logs');
 ```
 
-### Notifications
+### Usage
 
 ```typescript
-import { sendNotification } from '@lyku/route-helpers';
+import { createClickHouseLogger } from '@lyku/logger';
 
-await sendNotification(
-	{
-		user: userId,
-		title: 'Achievement Unlocked!',
-		body: 'You reached level 10',
-		icon: '/achievements/level10.png',
-	},
-	db,
+const logger = createClickHouseLogger({
+	name: 'user-service',
+	component: 'authentication',
+	enableClickHouse: true,
+	clickHouseTable: 'application_logs',
+	clickHouseBatchSize: 50,
+	clickHouseBatchInterval: 3000,
+});
+
+// Logs will be sent to both console and ClickHouse
+logger.info('User logged in', {
+	userId: '123',
+	method: 'oauth',
+	duration: 250,
+});
+```
+
+### ClickHouse Schema
+
+The ClickHouse table has the following schema:
+
+```sql
+CREATE TABLE application_logs (
+  timestamp DateTime64(3) CODEC(DoubleDelta),
+  level LowCardinality(String),
+  message String,
+  service LowCardinality(String),
+  component LowCardinality(String),
+  environment LowCardinality(String),
+  pid UInt32,
+  metadata String
+) ENGINE = MergeTree()
+ORDER BY (timestamp, service, level)
+TTL timestamp + INTERVAL 90 DAY
+```
+
+## HTTP Request Logging
+
+```typescript
+import express from 'express';
+import { requestLogger } from '@lyku/logger';
+
+const app = express();
+
+app.use(
+	requestLogger({
+		level: 'info',
+		ignorePaths: ['/health', '/metrics'],
+		customProps: (req, res) => ({
+			traceId: req.headers['x-trace-id'],
+			userId: req.user?.id,
+		}),
+	}),
 );
 ```
 
-### Game Helpers
+## Child Loggers
+
+Create contextual loggers with additional metadata:
 
 ```typescript
-import { checkWin, placePieceInMatch } from '@lyku/route-helpers';
+const logger = createLogger({ name: 'order-service' });
 
-// Check for win condition
-const hasWon = checkWin(board, player);
+// Create a child logger for a specific order
+const orderLogger = logger.child({
+	orderId: 'order-123',
+	customerId: 'customer-456',
+});
 
-// Place a piece on the board
-const updatedMatch = placePieceInMatch(player, square, match);
+orderLogger.info('Processing payment');
+orderLogger.error('Payment failed', { reason: 'insufficient_funds' });
 ```
+
+## Log Levels
+
+Available log levels (in order of priority):
+
+- `fatal` - System is unusable
+- `error` - Error conditions
+- `warn` - Warning conditions
+- `info` - Informational messages
+- `debug` - Debug messages
+- `trace` - Very detailed debug information
+- `silent` - No logging
+
+```typescript
+logger.trace('Detailed trace information');
+logger.debug('Debug information');
+logger.info('General information');
+logger.warn('Warning message');
+logger.error('Error occurred');
+logger.fatal('System is down');
+
+// Check if level is enabled
+if (logger.isLevelEnabled('debug')) {
+	logger.debug('Expensive debug operation', expensiveOperation());
+}
+```
+
+## Security Features
+
+Sensitive fields are automatically redacted from logs:
+
+```typescript
+logger.info('User login attempt', {
+	username: 'john@example.com',
+	password: 'secret123', // Will be redacted
+	token: 'jwt-token-here', // Will be redacted
+	metadata: {
+		secret: 'api-key', // Will be redacted
+		publicInfo: 'safe-data', // Will be logged
+	},
+});
+```
+
+Default redacted fields:
+
+- `password`, `secret`, `token`, `authorization`, `cookie`, `key`
+- Nested fields: `*.password`, `*.secret`, `*.token`, etc.
 
 ## Environment Configuration
 
-The library expects the following environment variables:
-
-- `SERVICE_PORT` - Server port (default: from apiPorts.http)
-- `DOPPLER_ENVIRONMENT` - Environment type ('dev' or production)
-- `PG_CONNECTION_STRING` - PostgreSQL connection string
-- `NATS_PORT` - NATS server connection string
-- `WEBUI_DOMAIN` - Web UI domain
-- `SHORTLINK_DOMAIN` - URL shortener domain
-
-## Type Safety
-
-The library leverages TypeScript for type safety and includes:
-
-- Validator support for request/response validation
-- Type-safe database queries with Kysely
-- Strongly typed WebSocket messages
-- Type-safe context objects
-
-## Internationalization
-
-```typescript
-import { getDictionary } from '@lyku/route-helpers';
-
-// Get dictionary based on request headers
-const dictionary = getDictionary(request);
-```
-
-## Achievement System
-
-```typescript
-import { grantAchievementToUser, grantPointsToUser } from '@lyku/route-helpers';
-
-// Grant achievement
-await grantAchievementToUser(achievementId, userId, db);
-
-// Grant points
-await grantPointsToUser(points, userId, db);
-```
-
-## URL Shortening
-
-```typescript
-import { shortenLinksInBody } from '@lyku/route-helpers';
-
-// Automatically shorten URLs in text content
-const processedBody = await shortenLinksInBody(content, postId, authorId, db);
-```
-
-## Build
+The logger automatically configures based on environment:
 
 ```bash
-nx run @lyku/route-helpers:build
+# Environment variables
+NODE_ENV=production          # Affects default log level and pretty printing
+CH_ENDPOINT=http://localhost:8123  # ClickHouse endpoint
+CH_USERNAME=default          # ClickHouse username
+CH_PASSWORD=password         # ClickHouse password
+```
+
+## Error Handling
+
+Initialize logging with global error handlers:
+
+```typescript
+import { initializeLogging } from '@lyku/logger';
+
+const logger = initializeLogging({
+	name: 'my-service',
+	level: 'info',
+});
+
+// Uncaught exceptions and unhandled rejections are now logged
+// Process will exit on uncaught exceptions
+```
+
+## Remote Logging
+
+For future expansion, the library provides a remote logging function:
+
+```typescript
+import { createRemoteLogger } from '@lyku/logger';
+
+const logger = createRemoteLogger({
+	name: 'my-service',
+	remoteUrl: 'https://logs.example.com/api/logs',
+	batchSize: 100,
+	batchIntervalMs: 5000,
+});
 ```
 
 ## Dependencies
 
-- `@msgpack/msgpack` - For efficient binary serialization
-- `kysely` - Type-safe SQL query builder
-- `nats` - For pub/sub messaging
-- `bun` - Runtime environment
-- Other internal packages from the @lyku ecosystem
+- `pino` - High-performance logging library
+- `pino-pretty` - Pretty printing for development
+- `@lyku/clickhouse-client` - ClickHouse integration

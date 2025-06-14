@@ -10,8 +10,12 @@ import { handleListHotPosts } from '@lyku/handles';
 import { defaultLogger } from '@lyku/logger';
 
 // const decompressor = brotworst();
-export default handleListHotPosts(async (_, { requester }) => {
-	console.log('Listing hot posts');
+export default handleListHotPosts(async ({ page }, { requester }) => {
+	console.log(
+		'Listing',
+		typeof page === 'number' ? `page ${page} of ` : 'all',
+		'hot posts',
+	);
 	// let query = tables.posts.orderBy(desc('publish')).eqJoin('authorId', tables.users).map(row => ({post: row('left'), author: row('right')}));
 	// Get base posts query
 	// let postsQuery = pg.selectFrom('posts').selectAll();
@@ -35,10 +39,10 @@ export default handleListHotPosts(async (_, { requester }) => {
 	// console.log('Refined posts query:', refinedPostsQuery.compile().sql);
 
 	// const posts = await refinedPostsQuery.execute();
-
-	const posts = (await redis.get('hot_posts').then(parsePossibleBON)) as
-		| Post[]
-		| null;
+	const pagestr = page ? `:page:${page}` : '';
+	const posts = (await redis
+		.get(`hot_posts${pagestr}`)
+		.then(parsePossibleBON)) as Post[] | null;
 
 	console.log('Posts:', posts?.length);
 	if (!posts) {

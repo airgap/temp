@@ -298,19 +298,24 @@
 	<div class="upload-container" bind:this={container}>
 		<div class="upload-info">
 			{#if file}
-				<div class="file-name">
+				<!-- <div class="file-name">
 					{file.name.length > 12 ? file.name.slice(0, 10) + '...' : file.name}
-				</div>
-				<div class="file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</div>
+				</div> -->
+				<!-- <div class="file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</div> -->
 			{/if}
-
-			<div class="progress-text">{Math.round(progress)}%</div>
-
+			<!-- {#if progress}
+				<div class="progress-text">{Math.round(progress)}%</div>
+			{/if} -->
 			<!-- <div class="particle-count">
           {particles.length} particles active
         </div> -->
 		</div>
-		<div class="particle-container">
+		<div
+			class="particle-container"
+			style="perspective: {1100 - progress * 8}px; opacity: {progress < 100
+				? 1
+				: 0}"
+		>
 			{#each particles as particle (particle.id)}
 				<div
 					class="particle"
@@ -345,7 +350,7 @@
 		top: 0;
 		left: 0;
 		display: block;
-		align-items: center;
+		/* align-items: center; */
 		width: 100%;
 		height: 100%;
 		/* background: linear-gradient(135deg, #1e293b, #0f172a); */
@@ -359,7 +364,7 @@
 		height: 100%;
 		border-radius: 8px;
 		/* overflow: hidden; */
-		background: #0f172a;
+		/* background: #0f172a; */
 		/* border: 2px solid #334155; */
 	}
 
@@ -367,6 +372,8 @@
 		position: absolute;
 		width: 100%;
 		height: 100%;
+		perspective: 1000px;
+		transition: 1s opacity;
 	}
 
 	.particle {
@@ -382,7 +389,7 @@
 			transform: scale(0.7);
 		}
 		50% {
-			transform: scale(1);
+			transform: scale(1) translateZ(100px);
 		}
 		100% {
 			transform: scale(0.7);
@@ -391,14 +398,16 @@
 
 	.upload-info {
 		position: absolute;
-		top: 1rem;
-		left: 1rem;
-		right: 1rem;
+		bottom: 0rem;
+		right: 0.25rem;
+		/* right: 1rem; */
+		/* text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); */
 		color: white;
 		font-family:
 			-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 		pointer-events: none;
 		z-index: 10;
+		-webkit-text-stroke: 1px #0007;
 	}
 
 	.file-name {
@@ -417,10 +426,10 @@
 	}
 
 	.progress-text {
-		font-size: 1.1rem;
+		font-size: 2rem;
 		font-weight: 700;
-		color: #3b82f6;
-		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+		color: #fff7;
+		/* text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); */
 		margin-bottom: 0.25rem;
 	}
 

@@ -1,0 +1,21 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Cleaning up all indy reindex jobs and pods..."
+
+# Delete all jobs with indy-reindex pattern
+kubectl delete jobs -l app=indy-reindex --ignore-not-found=true
+
+# Delete any remaining jobs that match the old naming pattern
+kubectl get jobs -o name | grep "indy-reindex" | xargs -r kubectl delete --ignore-not-found=true
+
+# Force delete any stuck pods
+kubectl delete pods -l app=indy-reindex --ignore-not-found=true --force --grace-period=0
+
+echo "Cleanup complete!"
+echo ""
+echo "Remaining jobs:"
+kubectl get jobs -l app=indy-reindex || echo "No remaining jobs"
+echo ""
+echo "Remaining pods:"
+kubectl get pods -l app=indy-reindex || echo "No remaining pods"

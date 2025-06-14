@@ -106,8 +106,6 @@ export default handleRegisterUser(async (params, ctx) => {
 			.insertInto('users')
 			.values({
 				bot: false,
-				banned: false,
-				confirmed: false,
 				username,
 				chatColor: 'FFFFFF',
 				groupLimit: 0,
@@ -182,7 +180,7 @@ export default handleRegisterUser(async (params, ctx) => {
 		console.log('origin', origin, 'domain', domain);
 		(responseHeaders as Headers).set(
 			'Set-Cookie',
-			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; HttpOnly; ${domain} Max-Age=31536000`,
+			`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; ${domain} Max-Age=31536000`,
 		);
 		console.log('Logged user in', sessionId);
 

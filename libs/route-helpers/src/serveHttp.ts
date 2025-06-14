@@ -13,6 +13,7 @@ const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
 const methodsWithBody = ['POST', 'PUT', 'PATCH'];
 import { client as redis } from '@lyku/redis-client';
 import { type Session } from '@lyku/json-models';
+import { pack } from 'msgpackr';
 
 export const serveHttp = async ({
 	execute,
@@ -109,8 +110,7 @@ export const serveHttp = async ({
 							.where('id', '=', sessionId)
 							.executeTakeFirst()) ?? null;
 					console.log('Session after pg call', session?.userId);
-					if (session)
-						await redis.set(`session:${sessionId}`, stringifyBON(session));
+					if (session) await redis.set(`session:${sessionId}`, pack(session));
 				}
 			}
 

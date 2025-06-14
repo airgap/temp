@@ -10,7 +10,8 @@ import { delasticatePost } from './delasticatePost';
 import { Kysely } from 'kysely';
 import type { Database } from '@lyku/db-types';
 import { buildHotQuery } from './buildHotQuery';
-import { stringifyBON } from 'from-schema';
+import { pack } from 'msgpackr';
+// import { stringifyBON } from 'from-schema';
 
 // const compressor = brotworst();
 
@@ -182,22 +183,25 @@ export class HotPostAggregationService {
 			// console.log('Elasticsearch query result:', result);
 			const hits = result.hits.hits?.map(delasticatePost);
 			console.log('Stringifying', hits?.length);
-			const stringified = stringifyBON(hits);
+			const stringified = pack(hits);
 			// console.log('Compressing');
 			// const compressed = await compress(Buffer.from(stringified));
 			console.log('Caching');
-			const posted = await redis.set('hot_posts', stringified);
 			const pageSize = 20;
 			const pageCount = Math.ceil(hits.length / pageSize);
 			const pages = Array(pageCount);
-			for (let i = 0; i < pageCount; i++) pages[i] = hits.slice(i, pageSize);
-			await Promise.all([
-				redis.set('hot_posts_ts', Date.now()),
-				...pages.map((page, p) =>
-					redis.set(`hot_posts:page:${p}`, stringifyBON(page)),
-				),
-			]);
-			console.log('posted', posted);
+			for (let i = 0; i < pageCount; i++)
+				pages[i] = hits.slice(i * pageSize, (i + 1) * pageSize);
+
+			// Use Redis pipeline for better performance
+			const pipeline = redis.pipeline();
+			pipeline.set('hot_posts', stringified);
+			pipeline.set('hot_posts_ts', Date.now());
+			for (let i = 0; i < pages.length; i++) {
+				pipeline.set(`hot_posts:page:${i + 1}`, pack(pages[i]));
+			}
+			await pipeline.exec();
+			console.log('posted');
 
 			const duration = Date.now() - startTime;
 			this.metrics.recordHistogram('aggie_duration_ms', duration);

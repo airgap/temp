@@ -33,7 +33,7 @@ const jsonify = async () => {
 				? 'response' in value
 					? key[0].toUpperCase() + key.slice(1) + 'Response'
 					: 'void'
-				: '() => void';
+				: 'void';
 		const tweakRequest =
 			'stream' in value &&
 			typeof value.stream === 'object' &&

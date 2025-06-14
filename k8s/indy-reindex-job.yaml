@@ -4,7 +4,7 @@ metadata:
   name: indy-reindex
   namespace: default
 spec:
-  ttlSecondsAfterFinished: 3600 # Clean up after 1 hour
+  ttlSecondsAfterFinished: 60 # Clean up after 1 minute
   backoffLimit: 3 # Retry 3 times on failure
   activeDeadlineSeconds: 7200 # Kill job after 2 hours
   template:

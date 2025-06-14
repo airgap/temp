@@ -3,6 +3,7 @@ import { Group } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
 import { parseBON, stringifyBON } from 'from-schema';
+import { pack, unpack } from 'msgpackr';
 export default handleListGroupsImIn(async (_, { requester }) => {
 	// Try to get requester's group membership list
 	let ids = await redis.smembers(`user:${requester}:groups`);
@@ -36,7 +37,7 @@ export default handleListGroupsImIn(async (_, { requester }) => {
 	// Parse hits and mark id as hit
 	for (let g of groupStrings)
 		if (g) {
-			const group = parseBON(g) as Group;
+			const group = unpack(g) as Group;
 			groups.push(group);
 			gotIds.add(group.id);
 		}
@@ -52,10 +53,7 @@ export default handleListGroupsImIn(async (_, { requester }) => {
 		groups.push(...missingGroups);
 		await redis.hset(
 			`groups`,
-			...missingGroups.flatMap((group) => [
-				group.id.toString(),
-				stringifyBON(group),
-			]),
+			...missingGroups.flatMap((group) => [group.id.toString(), pack(group)]),
 		);
 	}
 	return { groups };

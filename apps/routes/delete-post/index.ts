@@ -5,10 +5,11 @@ import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
 import { parsePossibleBON, stringifyBON } from 'from-schema';
 import { type Post } from '@lyku/json-models';
+import { pack, unpack } from 'msgpackr';
 
 export default handleDeletePost(async (id, { requester, strings, now }) => {
-	let post = await redis.get(`post:${id}`).then(parsePossibleBON<Post>);
-	post ??= await pg
+	let post = await redis.getBuffer(`post:${id}`).then((p) => p && unpack(p));
+	post ||= await pg
 		.selectFrom('posts')
 		.selectAll()
 		.where('id', '=', id)
@@ -24,6 +25,6 @@ export default handleDeletePost(async (id, { requester, strings, now }) => {
 		.where('id', '=', id)
 		.set({ deleted: now })
 		.execute();
-	await redis.set(`post:${id}`, stringifyBON({ ...post, deleted: now }));
+	await redis.set(`post:${id}`, pack({ ...post, deleted: now }));
 	await deleteFromElastic({ ...post, id });
 });

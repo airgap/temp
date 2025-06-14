@@ -4,8 +4,12 @@ set -euo pipefail
 # Deploy Elasticsearch reindex job for indy route
 ROUTE_NAME="indy"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TIMESTAMP=$(date +%Y%m%d%H%M%S)
-JOB_NAME="indy-reindex-${TIMESTAMP}"
+JOB_NAME="indy-reindex"
+
+# Clean up any existing jobs (including old timestamped ones)
+echo "Cleaning up existing jobs..."
+kubectl delete job ${JOB_NAME} --ignore-not-found=true
+kubectl delete jobs -l app=indy-reindex --ignore-not-found=true
 
 # Build and push Docker image
 echo "Building and pushing Docker image for ${ROUTE_NAME}..."
@@ -25,12 +29,9 @@ if [ -z "${END_DATE}" ]; then
     export END_DATE=$(date +%Y-%m-%d)
 fi
 
-# Create temporary job manifest with unique name and substitute variables
+# Create temporary job manifest and substitute variables
 TMP_MANIFEST="/tmp/${JOB_NAME}.yaml"
 envsubst < "${PROJECT_ROOT}/k8s/indy-reindex-job.yaml" > "${TMP_MANIFEST}"
-
-# Replace job name to make it unique
-sed -i "s/name: indy-reindex/name: ${JOB_NAME}/" "${TMP_MANIFEST}"
 
 # Deploy the job
 echo "Deploying reindex job ${JOB_NAME}..."

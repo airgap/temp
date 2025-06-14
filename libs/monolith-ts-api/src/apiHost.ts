@@ -3,7 +3,7 @@ import type { FromBsonSchema } from 'from-schema';
 import { shortcode } from '@lyku/json-models';
 
 // Default to server-side behavior
-let currentHostname = 'localhost';
+let currentHostname = typeof window === 'undefined' ? 'localhost' : 'lyku.org';
 
 // Update hostname when platform changes
 export const updateHostname = (hostname: string) => {

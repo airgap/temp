@@ -10,6 +10,7 @@ import { defaultLogger, defaultLogger as logger } from '@lyku/logger';
 import { addToRetryQueue } from '@lyku/queue-system';
 import { parseBON, parsePossibleBON, stringifyBON } from 'from-schema';
 import { User } from '@lyku/json-models';
+import { pack } from 'msgpackr';
 
 // Constants for configuration
 const REDIS_PERSISTENCE_RETRY_QUEUE = 'redis:persistence:retry';
@@ -32,7 +33,7 @@ export default handleReactToPost(
 					.executeTakeFirst();
 
 				if (!post) throw new Err(404, "Post doesn't exist in postgres");
-				const ps = stringifyBON({ id: post.id, author: post.author });
+				const ps = pack({ id: post.id, author: post.author });
 
 				// Cache the existence check with expiration
 				await redis.set(postCacheKey, ps, 'EX', 3600); // 1 hour cache

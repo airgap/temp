@@ -32,30 +32,49 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 	const tweakers: ((params: any) => void)[] = [];
 	const server = Bun.serve({
 		port,
-		fetch(server, req) {
-			req.upgrade(server);
+		fetch(req, server) {
+			const { pathname } = new URL(req.url);
+			// console.log('Got fetch', req.url, server.url);
+			const fixed = {
+				'/health': new Response(':D'),
+				'/liveliness': new Response('>8D'),
+			};
+			if (pathname in fixed) {
+				console.log('Static', pathname);
+				return fixed[pathname as keyof typeof fixed];
+			}
+			console.log('Upgrading');
+			server.upgrade(req);
+			console.log('Upgraded');
+			return new Response();
 		},
 		websocket: {
 			open(ws) {
+				console.log('Websocket opened');
 				// Connection established
 				ws.data = { authenticated: false }; // Initialize connection data
 			},
 			async message(ws: ServerWebSocket<Data>, message) {
+				console.log('Decoding message', typeof message, message);
 				// Decode the incoming MessagePack message
 				const decodedMessage = decode(
 					typeof message === 'string'
-						? JSON.parse(message)
+						? Uint8Array.from(message)
 						: new Uint8Array(message),
+					{ useBigInt64: true },
 				);
+				console.log('Decoded message');
 
-				// First message must be auth token
+				// First message must have auth token
 				if (!ws.data.authenticated) {
+					console.log('Authenticating', (decodedMessage as any).auth);
 					if (
 						typeof decodedMessage !== 'object' ||
 						decodedMessage === null ||
 						!('auth' in decodedMessage) ||
 						typeof decodedMessage.auth !== 'string'
 					) {
+						console.log('Invalid auth token');
 						ws.close(1008, 'Invalid auth token');
 						return;
 					}
@@ -63,15 +82,18 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						typeof decodedMessage.auth !== 'string' ||
 						!decodedMessage.auth.startsWith('Bearer ')
 					) {
+						console.log('Invalid token format');
 						ws.close(1008, 'Invalid token format');
 						return;
 					}
+					console.log('Auth valid', decodedMessage.auth);
 
 					const sessionId = decodedMessage.auth.substring(7);
 					if (!sessionId) {
 						ws.close(1008, '[WS] Invalid sessionId');
 						return;
 					}
+					console.log('Session ID:', sessionId);
 					const hasRequest = 'request' in model;
 					let request;
 
@@ -88,10 +110,13 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 					} else {
 						if ('request' in decodedMessage) {
 							ws.send(
-								encode({
-									authenticated: false,
-									error: 'Invalid request',
-								}),
+								encode(
+									{
+										authenticated: false,
+										error: 'Invalid request',
+									},
+									{ useBigInt64: true },
+								),
 							);
 							return;
 						}
@@ -117,14 +142,14 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						requester: ws.data.user,
 						session: ws.data.sessionId,
 						socket: ws,
-						emit: (data: any) => ws.send(encode(data)),
+						emit: (data: any) => ws.send(encode(data, { useBigInt64: true })),
 						server,
 						onClose: (closer: () => void) => closers.push(closer),
 						onTweak: (tweaker: any) => tweakers.push(tweaker),
 						model,
 						now: new Date(),
 					});
-
+					console.log('Returning');
 					// ws.send(encode("Authenticated"));
 					return;
 				}

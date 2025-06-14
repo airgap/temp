@@ -53,7 +53,6 @@ testConnection().catch((error) => {
 const dialect = new PostgresDialect({
 	pool: new Pool(pgOpts),
 });
-console.log('dbConnectionString', dbConnectionString);
 
 // Database interface is passed to Kysely's constructor, and from now on, Kysely
 // knows your database structure.

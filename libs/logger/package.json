@@ -8,6 +8,7 @@
 		"@lyku/db-config": "workspace:*",
 		"@lyku/bson-models": "workspace:*",
 		"@lyku/json-models": "workspace:*",
+		"@lyku/clickhouse-client": "workspace:*",
 		"cheerio": "^1.0.0"
 	},
 	"type": "module",

@@ -3,6 +3,7 @@ export * from './acceptMatchProposal';
 export * from './amIFollowing';
 export * from './authorizeImageUpload';
 export * from './authorizePfpUpload';
+export * from './awaitFile';
 export * from './bounced';
 export * from './claimCollectable';
 export * from './confirmImageUpload';

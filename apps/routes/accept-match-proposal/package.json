@@ -3,6 +3,8 @@
 		"@lyku/handles": "workspace:*",
 		"@lyku/json-models": "workspace:*",
 		"@lyku/helpers": "workspace:*",
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/route-helpers": "workspace:*",
 		"@lyku/stock-docs": "workspace:*"
 	}
 }

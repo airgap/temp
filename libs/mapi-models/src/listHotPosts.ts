@@ -3,6 +3,16 @@ import { fileDoc, user, post } from '@lyku/json-models';
 import { reactions } from '@lyku/helpers';
 
 export const listHotPosts = {
+	request: {
+		type: 'object',
+		properties: {
+			page: {
+				type: 'integer',
+				minimum: 1,
+				maximum: 4,
+			},
+		},
+	},
 	response: {
 		type: 'object',
 		properties: {

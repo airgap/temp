@@ -21,7 +21,7 @@
 	&.working,
 	&.succeeded
 		img:not(.Success)
-			filter: blur(10px)
+			// filter: blur(10px)
 	img, video
 		object-fit: cover
 		align-content: center
@@ -88,3 +88,16 @@
 	filter: drop-shadow(0 0 10px black) drop-shadow(0 0 20px black)
 	&:not(.visible)
 		transform: scale(0)
+
+.extracting
+	display: flex
+	align-items: center
+	justify-content: center
+	width: 150px
+	height: 150px
+	background: #00000077
+	color: white
+	text-align: center
+	border-radius: 10px
+	font-size: 14px
+	text-shadow: 0 0 5px black

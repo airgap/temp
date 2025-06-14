@@ -24,8 +24,7 @@
 		"@sentry/cloudflare": "^9.8.0",
 		"cloudflare": "^4.2.0",
 		"dotenv": "^16.4.7",
-		"svelte-typeahead": "^5.0.0",
-		"wrangler": "4"
+		"svelte-typeahead": "^5.0.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.26.9",
@@ -129,6 +128,7 @@
 		"micro": "^10.0.1",
 		"mkdirp": "^3.0.1",
 		"msgpack": "^1.0.3",
+		"msgpackr": "^1.11.4",
 		"nats": "^2.29.2",
 		"node-loader": "^2.1.0",
 		"nx": "^20.5.0",
@@ -179,6 +179,7 @@
 		"vite-svg-loader": "^5.1.0",
 		"vitest": "^3.0.8",
 		"web-vitals": "^4.2.4",
+		"wrangler": "latest",
 		"yaml": "^2.7.0"
 	},
 	"nx": {

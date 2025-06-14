@@ -1,27 +1,8 @@
-import type {
-	FromTsonSchema,
-	TsonHandlerModel,
-	TsonSchema,
-	ObjectTsonSchema,
-} from 'from-schema';
+import type { FromTsonSchema, TsonHandlerModel, TsonSchema } from 'from-schema';
 // import { FromBsonSchema, ObjectBsonSchema } from 'from-schema';
 
 import { sessionId as sId } from '@lyku/json-models';
 import * as monolith from '@lyku/mapi-models';
-export function getDocumentCookie(cookies: string, cname: string) {
-	const name = cname + '=';
-	const ca = cookies.split(';');
-	for (const element of ca) {
-		let c = element;
-		while (c.charAt(0) === ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) === 0) {
-			return c.substring(name.length, c.length);
-		}
-	}
-	return '';
-}
 
 import { local, socketPrefix, updateHostname, apiHost } from './apiHost';
 export * from './apiHost';
@@ -86,6 +67,8 @@ export const setPlatform = (platform: Platform) => {
 
 import type { MonolithTypes } from '@lyku/mapi-types';
 import { decode, encode } from '@msgpack/msgpack';
+import { getDocumentCookie } from './getDocumentCookie';
+import { makeMetasock } from './Metasock';
 
 type ContractName = keyof MonolithTypes;
 
@@ -173,9 +156,6 @@ export const api = Object.fromEntries(
 					const route = monolith[routeName] as TsonHandlerModel;
 					const key = onlyKey(routeName as ContractName);
 					const data = key ? { [key]: params } : params;
-					const body = encode(data, {
-						useBigInt64: true,
-					} as any);
 					const stream = 'stream' in route && route.stream;
 					const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
 					const path = `https://api.lyku.org/${snakeName}`;
@@ -183,22 +163,14 @@ export const api = Object.fromEntries(
 
 					// Don't create WebSocket connections during SSR
 					if (stream && currentPlatform.browser) {
-						type Listener = (ev: (typeof route)['response']) => void;
-						const listeners: Listener[] = [];
-						const ws = new WebSocket(`${socketPrefix}:${path}`);
-						ws.onopen = () =>
-							ws.send(
-								JSON.stringify({ sessionId: cookieAdapter.get('sessionId') }),
-							);
-						ws.onmessage = (ev) => {
-							const json = JSON.parse(ev.data);
-							if (json?.auth) return;
-							for (const listener of listeners) listener(json);
-						};
-						return Object.assign(ws, {
-							listen: (listener: Listener) => listeners.push(listener) && ws,
-						});
+						const sockUrl = `https://api.lyku.org/${snakeName}`;
+						console.log('sockUrl', sockUrl);
+						const metasock = makeMetasock(route, sockUrl, data);
+						return metasock;
 					} else {
+						const body = encode(data, {
+							useBigInt64: true,
+						} as any);
 						const bearer = stupidSessionId || cookieAdapter.get('sessionId');
 						const fetchOptions = {
 							method: 'method' in model ? model.method : 'POST',

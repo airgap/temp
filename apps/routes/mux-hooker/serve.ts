@@ -9,8 +9,10 @@ import { getPhrasebook } from '@lyku/phrasebooks';
 import { ReadyEvent } from './ReadyEvent';
 import { startHealthCheckServer } from './http-server';
 import { client as nats } from '@lyku/nats-client';
-import { encode } from '@msgpack/msgpack';
+// import { encode } from '@msgpack/msgpack';
 import { FileDoc } from '@lyku/json-models';
+import { client as valkey } from '@lyku/redis-client';
+import { pack } from 'msgpackr';
 const strings = getPhrasebook('en-US');
 Bun.serve({
 	routes: {
@@ -91,11 +93,9 @@ Bun.serve({
 					console.log('dbres', dbres);
 
 					if (!dbres) throw new Err(500, strings.unknownBackendError);
-
-					nats.publish(
-						`fileUploads.${id}`,
-						encode(file, { useBigInt64: true }),
-					);
+					const pkg = pack(file);
+					await valkey.set(`file:${id}`, pkg);
+					nats.publish(`fileUploads.${id}`, Uint8Array.from(pkg));
 					console.log('Published to NATS');
 
 					break;

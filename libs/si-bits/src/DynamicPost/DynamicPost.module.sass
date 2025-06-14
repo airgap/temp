@@ -24,17 +24,19 @@
 	position: relative
 	box-shadow: inset 0 0 80px 0 transparent
 	border-radius: 10px
+	border-top-left-radius: 32.5px
 	//background: url('../Backdrop/drop.png')
 	background: #ffffff17
 	background-size: cover
 	//&:not(:first-child)
 	border: 1px solid #FFFFFF17
 	border-top: 1px solid #FFFFFF33
+	border-left: 1px solid #FFFFFF25
 	.sep
 		margin-top: 10px
 		border-bottom: 1px solid #ffffff33
 	> span:first-child
-		margin-left: 5px
+		//margin-left: 5px
 	+ .DynamicPost
 		//margin-top: 5px
 	&[href]
@@ -64,9 +66,9 @@ div.body
 
 .pp
 	vertical-align: middle
-	margin-top: 5px
+	//margin-top: 5px
 	display: inline-block
-	margin-bottom: 10px
+	//margin-bottom: 10px
 	padding-left: 10px
 //h1
 //    font-size: 1.5em
@@ -144,8 +146,8 @@ $width: var(--width)
 	width: 1.5em
 	height: 1.5em
 	position: absolute
-	right: 15px
-	top: 20px
+	right: 10px
+	top: 10px
 	.dropperMenu
 		left: calc(100% - $width)
 		top: 50px

@@ -64,6 +64,8 @@
 	let imageState = $state<string>();
 	let upload = $state<UpChunk>();
 	let base64 = $state<string>();
+	let videoFrame = $state<string>();
+	let extractingFrame = $state(false);
 	let uploadUrl = $state<string>();
 	let fileState = $state<File>(file);
 	let pack = $state<FileDraft>();
@@ -81,6 +83,72 @@
 			reader.onload = () => r(reader.result as string);
 			reader.readAsDataURL(file);
 		});
+
+	const extractVideoFrame = async (file: File): Promise<string> => {
+		console.log('Starting video frame extraction for:', file.name);
+
+		// Extract frame from video
+		const video = document.createElement('video');
+		const url = URL.createObjectURL(file);
+
+		try {
+			console.log('Waiting for video to load...');
+			await new Promise((resolve, reject) => {
+				video.onloadeddata = () => {
+					console.log(
+						'Video loaded, dimensions:',
+						video.videoWidth,
+						'x',
+						video.videoHeight,
+					);
+					resolve(undefined);
+				};
+				video.onerror = () => reject(new Error('Failed to load video'));
+				video.src = url;
+			});
+
+			console.log('Setting video time to 0.1s...');
+			video.currentTime = 0.1; // Get frame at 0.1 seconds
+
+			console.log('Waiting for seek to complete...');
+			await new Promise((resolve, reject) => {
+				video.onseeked = () => {
+					console.log('Seek completed');
+					resolve(undefined);
+				};
+				video.onerror = () => reject(new Error('Failed to seek video'));
+
+				// Add timeout in case seek never completes
+				setTimeout(() => reject(new Error('Seek timeout')), 5000);
+			});
+
+			// Extract pixel data from video frame
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+
+			if (!ctx) {
+				throw new Error('Could not get canvas context');
+			}
+
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+
+			console.log('Drawing video frame to canvas...');
+			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+			const frameDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+			console.log(
+				'Frame extraction successful, data URL length:',
+				frameDataUrl.length,
+			);
+			return frameDataUrl;
+		} catch (error) {
+			console.error('Video frame extraction failed:', error);
+			throw error;
+		} finally {
+			URL.revokeObjectURL(url);
+		}
+	};
 
 	// Reactive statements
 	$effect(() => {
@@ -107,10 +175,46 @@
 	$effect(() => {
 		if (fileState) {
 			workingState = true;
-			readFile(fileState).then((logo) => {
-				base64 = logo;
-				workingState = false;
-			});
+			console.log('Processing file:', fileState.name, fileState.type);
+
+			if (fileState.type.startsWith('video/')) {
+				extractingFrame = true;
+				console.log('Starting video processing...');
+
+				// Process file reading and frame extraction separately for better error handling
+				readFile(fileState)
+					.then((dataUrl) => {
+						console.log('Video file read successful');
+						base64 = dataUrl;
+					})
+					.catch((error) => {
+						console.error('Error reading video file:', error);
+					});
+
+				extractVideoFrame(fileState)
+					.then((frame) => {
+						console.log('Video frame extraction successful');
+						videoFrame = frame;
+						extractingFrame = false;
+						workingState = false;
+					})
+					.catch((error) => {
+						console.error('Error extracting video frame:', error);
+						extractingFrame = false;
+						workingState = false;
+						// Frame extraction failed, but base64 should still be available as fallback
+					});
+			} else {
+				readFile(fileState)
+					.then((logo) => {
+						base64 = logo;
+						workingState = false;
+					})
+					.catch((error) => {
+						console.error('Error reading image file:', error);
+						workingState = false;
+					});
+			}
 		}
 	});
 
@@ -135,6 +239,8 @@
 		pack = undefined;
 		fileState = undefined;
 		base64 = undefined;
+		videoFrame = undefined;
+		extractingFrame = false;
 		imageState = newImage ?? image;
 		uploadUrl = undefined;
 		workingState = false;
@@ -152,7 +258,7 @@
 			data.append('file', fileState);
 
 			console.log('Getting file');
-			api.getFile({ file: pack.id, wait: true }).then(() => {
+			api.awaitFile(pack.id).listen((e) => {
 				processed = true;
 				console.log('GetFile succeeded');
 				// api.confirmVideoUpload(pack.id).then(() => {
@@ -245,9 +351,14 @@
 	{:else}
 		<span class={styles.attachmentImage}>
 			{#if fileState?.type.startsWith('video/')}
-				<!-- svelte-ignore a11y_media_has_caption -->
-				<video src={base64}></video>
-			{:else}
+				{#if extractingFrame && !videoFrame && !base64}
+					<!-- <div class={styles.extracting}>Extracting frame...</div> -->
+				{:else if videoFrame || base64}
+					<img src={videoFrame || base64} alt="Video thumbnail" />
+				{:else}
+					<div class={styles.extracting}>Loading video...</div>
+				{/if}
+			{:else if base64}
 				<img src={base64} alt="Attachment" />
 			{/if}
 		</span>
@@ -255,13 +366,13 @@
 
 	<!-- <Loading floating={true} visible={workingState} reverse={!pack} /> -->
 
-	<img
+	<div
 		class={classnames(styles.Success, {
 			[styles.visible]: succeeded,
 		})}
-		src={check}
-		alt="Success"
-	/>
+	>
+		{@html check}
+	</div>
 
 	<input
 		id={inputId}
