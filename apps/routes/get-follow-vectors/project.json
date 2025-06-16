@@ -21,6 +21,20 @@
 			"options": {
 				"command": "./scripts/deploy-route get-follow-vectors"
 			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route get-follow-vectors",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route get-follow-vectors --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
 		}
 	}
 }

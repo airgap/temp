@@ -11,6 +11,7 @@ export * from './grantPointsToUser';
 export * from './getCookie';
 export * from './getDictionary';
 export * from './isSessionId';
+export * from './metrics';
 export * from './sendNotification';
 export * from './serveHttp';
 export * from './serveWebsocket';

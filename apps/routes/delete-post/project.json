@@ -20,6 +20,20 @@
 			"options": {
 				"command": "./scripts/deploy-route delete-post"
 			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route delete-post",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route delete-post --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
 		}
 	}
 }

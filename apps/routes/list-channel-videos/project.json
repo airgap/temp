@@ -21,6 +21,20 @@
 			"options": {
 				"command": "./scripts/deploy-route list-channel-videos"
 			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-channel-videos",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-channel-videos --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
 		}
 	}
 }

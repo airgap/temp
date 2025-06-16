@@ -21,6 +21,20 @@
 			"options": {
 				"command": "./scripts/deploy-route get-post"
 			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route get-post",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route get-post --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
 		}
 	}
 }

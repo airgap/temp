@@ -21,6 +21,20 @@
 			"options": {
 				"command": "./scripts/deploy-route list-games"
 			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-games",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-games --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
 		}
 	}
 }

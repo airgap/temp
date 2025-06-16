@@ -253,7 +253,7 @@ class ClickHouseLogger implements Logger {
 	private async flushClickHouseBatch(): Promise<void> {
 		if (this.clickHouseBatch.length === 0) {
 			if (this.debugEnabled) {
-				console.log('[DEBUG] No logs to flush');
+				// console.log('[DEBUG] No logs to flush');
 			}
 			return;
 		}

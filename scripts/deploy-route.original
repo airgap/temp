@@ -1,0 +1,132 @@
+#!/bin/bash
+# deploy-route.sh - Enhanced with automatic dashboard generation
+
+# Set KUBECONFIG to the specified file
+export KUBECONFIG=C:\Users\nickm\lyk8s-kubeconfig.yaml
+
+# Dashboard generation configuration
+GRAFANA_URL="${GRAFANA_URL:-http://localhost:3002}"
+GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-prom-operator}"
+CREATE_DASHBOARD="${CREATE_DASHBOARD:-true}"  # Set to 'false' to disable dashboard creation
+
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: $0 <service-name> [--no-dashboard]"
+    echo ""
+    echo "Options:"
+    echo "  --no-dashboard    Skip automatic dashboard creation"
+    echo ""
+    echo "Environment variables:"
+    echo "  GRAFANA_URL       Grafana instance URL (default: http://localhost:3002)"
+    echo "  GRAFANA_PASSWORD  Grafana admin password (default: prom-operator)"
+    echo "  CREATE_DASHBOARD  Enable/disable dashboard creation (default: true)"
+    exit 1
+fi
+
+# Check for --no-dashboard flag
+if [ "$2" = "--no-dashboard" ]; then
+    CREATE_DASHBOARD=false
+fi
+
+export SERVICE_NAME=$1
+export IMAGE=registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
+
+echo "SERVICE_NAME: ${SERVICE_NAME}"
+
+configLocation=~/lyk8s-kubeconfig.yaml
+export config=--kubeconfig=${configLocation}
+export DEPLOYMENT_NAME=lyku-${SERVICE_NAME}
+
+echo "Deleting deployment ${DEPLOYMENT_NAME}"
+kubectl delete deployment ${DEPLOYMENT_NAME} --ignore-not-found ${config}
+
+echo "Deploying ${SERVICE_NAME} with image ${IMAGE}"
+
+# Check if the deployment exists
+if envsubst < k8s/micro.yaml | kubectl get deployment ${DEPLOYMENT_NAME} ${config} >/dev/null 2>&1; then
+    # Update the deployment with the new image
+    envsubst < k8s/micro.yaml | kubectl set image deployment/${DEPLOYMENT_NAME} ${DEPLOYMENT_NAME}=${IMAGE} ${config}
+    echo "Deployment ${DEPLOYMENT_NAME} updated to image ${IMAGE}"
+    # Force redeployment by triggering a rollout restart
+    # kubectl rollout restart deployment/${SERVICE_NAME} ${config}
+else
+    # Apply the micro.yaml to create the deployment if it does not exist
+    envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
+    echo "Deployment ${DEPLOYMENT_NAME} created with image ${IMAGE}"
+fi
+
+# Dashboard generation section
+if [ "$CREATE_DASHBOARD" = "true" ]; then
+    echo ""
+    echo "📊 Setting up monitoring dashboard..."
+    
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    DASHBOARD_GENERATOR="$SCRIPT_DIR/generate-service-dashboard.sh"
+    
+    if [ ! -f "$DASHBOARD_GENERATOR" ]; then
+        echo "⚠️  Dashboard generator not found at $DASHBOARD_GENERATOR"
+        echo "   Skipping dashboard creation"
+    else
+        # Wait for deployment to be ready
+        echo "⏳ Waiting for deployment to be ready..."
+        kubectl rollout status deployment/${DEPLOYMENT_NAME} ${config} --timeout=120s
+        
+        if [ $? -eq 0 ]; then
+            echo "✅ Deployment is ready"
+            
+            # Wait a bit more for metrics to start being reported
+            echo "⏳ Waiting for service to start reporting metrics..."
+            sleep 15
+            
+            # Check if service is reporting metrics before creating dashboard
+            MAX_RETRIES=12  # 2 minutes total (12 * 10 seconds)
+            RETRY_COUNT=0
+            
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+                echo "🔍 Checking if service $SERVICE_NAME is reporting metrics... (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)"
+                
+                # Check if the service has metrics in Prometheus
+                METRICS_RESPONSE=$(curl -s -u "admin:$GRAFANA_PASSWORD" \
+                    "$GRAFANA_URL/api/datasources/proxy/uid/prometheus/api/v1/query?query=lyku_requests_total%7Bexported_service%3D%22$SERVICE_NAME%22%7D" \
+                    2>/dev/null || echo '{"data":{"result":[]}}')
+                
+                METRIC_COUNT=$(echo "$METRICS_RESPONSE" | jq '.data.result | length' 2>/dev/null || echo "0")
+                
+                if [ "$METRIC_COUNT" -gt 0 ]; then
+                    echo "✅ Service is reporting metrics!"
+                    break
+                fi
+                
+                if [ $RETRY_COUNT -eq $((MAX_RETRIES - 1)) ]; then
+                    echo "⚠️  Service is not reporting metrics yet, but proceeding with dashboard creation"
+                    echo "   The dashboard will show data once the service starts reporting metrics"
+                    break
+                fi
+                
+                sleep 10
+                ((RETRY_COUNT++))
+            done
+            
+            # Generate dashboard
+            echo "📊 Creating Grafana dashboard for $SERVICE_NAME..."
+            if "$DASHBOARD_GENERATOR" "$SERVICE_NAME" "$GRAFANA_URL" "$GRAFANA_PASSWORD"; then
+                echo ""
+                echo "🎉 Deployment and dashboard setup complete!"
+                echo "📊 Monitor your service at: $GRAFANA_URL/d/lyku-service-$SERVICE_NAME"
+                echo "🏠 Overview dashboard: $GRAFANA_URL/d/lyku-services-v3/lyku-services-overview-clean"
+            else
+                echo "⚠️  Service deployed but dashboard creation failed"
+                echo "   You can manually create the dashboard later using:"
+                echo "   $DASHBOARD_GENERATOR $SERVICE_NAME"
+            fi
+        else
+            echo "❌ Deployment failed to become ready, skipping dashboard creation"
+        fi
+    fi
+else
+    echo ""
+    echo "📊 Dashboard creation skipped (use --no-dashboard to always skip)"
+    echo "   To create dashboard manually later: ./scripts/generate-service-dashboard.sh $SERVICE_NAME"
+fi
+
+echo ""
+echo "🚀 Service deployment completed: $SERVICE_NAME"

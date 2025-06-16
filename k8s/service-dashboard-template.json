@@ -1,0 +1,737 @@
+{
+	"dashboard": {
+		"annotations": {
+			"list": [
+				{
+					"builtIn": 1,
+					"datasource": {
+						"type": "grafana",
+						"uid": "-- Grafana --"
+					},
+					"enable": true,
+					"hide": true,
+					"iconColor": "rgba(0, 211, 255, 1)",
+					"name": "Annotations & Alerts",
+					"type": "dashboard"
+				}
+			]
+		},
+		"editable": true,
+		"fiscalYearStartMonth": 0,
+		"graphTooltip": 0,
+		"id": null,
+		"links": [
+			{
+				"asDropdown": false,
+				"icon": "external link",
+				"includeVars": false,
+				"keepTime": false,
+				"tags": [],
+				"targetBlank": false,
+				"title": "← Back to Overview",
+				"tooltip": "Return to main services overview dashboard",
+				"type": "link",
+				"url": "/d/lyku-services-v3/lyku-services-overview-clean"
+			}
+		],
+		"liveNow": false,
+		"panels": [
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "thresholds"
+						},
+						"mappings": [
+							{
+								"options": {
+									"0": {
+										"color": "red",
+										"index": 1,
+										"text": "DOWN"
+									},
+									"1": {
+										"color": "green",
+										"index": 0,
+										"text": "UP"
+									}
+								},
+								"type": "value"
+							}
+						],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "red",
+									"value": null
+								},
+								{
+									"color": "green",
+									"value": 1
+								}
+							]
+						},
+						"unit": "short"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 4,
+					"w": 6,
+					"x": 0,
+					"y": 0
+				},
+				"id": 1,
+				"options": {
+					"colorMode": "background",
+					"graphMode": "none",
+					"justifyMode": "center",
+					"orientation": "auto",
+					"reduceOptions": {
+						"values": false,
+						"calcs": ["lastNotNull"],
+						"fields": ""
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "10.2.3",
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "up{job=\"lyku-{{SERVICE_NAME}}-service\"}",
+						"legendFormat": "Service Status",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Service Status",
+				"type": "stat"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "thresholds"
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "yellow",
+									"value": 200
+								},
+								{
+									"color": "red",
+									"value": 1000
+								}
+							]
+						},
+						"unit": "ms"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 4,
+					"w": 6,
+					"x": 6,
+					"y": 0
+				},
+				"id": 2,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "center",
+					"orientation": "auto",
+					"reduceOptions": {
+						"values": false,
+						"calcs": ["lastNotNull"],
+						"fields": ""
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "10.2.3",
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "lyku_requests_duration_ms{exported_service=\"{{SERVICE_NAME}}\"}",
+						"legendFormat": "Avg Response Time",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Average Response Time",
+				"type": "stat"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "thresholds"
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "yellow",
+									"value": 0.1
+								},
+								{
+									"color": "red",
+									"value": 1
+								}
+							]
+						},
+						"unit": "reqps"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 4,
+					"w": 6,
+					"x": 12,
+					"y": 0
+				},
+				"id": 3,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "center",
+					"orientation": "auto",
+					"reduceOptions": {
+						"values": false,
+						"calcs": ["lastNotNull"],
+						"fields": ""
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "10.2.3",
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "rate(lyku_requests_errors_total{exported_service=\"{{SERVICE_NAME}}\"}[5m])",
+						"legendFormat": "Error Rate",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Error Rate",
+				"type": "stat"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "thresholds"
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						},
+						"unit": "decbytes"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 4,
+					"w": 6,
+					"x": 18,
+					"y": 0
+				},
+				"id": 4,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "center",
+					"orientation": "auto",
+					"reduceOptions": {
+						"values": false,
+						"calcs": ["lastNotNull"],
+						"fields": ""
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "10.2.3",
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "lyku_memory_usage_bytes{exported_service=\"{{SERVICE_NAME}}\"}",
+						"legendFormat": "Memory Usage",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Memory Usage",
+				"type": "stat"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "palette-classic"
+						},
+						"custom": {
+							"axisCenteredZero": false,
+							"axisColorMode": "text",
+							"axisLabel": "",
+							"axisPlacement": "auto",
+							"barAlignment": 0,
+							"drawStyle": "line",
+							"fillOpacity": 10,
+							"gradientMode": "none",
+							"hideFrom": {
+								"tooltip": false,
+								"viz": false,
+								"legend": false
+							},
+							"insertNulls": false,
+							"lineInterpolation": "linear",
+							"lineWidth": 1,
+							"pointSize": 5,
+							"scaleDistribution": {
+								"type": "linear"
+							},
+							"showPoints": "never",
+							"spanNulls": false,
+							"stacking": {
+								"group": "A",
+								"mode": "none"
+							},
+							"thresholdsStyle": {
+								"mode": "off"
+							}
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						},
+						"unit": "reqps"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 0,
+					"y": 4
+				},
+				"id": 5,
+				"options": {
+					"legend": {
+						"calcs": [],
+						"displayMode": "list",
+						"placement": "bottom",
+						"showLegend": true
+					},
+					"tooltip": {
+						"mode": "single",
+						"sort": "none"
+					}
+				},
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "rate(lyku_requests_total{exported_service=\"{{SERVICE_NAME}}\"}[5m])",
+						"legendFormat": "Business Requests",
+						"range": true,
+						"refId": "A"
+					},
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "rate(lyku_health_checks_total{exported_service=\"{{SERVICE_NAME}}\"}[5m])",
+						"legendFormat": "Health Checks",
+						"range": true,
+						"refId": "B"
+					}
+				],
+				"title": "Request Rate Over Time",
+				"type": "timeseries"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "palette-classic"
+						},
+						"custom": {
+							"axisCenteredZero": false,
+							"axisColorMode": "text",
+							"axisLabel": "",
+							"axisPlacement": "auto",
+							"barAlignment": 0,
+							"drawStyle": "line",
+							"fillOpacity": 10,
+							"gradientMode": "none",
+							"hideFrom": {
+								"tooltip": false,
+								"viz": false,
+								"legend": false
+							},
+							"insertNulls": false,
+							"lineInterpolation": "linear",
+							"lineWidth": 1,
+							"pointSize": 5,
+							"scaleDistribution": {
+								"type": "linear"
+							},
+							"showPoints": "never",
+							"spanNulls": false,
+							"stacking": {
+								"group": "A",
+								"mode": "none"
+							},
+							"thresholdsStyle": {
+								"mode": "off"
+							}
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						},
+						"unit": "ms"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 12,
+					"y": 4
+				},
+				"id": 6,
+				"options": {
+					"legend": {
+						"calcs": [],
+						"displayMode": "list",
+						"placement": "bottom",
+						"showLegend": true
+					},
+					"tooltip": {
+						"mode": "single",
+						"sort": "none"
+					}
+				},
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "lyku_requests_duration_ms{exported_service=\"{{SERVICE_NAME}}\"}",
+						"legendFormat": "Average Response Time",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Response Time Over Time",
+				"type": "timeseries"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "palette-classic"
+						},
+						"custom": {
+							"axisCenteredZero": false,
+							"axisColorMode": "text",
+							"axisLabel": "",
+							"axisPlacement": "auto",
+							"barAlignment": 0,
+							"drawStyle": "line",
+							"fillOpacity": 10,
+							"gradientMode": "none",
+							"hideFrom": {
+								"tooltip": false,
+								"viz": false,
+								"legend": false
+							},
+							"insertNulls": false,
+							"lineInterpolation": "linear",
+							"lineWidth": 1,
+							"pointSize": 5,
+							"scaleDistribution": {
+								"type": "linear"
+							},
+							"showPoints": "never",
+							"spanNulls": false,
+							"stacking": {
+								"group": "A",
+								"mode": "none"
+							},
+							"thresholdsStyle": {
+								"mode": "off"
+							}
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						},
+						"unit": "decbytes"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 0,
+					"y": 12
+				},
+				"id": 7,
+				"options": {
+					"legend": {
+						"calcs": [],
+						"displayMode": "list",
+						"placement": "bottom",
+						"showLegend": true
+					},
+					"tooltip": {
+						"mode": "single",
+						"sort": "none"
+					}
+				},
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "lyku_memory_usage_bytes{exported_service=\"{{SERVICE_NAME}}\"}",
+						"legendFormat": "Memory Usage",
+						"range": true,
+						"refId": "A"
+					}
+				],
+				"title": "Memory Usage Over Time",
+				"type": "timeseries"
+			},
+			{
+				"datasource": {
+					"type": "prometheus",
+					"uid": "prometheus"
+				},
+				"fieldConfig": {
+					"defaults": {
+						"color": {
+							"mode": "palette-classic"
+						},
+						"custom": {
+							"axisCenteredZero": false,
+							"axisColorMode": "text",
+							"axisLabel": "",
+							"axisPlacement": "auto",
+							"barAlignment": 0,
+							"drawStyle": "line",
+							"fillOpacity": 10,
+							"gradientMode": "none",
+							"hideFrom": {
+								"tooltip": false,
+								"viz": false,
+								"legend": false
+							},
+							"insertNulls": false,
+							"lineInterpolation": "linear",
+							"lineWidth": 1,
+							"pointSize": 5,
+							"scaleDistribution": {
+								"type": "linear"
+							},
+							"showPoints": "never",
+							"spanNulls": false,
+							"stacking": {
+								"group": "A",
+								"mode": "none"
+							},
+							"thresholdsStyle": {
+								"mode": "off"
+							}
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						},
+						"unit": "short"
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 12,
+					"y": 12
+				},
+				"id": 8,
+				"options": {
+					"legend": {
+						"calcs": [],
+						"displayMode": "list",
+						"placement": "bottom",
+						"showLegend": true
+					},
+					"tooltip": {
+						"mode": "single",
+						"sort": "none"
+					}
+				},
+				"targets": [
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "rate(lyku_requests_errors_total{exported_service=\"{{SERVICE_NAME}}\"}[5m])",
+						"legendFormat": "Error Rate",
+						"range": true,
+						"refId": "A"
+					},
+					{
+						"datasource": {
+							"type": "prometheus",
+							"uid": "prometheus"
+						},
+						"editorMode": "code",
+						"expr": "lyku_requests_in_flight{exported_service=\"{{SERVICE_NAME}}\"}",
+						"legendFormat": "Requests In Flight",
+						"range": true,
+						"refId": "B"
+					}
+				],
+				"title": "Error Rate & In-Flight Requests",
+				"type": "timeseries"
+			}
+		],
+		"refresh": "10s",
+		"schemaVersion": 39,
+		"style": "dark",
+		"tags": ["lyku", "service", "{{SERVICE_NAME}}"],
+		"templating": {
+			"list": []
+		},
+		"time": {
+			"from": "now-1h",
+			"to": "now"
+		},
+		"timepicker": {},
+		"timezone": "",
+		"title": "{{SERVICE_TITLE}} - Service Dashboard",
+		"uid": "lyku-service-{{SERVICE_NAME}}",
+		"version": 1,
+		"weekStart": ""
+	},
+	"overwrite": true
+}

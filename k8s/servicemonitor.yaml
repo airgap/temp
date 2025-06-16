@@ -1,0 +1,21 @@
+# k8s/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: lyku-services
+  namespace: kube-prometheus-stack # Your existing Prometheus namespace
+  labels:
+    app: lyku
+    release: kube-prometheus-stack # Important: match your Prometheus release labels
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: lyku-route
+  endpoints:
+    - port: http # Must match the named port in your service
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - default

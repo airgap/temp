@@ -35,3 +35,7 @@ else
     envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
     echo "Deployment ${DEPLOYMENT_NAME} created with image ${IMAGE}"
 fi
+
+echo ""
+echo "✅ Deployment complete!"
+echo "📊 To create a monitoring dashboard, run: ./scripts/graph-route $SERVICE_NAME"
