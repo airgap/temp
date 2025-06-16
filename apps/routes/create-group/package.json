@@ -1,8 +1,7 @@
 {
-	"devDependencies": {
-		"@lyku/route-helpers": "workspace:*",
-		"@lyku/helpers": "workspace:*",
-		"@lyku/handles": "workspace:*",
-		"@lyku/json-models/index": "workspace:*"
-	}
+  "devDependencies": {
+    "@lyku/route-helpers": "workspace:*",
+    "@lyku/helpers": "workspace:*",
+    "@lyku/handles": "workspace:*"
+  }
 }

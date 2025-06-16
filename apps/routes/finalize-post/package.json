@@ -1,11 +1,10 @@
 {
-	"devDependencies": {
-		"@lyku/route-helpers": "workspace:*",
-		"@lyku/json-models": "workspace:*",
-		"@lyku/handles": "workspace:*",
-		"@lyku/json-models/index": "workspace:*",
-		"@lyku/postgres-client": "workspace:*",
-		"@lyku/redis-client": "workspace:*",
-		"@lyku/clickhouse-client": "workspace:*"
-	}
+  "devDependencies": {
+    "@lyku/route-helpers": "workspace:*",
+    "@lyku/json-models": "workspace:*",
+    "@lyku/handles": "workspace:*",
+    "@lyku/postgres-client": "workspace:*",
+    "@lyku/redis-client": "workspace:*",
+    "@lyku/clickhouse-client": "workspace:*"
+  }
 }
