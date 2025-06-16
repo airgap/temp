@@ -1,9 +1,13 @@
 {
-	"dependencies": {
-		"@lyku/handles": "workspace:*",
-		"@lyku/json-models": "workspace:*",
+	"devDependencies": {
 		"@lyku/route-helpers": "workspace:*",
+		"@lyku/phrasebooks": "workspace:*",
+		"@lyku/json-models": "workspace:*",
 		"@lyku/helpers": "workspace:*",
+		"@lyku/handles": "workspace:*",
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/json-models/index": "workspace:*",
+		"@lyku/mux-client": "workspace:*",
 		"@lyku/db-config": "workspace:*"
 	}
 }

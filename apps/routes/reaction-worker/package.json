@@ -1,7 +1,17 @@
 {
 	"dependencies": {
-		"@lyku/handles": "workspace:*",
-		"@lyku/helpers": "workspace:*",
 		"express": "^4.18.2"
+	},
+	"devDependencies": {
+		"@lyku/db-types": "workspace:*",
+		"@lyku/queue-system": "workspace:*",
+		"@lyku/metrics": "workspace:*",
+		"@lyku/redis-client": "workspace:*",
+		"@lyku/clickhouse-client": "workspace:*",
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/logger": "workspace:*",
+		"@lyku/route-helpers": "workspace:*",
+		"@lyku/handles": "workspace:*",
+		"@lyku/helpers": "workspace:*"
 	}
 }

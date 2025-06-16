@@ -1,5 +1,10 @@
 {
-	"dependencies": {
+	"devDependencies": {
+		"@lyku/route-helpers": "workspace:*",
+		"@lyku/ttf-ais": "workspace:*",
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"@lyku/stock-docs": "workspace:*",
 		"@lyku/handles": "workspace:*"
 	}
 }

@@ -3,6 +3,7 @@
 		"@lyku/elasticsearch-client": "workspace:*",
 		"@lyku/handles": "workspace:*",
 		"@lyku/postgres-client": "workspace:*",
-		"@lyku/bson-models": "workspace:*"
+		"@lyku/bson-models": "workspace:*",
+		"@lyku/json-models": "workspace:*"
 	}
 }

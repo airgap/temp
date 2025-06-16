@@ -1,5 +1,7 @@
 {
-	"dependencies": {
-		"@lyku/handles": "workspace:*"
+	"devDependencies": {
+		"@lyku/route-helpers": "workspace:*",
+		"@lyku/handles": "workspace:*",
+		"@lyku/elasticsearch-client": "workspace:*"
 	}
 }
