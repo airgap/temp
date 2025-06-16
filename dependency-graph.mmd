@@ -1,0 +1,539 @@
+graph TD
+  _lyku_list_feed_posts_unauthenticated["@lyku/list-feed-posts-unauthenticated"]:::libStyle
+  _lyku_list_groups_unauthenticated["@lyku/list-groups-unauthenticated"]:::libStyle
+  _lyku_list_user_posts_with_meta["@lyku/list-user-posts-with-meta"]:::libStyle
+  _lyku_listen_for_notifications["@lyku/listen-for-notifications"]:::libStyle
+  _lyku_list_achievement_grants["@lyku/list-achievement-grants"]:::libStyle
+  _lyku_listen_for_achievements["@lyku/listen-for-achievements"]:::libStyle
+  _lyku_authorize_image_upload["@lyku/authorize-image-upload"]:::libStyle
+  _lyku_decline_friend_request["@lyku/decline-friend-request"]:::libStyle
+  _lyku_get_channel_sensitives["@lyku/get-channel-sensitives"]:::libStyle
+  _lyku_accept_friend_request["@lyku/accept-friend-request"]:::libStyle
+  _lyku_accept_match_proposal["@lyku/accept-match-proposal"]:::libStyle
+  _lyku_create_friend_request["@lyku/create-friend-request"]:::libStyle
+  _lyku_get_friendship_status["@lyku/get-friendship-status"]:::libStyle
+  _lyku_list_groups_i_created["@lyku/list-groups-i-created"]:::libStyle
+  _lyku_recind_friend_request["@lyku/recind-friend-request"]:::libStyle
+  _lyku_confirm_image_upload["@lyku/confirm-image-upload"]:::libStyle
+  _lyku_confirm_video_upload["@lyku/confirm-video-upload"]:::libStyle
+  _lyku_list_match_proposals["@lyku/list-match-proposals"]:::libStyle
+  _lyku_listen_for_ttf_plays["@lyku/listen-for-ttf-plays"]:::libStyle
+  _lyku_listen_to_post_count["@lyku/listen-to-post-count"]:::libStyle
+  _lyku_get_thread_for_post["@lyku/get-thread-for-post"]:::libStyle
+  _lyku_list_channel_videos["@lyku/list-channel-videos"]:::libStyle
+  _lyku_stream_current_user["@lyku/stream-current-user"]:::libStyle
+  _lyku_confirm_pfp_upload["@lyku/confirm-pfp-upload"]:::libStyle
+  _lyku_get_follow_vectors["@lyku/get-follow-vectors"]:::libStyle
+  _lyku_delete_friendship["@lyku/delete-friendship"]:::libStyle
+  _lyku_list_achievements["@lyku/list-achievements"]:::libStyle
+  _lyku_list_groups_i_own["@lyku/list-groups-i-own"]:::libStyle
+  _lyku_list_groups_im_in["@lyku/list-groups-im-in"]:::libStyle
+  _lyku_list_post_replies["@lyku/list-post-replies"]:::libStyle
+  _lyku_test_notification["@lyku/test-notification"]:::libStyle
+  _lyku_get_current_user["@lyku/get-current-user"]:::libStyle
+  _lyku_get_my_reactions["@lyku/get-my-reactions"]:::libStyle
+  _lyku_get_tus_endpoint["@lyku/get-tus-endpoint"]:::libStyle
+  _lyku_get_user_by_name["@lyku/get-user-by-name"]:::libStyle
+  _lyku_list_my_channels["@lyku/list-my-channels"]:::libStyle
+  _lyku_list_ttf_matches["@lyku/list-ttf-matches"]:::libStyle
+  _lyku_new_ai_ttf_match["@lyku/new-ai-ttf-match"]:::libStyle
+  _lyku_list_feed_posts["@lyku/list-feed-posts"]:::libStyle
+  _lyku_list_user_posts["@lyku/list-user-posts"]:::libStyle
+  _lyku_reaction_worker["@lyku/reaction-worker"]:::libStyle
+  _lyku_am_i_following["@lyku/am-i-following"]:::libStyle
+  _lyku_list_hot_posts["@lyku/list-hot-posts"]:::libStyle
+  _lyku_update_channel["@lyku/update-channel"]:::libStyle
+  _lyku_elasticsearch_client["@lyku/elasticsearch-client"]:::libStyle
+  _lyku_finalize_post["@lyku/finalize-post"]:::libStyle
+  _lyku_list_messages["@lyku/list-messages"]:::libStyle
+  _lyku_propose_match["@lyku/propose-match"]:::libStyle
+  _lyku_react_to_post["@lyku/react-to-post"]:::libStyle
+  _lyku_register_user["@lyku/register-user"]:::libStyle
+  _lyku_unfollow_user["@lyku/unfollow-user"]:::libStyle
+  _lyku_create_group["@lyku/create-group"]:::libStyle
+  _lyku_delete_group["@lyku/delete-group"]:::libStyle
+  _lyku_list_friends["@lyku/list-friends"]:::libStyle
+  _lyku_list_my_bots["@lyku/list-my-bots"]:::libStyle
+  _lyku_update_group["@lyku/update-group"]:::libStyle
+  _lyku_delete_post["@lyku/delete-post"]:::libStyle
+  _lyku_follow_user["@lyku/follow-user"]:::libStyle
+  _lyku_get_channel["@lyku/get-channel"]:::libStyle
+  _lyku_leave_group["@lyku/leave-group"]:::libStyle
+  _lyku_list_groups["@lyku/list-groups"]:::libStyle
+  _lyku_logout_user["@lyku/logout-user"]:::libStyle
+  _lyku_place_piece["@lyku/place-piece"]:::libStyle
+  _lyku_unlike_post["@lyku/unlike-post"]:::libStyle
+  _lyku_await_file["@lyku/await-file"]:::libStyle
+  _lyku_clickhouse_client["@lyku/clickhouse-client"]:::libStyle
+  _lyku_create_bot["@lyku/create-bot"]:::libStyle
+  _lyku_draft_post["@lyku/draft-post"]:::libStyle
+  _lyku_get_groups["@lyku/get-groups"]:::libStyle
+  _lyku_join_group["@lyku/join-group"]:::libStyle
+  _lyku_list_games["@lyku/list-games"]:::libStyle
+  _lyku_login_user["@lyku/login-user"]:::libStyle
+  _lyku_mux_hooker["@lyku/mux-hooker"]:::libStyle
+  _lyku_get_group["@lyku/get-group"]:::libStyle
+  _lyku_get_posts["@lyku/get-posts"]:::libStyle
+  _lyku_get_users["@lyku/get-users"]:::libStyle
+  _lyku_get_file["@lyku/get-file"]:::libStyle
+  _lyku_get_post["@lyku/get-post"]:::libStyle
+  _lyku_postgres_client["@lyku/postgres-client"]:::libStyle
+  monolith_ts_api["monolith-ts-api"]:::libStyle
+  _lyku_bounced["@lyku/bounced"]:::libStyle
+  _lyku_plumber["@lyku/plumber"]:::libStyle
+  _lyku_route_helpers["@lyku/route-helpers"]:::libStyle
+  _lyku_aggie["@lyku/aggie"]:::libStyle
+  _lyku_queue_system["@lyku/queue-system"]:::libStyle
+  _lyku_redis_client["@lyku/redis-client"]:::libStyle
+  _lyku_indy["@lyku/indy"]:::libStyle
+  _lyku_json_models["@lyku/json-models"]:::libStyle
+  _lyku_mapi_models["@lyku/mapi-models"]:::libStyle
+  _lyku_nats_client["@lyku/nats-client"]:::libStyle
+  _lyku_phrasebooks["@lyku/phrasebooks"]:::libStyle
+  bson_models["bson-models"]:::libStyle
+  rest_sitter["rest-sitter"]:::libStyle
+  _lyku_mapi_types["@lyku/mapi-types"]:::libStyle
+  _lyku_mux_client["@lyku/mux-client"]:::libStyle
+  _lyku_stock_docs["@lyku/stock-docs"]:::libStyle
+  _lyku_db_config["@lyku/db-config"]:::libStyle
+  webui_e2e["webui-e2e"]:::appStyle
+  _lyku_dataform["@lyku/dataform"]:::libStyle
+  _lyku_db_types["@lyku/db-types"]:::libStyle
+  _lyku_defaults["@lyku/defaults"]:::libStyle
+  _lyku_handles["@lyku/handles"]:::libStyle
+  _lyku_helpers["@lyku/helpers"]:::libStyle
+  _lyku_metrics["@lyku/metrics"]:::libStyle
+  _lyku_si_bits["@lyku/si-bits"]:::libStyle
+  _lyku_strings["@lyku/strings"]:::libStyle
+  _lyku_ttf_ais["@lyku/ttf-ais"]:::libStyle
+  _lyku_logger["@lyku/logger"]:::libStyle
+  _lyku_stats["@lyku/stats"]:::libStyle
+  webui["webui"]:::appStyle
+  _lyku_source["@lyku/source"]:::libStyle
+  _lyku_list_feed_posts_unauthenticated --> _lyku_postgres_client
+  _lyku_list_feed_posts_unauthenticated --> _lyku_route_helpers
+  _lyku_list_feed_posts_unauthenticated --> _lyku_handles
+  _lyku_list_groups_unauthenticated --> _lyku_postgres_client
+  _lyku_list_groups_unauthenticated --> _lyku_route_helpers
+  _lyku_list_groups_unauthenticated --> _lyku_handles
+  _lyku_list_user_posts_with_meta --> _lyku_helpers
+  _lyku_list_user_posts_with_meta --> _lyku_postgres_client
+  _lyku_list_user_posts_with_meta --> _lyku_redis_client
+  _lyku_list_user_posts_with_meta --> _lyku_route_helpers
+  _lyku_list_user_posts_with_meta --> _lyku_handles
+  _lyku_list_user_posts_with_meta --> _lyku_json_models
+  _lyku_listen_for_notifications --> _lyku_helpers
+  _lyku_listen_for_notifications --> _lyku_nats_client
+  _lyku_listen_for_notifications --> _lyku_route_helpers
+  _lyku_listen_for_notifications --> _lyku_handles
+  _lyku_list_achievement_grants --> _lyku_postgres_client
+  _lyku_list_achievement_grants --> _lyku_route_helpers
+  _lyku_list_achievement_grants --> _lyku_handles
+  _lyku_listen_for_achievements --> _lyku_nats_client
+  _lyku_listen_for_achievements --> _lyku_helpers
+  _lyku_listen_for_achievements --> _lyku_route_helpers
+  _lyku_listen_for_achievements --> _lyku_handles
+  _lyku_authorize_image_upload --> _lyku_route_helpers
+  _lyku_authorize_image_upload --> _lyku_postgres_client
+  _lyku_authorize_image_upload --> _lyku_handles
+  _lyku_authorize_image_upload --> _lyku_json_models
+  _lyku_decline_friend_request --> _lyku_helpers
+  _lyku_decline_friend_request --> _lyku_postgres_client
+  _lyku_decline_friend_request --> _lyku_route_helpers
+  _lyku_decline_friend_request --> _lyku_handles
+  _lyku_get_channel_sensitives --> _lyku_postgres_client
+  _lyku_get_channel_sensitives --> _lyku_route_helpers
+  _lyku_get_channel_sensitives --> _lyku_handles
+  _lyku_accept_friend_request --> _lyku_helpers
+  _lyku_accept_friend_request --> _lyku_postgres_client
+  _lyku_accept_friend_request --> _lyku_handles
+  _lyku_accept_friend_request --> _lyku_route_helpers
+  _lyku_accept_match_proposal --> _lyku_route_helpers
+  _lyku_accept_match_proposal --> _lyku_postgres_client
+  _lyku_accept_match_proposal --> _lyku_stock_docs
+  _lyku_accept_match_proposal --> _lyku_json_models
+  _lyku_accept_match_proposal --> _lyku_handles
+  _lyku_create_friend_request --> _lyku_helpers
+  _lyku_create_friend_request --> _lyku_postgres_client
+  _lyku_create_friend_request --> _lyku_route_helpers
+  _lyku_create_friend_request --> _lyku_handles
+  _lyku_get_friendship_status --> _lyku_helpers
+  _lyku_get_friendship_status --> _lyku_postgres_client
+  _lyku_get_friendship_status --> _lyku_route_helpers
+  _lyku_get_friendship_status --> _lyku_handles
+  _lyku_list_groups_i_created --> _lyku_postgres_client
+  _lyku_list_groups_i_created --> _lyku_route_helpers
+  _lyku_list_groups_i_created --> _lyku_handles
+  _lyku_recind_friend_request --> _lyku_helpers
+  _lyku_recind_friend_request --> _lyku_route_helpers
+  _lyku_recind_friend_request --> _lyku_handles
+  _lyku_confirm_image_upload --> _lyku_route_helpers
+  _lyku_confirm_image_upload --> _lyku_postgres_client
+  _lyku_confirm_image_upload --> _lyku_handles
+  _lyku_confirm_image_upload --> _lyku_json_models
+  _lyku_confirm_video_upload --> _lyku_route_helpers
+  _lyku_confirm_video_upload --> _lyku_helpers
+  _lyku_confirm_video_upload --> _lyku_postgres_client
+  _lyku_confirm_video_upload --> _lyku_handles
+  _lyku_list_match_proposals --> _lyku_postgres_client
+  _lyku_list_match_proposals --> _lyku_route_helpers
+  _lyku_list_match_proposals --> _lyku_handles
+  _lyku_listen_for_ttf_plays --> _lyku_helpers
+  _lyku_listen_for_ttf_plays --> _lyku_nats_client
+  _lyku_listen_for_ttf_plays --> _lyku_route_helpers
+  _lyku_listen_for_ttf_plays --> _lyku_handles
+  _lyku_listen_to_post_count --> _lyku_helpers
+  _lyku_listen_to_post_count --> _lyku_nats_client
+  _lyku_listen_to_post_count --> _lyku_route_helpers
+  _lyku_listen_to_post_count --> _lyku_handles
+  _lyku_get_thread_for_post --> _lyku_helpers
+  _lyku_get_thread_for_post --> _lyku_postgres_client
+  _lyku_get_thread_for_post --> _lyku_redis_client
+  _lyku_get_thread_for_post --> _lyku_route_helpers
+  _lyku_get_thread_for_post --> _lyku_handles
+  _lyku_get_thread_for_post --> _lyku_json_models
+  _lyku_list_channel_videos --> _lyku_postgres_client
+  _lyku_list_channel_videos --> _lyku_route_helpers
+  _lyku_list_channel_videos --> _lyku_handles
+  _lyku_list_channel_videos --> _lyku_json_models
+  _lyku_stream_current_user --> _lyku_helpers
+  _lyku_stream_current_user --> _lyku_route_helpers
+  _lyku_stream_current_user --> _lyku_handles
+  _lyku_confirm_pfp_upload --> _lyku_route_helpers
+  _lyku_confirm_pfp_upload --> _lyku_postgres_client
+  _lyku_confirm_pfp_upload --> _lyku_mux_client
+  _lyku_confirm_pfp_upload --> _lyku_handles
+  _lyku_confirm_pfp_upload --> _lyku_json_models
+  _lyku_get_follow_vectors --> _lyku_postgres_client
+  _lyku_get_follow_vectors --> _lyku_route_helpers
+  _lyku_get_follow_vectors --> _lyku_handles
+  _lyku_delete_friendship --> _lyku_helpers
+  _lyku_delete_friendship --> _lyku_postgres_client
+  _lyku_delete_friendship --> _lyku_route_helpers
+  _lyku_delete_friendship --> _lyku_handles
+  _lyku_list_achievements --> _lyku_postgres_client
+  _lyku_list_achievements --> _lyku_route_helpers
+  _lyku_list_achievements --> _lyku_handles
+  _lyku_list_groups_i_own --> _lyku_postgres_client
+  _lyku_list_groups_i_own --> _lyku_route_helpers
+  _lyku_list_groups_i_own --> _lyku_handles
+  _lyku_list_groups_im_in --> _lyku_postgres_client
+  _lyku_list_groups_im_in --> _lyku_redis_client
+  _lyku_list_groups_im_in --> _lyku_route_helpers
+  _lyku_list_groups_im_in --> _lyku_handles
+  _lyku_list_groups_im_in --> _lyku_json_models
+  _lyku_list_post_replies --> _lyku_postgres_client
+  _lyku_list_post_replies --> _lyku_route_helpers
+  _lyku_list_post_replies --> _lyku_handles
+  _lyku_test_notification --> _lyku_route_helpers
+  _lyku_test_notification --> _lyku_postgres_client
+  _lyku_test_notification --> _lyku_handles
+  _lyku_test_notification --> _lyku_json_models
+  _lyku_get_current_user --> _lyku_redis_client
+  _lyku_get_current_user --> _lyku_postgres_client
+  _lyku_get_current_user --> _lyku_helpers
+  _lyku_get_current_user --> _lyku_route_helpers
+  _lyku_get_current_user --> _lyku_handles
+  _lyku_get_current_user --> _lyku_json_models
+  _lyku_get_my_reactions --> _lyku_helpers
+  _lyku_get_my_reactions --> _lyku_postgres_client
+  _lyku_get_my_reactions --> _lyku_redis_client
+  _lyku_get_my_reactions --> _lyku_route_helpers
+  _lyku_get_my_reactions --> _lyku_handles
+  _lyku_get_my_reactions --> _lyku_json_models
+  _lyku_get_tus_endpoint --> _lyku_helpers
+  _lyku_get_tus_endpoint --> _lyku_postgres_client
+  _lyku_get_tus_endpoint --> _lyku_route_helpers
+  _lyku_get_tus_endpoint --> _lyku_handles
+  _lyku_get_user_by_name --> _lyku_helpers
+  _lyku_get_user_by_name --> _lyku_postgres_client
+  _lyku_get_user_by_name --> _lyku_route_helpers
+  _lyku_get_user_by_name --> _lyku_handles
+  _lyku_list_my_channels --> _lyku_postgres_client
+  _lyku_list_my_channels --> _lyku_route_helpers
+  _lyku_list_my_channels --> _lyku_handles
+  _lyku_list_ttf_matches --> _lyku_postgres_client
+  _lyku_list_ttf_matches --> _lyku_route_helpers
+  _lyku_list_ttf_matches --> _lyku_handles
+  _lyku_new_ai_ttf_match --> _lyku_ttf_ais
+  _lyku_new_ai_ttf_match --> _lyku_postgres_client
+  _lyku_new_ai_ttf_match --> _lyku_route_helpers
+  _lyku_new_ai_ttf_match --> _lyku_handles
+  _lyku_list_feed_posts --> _lyku_postgres_client
+  _lyku_list_feed_posts --> _lyku_route_helpers
+  _lyku_list_feed_posts --> _lyku_handles
+  _lyku_list_user_posts --> _lyku_helpers
+  _lyku_list_user_posts --> _lyku_postgres_client
+  _lyku_list_user_posts --> _lyku_route_helpers
+  _lyku_list_user_posts --> _lyku_handles
+  _lyku_reaction_worker --> _lyku_logger
+  _lyku_reaction_worker --> _lyku_redis_client
+  _lyku_reaction_worker --> _lyku_postgres_client
+  _lyku_reaction_worker --> _lyku_metrics
+  _lyku_reaction_worker --> _lyku_queue_system
+  _lyku_reaction_worker --> _lyku_db_types
+  _lyku_reaction_worker --> _lyku_clickhouse_client
+  _lyku_reaction_worker --> _lyku_route_helpers
+  _lyku_am_i_following --> _lyku_helpers
+  _lyku_am_i_following --> _lyku_postgres_client
+  _lyku_am_i_following --> _lyku_route_helpers
+  _lyku_am_i_following --> _lyku_handles
+  _lyku_list_hot_posts --> _lyku_redis_client
+  _lyku_list_hot_posts --> _lyku_postgres_client
+  _lyku_list_hot_posts --> _lyku_helpers
+  _lyku_list_hot_posts --> _lyku_logger
+  _lyku_list_hot_posts --> _lyku_route_helpers
+  _lyku_list_hot_posts --> _lyku_json_models
+  _lyku_list_hot_posts --> _lyku_handles
+  _lyku_update_channel --> _lyku_postgres_client
+  _lyku_update_channel --> _lyku_route_helpers
+  _lyku_update_channel --> _lyku_handles
+  _lyku_update_channel --> _lyku_json_models
+  _lyku_finalize_post --> _lyku_postgres_client
+  _lyku_finalize_post --> _lyku_redis_client
+  _lyku_finalize_post --> _lyku_clickhouse_client
+  _lyku_finalize_post --> _lyku_route_helpers
+  _lyku_finalize_post --> _lyku_json_models
+  _lyku_finalize_post --> _lyku_handles
+  _lyku_list_messages --> _lyku_postgres_client
+  _lyku_list_messages --> _lyku_route_helpers
+  _lyku_list_messages --> _lyku_handles
+  _lyku_propose_match --> _lyku_helpers
+  _lyku_propose_match --> _lyku_postgres_client
+  _lyku_propose_match --> _lyku_route_helpers
+  _lyku_propose_match --> _lyku_handles
+  _lyku_react_to_post --> _lyku_helpers
+  _lyku_react_to_post --> _lyku_redis_client
+  _lyku_react_to_post --> _lyku_clickhouse_client
+  _lyku_react_to_post --> _lyku_postgres_client
+  _lyku_react_to_post --> _lyku_logger
+  _lyku_react_to_post --> _lyku_queue_system
+  _lyku_react_to_post --> _lyku_route_helpers
+  _lyku_react_to_post --> _lyku_handles
+  _lyku_react_to_post --> _lyku_json_models
+  _lyku_register_user --> _lyku_route_helpers
+  _lyku_register_user --> _lyku_postgres_client
+  _lyku_register_user --> _lyku_helpers
+  _lyku_register_user --> _lyku_handles
+  _lyku_register_user --> _lyku_json_models
+  _lyku_unfollow_user --> _lyku_helpers
+  _lyku_unfollow_user --> _lyku_postgres_client
+  _lyku_unfollow_user --> _lyku_route_helpers
+  _lyku_unfollow_user --> _lyku_handles
+  _lyku_create_group --> _lyku_helpers
+  _lyku_create_group --> _lyku_route_helpers
+  _lyku_create_group --> _lyku_handles
+  _lyku_delete_group --> _lyku_helpers
+  _lyku_delete_group --> _lyku_postgres_client
+  _lyku_delete_group --> _lyku_route_helpers
+  _lyku_delete_group --> _lyku_handles
+  _lyku_list_friends --> _lyku_postgres_client
+  _lyku_list_friends --> _lyku_route_helpers
+  _lyku_list_friends --> _lyku_handles
+  _lyku_list_my_bots --> _lyku_postgres_client
+  _lyku_list_my_bots --> _lyku_route_helpers
+  _lyku_list_my_bots --> _lyku_handles
+  _lyku_update_group --> _lyku_helpers
+  _lyku_update_group --> _lyku_postgres_client
+  _lyku_update_group --> _lyku_route_helpers
+  _lyku_update_group --> _lyku_handles
+  _lyku_delete_post --> _lyku_helpers
+  _lyku_delete_post --> _lyku_postgres_client
+  _lyku_delete_post --> _lyku_redis_client
+  _lyku_delete_post --> _lyku_route_helpers
+  _lyku_delete_post --> _lyku_json_models
+  _lyku_delete_post --> _lyku_handles
+  _lyku_follow_user --> _lyku_helpers
+  _lyku_follow_user --> _lyku_postgres_client
+  _lyku_follow_user --> _lyku_route_helpers
+  _lyku_follow_user --> _lyku_handles
+  _lyku_get_channel --> _lyku_postgres_client
+  _lyku_get_channel --> _lyku_route_helpers
+  _lyku_get_channel --> _lyku_handles
+  _lyku_leave_group --> _lyku_helpers
+  _lyku_leave_group --> _lyku_postgres_client
+  _lyku_leave_group --> _lyku_route_helpers
+  _lyku_leave_group --> _lyku_handles
+  _lyku_list_groups --> _lyku_postgres_client
+  _lyku_list_groups --> _lyku_route_helpers
+  _lyku_list_groups --> _lyku_handles
+  _lyku_logout_user --> _lyku_postgres_client
+  _lyku_logout_user --> _lyku_route_helpers
+  _lyku_logout_user --> _lyku_handles
+  _lyku_place_piece --> _lyku_route_helpers
+  _lyku_place_piece --> _lyku_ttf_ais
+  _lyku_place_piece --> _lyku_postgres_client
+  _lyku_place_piece --> _lyku_stock_docs
+  _lyku_place_piece --> _lyku_json_models
+  _lyku_place_piece --> _lyku_handles
+  _lyku_unlike_post --> _lyku_elasticsearch_client
+  _lyku_unlike_post --> _lyku_route_helpers
+  _lyku_unlike_post --> _lyku_handles
+  _lyku_await_file --> _lyku_helpers
+  _lyku_await_file --> _lyku_postgres_client
+  _lyku_await_file --> _lyku_nats_client
+  _lyku_await_file --> _lyku_redis_client
+  _lyku_await_file --> _lyku_route_helpers
+  _lyku_await_file --> _lyku_handles
+  _lyku_await_file --> _lyku_json_models
+  _lyku_create_bot --> _lyku_postgres_client
+  _lyku_create_bot --> _lyku_route_helpers
+  _lyku_create_bot --> _lyku_handles
+  _lyku_draft_post --> _lyku_phrasebooks
+  _lyku_draft_post --> _lyku_route_helpers
+  _lyku_draft_post --> _lyku_postgres_client
+  _lyku_draft_post --> _lyku_helpers
+  _lyku_draft_post --> _lyku_json_models
+  _lyku_draft_post --> _lyku_handles
+  _lyku_draft_post --> _lyku_mux_client
+  _lyku_get_groups --> _lyku_postgres_client
+  _lyku_get_groups --> _lyku_route_helpers
+  _lyku_get_groups --> _lyku_handles
+  _lyku_join_group --> _lyku_helpers
+  _lyku_join_group --> _lyku_postgres_client
+  _lyku_join_group --> _lyku_redis_client
+  _lyku_join_group --> _lyku_route_helpers
+  _lyku_join_group --> _lyku_handles
+  _lyku_join_group --> _lyku_json_models
+  _lyku_list_games --> _lyku_postgres_client
+  _lyku_list_games --> _lyku_route_helpers
+  _lyku_list_games --> _lyku_handles
+  _lyku_login_user --> _lyku_route_helpers
+  _lyku_login_user --> _lyku_postgres_client
+  _lyku_login_user --> _lyku_helpers
+  _lyku_login_user --> _lyku_handles
+  _lyku_mux_hooker --> _lyku_logger
+  _lyku_mux_hooker --> _lyku_route_helpers
+  _lyku_mux_hooker --> _lyku_handles
+  _lyku_mux_hooker --> _lyku_json_models
+  _lyku_mux_hooker --> _lyku_postgres_client
+  _lyku_mux_hooker --> _lyku_mux_client
+  _lyku_mux_hooker --> _lyku_helpers
+  _lyku_mux_hooker --> _lyku_phrasebooks
+  _lyku_mux_hooker --> _lyku_nats_client
+  _lyku_mux_hooker --> _lyku_redis_client
+  _lyku_get_group --> _lyku_helpers
+  _lyku_get_group --> _lyku_postgres_client
+  _lyku_get_group --> _lyku_redis_client
+  _lyku_get_group --> _lyku_logger
+  _lyku_get_group --> _lyku_route_helpers
+  _lyku_get_group --> _lyku_handles
+  _lyku_get_posts --> _lyku_postgres_client
+  _lyku_get_posts --> _lyku_route_helpers
+  _lyku_get_posts --> _lyku_handles
+  _lyku_get_users --> _lyku_postgres_client
+  _lyku_get_users --> _lyku_route_helpers
+  _lyku_get_users --> _lyku_handles
+  _lyku_get_users --> _lyku_json_models
+  _lyku_get_file --> _lyku_helpers
+  _lyku_get_file --> _lyku_postgres_client
+  _lyku_get_file --> _lyku_nats_client
+  _lyku_get_file --> _lyku_route_helpers
+  _lyku_get_file --> _lyku_handles
+  _lyku_get_file --> _lyku_json_models
+  _lyku_get_post --> _lyku_helpers
+  _lyku_get_post --> _lyku_postgres_client
+  _lyku_get_post --> _lyku_route_helpers
+  _lyku_get_post --> _lyku_handles
+  _lyku_postgres_client --> _lyku_defaults
+  _lyku_postgres_client --> _lyku_helpers
+  _lyku_postgres_client --> _lyku_db_config
+  _lyku_postgres_client --> _lyku_json_models
+  monolith_ts_api --> _lyku_mapi_models
+  monolith_ts_api --> _lyku_json_models
+  monolith_ts_api --> _lyku_mapi_types
+  monolith_ts_api --> _lyku_defaults
+  _lyku_bounced --> _lyku_postgres_client
+  _lyku_bounced --> _lyku_route_helpers
+  _lyku_bounced --> _lyku_handles
+  _lyku_plumber --> _lyku_logger
+  _lyku_plumber --> _lyku_clickhouse_client
+  _lyku_plumber --> _lyku_elasticsearch_client
+  _lyku_plumber --> _lyku_postgres_client
+  _lyku_plumber --> _lyku_redis_client
+  _lyku_route_helpers --> _lyku_defaults
+  _lyku_route_helpers --> _lyku_helpers
+  _lyku_route_helpers --> _lyku_db_config
+  _lyku_route_helpers --> _lyku_json_models
+  _lyku_route_helpers --> _lyku_postgres_client
+  _lyku_route_helpers --> _lyku_phrasebooks
+  _lyku_route_helpers --> _lyku_strings
+  _lyku_route_helpers --> _lyku_stock_docs
+  _lyku_route_helpers --> bson_models
+  _lyku_route_helpers --> _lyku_redis_client
+  _lyku_route_helpers --> _lyku_clickhouse_client
+  _lyku_aggie --> _lyku_logger
+  _lyku_aggie --> _lyku_elasticsearch_client
+  _lyku_aggie --> _lyku_postgres_client
+  _lyku_aggie --> _lyku_redis_client
+  _lyku_aggie --> _lyku_metrics
+  _lyku_aggie --> _lyku_db_types
+  _lyku_aggie --> _lyku_json_models
+  _lyku_queue_system --> _lyku_redis_client
+  _lyku_queue_system --> _lyku_logger
+  _lyku_indy --> _lyku_elasticsearch_client
+  _lyku_indy --> _lyku_postgres_client
+  _lyku_indy --> _lyku_json_models
+  _lyku_json_models --> bson_models
+  _lyku_mapi_models --> _lyku_helpers
+  _lyku_mapi_models --> bson_models
+  _lyku_mapi_models --> _lyku_defaults
+  _lyku_mapi_models --> _lyku_json_models
+  _lyku_nats_client --> _lyku_defaults
+  _lyku_nats_client --> _lyku_helpers
+  _lyku_nats_client --> _lyku_db_config
+  _lyku_nats_client --> _lyku_json_models
+  _lyku_phrasebooks --> _lyku_strings
+  _lyku_phrasebooks --> _lyku_defaults
+  bson_models --> _lyku_helpers
+  bson_models --> _lyku_defaults
+  _lyku_mapi_types --> _lyku_helpers
+  _lyku_mapi_types --> bson_models
+  _lyku_mapi_types --> _lyku_defaults
+  _lyku_mapi_types --> _lyku_json_models
+  _lyku_mapi_types --> _lyku_mapi_models
+  _lyku_stock_docs --> bson_models
+  _lyku_stock_docs --> _lyku_json_models
+  _lyku_db_config --> bson_models
+  _lyku_db_config --> _lyku_stock_docs
+  webui_e2e --> webui
+  _lyku_dataform --> _lyku_db_config
+  _lyku_dataform --> _lyku_route_helpers
+  _lyku_db_types --> _lyku_db_config
+  _lyku_db_types --> bson_models
+  _lyku_handles --> _lyku_mapi_models
+  _lyku_handles --> _lyku_phrasebooks
+  _lyku_handles --> _lyku_strings
+  _lyku_handles --> _lyku_route_helpers
+  _lyku_helpers --> _lyku_defaults
+  _lyku_metrics --> _lyku_defaults
+  _lyku_metrics --> _lyku_helpers
+  _lyku_metrics --> _lyku_db_config
+  _lyku_metrics --> _lyku_json_models
+  _lyku_metrics --> _lyku_logger
+  _lyku_si_bits --> _lyku_json_models
+  _lyku_si_bits --> _lyku_stock_docs
+  _lyku_si_bits --> monolith_ts_api
+  _lyku_si_bits --> _lyku_defaults
+  _lyku_si_bits --> _lyku_phrasebooks
+  _lyku_si_bits --> _lyku_strings
+  _lyku_ttf_ais --> _lyku_db_types
+  _lyku_ttf_ais --> _lyku_helpers
+  _lyku_ttf_ais --> _lyku_stock_docs
+  _lyku_logger --> _lyku_defaults
+  _lyku_logger --> _lyku_helpers
+  _lyku_logger --> _lyku_db_config
+  _lyku_logger --> _lyku_json_models
+  _lyku_logger --> _lyku_clickhouse_client
+  webui --> _lyku_phrasebooks
+  webui --> _lyku_strings
+  webui --> _lyku_si_bits
+  webui --> _lyku_mapi_models
+  webui --> monolith_ts_api
+  webui --> _lyku_db_config
+  webui --> _lyku_db_types
+  webui --> _lyku_route_helpers
+  webui --> _lyku_helpers
+
+classDef appStyle fill:#ff6b6b,stroke:#d63447,stroke-width:2px,color:#fff
+classDef libStyle fill:#4ecdc4,stroke:#26d0ce,stroke-width:2px,color:#fff
