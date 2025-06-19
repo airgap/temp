@@ -22,19 +22,19 @@ function findLykuImports(filePath: string): string[] {
 function findAllImports(filePath: string): string[] {
 	const content = fs.readFileSync(filePath, 'utf8');
 	const imports = new Set<string>();
-	
+
 	// Match various import patterns
 	const patterns = [
-		/from\s+['"]([^'"]+)['"]/g,  // from 'package'
-		/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g,  // import('package')
-		/require\s*\(\s*['"]([^'"]+)['"]\s*\)/g   // require('package')
+		/from\s+['"]([^'"]+)['"]/g, // from 'package'
+		/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g, // import('package')
+		/require\s*\(\s*['"]([^'"]+)['"]\s*\)/g, // require('package')
 	];
-	
-	patterns.forEach(pattern => {
+
+	patterns.forEach((pattern) => {
 		let match;
 		while ((match = pattern.exec(content)) !== null) {
 			let importPath = match[1];
-			
+
 			// Extract package name for scoped packages and regular packages
 			if (importPath.startsWith('@')) {
 				// @scope/package or @scope/package/subpath
@@ -49,11 +49,14 @@ function findAllImports(filePath: string): string[] {
 			}
 		}
 	});
-	
+
 	return Array.from(imports);
 }
 
-function getPackageJsonDeps(packageJsonPath: string): { devDeps: string[], deps: string[] } {
+function getPackageJsonDeps(packageJsonPath: string): {
+	devDeps: string[];
+	deps: string[];
+} {
 	if (!fs.existsSync(packageJsonPath)) {
 		return { devDeps: [], deps: [] };
 	}
@@ -61,7 +64,7 @@ function getPackageJsonDeps(packageJsonPath: string): { devDeps: string[], deps:
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 	return {
 		devDeps: Object.keys(packageJson.devDependencies || {}),
-		deps: Object.keys(packageJson.dependencies || {})
+		deps: Object.keys(packageJson.dependencies || {}),
 	};
 }
 
@@ -89,7 +92,7 @@ function analyzeRoute(routeDir: string): RouteAnalysis {
 	tsFiles.forEach((file) => {
 		const filePath = path.join(routeDir, file);
 		const imports = findAllImports(filePath);
-		imports.forEach(imp => {
+		imports.forEach((imp) => {
 			allImports.add(imp);
 			if (imp.startsWith('@lyku/')) {
 				lykuImports.add(imp);
@@ -105,7 +108,7 @@ function analyzeRoute(routeDir: string): RouteAnalysis {
 	);
 
 	// Find unused dependencies (declared but not imported)
-	const unusedDeps = allDeclaredDeps.filter(dep => !allImports.has(dep));
+	const unusedDeps = allDeclaredDeps.filter((dep) => !allImports.has(dep));
 
 	// Also check if there are @lyku/* deps in regular dependencies that need to be moved
 	let hasMisplacedDeps = false;
@@ -207,18 +210,18 @@ function updatePackageJson(routeDir: string, missingDeps: string[]): boolean {
 
 function removeUnusedDeps(routeDir: string, unusedDeps: string[]): boolean {
 	const packageJsonPath = path.join(routeDir, 'package.json');
-	
+
 	if (!fs.existsSync(packageJsonPath)) {
 		console.log(`⚠️ No package.json found for ${path.basename(routeDir)}`);
 		return false;
 	}
-	
+
 	try {
 		const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 		let removedCount = 0;
-		
+
 		// Remove from devDependencies
-		unusedDeps.forEach(dep => {
+		unusedDeps.forEach((dep) => {
 			if (packageJson.devDependencies && packageJson.devDependencies[dep]) {
 				delete packageJson.devDependencies[dep];
 				removedCount++;
@@ -228,21 +231,30 @@ function removeUnusedDeps(routeDir: string, unusedDeps: string[]): boolean {
 				removedCount++;
 			}
 		});
-		
+
 		// Clean up empty objects
-		if (packageJson.devDependencies && Object.keys(packageJson.devDependencies).length === 0) {
+		if (
+			packageJson.devDependencies &&
+			Object.keys(packageJson.devDependencies).length === 0
+		) {
 			delete packageJson.devDependencies;
 		}
-		if (packageJson.dependencies && Object.keys(packageJson.dependencies).length === 0) {
+		if (
+			packageJson.dependencies &&
+			Object.keys(packageJson.dependencies).length === 0
+		) {
 			delete packageJson.dependencies;
 		}
-		
-		fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
-		
+
+		fs.writeFileSync(
+			packageJsonPath,
+			JSON.stringify(packageJson, null, 2) + '\n',
+		);
+
 		if (removedCount > 0) {
 			console.log(`  🗑️  Removed ${removedCount} unused dependencies`);
 		}
-		
+
 		return true;
 	} catch (error) {
 		console.log(`❌ Failed to update ${packageJsonPath}: ${error}`);
@@ -265,51 +277,72 @@ function main() {
 
 	if (checkUnused || cleanUnused) {
 		// Show unused dependencies analysis
-		const routesWithUnused = results.filter(result => result.unusedDependencies.length > 0);
-		
+		const routesWithUnused = results.filter(
+			(result) => result.unusedDependencies.length > 0,
+		);
+
 		console.log('=== Unused Dependencies Analysis ===\n');
-		
+
 		if (routesWithUnused.length === 0) {
 			console.log('✅ No unused dependencies found!');
 			return;
 		}
-		
-		console.log(`❌ Found ${routesWithUnused.length} routes with unused dependencies:\n`);
-		
+
+		console.log(
+			`❌ Found ${routesWithUnused.length} routes with unused dependencies:\n`,
+		);
+
 		if (cleanUnused) {
 			console.log('🧹 Cleaning unused dependencies...\n');
-			
+
 			let cleanedCount = 0;
-			routesWithUnused.forEach(route => {
+			routesWithUnused.forEach((route) => {
 				if (route.unusedDependencies.length > 0) {
 					const routeDir = path.join(ROUTES_DIR, route.routeName);
 					const success = removeUnusedDeps(routeDir, route.unusedDependencies);
-					
+
 					if (success) {
-						console.log(`✅ Cleaned ${route.routeName} (removed ${route.unusedDependencies.length} deps)`);
+						console.log(
+							`✅ Cleaned ${route.routeName} (removed ${route.unusedDependencies.length} deps)`,
+						);
 						cleanedCount++;
 					} else {
 						console.log(`❌ Failed to clean ${route.routeName}`);
 					}
 				}
 			});
-			
-			console.log(`\n🎉 Cleaned ${cleanedCount} out of ${routesWithUnused.length} routes`);
+
+			console.log(
+				`\n🎉 Cleaned ${cleanedCount} out of ${routesWithUnused.length} routes`,
+			);
 		} else {
-			routesWithUnused.forEach(route => {
+			routesWithUnused.forEach((route) => {
 				console.log(`📁 ${route.routeName}`);
-				console.log(`   All imports: ${route.imports.length > 0 ? route.imports.slice(0, 10).join(', ') : 'none'}${route.imports.length > 10 ? '...' : ''}`);
-				console.log(`   Dependencies: ${route.dependencies.join(', ') || 'none'}`);
-				console.log(`   DevDependencies: ${route.devDependencies.slice(0, 10).join(', ') || 'none'}${route.devDependencies.length > 10 ? '...' : ''}`);
+				console.log(
+					`   All imports: ${route.imports.length > 0 ? route.imports.slice(0, 10).join(', ') : 'none'}${route.imports.length > 10 ? '...' : ''}`,
+				);
+				console.log(
+					`   Dependencies: ${route.dependencies.join(', ') || 'none'}`,
+				);
+				console.log(
+					`   DevDependencies: ${route.devDependencies.slice(0, 10).join(', ') || 'none'}${route.devDependencies.length > 10 ? '...' : ''}`,
+				);
 				console.log(`   🗑️  Unused: ${route.unusedDependencies.join(', ')}`);
 				console.log('');
 			});
-			
-			const totalUnused = routesWithUnused.reduce((acc, route) => acc + route.unusedDependencies.length, 0);
-			console.log(`📊 Summary: ${totalUnused} total unused dependencies across ${routesWithUnused.length} routes`);
-			console.log('\n💡 Run with --clean-unused to automatically remove unused dependencies');
+
+			const totalUnused = routesWithUnused.reduce(
+				(acc, route) => acc + route.unusedDependencies.length,
+				0,
+			);
+			console.log(
+				`📊 Summary: ${totalUnused} total unused dependencies across ${routesWithUnused.length} routes`,
+			);
+			console.log(
+				'\n💡 Run with --clean-unused to automatically remove unused dependencies',
+			);
 		}
-		
+
 		return;
 	}
 
@@ -362,7 +395,7 @@ function main() {
 				`   Imports: ${route.imports.length > 0 ? route.imports.slice(0, 10).join(', ') : 'none'}${route.imports.length > 10 ? '...' : ''}`,
 			);
 			console.log(
-				`   Declared: ${route.devDependencies.filter(dep => dep.startsWith('@lyku/')).length > 0 ? route.devDependencies.filter(dep => dep.startsWith('@lyku/')).join(', ') : 'none'}`,
+				`   Declared: ${route.devDependencies.filter((dep) => dep.startsWith('@lyku/')).length > 0 ? route.devDependencies.filter((dep) => dep.startsWith('@lyku/')).join(', ') : 'none'}`,
 			);
 			console.log(`   Missing: ${route.missingDependencies.join(', ')}`);
 			console.log(

@@ -20,7 +20,7 @@ export const load = async ({ params, parent, cookies }) => {
 				...(sessionId ? { Authorization: `Bearer ${sessionId}` } : {}),
 				'User-Agent': 'Mozilla/5.0 (compatible; Lyku/1.0; +https://lyku.org)',
 			},
-			body: encode({ page: 0 }),
+			body: encode({ page: 1 }),
 		});
 
 		if (!res.ok) {
