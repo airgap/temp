@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Spinner } from '../Spinner';
 	import classnames from 'classnames';
 	import { api } from 'monolith-ts-api';
 	import { Stream } from '@cloudflare/stream-react';
@@ -36,6 +37,8 @@
 	import { ReplyButton } from '../ReplyButton';
 	import { ShareButton } from '../ShareButton';
 	import styles from './DynamicPost.module.sass';
+	import Dialog from '../Dialog/Dialog.svelte';
+	import Divisio from '../Divisio/Divisio.svelte';
 	// import { useCacheData } from '../CacheProvider';
 
 	const insets = { reply: styles.replied, echo: styles.echoed } as const;
@@ -55,6 +58,9 @@
 		// author?: User | undefined;
 		cfHash: string;
 	}>();
+	let confirmingDelete = $state(false);
+	let notifyingDelete = $state(false);
+	let deleting = $state(false);
 
 	console.log('ffffudge');
 
@@ -112,12 +118,7 @@
 
 	const handleDelete = (e: Event) => {
 		e.preventDefault();
-		if (window.confirm('Really delete?')) {
-			api.deletePost(post.id).then(() => {
-				window.alert('Post deleted.');
-				window.location.reload();
-			});
-		}
+		confirmingDelete = true;
 	};
 	const itsYou = $derived(
 		userStore.get(-1n) && author?.id === userStore.get(-1n)?.id,
@@ -388,3 +389,39 @@
 		</div>
 	</span>
 </span>
+<Dialog bind:visible={confirmingDelete} title="Really delete?"
+	><Divisio layout="v"
+		><p></p>
+		<Divisio layout="h" alignItems="end" size="l">
+			<Button
+				disabled={deleting}
+				onClick={() => {
+					deleting = true;
+					api.deletePost(post.id).then(() => {
+						confirmingDelete = false;
+						notifyingDelete = true;
+					});
+				}}
+			>
+				{#if deleting}
+					<Spinner size="s" />
+				{:else}
+					Yes
+				{/if}
+			</Button>
+			<Spinner />
+			<Button disabled={deleting} onClick={() => (confirmingDelete = false)}
+				>No</Button
+			>
+		</Divisio>
+	</Divisio>
+</Dialog>
+
+<Dialog bind:visible={notifyingDelete} title="Post deleted">
+	<Button
+		onClick={() => {
+			notifyingDelete = false;
+			window.location.reload();
+		}}>Begone!</Button
+	>
+</Dialog>

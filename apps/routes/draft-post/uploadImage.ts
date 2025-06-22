@@ -2,25 +2,26 @@ import { ImageDraft } from '@lyku/json-models';
 import { AttachmentInitializer } from './AttachmentInitializer';
 import { Err, makeAttachmentId, AttachmentType } from '@lyku/helpers';
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
+import { FileDraft } from '@lyku/json-models';
 
-export const uploadImage: AttachmentInitializer<ImageDraft> = async ({
-	author,
+export const uploadImage: AttachmentInitializer<FileDraft> = async ({
+	creator,
 	post,
-	strings,
 	orderNum,
 	filename,
-}): Promise<ImageDraft> => {
+	type,
+}): Promise<FileDraft> => {
 	const id = makeAttachmentId(post, orderNum, AttachmentType.Image);
 	console.log('Uploading image', id);
 	const url = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v2/direct_upload`;
 	const metadata = {
-		author: author.toString(),
+		author: creator.toString(),
 		post: post.toString(),
 	};
 
 	const formData = new FormData();
 	formData.append('requireSignedURLs', 'false');
-	formData.append('id', id);
+	formData.append('id', id.toString());
 	console.log('Fudge');
 	formData.append('metadata', JSON.stringify(metadata));
 	console.log('Budge');
@@ -34,14 +35,17 @@ export const uploadImage: AttachmentInitializer<ImageDraft> = async ({
 	console.log('Nudge');
 	const cfres = await response.json();
 	console.log('CFRES', cfres);
-	if (!cfres.success) throw new Err(500, strings.unknownBackendError);
+	if (!cfres.success) throw new Err(500);
 	return {
-		...cfres.result,
+		hostId: cfres.result.id,
+		uploadURL: cfres.result.uploadURL,
 		id,
 		post,
-		author,
+		creator,
 		reason: 'PostAttachment',
 		filename,
-		// supertype: 'image',
+		type,
+		host: 'cf',
+		supertype: 'image',
 	};
 };

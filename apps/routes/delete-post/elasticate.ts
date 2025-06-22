@@ -21,8 +21,6 @@ export async function deleteFromElastic(post: {
 	});
 
 	if (!res.ok) {
-		throw new Error(
-			`Failed to delete post in Elasticsearch: ${res.statusText}`,
-		);
+		console.warn(`Failed to delete post in Elasticsearch: ${res.statusText}`);
 	}
 }

@@ -1,15 +1,18 @@
 @use '../symbols' as *
+$isize: 45px
 .DesktopNavContainer
 	z-index: 1
 	width: 100%
-	margin-bottom: 50px
+	// margin-bottom: 50px
 	text-align: center
-	position: fixed
+	// position: fixed
+	&.scrolled
+		// box-shadow: 0 0 40px 0 #000A
 @media screen and (max-width: calc($nav-break - 1px))
 	.DesktopNavContainer
 		display: none
 .DesktopNavSpacer
-	height: 70px
+	// height: 60px
 .InnerDesktopNav
 	top: 0
 	//font-family: Gumzilla
@@ -32,14 +35,14 @@
 		height: 40px !important
 		vertical-align: middle
 	> div
-		overflow: hidden
-		// height: 45px
+		// overflow: hidden
+		// // height: 45px
+		// // height: 80px
+		// top: -20px
+		// left: -20px
+		// right: -20px
 		// height: 80px
-		top: -20px
-		left: -20px
-		right: -20px
-		height: 80px
-		filter: blur(10px)
+		// filter: blur(10px)
 		// > img
 		// 	height: calc(100vh + 20px)
 		// 	position: relative
@@ -75,7 +78,8 @@
 		border-radius: 999px !important
 		// padding: 4px
 		// margin-left: 8px
-		height: 35px !important
+		height: $isize !important
+		width: $isize !important
 		display: inline-block
 		+ button, + a
 		margin-left: 8px
@@ -119,8 +123,6 @@
 // 	margin-top: -5px
 // 	vertical-align: middle
 .createPost
-	width: 35px
-	height: 35px
 	display: inline-block
 	text-align: center
 	background-color: #652966 !important

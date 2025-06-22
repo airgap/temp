@@ -4,11 +4,13 @@ import { AttachmentInitializer } from './AttachmentInitializer';
 import { makeAttachmentId, AttachmentType } from '@lyku/helpers';
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { client as mux } from '@lyku/mux-client';
+import { FileDraft } from '@lyku/json-models';
 
-export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
-	author,
+export const uploadVideo: AttachmentInitializer<FileDraft> = async ({
+	creator,
 	post,
 	size,
+	type,
 	orderNum,
 }): Promise<VideoDraft> => {
 	const id = makeAttachmentId(post, orderNum, AttachmentType.Video);
@@ -33,10 +35,10 @@ export const uploadVideo: AttachmentInitializer<VideoDraft> = async ({
 	return {
 		id,
 		uploadURL,
-		creator: author,
+		creator,
 		post,
 		created: new Date(),
-		type: 'video',
+		type,
 		host: 'mux',
 	};
 };

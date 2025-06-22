@@ -21,6 +21,7 @@ export const fileDoc = {
 		updated: { type: 'timestamptz' },
 		type: { type: 'text', maxLength: 100 },
 		host: { type: 'text', maxLength: 100 },
+		reason: { type: 'text', maxLength: 25 },
 	},
 	required: [
 		'creator',

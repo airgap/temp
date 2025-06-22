@@ -3,6 +3,10 @@ import { run } from '@lyku/route-helpers';
 import { handleConfirmImageUpload } from '@lyku/handles';
 import { InsertableImageDoc } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
+import { InsertableFileDoc } from '@lyku/json-models';
+import { client as nats } from '@lyku/nats-client';
+import { FileDoc } from '@lyku/json-models';
+import { pack } from 'msgpackr';
 interface CloudflareImageResponse {
 	success: boolean;
 	result: {
@@ -19,9 +23,9 @@ export default handleConfirmImageUpload(async (id, { requester, strings }) => {
 
 	// Find the image draft and verify ownership
 	const imageDraft = await pg
-		.selectFrom('imageDrafts')
+		.selectFrom('fileDrafts')
 		.where('id', '=', id)
-		.where('author', '=', requester)
+		.where('creator', '=', requester)
 		.selectAll()
 		.executeTakeFirst();
 
@@ -49,19 +53,34 @@ export default handleConfirmImageUpload(async (id, { requester, strings }) => {
 
 	// Insert new image record
 	const [record] = await pg
-		.insertInto('images')
+		.insertInto('files')
 		.values({
 			id,
-			uploader: requester,
-			...(imageDraft.channel ? { channelId: imageDraft.channel } : {}),
+			creator: requester,
+			supertype: 'image',
+			host: 'cf',
+			type: imageDraft.type,
+			hostId: id,
+			width: imageDraft.width,
+			height: imageDraft.height,
+			// meta: {
+			// 	type: 'object',
+			// 	properties: {}
+			// },
+			size: imageDraft.size,
+			status: 'ready',
+			// thumbnail: imageDraft.thumbnail,
+			post: imageDraft.post,
+			// ...(imageDraft.channel ? { channelId: imageDraft.channel } : {}),
 			// ...(imageDraft.reason ? { reason: imageDraft.reason } : {}),
-		} satisfies InsertableImageDoc)
+		} satisfies FileDoc)
 		.returningAll()
 		.execute();
 
 	if (!record) throw new Error(strings.unknownBackendError);
 	const reason = imageDraft.reason;
 
+	nats.publish(`fileUploads.${id}`, Uint8Array.from(pack(record)));
 	// Handle special image upload cases
 	const postReasons = {
 		ChannelLogo: 'logo',
@@ -70,21 +89,21 @@ export default handleConfirmImageUpload(async (id, { requester, strings }) => {
 	} as const;
 
 	// Update channel or user profile based on reason
-	if (reason && reason in postReasons && imageDraft.channel) {
-		await pg
-			.updateTable('channels')
-			.set({
-				[postReasons[reason as keyof typeof postReasons]]: cfres.result.id,
-			})
-			.where('id', '=', imageDraft.channel)
-			.execute();
-	} else if (reason === 'ProfilePicture') {
-		await pg
-			.updateTable('users')
-			.set({
-				profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile`,
-			})
-			.where('id', '=', requester)
-			.execute();
-	}
+	// if (reason && reason in postReasons && imageDraft.channel) {
+	// 	await pg
+	// 		.updateTable('channels')
+	// 		.set({
+	// 			[postReasons[reason as keyof typeof postReasons]]: cfres.result.id,
+	// 		})
+	// 		.where('id', '=', imageDraft.channel)
+	// 		.execute();
+	// } else if (reason === 'ProfilePicture') {
+	// 	await pg
+	// 		.updateTable('users')
+	// 		.set({
+	// 			profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile`,
+	// 		})
+	// 		.where('id', '=', requester)
+	// 		.execute();
+	// }
 });

@@ -2,6 +2,7 @@
 //@import '../ReactionButton/ReactionButton.module'
 
 .DynamicPost
+	// max-height: calc(100vh - 65px)
 	text-align: left
 	appearance: none
 	//border-left: 2px solid transparentize(white, .8)
@@ -24,7 +25,7 @@
 	position: relative
 	box-shadow: inset 0 0 80px 0 transparent
 	border-radius: 10px
-	border-top-left-radius: 32.5px
+	border-top-left-radius: 35px
 	//background: url('../Backdrop/drop.png')
 	background: #ffffff17
 	background-size: cover
@@ -77,7 +78,7 @@ div.body
 	margin-left: 10px
 	width: calc(100% - 100px)
 	vertical-align: top
-	margin-top: 15px
+	margin-top: 10px
 	.username
 		margin-left: -5px
 		top: -7px
@@ -105,7 +106,7 @@ div.body
 	img
 		border-radius: 10px
 		height: auto
-		max-height: max(calc(100vh - 200px), 600px)
+		max-height: max(calc(100vh - 200px), 300px)
 		object-fit: cover
 .two img, .four img
 	width: 50%
@@ -143,11 +144,11 @@ div.body
 		flex: 1
 $width: var(--width)
 .dropper
-	width: 1.5em
-	height: 1.5em
+	width: 40px
+	height: 40px
 	position: absolute
-	right: 10px
-	top: 10px
+	right: 12.5px
+	top: 12.5px
 	.dropperMenu
 		left: calc(100% - $width)
 		top: 50px

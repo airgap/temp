@@ -59,12 +59,14 @@ export default handleDraftPost(
 				const supertype = type.split('/')[0] as 'image' | 'video';
 				const init = {
 					id: attachmentIds[a],
-					author: requester,
+					creator: requester,
 					post: draft.id,
-					strings,
 					size,
-					orderNum: a,
 					filename,
+					orderNum: a,
+					type,
+					reason: 'PostAttachment',
+					// host: supertype === 'video' ? 'mux' : 'cf',
 				} satisfies AttachmentInitializerProps;
 				console.log('D2');
 				switch (supertype) {

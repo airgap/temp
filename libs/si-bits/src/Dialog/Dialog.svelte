@@ -4,6 +4,10 @@
 	import type { ComponentType } from 'svelte';
 	import hidden from '../hidden.module.sass';
 	import styles from './Dialog.module.sass';
+	const variants = {
+		normal: styles.normal,
+		profile: styles.profile,
+	};
 
 	type Animation = 'scale' | 'slide-top' | 'slide-bottom' | 'zoom';
 	const loading = $state(false);
@@ -15,7 +19,10 @@
 		pad = 'm',
 		style = '',
 		transform: xfm = '',
+		variant = 'normal',
+		title = '',
 	} = $props<{
+		title?: string;
 		visible: boolean;
 		children: ComponentType;
 		size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'fs' | 'tfs';
@@ -23,6 +30,7 @@
 		pad?: 'z' | 's' | 'm' | 'l';
 		style: string;
 		transform: string;
+		variant: 'normal' | 'profile';
 	}>();
 	import { spring } from 'svelte/motion';
 
@@ -68,20 +76,26 @@
 	onclick={() => (visible = false)}
 	onkeydown={(e) => {
 		if (e.key === 'Escape') {
-			ondismiss();
+			visible = false;
 		}
 	}}
 	role="dialog"
 	tabindex="0"
 >
 	<div
-		class={[styles.Dialog, classes[size], , pad && styles['pad-' + pad]]}
+		class={[
+			styles.Dialog,
+			classes[size],
+			variants[variant],
+			pad && styles['pad-' + pad],
+		]}
 		style="{transform}; {style}"
 		onclick={(e) => e.stopPropagation()}
 		tabindex="0"
 		role="dialog"
 		onkeydown={(e) => e.stopPropagation()}
 	>
+		{#if title}<h3 class={styles.title}>{title}</h3>{/if}
 		<div class={[styles.interactives, loading && hidden.hidden]}>
 			<button
 				class={styles.Close}

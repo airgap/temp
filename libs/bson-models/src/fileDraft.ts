@@ -12,6 +12,12 @@ export const fileDraft = {
 		filename: { type: 'text', maxLength: 100 },
 		type: { type: 'text', maxLength: 100 },
 		host: { type: 'text', maxLength: 100 },
+		size: { type: 'double precision' },
+		width: { type: 'integer' },
+		height: { type: 'integer' },
+		length: { type: 'double precision' },
+		hostId: { type: 'text', maxLength: 100 },
+		reason: { type: 'text', maxLength: 25 },
 	},
 	required: [
 		'id',

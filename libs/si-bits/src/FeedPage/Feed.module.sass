@@ -1,13 +1,14 @@
 @use '../symbols' as *
 .FeedPage
+	position: relative
+	height: calc(100vh - 55px)
+	overflow: auto
+	// background: red
+.Feed
+	// display: inline-block
 	width: min($ideal-width, 100%)
 	margin-left: auto
 	margin-right: auto
-	padding-left: 10px
-	padding-right: 10px
-.Feed
-	display: inline-block
-	width: min($ideal-width, 100%)
 .loggedOut
 	padding: 10px
 .title
@@ -24,3 +25,16 @@
 .actions
 	float: right
 	display: inline-block
+.shadow
+	width: 100%
+	height: calc(100% - 55px)
+	top: 55px
+	left: 0
+	pointer-events: none
+	user-select: none
+	transition: 1s all
+	position: fixed
+	border-top: 1px solid #0000
+.scrolled
+	box-shadow: inset 0 40px 40px -40px #000A
+	border-top: 1px solid #000A

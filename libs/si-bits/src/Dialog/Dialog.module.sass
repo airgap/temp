@@ -21,7 +21,10 @@
         padding: 10px
     border-radius: 10px
     // backdrop-filter: blur(20px)
-    background: linear-gradient(135deg, rgba(38, 13, 65, 0.95) 0%, rgba(58, 20, 100, 0.95) 50%, rgba(38, 13, 65, 0.95) 100%)
+    // background: linear-gradient(135deg, rgba(38, 13, 65, 0.95) 0%, rgba(58, 20, 100, 0.95) 50%, rgba(38, 13, 65, 0.95) 100%)
+    background-image: url('../Backdrop/drop.png')
+    background-size: cover
+    backdrop-filter: blur(20px)
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 1)
     margin-top: 50px
     border: $border
@@ -31,6 +34,8 @@
     max-height: calc(100vh - 70px)
     margin-top: 50vh
     transform: translateY(-50%)
+    &.profile
+      border-top-left-radius: 35px
     &.xs
         width: 300px
     &.s
@@ -87,3 +92,5 @@
 .interactives
   transition: opacity .5s
   display: inline
+.title
+  margin-bottom: 10px

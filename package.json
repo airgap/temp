@@ -114,7 +114,6 @@
 		"eslint-plugin-playwright": "^1.8.3",
 		"eslint-plugin-react": "7.35.0",
 		"eslint-plugin-react-hooks": "5.0.0",
-		"flowbite-svelte": "^0.48.4",
 		"formdata-node": "^6.0.3",
 		"from-schema": "../from-schema",
 		"glob": "^11.0.3",

@@ -121,7 +121,12 @@
 		onlogin={login}
 		oncreate={openCreator}
 	/>
-	<Dialog bind:visible={showCreator} size="l" animation="slide-top">
+	<Dialog
+		bind:visible={showCreator}
+		size="l"
+		animation="slide-top"
+		variant="profile"
+	>
 		<PostCreator onsuccess={closeCreator} {reply} {echo}></PostCreator>
 	</Dialog>
 	<Dialog bind:visible={showAuth} animation="slide-top">

@@ -5,6 +5,7 @@
 		userStore,
 		PostList,
 		postStore,
+		FeedPage,
 	} from '@lyku/si-bits';
 	import type { Post, Thread, User, Reaction } from '@lyku/json-models';
 	import { PUBLIC_CF_HASH } from '$env/static/public';
@@ -29,10 +30,12 @@
 	reactions.forEach((r) => myReactionStore.set(r.id, r.type));
 </script>
 
-{#if error}
-	<p>Error loading post: {error}</p>
-{:else if thread}
-	<PostList threads={[thread]} cfHash={PUBLIC_CF_HASH} />
-{:else}
-	<p>Loading post...</p>
-{/if}
+<FeedPage title={error ? 'Error' : ''}>
+	{#if error}
+		<p>Error loading post: {error}</p>
+	{:else if thread}
+		<PostList threads={[thread]} cfHash={PUBLIC_CF_HASH} />
+	{:else}
+		<p>Loading post...</p>
+	{/if}
+</FeedPage>

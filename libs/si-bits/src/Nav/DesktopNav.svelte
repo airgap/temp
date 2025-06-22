@@ -24,6 +24,7 @@
 	import BubbleButton from '../BubbleButton/BubbleButton.svelte';
 	import Cube from '../Cube.svelte';
 	import { userStore } from '../CacheProvider';
+	import { scro } from '../scrolled.svelte.ts';
 	const user = $derived(userStore.get(-1n));
 	const { sessionId, url, onjoin, onlogin, oncreate } = $props<{
 		sessionId: string;
@@ -36,9 +37,9 @@
 </script>
 
 <div class={styles.DesktopNav}>
-	<div class={styles.DesktopNavContainer}>
+	<div class={[styles.DesktopNavContainer, scro.lled && styles.scrolled]}>
 		<div class={styles.InnerDesktopNav}>
-			<Backdrop />
+			<!-- <Backdrop /> -->
 			<a onclick={() => (location.href = '/hot')} class={styles.cube}>
 				<Cube />
 			</a>
