@@ -1,0 +1,11 @@
+{
+	"devDependencies": {
+		"@lyku/route-helpers": "workspace:*",
+		"@lyku/redis-client": "workspace:*",
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/json-models": "workspace:*",
+		"@lyku/helpers": "workspace:*",
+		"@lyku/handles": "workspace:*",
+		"@lyku/logger": "workspace:*"
+	}
+}

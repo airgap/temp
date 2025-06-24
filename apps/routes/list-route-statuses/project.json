@@ -1,0 +1,40 @@
+{
+	"name": "@lyku/list-route-statuses",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./scripts/build-route list-route-statuses"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route list-route-statuses --push"
+			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route list-route-statuses"
+			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-route-statuses",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route list-route-statuses --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
+		}
+	}
+}

@@ -109,7 +109,7 @@ export const serveHttp = async ({
 				?.split('=')[1];
 
 			if (needsAuth && !auth && !cookieSessionId) {
-				console.warn('Unauthorized');
+				console.warn('Unauthorized', req.url);
 				finishRequest?.(401);
 				return new Response('Unauthorized', {
 					status: 401,

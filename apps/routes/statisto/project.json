@@ -1,0 +1,40 @@
+{
+	"name": "@lyku/statisto",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./scripts/build-route statisto"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route statisto --push"
+			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route statisto"
+			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route statisto",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route statisto --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
+		}
+	}
+}
