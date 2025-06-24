@@ -285,12 +285,12 @@
 <!-- Canvas for WebGL output; pointer events enable dragging -->
 <canvas
 	bind:this={canvasElem}
-	width={160}
-	height={160}
+	width={90}
+	height={90}
 	style={`touch-action: none; transition: .25s transform; transform: scale(${scale})`}
-	on:pointerdown={pointerDown}
-	on:pointermove={pointerMove}
-	on:pointerup={pointerUp}
-	on:pointercancel={pointerUp}
+	onpointerdown={pointerDown}
+	onpointermove={pointerMove}
+	onpointerup={pointerUp}
+	onpointercancel={pointerUp}
 >
 </canvas>

@@ -62,8 +62,6 @@
 	let notifyingDelete = $state(false);
 	let deleting = $state(false);
 
-	console.log('ffffudge');
-
 	const post = $derived(postStore.get(id));
 
 	let replies = $state<Post[]>([]);
@@ -80,7 +78,6 @@
 	const stripLinks = (body: string) =>
 		body.replace(urlRegex, (url) => `<a href='${url}'>${stripLink(url)}</a>`);
 	$inspect(userStore);
-	console.log('fffa');
 	// $effect(() => console.log('bbb', userStore));
 	const author = $derived(userStore.get(post?.author));
 	const follow = myFolloweeStore.get(author?.id);
@@ -102,13 +99,6 @@
 
 	$effect(() => error && console.error('DynamicPost error:', error?.message));
 
-	$inspect('hnng', userStore.get(-1n), showReplyer);
-
-	$effect(() => {
-		console.log('AUTHOR ID', post?.author);
-		console.log('AUTHOR', author);
-	});
-
 	$effect(() => {
 		if (!queriedReplies && post?.replies) {
 			queriedReplies = true;
@@ -123,9 +113,6 @@
 	const itsYou = $derived(
 		userStore.get(-1n) && author?.id === userStore.get(-1n)?.id,
 	);
-	$inspect(author);
-
-	$effect(() => console.log('fileStore', fileStore));
 
 	// onMount(async () => {
 	//    await import("@mux/mux-player");
@@ -409,7 +396,6 @@
 					Yes
 				{/if}
 			</Button>
-			<Spinner />
 			<Button disabled={deleting} onClick={() => (confirmingDelete = false)}
 				>No</Button
 			>

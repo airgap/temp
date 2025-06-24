@@ -24,6 +24,7 @@
 	import classnames from 'classnames';
 	import { bigintToBase58 } from '@lyku/helpers';
 	import { userStore } from '../CacheProvider';
+	import { Spinner } from '../Spinner';
 
 	const {
 		reply = undefined,
@@ -168,6 +169,17 @@
 			<span class={styles.editor}>
 				<Tippy value={body} oninput={(newVal) => (body = newVal)} />
 			</span>
+
+			<div class={styles.Submit}>
+				{#if pending || finalizing}
+					<Spinner size="m" />
+				{:else}
+					<button onclick={post} disabled={!postable || pending || finalizing}>
+						<!-- <span>{@render submitText()}</span> -->
+						{@html chevvy}
+					</button>
+				{/if}
+			</div>
 		</div>
 
 		<div class={styles.imageList}>
@@ -186,13 +198,6 @@
 					allowVideo={true}
 				/>
 			{/each}
-		</div>
-
-		<div class={styles.Submit}>
-			<button onclick={post} disabled={!postable}>
-				<span>{@render submitText()}</span>
-				{@html chevvy}
-			</button>
 		</div>
 
 		{#if error}

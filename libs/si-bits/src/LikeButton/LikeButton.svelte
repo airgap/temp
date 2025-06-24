@@ -14,20 +14,6 @@
 		post?.id ? myReactionStore.get(post.id) : undefined,
 	);
 
-	// Effects for debugging
-	$effect(() => {
-		console.log('reaction for post', post?.id, ':', reaction);
-	});
-
-	$effect(() => {
-		console.log(
-			'current user:',
-			userStore.get(-1n)?.id,
-			'post author:',
-			post?.author,
-		);
-	});
-
 	// Reaction handlers
 	const react = (type?: string) => {
 		if (!post?.id) return;

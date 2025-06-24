@@ -11,14 +11,14 @@
 	const {
 		points,
 		progress = false,
-		size = 's',
+		size = 'm',
 	} = $props<{ points: bigint; progress?: boolean; size?: 's' | 'm' | 'l' }>();
 	// export let progress: boolean = false;
 	// export let size: 's' | 'm' | 'l' = 's';
 
 	const sizes = {
 		s: 25,
-		m: 50,
+		m: 45,
 		l: 100,
 	} as const;
 
@@ -26,7 +26,7 @@
 	const half = $derived(sizeValue / 2);
 	const level = $derived(getLevelFromPoints(points));
 	const progressValue = $derived(getProgressToNextLevel(points));
-	$effect(() => console.log(level, progressValue));
+	$effect(() => console.log('level', level, 'pv', progressValue));
 
 	// Generate unique IDs for SVG elements
 	const id = $props.id();
@@ -52,10 +52,10 @@
 		</defs>
 
 		<!-- Background circle -->
-		<circle cx="${half}" cy="${half}" r="${half - 1}" fill="#ffffff17" />
+		<circle cx="${half}" cy="${half}" r="${half}" fill="#ffffff17" />
 
 		<!-- Fill that rises from bottom -->
-		<circle cx="${half}" cy="${half}" r="${half - 1}" fill="white" clip-path="url(#${fillClipId})" />
+		<circle cx="${half}" cy="${half}" r="${half}" fill="white" clip-path="url(#${fillClipId})" />
 
 		<!-- Text for filled area - in background color -->
 		<text x="${half}" y="${half}" text-anchor="middle" dy=".375em" fill="#652966" font-size="${half}" clip-path="url(#${fillClipId})">${level}</text>
@@ -69,7 +69,7 @@
 
 <svg
 	class={styles.LevelBadge}
-	viewBox="0 0 25 25"
+	viewBox="0 0 {sizeValue} {sizeValue}"
 	width={sizeValue}
 	height={sizeValue}
 >

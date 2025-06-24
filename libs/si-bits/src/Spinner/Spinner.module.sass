@@ -3,29 +3,29 @@
 	display: inline-block
 	vertical-align: bottom
 	position: relative
+	--d: 5px
+	width: var(--d)
+	height: var(--d)
 	> div
-		postion: absolute
-		top: 2px
+		position: absolute
+		top: 0px
 		content: '-'
 		display: block
-		width: 100%
-		height: 100%
+		width: var(--d)
+		height: var(--d)
 		animation: blub 2s infinite
 		background: white
 		border-radius: 50%
+		animation-fill-mode: backwards
 		~ div
 			animation-delay: 1s
+			// margin-top: calc(var(--d) * -1)
 .l
-	width: 50px
-	height: 50px
+	--d: 50px
 .m
-	width: 25px
-	height: 25px
-	//border-radius: 5px
+	--d: 25px
 .s
-	width: 15px
-	height: 15px
-	//border-radius: 2px
+	--d: 15px
 @keyframes blub
 	0%
 		opacity: 0
