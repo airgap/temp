@@ -1,5 +1,4 @@
 import type { BodyType, ScoredPost, Thread } from '@lyku/json-models';
-import { stringifyBON } from 'from-schema';
 type HotHit = {
 	_index: string;
 	_id: string;

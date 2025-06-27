@@ -3,7 +3,7 @@ import { bondIds, Err } from '@lyku/helpers';
 import { User, Reaction } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { parsePossibleBON } from 'from-schema';
+import { unpack } from 'msgpackr';
 
 export default handleListUserPostsWithMeta(
 	async ({ before, user }, { requester }) => {
@@ -26,7 +26,9 @@ export default handleListUserPostsWithMeta(
 			}
 		}
 		if (!uid) throw new Err(404);
-		let author = await redis.get(`user:${uid}`).then(parsePossibleBON<User>);
+		let author = await redis
+			.getBuffer(`user:${uid}`)
+			.then((u) => u && unpack(u));
 		if (!author) {
 			author = await pg
 				.selectFrom('users')

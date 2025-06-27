@@ -1,7 +1,6 @@
 import { handleGetCurrentUser } from '@lyku/handles';
 import { client as redis } from '@lyku/redis-client';
 import { client as pg } from '@lyku/postgres-client';
-import { parseBON, stringifyBON } from 'from-schema';
 import { User } from '@lyku/json-models';
 import { Err } from '@lyku/helpers';
 import { pack, unpack } from 'msgpackr';
@@ -9,8 +8,12 @@ import { pack, unpack } from 'msgpackr';
 export default handleGetCurrentUser(async (_, { requester }) => {
 	let user: User | undefined = undefined;
 	const text = await redis.getBuffer(`user:${requester}`);
-	if (text) user = unpack(text) as User;
-	else {
+	if (text) {
+		console.log('Cache hit');
+		user = unpack(text) as User;
+		console.log('Cache parsed');
+	} else {
+		console.log('Cache miss');
 		user = await pg
 			.selectFrom('users')
 			.where('id', '=', requester)
@@ -19,6 +22,7 @@ export default handleGetCurrentUser(async (_, { requester }) => {
 		if (user) {
 			await redis.set(`user:${requester}`, pack(user));
 		}
+		console.log('Cache updated');
 	}
 	if (!user) throw new Err(500, 'Session exists but user does not');
 	return user;

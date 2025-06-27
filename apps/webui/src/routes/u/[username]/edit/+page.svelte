@@ -10,11 +10,13 @@
 		userStore,
 		me,
 	} from '@lyku/si-bits';
+	import type { User } from '@lyku/json-models';
 
 	import styles from './Profile.module.sass';
 	import { page } from '$app/state';
-	const slug = page.params.slug;
-	console.log('slug', slug);
+	const username = page.params.username;
+	const slug = username?.toLocaleLowerCase();
+	console.log('username', username);
 	const { data } = $props<{
 		data:
 			| {

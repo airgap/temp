@@ -62,6 +62,7 @@ export * from './listAchievements';
 export * from './listChannelVideos';
 export * from './listDevelopers';
 export * from './listGroupMembershipVectors';
+export * from './listRouteMetrics';
 export * from './listenToMyLikes';
 export * from './getMyLikes';
 export * from './getMyReactions';

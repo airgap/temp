@@ -5,9 +5,9 @@ import { client as redis } from '@lyku/redis-client';
 import { client as pg } from '@lyku/postgres-client';
 import { FileDoc, Post, Reaction, User } from '@lyku/json-models';
 import { bondIds } from '@lyku/helpers';
-import { parsePossibleBON } from 'from-schema';
 import { handleListHotPosts } from '@lyku/handles';
 import { defaultLogger } from '@lyku/logger';
+import { unpack } from 'msgpackr';
 
 // const decompressor = brotworst();
 export default handleListHotPosts(async ({ page }, { requester }) => {
@@ -41,8 +41,8 @@ export default handleListHotPosts(async ({ page }, { requester }) => {
 	// const posts = await refinedPostsQuery.execute();
 	const pagestr = page ? `:page:${page}` : '';
 	const posts = (await redis
-		.get(`hot_posts${pagestr}`)
-		.then(parsePossibleBON)) as Post[] | null;
+		.getBuffer(`hot_posts${pagestr}`)
+		.then((ps) => (ps ? unpack(ps) : null))) as Post[] | null;
 
 	console.log('Posts:', posts?.length);
 	if (!posts) {

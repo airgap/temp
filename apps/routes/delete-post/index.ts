@@ -3,7 +3,6 @@ import { Err } from '@lyku/helpers';
 import { deleteFromElastic } from './elasticate';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { parsePossibleBON, stringifyBON } from 'from-schema';
 import { type Post } from '@lyku/json-models';
 import { pack, unpack } from 'msgpackr';
 

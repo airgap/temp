@@ -1,6 +1,6 @@
-import { decode, encode } from '@msgpack/msgpack';
+import { unpack, pack } from 'msgpackr';
 export const load = async ({ params, fetch, parent }) => {
-	const body = encode({ user: params.slug }, { useBigInt64: true });
+	const body = pack({ user: params.username?.toLocaleLowerCase() });
 	console.log('body', body);
 	const res = await fetch('https://api.lyku.org/list-user-posts-with-meta', {
 		method: 'POST',
@@ -12,9 +12,7 @@ export const load = async ({ params, fetch, parent }) => {
 	}
 
 	const buffer = await res.arrayBuffer();
-	const response = decode(new Uint8Array(buffer), {
-		useBigInt64: true,
-	}) as any;
+	const response = unpack(new Uint8Array(buffer)) as any;
 
 	return response;
 };

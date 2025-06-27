@@ -2,7 +2,6 @@ import { handleListGroupsImIn } from '@lyku/handles';
 import { Group } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { parseBON, stringifyBON } from 'from-schema';
 import { pack, unpack } from 'msgpackr';
 export default handleListGroupsImIn(async (_, { requester }) => {
 	// Try to get requester's group membership list

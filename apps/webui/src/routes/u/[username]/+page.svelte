@@ -56,7 +56,7 @@
 	console.log('posts', posts);
 
 	// Get identifier from URL path params using SvelteKit's $page store
-	const ident = page.params.slug;
+	const ident = page.params.username?.toLocaleLowerCase();
 
 	// Computed hang content for the profile
 	// const hangContent = $derived(() =>

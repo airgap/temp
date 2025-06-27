@@ -1,5 +1,5 @@
 {
-	"name": "@lyku/list-route-statuses",
+	"name": "@lyku/list-route-metrics",
 	"extends": ["../_shared/project.json"],
 	"tags": [],
 	"targets": {
@@ -7,32 +7,32 @@
 			"executor": "nx:run-commands",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"command": "./scripts/build-route list-route-statuses"
+				"command": "./scripts/build-route list-route-metrics"
 			}
 		},
 		"dockerize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/dockerize-route list-route-statuses --push"
+				"command": "./scripts/dockerize-route list-route-metrics --push"
 			}
 		},
 		"kubernetize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/deploy-route list-route-statuses"
+				"command": "./scripts/deploy-route list-route-metrics"
 			}
 		},
 		"grafanize": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/graph-route list-route-statuses",
+				"command": "./scripts/graph-route list-route-metrics",
 				"cwd": "{workspaceRoot}"
 			}
 		},
 		"grafanize:wait": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "./scripts/graph-route list-route-statuses --wait-for-metrics",
+				"command": "./scripts/graph-route list-route-metrics --wait-for-metrics",
 				"cwd": "{workspaceRoot}"
 			}
 		}

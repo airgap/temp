@@ -1,8 +1,9 @@
 import { createLogger } from '@lyku/logger';
 import { client as redis } from '@lyku/redis-client';
 import { createMetricsClient } from '@lyku/metrics';
-import { pack } from 'msgpackr';
+import { pack, unpack } from 'msgpackr';
 import fetch from 'node-fetch';
+import { RouteStatus } from '@lyku/json-models';
 
 export type RouteMetricsAggregationServiceConfig = {
 	serviceName: string;
@@ -15,15 +16,35 @@ export type RouteMetricsAggregationServiceConfig = {
 	k8sEnabled: boolean;
 };
 
-interface RouteMetrics {
-	service: string;
+interface HistoricalDataPoint {
+	timestamp: number;
 	status: 'up' | 'down';
-	requestRate: number;
-	errorRate: number;
 	responseTime: number;
-	memoryUsage: number;
-	inFlightRequests: number;
-	lastUpdated: number;
+	errorRate: number;
+}
+
+interface UptimeStats {
+	uptime24h: number;
+	uptime7d: number;
+	uptime30d: number;
+	uptime90d: number;
+	incidents24h: number;
+	incidents7d: number;
+	incidents30d: number;
+	averageResponseTime24h: number;
+	averageResponseTime7d: number;
+}
+
+interface ServiceMetricsWithUptime extends RouteStatus {
+	uptimeStats: UptimeStats;
+}
+
+interface Incident {
+	service: string;
+	startTime: number;
+	endTime?: number;
+	duration?: number;
+	reason?: string;
 }
 
 /**
@@ -201,7 +222,7 @@ export class RouteMetricsAggregationService {
 	/**
 	 * Get metrics for a specific service
 	 */
-	private async getServiceMetrics(serviceName: string): Promise<RouteMetrics> {
+	private async getServiceMetrics(serviceName: string): Promise<RouteStatus> {
 		try {
 			// Query multiple metrics in parallel
 			const [
@@ -285,23 +306,18 @@ export class RouteMetricsAggregationService {
 				services.map((service) => this.getServiceMetrics(service)),
 			);
 
-			// Store in Redis
-			const pipeline = redis.pipeline();
+			// Store current metrics and historical data
+			await this.storeMetricsWithHistory(allMetrics, services);
 
-			// Store overall metrics
-			pipeline.set('route_metrics:all', pack(allMetrics));
-			pipeline.set('route_metrics:timestamp', Date.now());
-			pipeline.set('route_metrics:count', allMetrics.length);
+			// Calculate and store uptime statistics
+			const allUptimeStats =
+				await this.calculateAndStoreUptimeStats(allMetrics);
 
-			// Store individual service metrics
-			for (const metrics of allMetrics) {
-				pipeline.set(`route_metrics:service:${metrics.service}`, pack(metrics));
-			}
+			// Create consolidated metrics with uptime for O(1) retrieval
+			await this.storeConsolidatedMetrics(allMetrics, allUptimeStats);
 
-			// Store service list
-			pipeline.set('route_metrics:services', pack(services));
-
-			await pipeline.exec();
+			// Check for incidents and update incident tracking
+			await this.updateIncidentTracking(allMetrics);
 
 			const duration = Date.now() - startTime;
 			this.metrics.recordHistogram(
@@ -373,5 +389,257 @@ export class RouteMetricsAggregationService {
 		} catch (error) {
 			this.logger.error('Failed to start health check server', { error });
 		}
+	}
+
+	/**
+	 * Store metrics with historical data
+	 */
+	private async storeMetricsWithHistory(
+		allMetrics: RouteStatus[],
+		services: string[],
+	): Promise<void> {
+		const now = Date.now();
+		const pipeline = redis.pipeline();
+
+		// Store current metrics
+		pipeline.set('route_metrics:all', pack(allMetrics));
+		pipeline.set('route_metrics:timestamp', now);
+		pipeline.set('route_metrics:count', allMetrics.length);
+		pipeline.set('route_metrics:services', pack(services));
+
+		// Store individual service metrics and historical data
+		for (const metrics of allMetrics) {
+			// Current metrics
+			pipeline.set(`route_metrics:service:${metrics.service}`, pack(metrics));
+
+			// Historical data point
+			const dataPoint: HistoricalDataPoint = {
+				timestamp: now,
+				status: metrics.status,
+				responseTime: metrics.responseTime,
+				errorRate: metrics.errorRate,
+			};
+
+			// Store in time-series buckets (5-minute resolution)
+			pipeline.zadd(`history:5min:${metrics.service}`, now, pack(dataPoint));
+			pipeline.expire(`history:5min:${metrics.service}`, 24 * 60 * 60);
+
+			// Hourly aggregates (keep for 90 days)
+			const bucket1hour = Math.floor(now / (60 * 60 * 1000));
+			pipeline.hset(
+				`history:hourly:${metrics.service}:${bucket1hour}`,
+				now.toString(),
+				pack(dataPoint),
+			);
+			pipeline.expire(
+				`history:hourly:${metrics.service}:${bucket1hour}`,
+				90 * 24 * 60 * 60,
+			);
+
+			// Daily aggregates (keep for 1 year)
+			const bucket1day = Math.floor(now / (24 * 60 * 60 * 1000));
+			pipeline.hset(
+				`history:daily:${metrics.service}:${bucket1day}`,
+				now.toString(),
+				pack(dataPoint),
+			);
+			pipeline.expire(
+				`history:daily:${metrics.service}:${bucket1day}`,
+				365 * 24 * 60 * 60,
+			);
+		}
+
+		await pipeline.exec();
+	}
+
+	/**
+	 * Calculate and store uptime statistics
+	 */
+	private async calculateAndStoreUptimeStats(
+		allMetrics: RouteStatus[],
+	): Promise<Map<string, UptimeStats>> {
+		const now = Date.now();
+		const pipeline = redis.pipeline();
+		const uptimeStatsMap = new Map<string, UptimeStats>();
+
+		for (const metrics of allMetrics) {
+			const stats: UptimeStats = await this.calculateUptimeForService(
+				metrics.service,
+				now,
+			);
+			uptimeStatsMap.set(metrics.service, stats);
+			pipeline.set(`uptime_stats:${metrics.service}`, pack(stats));
+		}
+
+		await pipeline.exec();
+		return uptimeStatsMap;
+	}
+
+	/**
+	 * Store consolidated metrics with uptime for O(1) retrieval
+	 */
+	private async storeConsolidatedMetrics(
+		allMetrics: RouteStatus[],
+		allUptimeStats: Map<string, UptimeStats>,
+	): Promise<void> {
+		const consolidatedMetrics: ServiceMetricsWithUptime[] = allMetrics.map(
+			(metrics) => ({
+				...metrics,
+				uptimeStats: allUptimeStats.get(metrics.service) || {
+					uptime24h: 100,
+					uptime7d: 100,
+					uptime30d: 100,
+					uptime90d: 100,
+					incidents24h: 0,
+					incidents7d: 0,
+					incidents30d: 0,
+					averageResponseTime24h: 0,
+					averageResponseTime7d: 0,
+				},
+			}),
+		);
+
+		// Store consolidated metrics for O(1) retrieval by list-route-metrics
+		await redis.set('route_metrics:consolidated', pack(consolidatedMetrics));
+
+		this.logger.info(
+			`Stored consolidated metrics for ${consolidatedMetrics.length} services`,
+		);
+	}
+
+	/**
+	 * Calculate uptime statistics for a service
+	 */
+	private async calculateUptimeForService(
+		service: string,
+		now: number,
+	): Promise<UptimeStats> {
+		const ranges = [
+			{ name: '24h', ms: 24 * 60 * 60 * 1000 },
+			{ name: '7d', ms: 7 * 24 * 60 * 60 * 1000 },
+			{ name: '30d', ms: 30 * 24 * 60 * 60 * 1000 },
+		];
+
+		const stats: any = {
+			uptime24h: 100,
+			uptime7d: 100,
+			uptime30d: 100,
+			uptime90d: 100,
+			incidents24h: 0,
+			incidents7d: 0,
+			incidents30d: 0,
+			averageResponseTime24h: 0,
+			averageResponseTime7d: 0,
+		};
+
+		// Get historical data for 24h (from 5-minute buckets)
+		const history24h = await redis.zrangebyscoreBuffer(
+			`history:5min:${service}`,
+			now - ranges[0].ms,
+			now,
+		);
+
+		if (history24h.length > 0) {
+			let upCount = 0;
+			let totalResponseTime = 0;
+			let responseTimeCount = 0;
+
+			for (const item of history24h) {
+				const point = unpack(item) as HistoricalDataPoint;
+				if (point.status === 'up') upCount++;
+				if (point.responseTime > 0) {
+					totalResponseTime += point.responseTime;
+					responseTimeCount++;
+				}
+			}
+
+			stats.uptime24h = (upCount / history24h.length) * 100;
+			stats.averageResponseTime24h =
+				responseTimeCount > 0 ? totalResponseTime / responseTimeCount : 0;
+		}
+
+		// Get incident counts
+		const incidents = await redis.zrangebyscoreBuffer(
+			`incidents:${service}`,
+			now - ranges[2].ms, // Last 30 days
+			now,
+		);
+
+		for (const incidentData of incidents) {
+			const incident = unpack(incidentData) as Incident;
+			const incidentTime = incident.startTime;
+
+			if (incidentTime >= now - ranges[0].ms) stats.incidents24h++;
+			if (incidentTime >= now - ranges[1].ms) stats.incidents7d++;
+			if (incidentTime >= now - ranges[2].ms) stats.incidents30d++;
+		}
+
+		return stats as UptimeStats;
+	}
+
+	/**
+	 * Track incidents (downtime events)
+	 */
+	private async updateIncidentTracking(
+		allMetrics: RouteStatus[],
+	): Promise<void> {
+		const now = Date.now();
+		const pipeline = redis.pipeline();
+
+		for (const metrics of allMetrics) {
+			const incidentKey = `incident:current:${metrics.service}`;
+			const currentIncident = await redis.getBuffer(incidentKey);
+
+			if (metrics.status === 'down') {
+				// Service is down
+				if (!currentIncident) {
+					// New incident
+					const incident: Incident = {
+						service: metrics.service,
+						startTime: now,
+						reason:
+							metrics.errorRate > 0 ? 'High error rate' : 'Service unreachable',
+					};
+
+					pipeline.set(incidentKey, pack(incident));
+					pipeline.zadd(`incidents:${metrics.service}`, now, pack(incident));
+
+					this.logger.error(`Service ${metrics.service} is DOWN`, {
+						service: metrics.service,
+						errorRate: metrics.errorRate,
+						responseTime: metrics.responseTime,
+					});
+				}
+			} else if (currentIncident) {
+				// Service is up but there was an incident
+				const incident = unpack(currentIncident) as Incident;
+				incident.endTime = now;
+				incident.duration = now - incident.startTime;
+
+				// Update the incident with end time
+				pipeline.zrem(`incidents:${metrics.service}`, currentIncident);
+				pipeline.zadd(
+					`incidents:${metrics.service}`,
+					incident.startTime,
+					pack(incident),
+				);
+				pipeline.del(incidentKey);
+
+				this.logger.info(`Service ${metrics.service} RECOVERED`, {
+					service: metrics.service,
+					downtimeDuration: incident.duration,
+					downtimeMinutes: Math.round(incident.duration / 60000),
+				});
+			}
+
+			// Cleanup old incidents (keep for 1 year)
+			pipeline.zremrangebyscore(
+				`incidents:${metrics.service}`,
+				0,
+				now - 365 * 24 * 60 * 60 * 1000,
+			);
+		}
+
+		await pipeline.exec();
 	}
 }

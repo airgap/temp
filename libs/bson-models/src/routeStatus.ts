@@ -8,8 +8,8 @@ export const routeStatus = {
 		memoryUsage: { type: 'double precision' },
 		requestRate: { type: 'double precision' },
 		responseTime: { type: 'double precision' },
-		service: { type: 'double precision' },
-		status: { type: 'double precision' },
+		service: { type: 'text' },
+		status: { type: 'text', pattern: '^(up|down)$' },
 	},
 	required: [
 		'errorRate',
