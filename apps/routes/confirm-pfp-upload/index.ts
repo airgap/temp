@@ -1,8 +1,6 @@
 import { cfAccountId, cfApiToken } from '@lyku/route-helpers';
 import { handleConfirmPfpUpload } from '@lyku/handles';
-import { InsertableImageDoc } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
-import { client as mux } from '@lyku/mux-client';
 
 export default handleConfirmPfpUpload(async (id, { requester, strings }) => {
 	console.log('Confirming pfp upload', id);
@@ -11,9 +9,10 @@ export default handleConfirmPfpUpload(async (id, { requester, strings }) => {
 
 	// Find the image draft and verify ownership
 	const imageDraft = await pg
-		.selectFrom('imageDrafts')
+		.selectFrom('pfpDrafts')
 		.where('id', '=', id)
-		.where('author', '=', requester)
+		.where('creator', '=', requester)
+		.where('type', 'like', 'image/%')
 		.selectAll()
 		.executeTakeFirst();
 
@@ -42,43 +41,21 @@ export default handleConfirmPfpUpload(async (id, { requester, strings }) => {
 	if (!cfres.success) throw new Error(strings.imageUploadAuthorizationError);
 
 	// Insert new image record
-	const [record] = await pg
-		.insertInto('images')
-		.values({
-			id,
-			uploader: requester,
-			...(imageDraft.channel ? { channelId: imageDraft.channel } : {}),
-			// ...(imageDraft.reason ? { reason: imageDraft.reason } : {}),
-		} satisfies InsertableImageDoc)
-		.returningAll()
+	// const [record] = await pg
+	// 	.insertInto('files')
+	// 	.values({
+	// 		id,
+	// 		uploader: requester,
+	// 	} satisfies InsertableFileDoc)
+	// 	.returningAll()
+	// 	.execute();
+
+	// if (!record) throw new Error(strings.unknownBackendError);
+	await pg
+		.updateTable('users')
+		.set({
+			profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile`,
+		})
+		.where('id', '=', requester)
 		.execute();
-
-	if (!record) throw new Error(strings.unknownBackendError);
-	const reason = imageDraft.reason;
-
-	// Handle special image upload cases
-	const postReasons = {
-		ChannelLogo: 'logo',
-		ActiveChannelBackground: 'activeBg',
-		AwayChannelBackground: 'awayBg',
-	} as const;
-
-	// Update channel or user profile based on reason
-	if (reason && reason in postReasons && imageDraft.channel) {
-		await pg
-			.updateTable('channels')
-			.set({
-				[postReasons[reason as keyof typeof postReasons]]: cfres.result.id,
-			})
-			.where('id', '=', imageDraft.channel)
-			.execute();
-	} else if (reason === 'ProfilePicture') {
-		await pg
-			.updateTable('users')
-			.set({
-				profilePicture: `https://imagedelivery.net/${cfAccountId}/4390912/btvprofile`,
-			})
-			.where('id', '=', requester)
-			.execute();
-	}
 });

@@ -1,4 +1,5 @@
 import { encode, decode } from '@msgpack/msgpack';
+import { unpack } from 'msgpackr';
 
 export const load = async ({ cookies }) => {
 	console.log('Loading /up - Route Metrics Overview');
@@ -25,9 +26,7 @@ export const load = async ({ cookies }) => {
 		}
 
 		const buffer = await res.arrayBuffer();
-		const response = decode(new Uint8Array(buffer), {
-			useBigInt64: true,
-		}) as any;
+		const response = unpack(new Uint8Array(buffer)) as any;
 
 		const end = Date.now();
 		console.log('Route metrics loaded in', end - start, 'ms');

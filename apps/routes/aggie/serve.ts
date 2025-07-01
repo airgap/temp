@@ -15,7 +15,7 @@ async function main() {
 		enableRecovery: process.env.ENABLE_RECOVERY === 'true',
 		enableMonitoring: process.env.ENABLE_MONITORING !== 'false',
 		aggregationIntervalMs: parseInt(
-			process.env.AGGREGATION_INTERVAL_MS || '30000',
+			process.env.AGGREGATION_INTERVAL_MS || '150000',
 			10,
 		), // 5 minutes
 		healthCheckIntervalMs: parseInt(

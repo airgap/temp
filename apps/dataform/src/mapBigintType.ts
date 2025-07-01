@@ -13,5 +13,10 @@ export const mapBigintType = (
 	if (columnSchema.unique) {
 		constraints.push('UNIQUE');
 	}
+	const { generated } = columnSchema;
+	if (generated) {
+		const when = generated.always ? 'ALWAYS' : 'BY DEFAULT';
+		constraints.push(`GENERATED ${when} AS IDENTITY`);
+	}
 	return `BIGINT${constraints.length ? ' ' + constraints.join(' ') : ''}`;
 };

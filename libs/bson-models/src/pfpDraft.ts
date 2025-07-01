@@ -1,33 +1,19 @@
 import type { PostgresRecordModel } from 'from-schema';
 
-export const fileDraft = {
+export const pfpDraft = {
 	description:
 		'Either the information you need to upload an image or video attachment, or any errors encountered',
 	properties: {
 		creator: { type: 'bigint' },
-		post: { type: 'bigint' },
-		id: { type: 'bigint' },
+		id: { type: 'bigint', generated: { as: 'IDENTITY' } },
 		uploadURL: { type: 'text' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		filename: { type: 'text', maxLength: 100 },
 		type: { type: 'text', maxLength: 100 },
-		host: { type: 'text', maxLength: 100 },
 		size: { type: 'double precision' },
 		width: { type: 'integer' },
 		height: { type: 'integer' },
-		length: { type: 'double precision' },
 		hostId: { type: 'text', maxLength: 100 },
-		reason: { type: 'text', maxLength: 25 },
-		supertype: { type: 'text', maxLength: 10 },
 	},
-	required: [
-		'id',
-		'hostId',
-		'creator',
-		'uid',
-		'uploadURL',
-		'created',
-		'type',
-		'host',
-	],
+	required: ['id', 'hostId', 'creator', 'uploadURL', 'created', 'type'],
 } as const satisfies PostgresRecordModel;

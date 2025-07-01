@@ -4,8 +4,7 @@
 	import classnames from 'classnames';
 	import { imageAndVideoMimes, imageMimes } from '@lyku/defaults';
 	import { api, apiHost, currentPlatform } from 'monolith-ts-api';
-	// import Chunks from './Chunks.svelte';
-	import ChunkViz from './ChunkViz.svelte';
+	import { ChunkViz } from '../ChunkViz';
 	import type {
 		ImageDraft,
 		ImageUploadReason,

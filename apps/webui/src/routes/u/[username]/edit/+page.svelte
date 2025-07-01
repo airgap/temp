@@ -42,12 +42,7 @@
 			<Divisio size="m" layout="v">
 				<Divisio size="m" layout="h">
 					<div class={styles.uploader}>
-						<ImageUpload
-							shape="squircle"
-							reason="ProfilePicture"
-							image={me()?.profilePicture}
-							onUpload={handleUpload}
-						/>
+						<PfpUpload image={me()?.profilePicture} onUpload={handleUpload} />
 					</div>
 					<Divisio size="m" layout="v">
 						<h1>{me()?.username ?? 'User'}</h1>

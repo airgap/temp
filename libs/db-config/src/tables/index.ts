@@ -20,6 +20,7 @@ export * from './matchProposals';
 export * from './membershipLists';
 export * from './messages';
 export * from './notifications';
+export * from './pfpDrafts';
 export * from './postDrafts';
 export * from './posts';
 export * from './publishers';

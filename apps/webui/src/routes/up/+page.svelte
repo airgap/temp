@@ -43,11 +43,12 @@
 	const filteredMetrics = $derived(
 		data.metrics
 			.filter((metric) => {
+				console.log('metric', metric);
 				const matchesStatus =
 					filterStatus === 'all' || metric.status === filterStatus;
 				const matchesSearch = metric.service
-					.toLowerCase()
-					.includes(searchTerm.toLowerCase());
+					?.toLowerCase()
+					.includes(searchTerm?.toLowerCase());
 				return matchesStatus && matchesSearch;
 			})
 			.sort((a, b) => {
@@ -60,6 +61,7 @@
 						comparison = a.status.localeCompare(b.status);
 						break;
 					case 'uptime':
+						console.log('st', a.uptimeStats, b.uptimeStats);
 						comparison = a.uptimeStats.uptime24h - b.uptimeStats.uptime24h;
 						break;
 					case 'response':
@@ -135,6 +137,8 @@
 			return () => clearInterval(interval);
 		}
 	});
+	$effect(() => console.log('data', data));
+	$inspect(data);
 </script>
 
 <svelte:head>
