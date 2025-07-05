@@ -1,4 +1,4 @@
-import type { Post } from '@lyku/json-models';
+import { client as elastic } from '@lyku/elasticsearch-client';
 
 export async function deleteFromElastic(post: {
 	id: bigint;
@@ -11,16 +11,12 @@ export async function deleteFromElastic(post: {
 	const index = `posts-${year}-${month}`;
 	const id = post.id.toString();
 
-	const url = `${process.env.ELASTIC_API_ENDPOINT}/${index}/_doc/${id}`;
-
-	const res = await fetch(url, {
-		method: 'DELETE',
-		headers: {
-			Authorization: `ApiKey ${process.env.ELASTIC_API_KEY}`,
-		},
-	});
-
-	if (!res.ok) {
-		console.warn(`Failed to delete post in Elasticsearch: ${res.statusText}`);
+	try {
+		await elastic.delete({
+			index,
+			id,
+		});
+	} catch (error) {
+		console.warn(`Failed to delete post in Elasticsearch:`, error);
 	}
 }

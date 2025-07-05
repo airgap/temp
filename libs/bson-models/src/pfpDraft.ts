@@ -15,5 +15,5 @@ export const pfpDraft = {
 		height: { type: 'integer' },
 		hostId: { type: 'text', maxLength: 100 },
 	},
-	required: ['id', 'hostId', 'creator', 'uploadURL', 'created', 'type'],
+	required: ['id', 'hostId', 'creator', 'uploadURL', 'created'],
 } as const satisfies PostgresRecordModel;

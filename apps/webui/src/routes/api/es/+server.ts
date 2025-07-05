@@ -1,14 +1,14 @@
 import { json } from '@sveltejs/kit';
-import { ELASTIC_API_ENDPOINT, ELASTIC_API_KEY } from '$env/static/private';
+import { ELASTIC_CONNECTION_STRING } from '$env/static/private';
 
 export const POST = async ({ request }) => {
 	const body = await request.json();
 
-	const res = await fetch(`${ELASTIC_API_ENDPOINT}/posts-*/_search`, {
+	const res = await fetch(`${ELASTIC_CONNECTION_STRING}/posts-*/_search`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `ApiKey ${ELASTIC_API_KEY}`,
+			// Authorization: `ApiKey ${ELASTIC_API_KEY}`,
 		},
 		body: JSON.stringify(body),
 	});

@@ -4,7 +4,7 @@
 		Center,
 		ChannelListWithCreator,
 		Divisio,
-		ImageUpload,
+		PfpUpload,
 		phrasebook,
 		shout,
 		userStore,

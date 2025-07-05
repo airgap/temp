@@ -6,6 +6,7 @@
 		"@lyku/redis-client": "workspace:*",
 		"@lyku/metrics": "workspace:*",
 		"@lyku/db-types": "workspace:*",
-		"@lyku/json-models": "workspace:*"
+		"@lyku/json-models": "workspace:*",
+		"@lyku/locker": "workspace:*"
 	}
 }

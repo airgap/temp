@@ -11,6 +11,7 @@ import {
 import { Kysely, sql } from 'kysely';
 import type { Database } from '@lyku/db-types';
 import { reconcileRedisWithPostgres } from './reconcileRedisWithPostgres';
+import { RedisLock } from '@lyku/locker';
 
 /**
  * Reaction Worker Service
@@ -28,6 +29,7 @@ export class ReactionWorkerService {
 	private isShuttingDown = false;
 	private reconcileInterval: NodeJS.Timeout | null = null;
 	private healthCheckInterval: NodeJS.Timeout | null = null;
+	private serviceLock: RedisLock | null = null;
 
 	constructor(
 		private config: {
@@ -173,6 +175,12 @@ export class ReactionWorkerService {
 			this.reconcileInterval = null;
 		}
 
+		// Release service lock
+		if (this.serviceLock) {
+			await this.serviceLock.release();
+			this.serviceLock = null;
+		}
+
 		// Stop health check job
 		if (this.healthCheckInterval) {
 			clearInterval(this.healthCheckInterval);
@@ -215,7 +223,22 @@ export class ReactionWorkerService {
 			return;
 		}
 
+		// Create lock for this specific job
+		const lock = new RedisLock(
+			this.config.serviceName,
+			this.config.reconcileIntervalMs * 2,
+		);
+
 		try {
+			// Try to acquire lock
+			const acquired = await lock.acquire();
+			if (!acquired) {
+				this.logger.debug(
+					'Reconciliation job skipped - another instance is running',
+				);
+				return;
+			}
+
 			this.logger.info('Starting reconciliation job');
 			const startTime = Date.now();
 
@@ -230,6 +253,8 @@ export class ReactionWorkerService {
 		} catch (error) {
 			this.metrics.incrementCounter('reconciliation_failures');
 			this.logger.error('Reconciliation job failed', { error });
+		} finally {
+			await lock.release();
 		}
 	}
 
@@ -301,8 +326,11 @@ export class ReactionWorkerService {
 			// Dynamically import the HTTP server to avoid dependency cycles
 			const { startHealthCheckServer } = await import('./http-server');
 
-			// Start HTTP server on port 8080 or from environment variable
-			const httpPort = parseInt(process.env.HEALTH_CHECK_PORT || '8080', 10);
+			// Start HTTP server on port 3000 or from environment variable
+			const httpPort = parseInt(
+				process.env.PORT || process.env.HEALTH_CHECK_PORT || '3000',
+				10,
+			);
 			this.healthServer = startHealthCheckServer(httpPort, this);
 
 			this.logger.info(

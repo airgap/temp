@@ -2,7 +2,6 @@ import { client as clickhouse } from '@lyku/clickhouse-client';
 import { client as elastic } from '@lyku/elasticsearch-client';
 import { client as postgres } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { defaultLogger as logger } from '@lyku/logger';
 
 interface ReactionRecord {
 	postId: string;
@@ -21,9 +20,9 @@ interface PostMetadata {
 
 export async function processReactions() {
 	try {
-		logger.info('Processing reactions for Elasticsearch indexing');
+		console.info('Processing reactions for Elasticsearch indexing');
 		const lastProcessedTime = await getLastProcessedTime();
-		logger.info('Last processing time:', { lastProcessedTime });
+		console.info('Last processing time:', { lastProcessedTime });
 
 		// Get posts with updated reaction counts
 		const result = await clickhouse.query({
@@ -41,7 +40,7 @@ export async function processReactions() {
 			format: 'JSONEachRow',
 		});
 		const reactionData = (await result.json()) as ReactionRecord[];
-		logger.info('Found updated reaction records', {
+		console.info('Found updated reaction records', {
 			count: reactionData.length,
 		});
 		if (reactionData.length === 0) return [];
@@ -131,7 +130,7 @@ export async function processReactions() {
 				operations: bulkOperations,
 				refresh: true,
 			});
-			logger.info('Elasticsearch bulk update complete', {
+			console.info('Elasticsearch bulk update complete', {
 				totalItems: bulkOperations.length / 2,
 				errors: bulkResponse.errors,
 			});
@@ -147,7 +146,7 @@ export async function processReactions() {
 
 		return affectedPostIds;
 	} catch (error) {
-		logger.error('Error processing reactions:', { error });
+		console.error('Error processing reactions:', { error });
 		throw error;
 	}
 }
@@ -186,13 +185,13 @@ async function identifyViralPosts(
 				const count = parseInt(total_count, 10);
 				postMap.get(postIdStr)!.isViral = count >= VIRAL_POST_THRESHOLD;
 
-				logger.info(`Post ${postIdStr} has ${count} reactions`, {
+				console.info(`Post ${postIdStr} has ${count} reactions`, {
 					isViral: postMap.get(postIdStr)!.isViral,
 				});
 			}
 		}
 	} catch (error) {
-		logger.error('Error identifying viral posts:', { error });
+		console.error('Error identifying viral posts:', { error });
 		// Continue processing even if this fails - we'll assume posts are not viral
 	}
 }
@@ -230,11 +229,11 @@ async function updateRedisViralFlags(
 		}
 
 		await pipeline.exec();
-		logger.info('Updated Redis viral flags for affected posts', {
+		console.info('Updated Redis viral flags for affected posts', {
 			count: postMap.size,
 		});
 	} catch (error) {
-		logger.error('Error updating Redis viral flags:', { error });
+		console.error('Error updating Redis viral flags:', { error });
 		// Non-critical operation, continue even if this fails
 	}
 }
@@ -259,14 +258,14 @@ async function fetchPostMetadata(postIds: string[]): Promise<PostMetadata[]> {
 
 		return (await result.json()) as PostMetadata[];
 	} catch (error) {
-		logger.error('Error fetching post metadata:', { error, postIds });
+		console.error('Error fetching post metadata:', { error, postIds });
 		return [];
 	}
 }
 
 async function getLastProcessedTime(): Promise<string> {
 	try {
-		logger.info('Getting last processed time from ClickHouse');
+		console.info('Getting last processed time from ClickHouse');
 		const result = await clickhouse.query({
 			query: `
         SELECT max(processed_time) AS last_time
@@ -277,10 +276,10 @@ async function getLastProcessedTime(): Promise<string> {
 
 		const data = (await result.json()) as [] | [{ last_time: string }];
 		const lastTime = data[0]?.last_time || '1970-01-01 00:00:00.000';
-		logger.info('Retrieved last processed time', { lastTime });
+		console.info('Retrieved last processed time', { lastTime });
 		return lastTime;
 	} catch (error) {
-		logger.error('Error getting last processed time:', { error });
+		console.error('Error getting last processed time:', { error });
 		return '1970-01-01 00:00:00.000';
 	}
 }
@@ -293,9 +292,9 @@ async function updateLastProcessedTime(time: string): Promise<void> {
         VALUES (toDateTime64('${time}', 3))
       `,
 		});
-		logger.info('Updated last processed time', { time });
+		console.info('Updated last processed time', { time });
 	} catch (error) {
-		logger.error('Error updating last processed time:', { error, time });
+		console.error('Error updating last processed time:', { error, time });
 		throw error;
 	}
 }

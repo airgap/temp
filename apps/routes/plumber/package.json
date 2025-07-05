@@ -1,9 +1,9 @@
 {
 	"devDependencies": {
-		"@lyku/logger": "workspace:*",
 		"@lyku/clickhouse-client": "workspace:*",
 		"@lyku/elasticsearch-client": "workspace:*",
 		"@lyku/postgres-client": "workspace:*",
-		"@lyku/redis-client": "workspace:*"
+		"@lyku/redis-client": "workspace:*",
+		"@lyku/locker": "workspace:*"
 	}
 }

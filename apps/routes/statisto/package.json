@@ -5,6 +5,7 @@
 		"@lyku/metrics": "workspace:*",
 		"@lyku/db-types": "workspace:*",
 		"@lyku/json-models": "workspace:*",
+		"@lyku/locker": "workspace:*",
 		"node-fetch": "^2.7.0"
 	}
 }

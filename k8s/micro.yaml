@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ${DEPLOYMENT_NAME}
+  namespace: lyku
   labels:
     app: ${DEPLOYMENT_NAME}
     app.kubernetes.io/component: lyku-route # Added for ServiceMonitor
@@ -28,7 +29,7 @@ spec:
         - name: lyku
       containers:
         - name: ${DEPLOYMENT_NAME}
-          image: registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
+          image: ${IMAGE}
           imagePullPolicy: Always
           command: ['bun']
           args:
@@ -59,14 +60,14 @@ spec:
               value: '${CH_USERNAME}'
             - name: CH_PASSWORD
               value: '${CH_PASSWORD}'
-            - name: ELASTIC_API_ENDPOINT
-              value: '${ELASTIC_API_ENDPOINT}'
-            - name: ELASTIC_API_KEY
-              value: '${ELASTIC_API_KEY}'
+            - name: ELASTIC_CONNECTION_STRING
+              value: '${ELASTIC_CONNECTION_STRING}'
             - name: MUX_TOKEN_ID
               value: '${MUX_TOKEN_ID}'
             - name: MUX_TOKEN_SECRET
               value: '${MUX_TOKEN_SECRET}'
+            - name: NATS_CONNECTION_STRING
+              value: '${NATS_CONNECTION_STRING}'
             - name: PUBLIC_CF_HASH
               value: '${PUBLIC_CF_HASH}'
             - name: WEBUI_DOMAIN
@@ -119,6 +120,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ${DEPLOYMENT_NAME}-service
+  namespace: lyku
   labels:
     app: ${DEPLOYMENT_NAME}
     app.kubernetes.io/component: lyku-route # Added for ServiceMonitor

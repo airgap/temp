@@ -3,7 +3,7 @@
 
 # Dashboard generation configuration
 GRAFANA_URL="${GRAFANA_URL:-http://localhost:3002}"
-GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-prom-operator}"
+GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-'prom-operator'}"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
     echo "Usage: $0 <service-name> [--wait-for-metrics]"
@@ -44,32 +44,32 @@ fi
 # Wait for metrics if requested
 if [ "$WAIT_FOR_METRICS" = "true" ]; then
     echo "⏳ Waiting for service to start reporting metrics..."
-    
+
     # Check if service is reporting metrics
     MAX_RETRIES=12  # 2 minutes total (12 * 10 seconds)
     RETRY_COUNT=0
-    
+
     while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         echo "🔍 Checking if service $SERVICE_NAME is reporting metrics... (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)"
-        
+
         # Check if the service has metrics in Prometheus
         METRICS_RESPONSE=$(curl -s -u "admin:$GRAFANA_PASSWORD" \
             "$GRAFANA_URL/api/datasources/proxy/uid/prometheus/api/v1/query?query=lyku_requests_total%7Bexported_service%3D%22$SERVICE_NAME%22%7D" \
             2>/dev/null || echo '{"data":{"result":[]}}')
-        
+
         METRIC_COUNT=$(echo "$METRICS_RESPONSE" | jq '.data.result | length' 2>/dev/null || echo "0")
-        
+
         if [ "$METRIC_COUNT" -gt 0 ]; then
             echo "✅ Service is reporting metrics!"
             break
         fi
-        
+
         if [ $RETRY_COUNT -eq $((MAX_RETRIES - 1)) ]; then
             echo "⚠️  Service is not reporting metrics yet, but proceeding with dashboard creation"
             echo "   The dashboard will show data once the service starts reporting metrics"
             break
         fi
-        
+
         sleep 10
         ((RETRY_COUNT++))
     done

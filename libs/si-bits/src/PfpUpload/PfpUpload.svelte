@@ -1,4 +1,5 @@
 <script lang="ts">
+	import smile from '../smile.png';
 	//@ts-ignore
 	import * as tus from 'tus-js-client';
 	import classnames from 'classnames';
@@ -8,13 +9,12 @@
 	import { ChunkViz } from '../ChunkViz';
 	import type { FileDraft } from '@lyku/json-models';
 	import styles from './PfpUpload.module.sass';
-	import { defaultImages } from './defaultImages';
 
 	import times from '../times.svg?raw';
 	import bg from '../Backdrop/blu.jpg';
 	import { Button } from '../Button';
 	import buttonStyles from '../Button/Button.module.sass';
-	import { Image, type Shape } from '../Image';
+	import { Image } from '../Image';
 	import { Loading } from '../LoadingOverlay';
 	import { formImageUrl } from '../formImageUrl';
 	import replace from '../assets/replace.svg?raw';
@@ -119,11 +119,7 @@
 	const confirmClicked = async () => {
 		if (!fileState) return;
 		workingState = true;
-		const res = await api.authorizeImageUpload({
-			channelId,
-			reason,
-		});
-		pack = res;
+		pack = await api.authorizePfpUpload();
 	};
 
 	const reset = (newImage?: string) => {
@@ -162,13 +158,12 @@
 			}).then((r) =>
 				r.json().then(async (cfres) => {
 					uploaded = true;
-					await api.confirmImageUpload(pack.id);
+					await api.confirmPfpUpload(pack.id);
 					// processed = true;
 					// onFinished?.();
 					// onUpload?.(pack.url);
 					// imageState = pack.url;
 					// succeeded = true;
-					// if (reason === 'AwayChannelBackground') window.location.reload();
 				}),
 			);
 		}
@@ -183,7 +178,7 @@
 
 	const logoUrl = () => {
 		const id = imageState || image;
-		return id ? formImageUrl(id, 'btvprofile') : defaultImages[reason];
+		return id ? formImageUrl(id, 'btvprofile') : smile;
 	};
 </script>
 
@@ -201,9 +196,8 @@
 	{#if image !== undefined}
 		<Image
 			size="l"
-			src={(imageState ? logoUrl() : (base64 ?? logoUrl())) ??
-				defaultImages[reason]}
-			{shape}
+			src={(imageState ? logoUrl() : (base64 ?? logoUrl())) ?? smile}
+			shape="circle"
 		/>
 	{:else}
 		<span class={styles.attachmentImage}>

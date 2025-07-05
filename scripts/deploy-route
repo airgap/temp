@@ -1,39 +1,74 @@
 #!/bin/bash
 # deploy-route.sh
 
-# Set KUBECONFIG to the specified file
-export KUBECONFIG=C:\Users\nickm\lyk8s-kubeconfig.yaml
-
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <service-name>"
     exit 1
 fi
 
 export SERVICE_NAME=$1
-export IMAGE=registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}
+# Add timestamp to ensure unique image tag
+export TIMESTAMP=$(date +%Y%m%d%H%M%S)
+export IMAGE=registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP}
 
 echo "SERVICE_NAME: ${SERVICE_NAME}"
+echo "Building and deploying with timestamp: ${TIMESTAMP}"
+
+# Check if being called from NX (which already built and pushed)
+if [ -z "$NX_TASK_TARGET_PROJECT" ]; then
+    # Not from NX, do the full build process
+    echo "📦 Building route ${SERVICE_NAME}..."
+    ./scripts/build-route ${SERVICE_NAME}
+    if [ $? -ne 0 ]; then
+        echo "❌ Build failed!"
+        exit 1
+    fi
+
+    # Dockerize and push the route with new tag
+    echo "🐳 Dockerizing route ${SERVICE_NAME}..."
+    docker build \
+        --build-arg ROUTE_NAME=${SERVICE_NAME} \
+        -f docker/templates/route.Dockerfile \
+        -t registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP} \
+        .
+    if [ $? -ne 0 ]; then
+        echo "❌ Docker build failed!"
+        exit 1
+    fi
+
+    echo "📤 Pushing image to registry..."
+    docker push registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP}
+    if [ $? -ne 0 ]; then
+        echo "❌ Docker push failed!"
+        exit 1
+    fi
+else
+    # Called from NX, image should already exist with non-timestamped tag
+    # Tag the existing image with timestamp
+    echo "🏷️  Tagging existing image with timestamp..."
+    docker tag registry.digitalocean.com/lyku/lyku:${SERVICE_NAME} registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP}
+    docker push registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP}
+fi
 
 configLocation=~/lyk8s-kubeconfig.yaml
 export config=--kubeconfig=${configLocation}
 export DEPLOYMENT_NAME=lyku-${SERVICE_NAME}
 
-echo "Deleting deployment ${DEPLOYMENT_NAME}"
-kubectl delete deployment ${DEPLOYMENT_NAME} --ignore-not-found ${config}
+echo "🚀 Deploying ${SERVICE_NAME} with image ${IMAGE}"
 
-echo "Deploying ${SERVICE_NAME} with image ${IMAGE}"
-
-# Check if the deployment exists
-if envsubst < k8s/micro.yaml | kubectl get deployment ${DEPLOYMENT_NAME} ${config} >/dev/null 2>&1; then
-    # Update the deployment with the new image
-    envsubst < k8s/micro.yaml | kubectl set image deployment/${DEPLOYMENT_NAME} ${DEPLOYMENT_NAME}=${IMAGE} ${config}
-    echo "Deployment ${DEPLOYMENT_NAME} updated to image ${IMAGE}"
-    # Force redeployment by triggering a rollout restart
-    # kubectl rollout restart deployment/${SERVICE_NAME} ${config}
+# Check if the deployment exists in the lyku namespace
+if kubectl get deployment ${DEPLOYMENT_NAME} -n lyku ${config} >/dev/null 2>&1; then
+    echo "📝 Updating existing deployment ${DEPLOYMENT_NAME}"
+    # Apply the manifest with the new configuration
+    envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
+    # Force a rollout to ensure pods are recreated with new image
+    kubectl rollout restart deployment/${DEPLOYMENT_NAME} ${config}
+    echo "✅ Deployment ${DEPLOYMENT_NAME} updated with new image"
 else
+    echo "🆕 Creating new deployment ${DEPLOYMENT_NAME}"
     # Apply the micro.yaml to create the deployment if it does not exist
     envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
-    echo "Deployment ${DEPLOYMENT_NAME} created with image ${IMAGE}"
+    echo "✅ Deployment ${DEPLOYMENT_NAME} created"
 fi
 
 echo ""

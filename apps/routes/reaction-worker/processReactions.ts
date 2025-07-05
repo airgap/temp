@@ -1,12 +1,7 @@
-import { Client } from '@elastic/elasticsearch';
+import { client as elastic } from '@lyku/elasticsearch-client';
 import { createClickhouseClient } from '@lyku/route-helpers';
 
 const clickhouse = createClickhouseClient();
-
-const elastic = new Client({
-	node: process.env.ELASTIC_API_ENDPOINT,
-	auth: { apiKey: process.env.ELASTIC_API_KEY ?? '' },
-});
 
 interface ReactionRecord {
 	postId: string;

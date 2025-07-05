@@ -10,6 +10,7 @@
 		"@lyku/clickhouse-client": "workspace:*",
 		"@lyku/postgres-client": "workspace:*",
 		"@lyku/logger": "workspace:*",
+		"@lyku/locker": "workspace:*",
 		"@lyku/route-helpers": "workspace:*"
 	}
 }

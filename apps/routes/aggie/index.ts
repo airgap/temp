@@ -7,6 +7,7 @@ import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
 import { createMetricsClient } from '@lyku/metrics';
 import { delasticatePost } from './delasticatePost';
+import { RedisLock } from '@lyku/locker';
 import { Kysely } from 'kysely';
 import type { Database } from '@lyku/db-types';
 import { buildHotQuery } from './buildHotQuery';
@@ -41,6 +42,7 @@ export class HotPostAggregationService {
 	private isShuttingDown = false;
 	private aggregationInterval: NodeJS.Timeout | null = null;
 	private healthCheckInterval: NodeJS.Timeout | null = null;
+	private serviceLock: RedisLock | null = null;
 
 	constructor(private config: HotPostAggregationServiceConfig) {}
 
@@ -137,6 +139,12 @@ export class HotPostAggregationService {
 			this.aggregationInterval = null;
 		}
 
+		// Release service lock
+		if (this.serviceLock) {
+			await this.serviceLock.release();
+			this.serviceLock = null;
+		}
+
 		// Stop health check job
 		if (this.healthCheckInterval) {
 			clearInterval(this.healthCheckInterval);
@@ -173,7 +181,22 @@ export class HotPostAggregationService {
 			return;
 		}
 
+		// Create lock for this specific job
+		const lock = new RedisLock(
+			this.config.serviceName,
+			this.config.aggregationIntervalMs * 2,
+		);
+
 		try {
+			// Try to acquire lock
+			const acquired = await lock.acquire();
+			if (!acquired) {
+				this.logger.debug(
+					'Aggregation job skipped - another instance is running',
+				);
+				return;
+			}
+
 			this.logger.info('Starting hot post aggregation job');
 			const startTime = Date.now();
 
@@ -211,6 +234,8 @@ export class HotPostAggregationService {
 		} catch (error) {
 			this.metrics.incrementCounter('aggie_failures');
 			this.logger.error('Hot post aggregation job failed', { error });
+		} finally {
+			await lock.release();
 		}
 	}
 
@@ -257,8 +282,11 @@ export class HotPostAggregationService {
 			// Dynamically import the HTTP server to avoid dependency cycles
 			const { startHealthCheckServer } = await import('./http-server');
 
-			// Start HTTP server on port 8080 or from environment variable
-			const httpPort = parseInt(process.env.HEALTH_CHECK_PORT || '8080', 10);
+			// Start HTTP server on port 3000 or from environment variable
+			const httpPort = parseInt(
+				process.env.PORT || process.env.HEALTH_CHECK_PORT || '3000',
+				10,
+			);
 			this.healthServer = startHealthCheckServer(httpPort, this);
 
 			this.logger.info(

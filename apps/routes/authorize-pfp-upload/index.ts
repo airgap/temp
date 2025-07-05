@@ -34,8 +34,6 @@ export default handleAuthorizePfpUpload(
 			hostId: cfres.result.id,
 			creator: requester,
 			reason,
-			// ...(channelId ? { channelId } : {}),
-			supertype: 'image',
 		} satisfies InsertablePfpDraft;
 		delete pfpDraft.id;
 		await pg.insertInto('pfpDrafts').values(pfpDraft).executeTakeFirstOrThrow();

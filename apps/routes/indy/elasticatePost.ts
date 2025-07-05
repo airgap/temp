@@ -1,4 +1,5 @@
 import type { Post } from '@lyku/json-models';
+import { client as elastic } from '@lyku/elasticsearch-client';
 
 export async function elasticatePost(post: Post): Promise<void> {
 	const publishString = post.publish.toISOString();
@@ -28,23 +29,16 @@ export async function elasticatePost(post: Post): Promise<void> {
 		deleted: post.deleted?.toISOString(),
 	};
 
-	const url = `${process.env.ELASTIC_API_ENDPOINT}/${index}/_doc/${elasticPost.id}`;
-	const headers = new Headers({
-		'Content-Type': 'application/json',
-		Authorization: `ApiKey ${process.env.ELASTIC_API_KEY}`,
-	});
+	console.log('Indexing', index, elasticPost);
 
-	console.log('Fetching', url, elasticPost);
-
-	const res = await fetch(url, {
-		method: 'PUT',
-		headers,
-		body: JSON.stringify(elasticPost),
-	});
-
-	if (!res.ok) {
-		console.error(`Failed to index post in Elasticsearch: ${res.statusText}`);
-		console.error(await res.text());
+	try {
+		await elastic.index({
+			index,
+			id: elasticPost.id,
+			body: elasticPost,
+		});
+	} catch (error) {
+		console.error(`Failed to index post in Elasticsearch:`, error);
 		throw new Error('Fukt');
 	}
 }

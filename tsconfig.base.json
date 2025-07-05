@@ -29,6 +29,7 @@
 			"@lyku/helpers": ["libs/helpers/src/index.ts"],
 			"@lyku/json-models": ["dist/libs/json-models/src/index.js"],
 			"@lyku/json-models/*": ["dist/libs/json-models/src/*"],
+			"@lyku/locker": ["libs/locker/src/index.ts"],
 			"@lyku/logger": ["libs/logger/src/index.ts"],
 			"@lyku/mapi-models": ["libs/mapi-models/src/index.ts"],
 			"@lyku/mapi-types": ["dist/libs/mapi-types/index.d.ts"],

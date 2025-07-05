@@ -1,66 +1,72 @@
-import express from 'express';
-import { createLogger } from '@lyku/logger';
 import { ReactionWorkerService } from '.';
 
 export class HealthCheckServer {
-	private app: express.Application;
 	private server: any;
-	private logger: any;
 	private workerService: ReactionWorkerService;
+	private port: number;
 
-	constructor(port: number = 8080, workerService: ReactionWorkerService) {
-		this.app = express();
+	constructor(port: number = 3000, workerService: ReactionWorkerService) {
 		this.workerService = workerService;
-		this.logger = createLogger({
-			level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-			serviceName: 'reaction-worker-http',
-		});
-
-		// Configure routes
-		this.configureRoutes();
+		this.port = port;
 
 		// Start server
-		this.server = this.app.listen(port, () => {
-			this.logger.info(`Health check server running on port ${port}`);
-		});
-	}
+		this.server = Bun.serve({
+			port: this.port,
+			fetch: async (req) => {
+				const url = new URL(req.url);
 
-	private configureRoutes(): void {
-		// Simple health check endpoint
-		this.app.get('/health', (req, res) => {
-			this.logger.debug('Health check requested');
-			res.status(200).send(':D');
-		});
+				switch (url.pathname) {
+					case '/health':
+						console.debug('Health check requested');
+						return new Response(':D', { status: 200 });
 
-		// More detailed readiness check that can be used by Kubernetes
-		this.app.get('/readiness', async (req, res) => {
-			try {
-				// Check if the worker service is healthy
-				const isReady = await this.checkServiceHealth();
+					case '/readiness':
+						try {
+							// Check if the worker service is healthy
+							const isReady = await this.checkServiceHealth();
 
-				if (isReady) {
-					res.status(200).send({ status: 'ready' });
-				} else {
-					res.status(503).send({ status: 'not ready' });
+							if (isReady) {
+								return new Response(JSON.stringify({ status: 'ready' }), {
+									status: 200,
+									headers: { 'Content-Type': 'application/json' },
+								});
+							} else {
+								return new Response(JSON.stringify({ status: 'not ready' }), {
+									status: 503,
+									headers: { 'Content-Type': 'application/json' },
+								});
+							}
+						} catch (error) {
+							console.error('Readiness check failed', { error });
+							return new Response(
+								JSON.stringify({
+									status: 'error',
+									message: 'Internal server error',
+								}),
+								{
+									status: 500,
+									headers: { 'Content-Type': 'application/json' },
+								},
+							);
+						}
+
+					case '/liveness':
+						// If the server can respond at all, it's alive
+						return new Response(JSON.stringify({ status: 'alive' }), {
+							status: 200,
+							headers: { 'Content-Type': 'application/json' },
+						});
+
+					default:
+						return new Response(JSON.stringify({ error: 'Not found' }), {
+							status: 404,
+							headers: { 'Content-Type': 'application/json' },
+						});
 				}
-			} catch (error) {
-				this.logger.error('Readiness check failed', { error });
-				res
-					.status(500)
-					.send({ status: 'error', message: 'Internal server error' });
-			}
+			},
 		});
 
-		// Liveness probe
-		this.app.get('/liveness', (req, res) => {
-			// If the server can respond at all, it's alive
-			res.status(200).send({ status: 'alive' });
-		});
-
-		// Catch-all for 404
-		this.app.use((req, res) => {
-			res.status(404).send({ error: 'Not found' });
-		});
+		console.info(`Health check server running on port ${port}`);
 	}
 
 	private async checkServiceHealth(): Promise<boolean> {
@@ -75,17 +81,11 @@ export class HealthCheckServer {
 	}
 
 	public async stop(): Promise<void> {
-		return new Promise((resolve) => {
-			if (this.server) {
-				this.logger.info('Stopping health check server');
-				this.server.close(() => {
-					this.logger.info('Health check server stopped');
-					resolve();
-				});
-			} else {
-				resolve();
-			}
-		});
+		if (this.server) {
+			console.info('Stopping health check server');
+			this.server.stop();
+			console.info('Health check server stopped');
+		}
 	}
 }
 
