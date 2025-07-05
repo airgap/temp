@@ -10,6 +10,7 @@ const ingressTemplate = {
 	kind: 'Ingress',
 	metadata: {
 		name: 'api-ingress',
+		namespace: 'lyku',
 		annotations: {
 			'nginx.ingress.kubernetes.io/rewrite-target': '/$2',
 			'nginx.ingress.kubernetes.io/use-regex': 'true',

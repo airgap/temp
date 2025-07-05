@@ -25,40 +25,44 @@ export const buildHotQuery = ({
 }) =>
 	({
 		index: 'posts-20*',
-		size: size ?? 100,
-		sort: ['_score', { publish: { order: 'desc' } }],
-		// search_after: continuation,
-		query: {
-			function_score: {
-				query: {
-					bool: {
-						filter: [
-							{ range: { publish: { gte: rangeMap[dateRange], lte: 'now' } } },
-						],
-						must_not: [{ exists: { field: 'deleted' } }],
-					},
-				},
-				score_mode: 'multiply',
-				boost_mode: 'replace',
-				functions: [
-					{
-						field_value_factor: {
-							field: 'engagement_score',
-							modifier: 'log1p',
-							factor: 1,
-							missing: 0,
+		body: {
+			size: size ?? 100,
+			sort: ['_score', { publish: { order: 'desc' } }],
+			// search_after: continuation,
+			query: {
+				function_score: {
+					query: {
+						bool: {
+							filter: [
+								{
+									range: { publish: { gte: rangeMap[dateRange], lte: 'now' } },
+								},
+							],
+							must_not: [{ exists: { field: 'deleted' } }],
 						},
 					},
-					{
-						exp: {
-							publish: {
-								origin: 'now',
-								scale: scaleMap[dateRange],
-								decay: 0.5,
+					score_mode: 'multiply',
+					boost_mode: 'replace',
+					functions: [
+						{
+							field_value_factor: {
+								field: 'engagement_score',
+								modifier: 'log1p',
+								factor: 1,
+								missing: 0,
 							},
 						},
-					},
-				],
+						{
+							exp: {
+								publish: {
+									origin: 'now',
+									scale: scaleMap[dateRange],
+									decay: 0.5,
+								},
+							},
+						},
+					],
+				},
 			},
 		},
 	}) as const;

@@ -52,10 +52,11 @@ export class HotPostAggregationService {
 	async initialize(): Promise<void> {
 		console.log('Initializing Aggie');
 		// Initialize logger
-		this.logger = createLogger({
-			level: this.config.environment === 'production' ? 'info' : 'debug',
-			name: this.config.serviceName,
-		});
+		this.logger = console;
+		// 	createLogger({
+		// 	level: this.config.environment === 'production' ? 'info' : 'debug',
+		// 	name: this.config.serviceName,
+		// });
 
 		this.logger.info('Initializing Aggie', {
 			config: this.config,
@@ -204,7 +205,7 @@ export class HotPostAggregationService {
 			console.log('Querying elasticsearch');
 			const result = await es.search(query);
 			// console.log('Elasticsearch query result:', result);
-			const hits = result.hits.hits?.map(delasticatePost);
+			const hits = result.body.hits.hits?.map(delasticatePost);
 			console.log('Stringifying', hits?.length);
 			const stringified = pack(hits);
 			// console.log('Compressing');
