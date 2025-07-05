@@ -20,7 +20,9 @@
 		onneedspage?: () => void;
 	}>();
 
-	let visibleCount = $state(10);
+	const visiblePageSize = 5;
+
+	let visibleCount = $state(visiblePageSize);
 	let postListElement: HTMLDivElement;
 	let isLoading = $state(false);
 	let hasRequestedNextPage = $state(false);
@@ -50,7 +52,7 @@
 				// Handle infinite scroll within current threads
 				if (hasMore && !isLoading) {
 					isLoading = true;
-					visibleCount += 10;
+					visibleCount += visiblePageSize;
 					setTimeout(() => {
 						isLoading = false;
 					}, 100);

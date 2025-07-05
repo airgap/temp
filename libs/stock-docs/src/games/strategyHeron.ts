@@ -8,4 +8,5 @@ export const strategyHeron = {
 	nsfw: false,
 	thumbnail: '/heron.png',
 	created: defaultDate,
+	developer: 0,
 } as const satisfies Game;

@@ -6,6 +6,7 @@
 	import type { Post, User } from '@lyku/json-models';
 	import { AttachmentType } from '@lyku/helpers';
 	import { ComingSoon } from '../ComingSoon';
+	import { stringifyBON } from 'from-schema';
 	import '@mux/mux-player';
 	import {
 		getSupertypeFromAttachmentId,
@@ -63,7 +64,14 @@
 	let deleting = $state(false);
 
 	const post = $derived(postStore.get(id));
-
+	$effect(() => {
+		console.log('fileStore', fileStore);
+		console.log('post', post);
+		console.log(
+			'files',
+			post.attachments.map((f) => fileStore.get(f)),
+		);
+	});
 	let replies = $state<Post[]>([]);
 	let queriedReplies = $state(false);
 	let error = $state<string>();
@@ -302,18 +310,20 @@
 			]}
 		>
 			{#each post.attachments || [] as at}
-				{#if getSupertypeFromAttachmentId(at) === AttachmentType.Image}
+				{#if !fileStore.has(at)}
+					File missing
+				{:else if fileStore.get(at)?.supertype === 'image'}
 					<Image
 						src={`https://imagedelivery.net/${cfHash}/${at.toString()}/btvprofile`}
 						size="full-post"
 						onclick={() =>
 							window.dispatchEvent(new CustomEvent('light', { detail: at }))}
 					/>
-				{:else if getSupertypeFromAttachmentId(at) === AttachmentType.Video}
+				{:else if fileStore.get(at).supertype === 'video'}
 					<mux-player
 						playback-id={fileStore.get(at)?.hostId}
 						metadata-video-title={fileStore.get(at)?.title}
-						metadata-viewer-user-id={post.author}
+						metadata-viewer-user-id={userStore.get(-1n)?.id}
 					></mux-player>
 					<!-- <Stream
 						src={files.get(id).hostID}

@@ -7,4 +7,5 @@ export const strategyHarem = {
 	status: 'planned',
 	nsfw: true,
 	created: defaultDate,
+	developer: 0,
 } as const satisfies Game;

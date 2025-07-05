@@ -14,6 +14,6 @@ export const load = async ({ cookies, fetch }) => {
 	return {
 		sessionId,
 		user,
-		users: [],
+		users: [user],
 	};
 };

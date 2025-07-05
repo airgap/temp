@@ -467,11 +467,11 @@ CREATE INDEX IF NOT EXISTS "idx_friendships_created" ON "friendships" ("created"
 ---- Create table
 CREATE TABLE IF NOT EXISTS "games" (
   "background" TEXT,
-  "developer" TEXT,
+  "developer" INTEGER NOT NULL,
   "homepage" TEXT,
   "icon" TEXT,
   "id" INTEGER PRIMARY KEY NOT NULL,
-  "publisher" TEXT,
+  "publisher" INTEGER,
   "thumbnail" TEXT,
   "title" TEXT NOT NULL,
   "description" TEXT,
@@ -950,7 +950,7 @@ CREATE TABLE IF NOT EXISTS "pfpDrafts" (
   "uploadURL" TEXT NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "filename" TEXT CHECK (length("filename") <= 100),
-  "type" TEXT CHECK (length("type") <= 100) NOT NULL,
+  "type" TEXT CHECK (length("type") <= 100),
   "size" DOUBLE PRECISION,
   "width" INTEGER,
   "height" INTEGER,

@@ -1,6 +1,6 @@
 import { handleListUserPostsWithMeta } from '@lyku/handles';
 import { bondIds, Err } from '@lyku/helpers';
-import { User, Reaction } from '@lyku/json-models';
+import { File, Reaction, User } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
 import { unpack } from 'msgpackr';
@@ -56,54 +56,64 @@ export default handleListUserPostsWithMeta(
 		console.log('Starting parallel database queries...');
 		const dbStartTime = Date.now();
 
-		const [users, reactions, followees, friendships] = (await Promise.all([
-			// Get authors
-			authorIds.length
-				? pg
-						.selectFrom('users')
-						.where('id', 'in', authorIds)
-						.selectAll()
-						.execute()
-				: Promise.resolve([]),
+		const [users, reactions, followees, friendships, files] =
+			(await Promise.all([
+				// Get authors
+				authorIds.length
+					? pg
+							.selectFrom('users')
+							.where('id', 'in', authorIds)
+							.selectAll()
+							.execute()
+					: Promise.resolve([]),
 
-			// Get reactions if authenticated
-			requester && posts.length
-				? pg
-						.selectFrom('reactions')
-						.where('userId', '=', requester)
-						.where(
-							'postId',
-							'in',
-							posts.map((p) => p.id),
-						)
-						.selectAll()
-						// .select(['postId', 'type'])
-						.execute()
-				: Promise.resolve([]),
+				// Get reactions if authenticated
+				requester && posts.length
+					? pg
+							.selectFrom('reactions')
+							.where('userId', '=', requester)
+							.where(
+								'postId',
+								'in',
+								posts.map((p) => p.id),
+							)
+							.selectAll()
+							// .select(['postId', 'type'])
+							.execute()
+					: Promise.resolve([]),
 
-			// Get followees if authenticated
-			requester && authorIds.length
-				? pg
-						.selectFrom('userFollows')
-						.select(['followee'])
-						.where('followee', 'in', authorIds)
-						.where('follower', '=', requester)
-						.execute()
-				: Promise.resolve([]),
+				// Get followees if authenticated
+				requester && authorIds.length
+					? pg
+							.selectFrom('userFollows')
+							.select(['followee'])
+							.where('followee', 'in', authorIds)
+							.where('follower', '=', requester)
+							.execute()
+					: Promise.resolve([]),
 
-			// Get friendships if authenticated
-			requester && authorIds.length
-				? pg
-						.selectFrom('friendships')
-						.select('users')
-						.where(
-							'id',
-							'in',
-							authorIds.map((a) => bondIds(a, requester)),
-						)
-						.execute()
-				: Promise.resolve([]),
-		])) as [User[], Reaction[], { followee: bigint }[], User[]];
+				// Get friendships if authenticated
+				requester && authorIds.length
+					? pg
+							.selectFrom('friendships')
+							.select('users')
+							.where(
+								'id',
+								'in',
+								authorIds.map((a) => bondIds(a, requester)),
+							)
+							.execute()
+					: Promise.resolve([]),
+				pg
+					.selectFrom('files')
+					.selectAll()
+					.where(
+						'id',
+						'in',
+						posts.flatMap((p) => p.attachments ?? []),
+					)
+					.execute(),
+			])) as [User[], Reaction[], { followee: bigint }[], User[], File[]];
 
 		console.log(`Database queries took ${Date.now() - dbStartTime}ms`);
 		console.log('Authors:', users.length);
@@ -121,6 +131,7 @@ export default handleListUserPostsWithMeta(
 			friendships: friendships,
 			target: uid,
 			threads: posts.map((p) => ({ focus: p.id })),
+			files,
 		};
 		console.log('Listing', posts.length, 'posts');
 		return response;

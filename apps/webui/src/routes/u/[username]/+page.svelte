@@ -5,6 +5,7 @@
 		Center,
 		Divisio,
 		FeedPage,
+		fileStore,
 		FollowUser,
 		Link,
 		myFolloweeStore,
@@ -16,17 +17,18 @@
 		userStore,
 	} from '@lyku/si-bits';
 	import { page } from '$app/state';
-	import type { Post, Thread, User } from '@lyku/json-models';
+	import type { FileDoc, Post, Thread, User } from '@lyku/json-models';
 	import { PUBLIC_CF_HASH } from '$env/static/public';
 	console.log('fuck');
 	const { data } = $props<{
 		data:
 			| {
+					files?: FileDoc[];
+					follows: BigInt[];
 					threads: Thread[];
 					posts: Post[];
 					users: User[];
 					likes: BigInt[];
-					follows: BigInt[];
 					user: User;
 					target?: bigint;
 			  }
@@ -37,6 +39,7 @@
 		posts,
 		users,
 		error,
+		files,
 		likes,
 		continuation,
 		user,
@@ -44,6 +47,7 @@
 		follows,
 	} = data;
 	$inspect(data);
+	files?.forEach((f) => fileStore.set(f.id, f));
 	users?.forEach((u) => userStore.set(u.id, u));
 	posts?.forEach((p) => postStore.set(p.id, p));
 	// console.log('Hydrating users', users?.length, likes?.length);

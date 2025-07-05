@@ -5,6 +5,7 @@ import {
 	username,
 	reaction,
 	friendshipStatus,
+	fileDoc,
 } from '@lyku/json-models';
 import type { TsonHandlerModel } from 'from-schema';
 
@@ -56,6 +57,10 @@ export const listUserPostsWithMeta = {
 			followees: {
 				type: 'array',
 				items: { type: 'bigint' },
+			},
+			files: {
+				type: 'array',
+				items: fileDoc,
 			},
 		},
 	},

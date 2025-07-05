@@ -1,4 +1,4 @@
-import { encode, decode } from '@msgpack/msgpack';
+import { pack, unpack } from 'msgpackr';
 
 export const load = async ({ params, parent, cookies }) => {
 	console.log('Loading /hot');
@@ -20,7 +20,7 @@ export const load = async ({ params, parent, cookies }) => {
 				...(sessionId ? { Authorization: `Bearer ${sessionId}` } : {}),
 				'User-Agent': 'Mozilla/5.0 (compatible; Lyku/1.0; +https://lyku.org)',
 			},
-			body: encode({ page: 1 }),
+			body: pack({ page: 1 }),
 		});
 
 		if (!res.ok) {
@@ -28,9 +28,7 @@ export const load = async ({ params, parent, cookies }) => {
 		}
 
 		const buffer = await res.arrayBuffer();
-		const response = decode(new Uint8Array(buffer), {
-			useBigInt64: true,
-		}) as any;
+		const response = unpack(new Uint8Array(buffer)) as any;
 
 		const end = Date.now();
 		console.log('time', end - start);
@@ -50,21 +48,21 @@ export const load = async ({ params, parent, cookies }) => {
 		};
 		console.log(
 			'posts',
-			response.posts,
+			response.posts?.length,
 			'continuation',
 			response.continuation,
 			'users',
-			response.users,
+			response.users?.length,
 			'friendships',
-			response.friendships,
+			response.friendships?.length,
 			'followers',
-			response.followers,
+			response.followers?.length,
 			'followees',
-			response.followees,
+			response.followees?.length,
 			'reactions',
-			response.reactions,
+			response.reactions?.length,
 			'files',
-			response.files,
+			response.files?.length,
 			'end',
 		);
 		return ret;

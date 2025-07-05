@@ -8,4 +8,5 @@ export const bouncingTv = {
 	// homepage: '/play/corners',
 	thumbnail: '/btv.png',
 	created: defaultDate,
+	developer: 0,
 } as const satisfies Game;

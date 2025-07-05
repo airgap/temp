@@ -81,7 +81,8 @@ Bun.serve({
 						created: new Date(p.created_at),
 						creator: videoUpload.creator,
 						status: p.data.status,
-						type: 'video',
+						type: videoUpload.type,
+						supertype: 'video',
 						host: 'mux',
 					} satisfies FileDoc;
 					const dbres = await pg

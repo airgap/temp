@@ -8,4 +8,5 @@ export const ticTacFlow = {
 	nsfw: false,
 	thumbnail: '/TicTacFlowTHumb.png',
 	created: defaultDate,
+	developer: 0,
 } as const satisfies Game;

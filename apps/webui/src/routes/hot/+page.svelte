@@ -25,7 +25,7 @@
 					continuation?: string;
 					user: Promise<User>;
 					reactions: string[];
-					files: Promise<File[]>;
+					files: Promise<FileDoc[]>;
 			  }
 			| { error: string };
 	}>();

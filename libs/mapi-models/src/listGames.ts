@@ -1,22 +1,35 @@
 import type { TsonHandlerModel } from 'from-schema';
-import { game } from '@lyku/json-models';
+import { developer, game, publisher } from '@lyku/json-models';
 
 export const listGames = {
 	request: {
 		type: 'object',
 		properties: {
 			internal: { type: 'boolean', description: 'Only games made internally' },
-			developer: { type: 'bigint' },
+			developer: { type: 'integer' },
 			hint: { type: 'string', maxLength: 100 },
 			mine: { type: 'boolean' },
-			publisher: { type: 'bigint' },
+			publisher: { type: 'integer' },
 		},
 		required: [],
 	},
 
 	response: {
-		type: 'array',
-		items: game,
+		type: 'object',
+		properties: {
+			games: {
+				type: 'array',
+				items: game,
+			},
+			developers: {
+				type: 'array',
+				items: developer,
+			},
+			publishers: {
+				type: 'array',
+				items: publisher,
+			},
+		},
 	},
 	authenticated: false,
 	throws: [400, 401, 500],
