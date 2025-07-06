@@ -17,7 +17,7 @@
 			  }
 			| { error: string };
 	}>();
-	const { games, users, user } = data;
+	const { games, users, user, publishers, developers } = data;
 	userStore.set(user);
 	// CSS classes for various game statuses
 	const statusClasses = {
@@ -27,6 +27,9 @@
 		ga: styles.ga,
 		maintenance: styles.maintenance,
 	} satisfies Record<GameStatus, string>;
+	$effect(()=>{
+		console.log('games', games, 'developers', developers, 'publishers', publishers)
+	})
 </script>
 
 <div style="text-align: center">

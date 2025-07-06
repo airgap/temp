@@ -12,15 +12,17 @@ export default handleListGames(async (params, { requester }) => {
 		if (publisher) publisherIds.push(publisher);
 		if (developer) developerIds.push(developer);
 	}
-	const developers = pg
+	console.log('developerIds', developerIds);
+	console.log('publisherIds', publisherIds);
+	const developers = await pg
 		.selectFrom('developers')
 		.selectAll()
 		.where('id', 'in', developerIds)
 		.execute();
-	const publishers = pg
+	const publishers = publisherIds.length ?await pg
 		.selectFrom('publishers')
 		.selectAll()
 		.where('id', 'in', publisherIds)
-		.execute();
+		.execute() : [];
 	return { games, developers, publishers };
 });

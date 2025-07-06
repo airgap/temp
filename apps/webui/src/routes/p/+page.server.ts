@@ -13,6 +13,7 @@ export const load = async ({ params, fetch, parent }) => {
 
 	const buffer = await res.arrayBuffer();
 	const response = unpack(new Uint8Array(buffer)) as any;
+	console.log('response', response);
 
 	return response;
 };
