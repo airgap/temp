@@ -12,7 +12,7 @@ import {
 import { Err } from '@lyku/helpers';
 import { client as redis } from '@lyku/redis-client';
 import { type Session } from '@lyku/json-models';
-import { pack } from 'msgpackr';
+import { pack, unpack } from 'msgpackr';
 import { MetricsCollector } from './metrics';
 
 const port = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
@@ -131,8 +131,8 @@ export const serveHttp = async ({
 			if (sessionId) {
 				console.log('Getting session from redis');
 				session = await redis
-					.get(`session:${sessionId}`)
-					.then(parsePossibleBON<Session>);
+					.getBuffer(`session:${sessionId}`)
+					.then((s) => s && unpack(s));
 				console.log('Session from redis:', session?.userId);
 				if (!session) {
 					session =

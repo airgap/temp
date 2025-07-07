@@ -27,9 +27,16 @@
 		ga: styles.ga,
 		maintenance: styles.maintenance,
 	} satisfies Record<GameStatus, string>;
-	$effect(()=>{
-		console.log('games', games, 'developers', developers, 'publishers', publishers)
-	})
+	$effect(() => {
+		console.log(
+			'games',
+			games,
+			'developers',
+			developers,
+			'publishers',
+			publishers,
+		);
+	});
 </script>
 
 <div style="text-align: center">

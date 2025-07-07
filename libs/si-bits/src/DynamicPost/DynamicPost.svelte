@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Spinner } from '../Spinner';
 	import classnames from 'classnames';
 	import { api } from 'monolith-ts-api';
 	import { Stream } from '@cloudflare/stream-react';
@@ -12,6 +11,7 @@
 		getSupertypeFromAttachmentId,
 		parseAttachmentId,
 	} from '@lyku/helpers';
+	import { onMount } from 'svelte';
 
 	import { Button } from '../Button';
 	import { Crosshatch } from '../Crosshatch';
@@ -38,8 +38,6 @@
 	import { ReplyButton } from '../ReplyButton';
 	import { ShareButton } from '../ShareButton';
 	import styles from './DynamicPost.module.sass';
-	import Dialog from '../Dialog/Dialog.svelte';
-	import Divisio from '../Divisio/Divisio.svelte';
 	// import { useCacheData } from '../CacheProvider';
 
 	const insets = { reply: styles.replied, echo: styles.echoed } as const;
@@ -51,6 +49,7 @@
 		autoplay = false,
 		// author = undefined
 		cfHash,
+		ondeleteclick,
 	} = $props<{
 		post: bigint;
 		inset?: keyof typeof insets | false;
@@ -58,10 +57,8 @@
 		autoplay?: boolean;
 		// author?: User | undefined;
 		cfHash: string;
+		ondeleteclick?: (postId: bigint) => void;
 	}>();
-	let confirmingDelete = $state(false);
-	let notifyingDelete = $state(false);
-	let deleting = $state(false);
 
 	const post = $derived(postStore.get(id));
 	$effect(() => {
@@ -69,7 +66,7 @@
 		console.log('post', post);
 		console.log(
 			'files',
-			post.attachments.map((f) => fileStore.get(f)),
+			post?.attachments.map((f) => fileStore.get(f)),
 		);
 	});
 	let replies = $state<Post[]>([]);
@@ -92,6 +89,10 @@
 	// const follow = $derived(followStore.get($post?.author));
 	const friendship = myFriendshipStore.get(post?.author);
 	let adderDropped = $state(false);
+
+	// Visibility tracking for lazy rendering
+	let postElement: HTMLElement;
+	let isVisible = $state(false);
 	// const [imageIds, videoIds, audioIds, documentIds] =
 	//     $derived(post.attachments?.reduce((acc, id) => {
 	//       const { supertype } = parseAttachmentId(id);
@@ -116,18 +117,44 @@
 
 	const handleDelete = (e: Event) => {
 		e.preventDefault();
-		confirmingDelete = true;
+		if (ondeleteclick && post) {
+			ondeleteclick(post.id);
+		}
 	};
 	const itsYou = $derived(
 		userStore.get(-1n) && author?.id === userStore.get(-1n)?.id,
 	);
 
-	// onMount(async () => {
-	//    await import("@mux/mux-player");
-	//  });
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					isVisible = entry.isIntersecting;
+				});
+			},
+			{
+				// Start loading when the element is 100px away from viewport
+				rootMargin: '100px',
+				threshold: 0,
+			},
+		);
+
+		if (postElement) {
+			observer.observe(postElement);
+		}
+
+		return () => {
+			if (postElement) {
+				observer.unobserve(postElement);
+			}
+		};
+	});
 </script>
 
-<span class={classnames(styles.DynamicPost, inset && insets[inset])}>
+<span
+	bind:this={postElement}
+	class={classnames(styles.DynamicPost, inset && insets[inset])}
+>
 	{#if inset === 'echo'}
 		<span class={styles.hatchInset}>
 			<Crosshatch width="20px" height="100%" />
@@ -146,127 +173,129 @@
 			{author?.username}
 		</Link>
 		&middot;
-		<span class={[styles.inlineDropper, adderDropped && styles.dropped]}>
-			<button
-				class={styles.dropperBackdrop}
-				onclick={() => (adderDropped = false)}
-				aria-label="Close"
-				style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
-			></button>
-			<Button
-				onClick={(e) => {
-					adderDropped = !adderDropped;
-					if (adderDropped) {
-						bgx = e.clientX;
-						bgy = e.clientY;
-					}
-				}}
-			>
-				{#if itsYou}
-					you
-				{:else if friendship === 'befriended'}
-					friend
-				{:else if friendship === 'theyOffered'}
-					wants to be your friend
-				{:else if follow}
-					followed
-				{:else}
-					add
-				{/if}
-			</Button>
-			<div class={styles.dropperMenu} style="--width: 230px">
-				<ul>
+		{#if isVisible}
+			<span class={[styles.inlineDropper, adderDropped && styles.dropped]}>
+				<button
+					class={styles.dropperBackdrop}
+					onclick={() => (adderDropped = false)}
+					aria-label="Close"
+					style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
+				></button>
+				<Button
+					onClick={(e) => {
+						adderDropped = !adderDropped;
+						if (adderDropped) {
+							bgx = e.clientX;
+							bgy = e.clientY;
+						}
+					}}
+				>
 					{#if itsYou}
-						<li>
-							<Button
-								onClick={() => (window.location = `/u/${author?.username}`)}
-								>Edit profile</Button
-							>
-						</li>
-					{/if}
-					{#if follow}
-						<li>
-							<Button comingSoon onClick={() => alert('WIP')}
-								>Invite to group</Button
-							>
-						</li>
-					{:else if !itsYou}
-						<li>
-							<Button
-								onClick={() => {
-									followStore.set(post.author, true);
-									api.followUser(post.author);
-								}}>Follow</Button
-							>
-						</li>
-					{/if}
-					{#if friendship === 'befriended'}
-						<li>
-							<Button comingSoon onClick={() => alert('WIP')}
-								>Invite to game</Button
-							>
-						</li>
-					{:else if friendship === 'none' && !itsYou}
-						<li>
-							<Button
-								onClick={() => {
-									myFriendshipStore.set(post.author, 'youOffered');
-									api.createFriendRequest(post.author);
-								}}>Add friend</Button
-							>
-						</li>
-					{:else if friendship === 'youOffered'}
-						<li>
-							<Button
-								onClick={() => {
-									myFriendshipStore.set(post.author, 'none');
-									api.recindFriendRequest(post.author);
-								}}>Recind friendship offer</Button
-							>
-						</li>
+						you
+					{:else if friendship === 'befriended'}
+						friend
 					{:else if friendship === 'theyOffered'}
-						<li>
-							<Button
-								onClick={() => {
-									myFriendshipStore.set(post.author, 'befriended');
-									api.acceptFriendRequest(post.author);
-								}}>Accept friend request</Button
-							>
-						</li>
-						<li>
-							<Button
-								onClick={() => {
-									myFriendshipStore.update(post.author, 'none');
-									api.declineFriendRequest(post.author);
-								}}>Ignore friend request</Button
-							>
-						</li>
+						wants to be your friend
+					{:else if follow}
+						followed
+					{:else}
+						add
 					{/if}
-					{#if follow}
-						<li>
-							<Button
-								destructive={true}
-								onClick={() => {
-									myFollowStore.set(post.author, false);
-									api.unfollowUser(post.author);
-								}}>Unfollow</Button
-							>
-						</li>
-					{/if}
-					{#if friendship === 'befriended'}
-						<li>
-							<Button
-								destructive={true}
-								onClick={() => {
-									myFriendshipStore.set(post.author, 'none');
-									api.deleteFriendship(post.author);
-								}}>Remove friend</Button
-							>
-						</li>
-					{/if}
-				</ul>
-			</div>
-		</span>
+				</Button>
+				<div class={styles.dropperMenu} style="--width: 230px">
+					<ul>
+						{#if itsYou}
+							<li>
+								<Button
+									onClick={() => (window.location = `/u/${author?.username}`)}
+									>Edit profile</Button
+								>
+							</li>
+						{/if}
+						{#if follow}
+							<li>
+								<Button comingSoon onClick={() => alert('WIP')}
+									>Invite to group</Button
+								>
+							</li>
+						{:else if !itsYou}
+							<li>
+								<Button
+									onClick={() => {
+										followStore.set(post.author, true);
+										api.followUser(post.author);
+									}}>Follow</Button
+								>
+							</li>
+						{/if}
+						{#if friendship === 'befriended'}
+							<li>
+								<Button comingSoon onClick={() => alert('WIP')}
+									>Invite to game</Button
+								>
+							</li>
+						{:else if friendship === 'none' && !itsYou}
+							<li>
+								<Button
+									onClick={() => {
+										myFriendshipStore.set(post.author, 'youOffered');
+										api.createFriendRequest(post.author);
+									}}>Add friend</Button
+								>
+							</li>
+						{:else if friendship === 'youOffered'}
+							<li>
+								<Button
+									onClick={() => {
+										myFriendshipStore.set(post.author, 'none');
+										api.recindFriendRequest(post.author);
+									}}>Recind friendship offer</Button
+								>
+							</li>
+						{:else if friendship === 'theyOffered'}
+							<li>
+								<Button
+									onClick={() => {
+										myFriendshipStore.set(post.author, 'befriended');
+										api.acceptFriendRequest(post.author);
+									}}>Accept friend request</Button
+								>
+							</li>
+							<li>
+								<Button
+									onClick={() => {
+										myFriendshipStore.update(post.author, 'none');
+										api.declineFriendRequest(post.author);
+									}}>Ignore friend request</Button
+								>
+							</li>
+						{/if}
+						{#if follow}
+							<li>
+								<Button
+									destructive={true}
+									onClick={() => {
+										myFollowStore.set(post.author, false);
+										api.unfollowUser(post.author);
+									}}>Unfollow</Button
+								>
+							</li>
+						{/if}
+						{#if friendship === 'befriended'}
+							<li>
+								<Button
+									destructive={true}
+									onClick={() => {
+										myFriendshipStore.set(post.author, 'none');
+										api.deleteFriendship(post.author);
+									}}>Remove friend</Button
+								>
+							</li>
+						{/if}
+					</ul>
+				</div>
+			</span>
+		{/if}
 		&middot;
 		<DynamicDate time={post?.publish} />
 
@@ -358,66 +387,35 @@
 		<div class={styles.sep}></div>
 		<PostList posts={replies} inset={1} cfAccountId={cfHash} />
 	{/if}
-	<span class={[styles.dropper, dropped && styles.dropped]}>
-		<button
-			class={styles.dropperBackdrop}
-			onclick={() => (dropped = false)}
-			aria-label="Close"
-			style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
-		></button>
-		<DotDotDot
-			onClick={(e) => {
-				dropped = !dropped;
-				if (dropped) {
-					bgx = e.clientX;
-					bgy = e.clientY;
-				}
-			}}
-			{dropped}
-		/>
-		<div class={styles.dropperMenu} style="--width: 200px">
-			<ul>
-				<!-- <li><Button>Edit</Button></li> -->
-				<li><Button comingSoon onClick={() => alert('WIP')}>Share</Button></li>
-				{#if itsYou}
-					<li><Button destructive onClick={handleDelete}>Delete</Button></li>
-				{/if}
-			</ul>
-		</div>
-	</span>
-</span>
-<Dialog bind:visible={confirmingDelete} title="Really delete?"
-	><Divisio layout="v"
-		><p></p>
-		<Divisio layout="h" alignItems="end" size="l">
-			<Button
-				disabled={deleting}
-				onClick={() => {
-					deleting = true;
-					api.deletePost(post.id).then(() => {
-						confirmingDelete = false;
-						notifyingDelete = true;
-					});
+	{#if isVisible}
+		<span class={[styles.dropper, dropped && styles.dropped]}>
+			<button
+				class={styles.dropperBackdrop}
+				onclick={() => (dropped = false)}
+				aria-label="Close"
+				style={`--bgx: ${bgx}px; --bgy: ${bgy}px`}
+			></button>
+			<DotDotDot
+				onClick={(e) => {
+					dropped = !dropped;
+					if (dropped) {
+						bgx = e.clientX;
+						bgy = e.clientY;
+					}
 				}}
-			>
-				{#if deleting}
-					<Spinner size="s" />
-				{:else}
-					Yes
-				{/if}
-			</Button>
-			<Button disabled={deleting} onClick={() => (confirmingDelete = false)}
-				>No</Button
-			>
-		</Divisio>
-	</Divisio>
-</Dialog>
-
-<Dialog bind:visible={notifyingDelete} title="Post deleted">
-	<Button
-		onClick={() => {
-			notifyingDelete = false;
-			window.location.reload();
-		}}>Begone!</Button
-	>
-</Dialog>
+				{dropped}
+			/>
+			<div class={styles.dropperMenu} style="--width: 200px">
+				<ul>
+					<!-- <li><Button>Edit</Button></li> -->
+					<li>
+						<Button comingSoon onClick={() => alert('WIP')}>Share</Button>
+					</li>
+					{#if itsYou}
+						<li><Button destructive onClick={handleDelete}>Delete</Button></li>
+					{/if}
+				</ul>
+			</div>
+		</span>
+	{/if}
+</span>

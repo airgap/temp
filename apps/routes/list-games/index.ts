@@ -19,10 +19,12 @@ export default handleListGames(async (params, { requester }) => {
 		.selectAll()
 		.where('id', 'in', developerIds)
 		.execute();
-	const publishers = publisherIds.length ?await pg
-		.selectFrom('publishers')
-		.selectAll()
-		.where('id', 'in', publisherIds)
-		.execute() : [];
+	const publishers = publisherIds.length
+		? await pg
+				.selectFrom('publishers')
+				.selectAll()
+				.where('id', 'in', publisherIds)
+				.execute()
+		: [];
 	return { games, developers, publishers };
 });

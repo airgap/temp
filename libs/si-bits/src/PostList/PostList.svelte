@@ -1,10 +1,15 @@
 <script lang="ts">
 	import type { Post, Thread } from '@lyku/json-models';
-	import { postStore } from '../CacheProvider';
+	import { postStore, userStore } from '../CacheProvider';
 	import { DynamicPost } from '../DynamicPost';
 	import styles from './PostList.module.sass';
 	import classNames from 'classnames';
 	import { onMount } from 'svelte';
+	import { api } from 'monolith-ts-api';
+	import Dialog from '../Dialog/Dialog.svelte';
+	import Divisio from '../Divisio/Divisio.svelte';
+	import { Button } from '../Button';
+	import { Spinner } from '../Spinner';
 
 	const {
 		threads,
@@ -20,13 +25,19 @@
 		onneedspage?: () => void;
 	}>();
 
-	const visiblePageSize = 5;
+	const visiblePageSize = 50;
 
 	let visibleCount = $state(visiblePageSize);
 	let postListElement: HTMLDivElement;
 	let isLoading = $state(false);
 	let hasRequestedNextPage = $state(false);
 	let previousThreadsLength = $state(threads?.length || 0);
+
+	// Deletion dialog states
+	let confirmingDelete = $state(false);
+	let notifyingDelete = $state(false);
+	let deleting = $state(false);
+	let postToDelete = $state<bigint | null>(null);
 
 	const visibleThreads = $derived(threads?.slice(0, visibleCount) || []);
 	const hasMore = $derived(threads && visibleCount < threads.length);
@@ -39,6 +50,25 @@
 			previousThreadsLength = currentLength;
 		}
 	});
+
+	const handleDeleteClick = (postId: bigint) => {
+		postToDelete = postId;
+		confirmingDelete = true;
+	};
+
+	const confirmDelete = async () => {
+		if (!postToDelete) return;
+
+		deleting = true;
+		try {
+			await api.deletePost(postToDelete);
+			confirmingDelete = false;
+			notifyingDelete = true;
+		} catch (error) {
+			console.error('Failed to delete post:', error);
+			deleting = false;
+		}
+	};
 
 	onMount(() => {
 		const checkScroll = (e: Event) => {
@@ -99,12 +129,27 @@
 	{#if visibleThreads.length}
 		{#each visibleThreads as thread}
 			{#if thread.replyTo}
-				<DynamicPost post={thread.replyTo} autoplay={false} {cfHash} />
+				<DynamicPost
+					post={thread.replyTo}
+					autoplay={false}
+					{cfHash}
+					ondeleteclick={handleDeleteClick}
+				/>
 			{/if}
-			<DynamicPost post={thread.focus} autoplay={false} {cfHash} />
+			<DynamicPost
+				post={thread.focus}
+				autoplay={false}
+				{cfHash}
+				ondeleteclick={handleDeleteClick}
+			/>
 			{#if thread.replies}
 				{#each thread.replies as reply}
-					<DynamicPost post={reply} autoplay={false} {cfHash} />
+					<DynamicPost
+						post={reply}
+						autoplay={false}
+						{cfHash}
+						ondeleteclick={handleDeleteClick}
+					/>
 				{/each}
 			{/if}
 		{/each}
@@ -112,3 +157,32 @@
 		{placeholder}
 	{/if}
 </div>
+
+<Dialog bind:visible={confirmingDelete} title="Really delete?">
+	<Divisio layout="v">
+		<p></p>
+		<Divisio layout="h" alignItems="end" size="l">
+			<Button disabled={deleting} onClick={confirmDelete}>
+				{#if deleting}
+					<Spinner size="s" />
+				{:else}
+					Yes
+				{/if}
+			</Button>
+			<Button disabled={deleting} onClick={() => (confirmingDelete = false)}>
+				No
+			</Button>
+		</Divisio>
+	</Divisio>
+</Dialog>
+
+<Dialog bind:visible={notifyingDelete} title="Post deleted">
+	<Button
+		onClick={() => {
+			notifyingDelete = false;
+			window.location.reload();
+		}}
+	>
+		Begone!
+	</Button>
+</Dialog>

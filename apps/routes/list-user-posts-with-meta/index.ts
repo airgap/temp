@@ -3,7 +3,7 @@ import { bondIds, Err } from '@lyku/helpers';
 import { File, Reaction, User } from '@lyku/json-models';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { unpack } from 'msgpackr';
+import { pack, unpack } from 'msgpackr';
 
 export default handleListUserPostsWithMeta(
 	async ({ before, user }, { requester }) => {
@@ -13,29 +13,43 @@ export default handleListUserPostsWithMeta(
 		// const uid = typeof user === 'bigint' ? user : await redis.get(`user`)
 		let uid: bigint | null = null;
 		if (typeof user === 'string') {
+			console.log('Getting user id from redis');
 			const cachedId = await redis.get(`user_ids:${user}`);
+			console.log('User id from redis:', cachedId);
 			if (cachedId) uid = BigInt(cachedId);
 			else {
+				console.log('Getting user id from pg');
 				const res = await pg
 					.selectFrom('users')
 					.where('slug', '=', user.toLocaleLowerCase())
 					.select('id')
 					.executeTakeFirst()
 					.then((r) => r?.id);
-				if (res) uid = res;
+				console.log('User id from pg:', res);
+				if (res) {
+					uid = res;
+					await redis.set(`user_ids:${user}`, uid.toString());
+				} else {
+					throw new Err(404, 'User not found');
+				}
 			}
 		}
 		if (!uid) throw new Err(404);
+		console.log('Getting user from redis');
 		let author = await redis
 			.getBuffer(`user:${uid}`)
 			.then((u) => u && unpack(u));
+		console.log('User from redis:', author);
 		if (!author) {
+			console.log('Getting user from pg');
 			author = await pg
 				.selectFrom('users')
 				.where('id', '=', uid)
 				.selectAll()
 				.executeTakeFirst()
 				.then((r) => r?.id);
+			console.log('User from pg:', author);
+			if (author) await redis.set(`user:${uid}`, pack(author));
 		}
 		if (!author) throw new Err(404, 'User not found');
 		const query = pg
@@ -47,6 +61,7 @@ export default handleListUserPostsWithMeta(
 		const filtered = before ? query.where('id', '<', before) : query;
 		const final = filtered.limit(20);
 		const posts = await final.execute();
+		console.log('Posts:', posts);
 
 		// Get unique author IDs
 		const authorIds = [...new Set(posts.map((p) => p.author))];
