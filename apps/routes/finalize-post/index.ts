@@ -29,6 +29,17 @@ export default handleFinalizePost(async ({ body, id }, { requester }) => {
 		echoes: 0n,
 		replies: 0n,
 	};
+	const files = authRes.attachments
+		? await pg
+				.selectFrom('files')
+				.selectAll()
+				.where('id', 'in', authRes.attachments)
+				.execute()
+		: [];
+	const firstImage = files.find((f) => f.type.startsWith('image/'));
+	if (firstImage) {
+		protopost.ogImage = firstImage.hostId;
+	}
 
 	// const insertablePost = Object.fromEntries(
 	// 	Object.entries(protopost).filter(

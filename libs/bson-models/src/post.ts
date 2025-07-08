@@ -39,6 +39,7 @@ export const post = {
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		updated: { type: 'timestamptz' },
 		deleted: { type: 'timestamptz' },
+		ogImage: { type: 'text', maxLength: 200 },
 	},
 	required: [
 		'id',

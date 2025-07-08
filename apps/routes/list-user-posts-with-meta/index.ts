@@ -67,6 +67,8 @@ export default handleListUserPostsWithMeta(
 		const authorIds = [...new Set(posts.map((p) => p.author))];
 		console.log('Author IDs:', authorIds);
 
+		const fileIds = posts.flatMap((p) => p.attachments ?? []);
+
 		// Run all database queries in parallel
 		console.log('Starting parallel database queries...');
 		const dbStartTime = Date.now();
@@ -119,15 +121,13 @@ export default handleListUserPostsWithMeta(
 							)
 							.execute()
 					: Promise.resolve([]),
-				pg
-					.selectFrom('files')
-					.selectAll()
-					.where(
-						'id',
-						'in',
-						posts.flatMap((p) => p.attachments ?? []),
-					)
-					.execute(),
+				fileIds.length
+					? pg
+							.selectFrom('files')
+							.selectAll()
+							.where('id', 'in', fileIds)
+							.execute()
+					: Promise.resolve([]),
 			])) as [User[], Reaction[], { followee: bigint }[], User[], File[]];
 
 		console.log(`Database queries took ${Date.now() - dbStartTime}ms`);

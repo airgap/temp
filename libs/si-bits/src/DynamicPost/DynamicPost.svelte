@@ -162,10 +162,7 @@
 	{/if}
 
 	<span class={styles.pp}>
-		<ProfilePicture
-			size="m"
-			src={author?.profilePicture && formImageUrl(author?.profilePicture)}
-		/>
+		<ProfilePicture size="m" src={author?.profilePicture} />
 	</span>
 
 	<span class={styles.text}>

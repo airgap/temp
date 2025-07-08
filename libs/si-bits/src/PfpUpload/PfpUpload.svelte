@@ -144,19 +144,20 @@
 			data.append('file', fileState);
 
 			console.log('Getting file');
-			api.awaitFile(pack.id).listen((e) => {
-				processed = true;
-				console.log('GetFile succeeded');
-				onFinished?.();
-				onUpload?.(pack.url);
-				imageState = pack.url;
-				succeeded = true;
-			});
+			//api.awaitFile(pack.id).listen((e) => {
+			//	processed = true;
+			//	console.log('GetFile succeeded');
+			//	onFinished?.();
+			//	onUpload?.(pack.url);
+			//	imageState = pack.url;
+			//	succeeded = true;
+			//});
 			fetch(pack.url, {
 				method: 'POST',
 				body: data,
 			}).then((r) =>
 				r.json().then(async (cfres) => {
+					console.log('cfres', cfres);
 					uploaded = true;
 					await api.confirmPfpUpload(pack.id);
 					// processed = true;
@@ -175,11 +176,6 @@
 			reset();
 		}
 	});
-
-	const logoUrl = () => {
-		const id = imageState || image;
-		return id ? formImageUrl(id, 'btvprofile') : smile;
-	};
 </script>
 
 <form
@@ -196,7 +192,7 @@
 	{#if image !== undefined}
 		<Image
 			size="l"
-			src={(imageState ? logoUrl() : (base64 ?? logoUrl())) ?? smile}
+			src={base64 ?? imageState ?? image ?? smile}
 			shape="circle"
 		/>
 	{:else}

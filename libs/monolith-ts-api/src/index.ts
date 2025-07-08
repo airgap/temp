@@ -66,7 +66,7 @@ export const setPlatform = (platform: Platform) => {
 };
 
 import type { MonolithTypes } from '@lyku/mapi-types';
-import { decode, encode } from '@msgpack/msgpack';
+import { pack, unpack } from 'msgpackr';
 import { getDocumentCookie } from './getDocumentCookie';
 import { makeMetasock } from './Metasock';
 
@@ -156,6 +156,9 @@ export const api = Object.fromEntries(
 					const route = monolith[routeName] as TsonHandlerModel;
 					const key = onlyKey(routeName as ContractName);
 					const data = key ? { [key]: params } : params;
+					for (const key in data) {
+						if (data[key] === undefined) delete data[key];
+					}
 					const stream = 'stream' in route && route.stream;
 					const snakeName = routeName.replace(/([A-Z])/g, '-$1').toLowerCase();
 					const path = `https://api.lyku.org/${snakeName}`;
@@ -168,9 +171,7 @@ export const api = Object.fromEntries(
 						const metasock = makeMetasock(route, sockUrl, data);
 						return metasock;
 					} else {
-						const body = encode(data, {
-							useBigInt64: true,
-						} as any);
+						const body = pack(data);
 						const bearer = stupidSessionId || cookieAdapter.get('sessionId');
 						const fetchOptions = {
 							method: 'method' in model ? model.method : 'POST',
@@ -200,11 +201,7 @@ export const api = Object.fromEntries(
 								'type' in route.response &&
 								route.response.type === 'string'
 								? res.text()
-								: res.arrayBuffer().then((buf) =>
-										decode(new Uint8Array(buf), {
-											useBigInt64: true,
-										}),
-									);
+								: res.arrayBuffer().then((buf) => unpack(new Uint8Array(buf)));
 						});
 					}
 				},

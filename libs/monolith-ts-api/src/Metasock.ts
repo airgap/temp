@@ -1,4 +1,4 @@
-import { decode, encode } from '@msgpack/msgpack';
+import { pack, unpack } from 'msgpackr';
 import { getDocumentCookie } from './getDocumentCookie';
 import { TsonStreamHandlerModel } from 'from-schema';
 
@@ -36,12 +36,7 @@ export const makeMetasock = <Route extends TsonStreamHandlerModel>(
 				console.log('cookies', document.cookie);
 				const sessionId = getDocumentCookie(document.cookie, 'sessionId');
 				console.log('session', sessionId);
-				ws.send(
-					encode(
-						{ auth: `Bearer ${sessionId}`, request: initialData },
-						{ useBigInt64: true },
-					),
-				);
+				ws.send(pack({ auth: `Bearer ${sessionId}`, request: initialData }));
 				console.log('Sock open');
 			},
 		],
@@ -72,9 +67,7 @@ export const makeMetasock = <Route extends TsonStreamHandlerModel>(
 							'First bytes:',
 							uint8Array.slice(0, 10),
 						);
-						json = decode(uint8Array, {
-							useBigInt64: true,
-						});
+						json = unpack(uint8Array);
 					} else if (ev.data instanceof ArrayBuffer) {
 						const uint8Array = new Uint8Array(ev.data);
 						console.log(
@@ -83,9 +76,7 @@ export const makeMetasock = <Route extends TsonStreamHandlerModel>(
 							'First bytes:',
 							uint8Array.slice(0, 10),
 						);
-						json = decode(uint8Array, {
-							useBigInt64: true,
-						});
+						json = unpack(uint8Array);
 					} else {
 						console.error('Unexpected data type:', typeof ev.data);
 						return;
@@ -94,6 +85,10 @@ export const makeMetasock = <Route extends TsonStreamHandlerModel>(
 				} catch (error: any) {
 					console.error('Failed to decode websocket message:', error);
 					console.error('Error details:', error.message, error.stack);
+					return;
+				}
+				if (json?.authenticated === true) {
+					console.log('Authentication successful');
 					return;
 				}
 				if (json?.auth) return;

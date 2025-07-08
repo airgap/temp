@@ -56,11 +56,15 @@
 			<span class={[styles.cluster, user ? styles.loggedIn : styles.guest]}>
 				{#if user}
 					<span class={styles.welcome}>
-						<Link onclick={oncreate} class={styles.createPost}>
+						<Link onclick={oncreate} class={[styles.createPost, styles.round]}>
 							<img src={pen} alt="Pen post" />
 						</Link>
 						<!--{phrasebook.navWelcome}-->
-						<Link data-sveltekit-reload href="/u/{user.username}">
+						<Link
+							data-sveltekit-reload
+							href="/u/{user.username}"
+							class={styles.round}
+						>
 							<!--<span>{user.username}!</span>-->
 							<ProfilePicture
 								shape="circle"

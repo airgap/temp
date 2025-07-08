@@ -14,6 +14,7 @@
 		size?: number;
 		shape?: ImageShape;
 	}>();
+	console.log('pfp src', src);
 </script>
 
 <Image class={styles.ProfilePicture} {shape} src={src ?? smile} {alt} {size} />

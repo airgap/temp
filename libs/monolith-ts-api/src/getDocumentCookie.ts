@@ -1,6 +1,8 @@
 export function getDocumentCookie(cookies: string, cname: string) {
 	const name = cname + '=';
-	const ca = cookies.split(';');
+	// Handle both semicolon and ampersand separators
+	const separator = cookies.includes(';') ? ';' : '&';
+	const ca = cookies.split(separator);
 	for (const element of ca) {
 		let c = element;
 		while (c.charAt(0) === ' ') {

@@ -41,7 +41,14 @@ export default handleLoginUser(async ({ email, password, captcha }, ctx) => {
 		throw new Error(strings.incorrectPasswordError);
 	}
 	const sessionId = await createSessionForUser(existing.id, ctx.request);
-	(ctx.responseHeaders as any).set('Set-Cookie', `sessionId=${sessionId}`);
+	const origin = ctx.request.headers.get('origin');
+	const domain = origin?.startsWith('https://lyku.org')
+		? `Domain=lyku.org;`
+		: '';
+	(ctx.responseHeaders as any).set(
+		'Set-Cookie',
+		`sessionId=${sessionId}; Path=/; Secure; SameSite=Lax; ${domain} Max-Age=31536000`,
+	);
 	console.log('Logged user in');
 	return { sessionId };
 });

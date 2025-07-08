@@ -8,6 +8,7 @@ import { FileDoc } from '@lyku/json-models';
 import { parseBON } from 'from-schema';
 
 export default handleAwaitFile(async (id, { emit }) => {
+	console.log('awaiting file', id);
 	const f = await valkey.getBuffer(`file:${id}`);
 	if (f) {
 		console.log('f', f);

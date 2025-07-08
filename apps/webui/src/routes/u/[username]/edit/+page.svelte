@@ -9,6 +9,7 @@
 		shout,
 		userStore,
 		me,
+		FeedPage,
 	} from '@lyku/si-bits';
 	import type { User } from '@lyku/json-models';
 
@@ -32,12 +33,19 @@
 		shout('profilePictureChanged', id);
 		window.location.reload();
 	}
+	const iAm = $derived(me());
+	const iAmThat = $derived(iAm?.slug === slug);
+	const title = $derived(
+		iAm
+			? iAmThat
+				? 'Edit profile'
+				: 'You can only edit your own profile'
+			: 'Logged out',
+	);
 </script>
 
-{#if me()}
-	{#if me().slug !== slug}
-		<h2>You can only edit your own profile</h2>
-	{:else}
+<FeedPage {title}>
+	{#if iAmThat}
 		<Center>
 			<Divisio size="m" layout="v">
 				<Divisio size="m" layout="h">
@@ -60,4 +68,4 @@
 			</Divisio>
 		</Center>
 	{/if}
-{/if}
+</FeedPage>

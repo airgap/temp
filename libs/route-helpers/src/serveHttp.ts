@@ -1,5 +1,3 @@
-// libs/route-helpers/src/serveHttp.ts
-import { decode, encode } from '@msgpack/msgpack';
 import type { SecureHttpContext } from './Contexts';
 import { client as pg } from '@lyku/postgres-client';
 import { getDictionary } from './getDictionary';
@@ -132,7 +130,7 @@ export const serveHttp = async ({
 				console.log('Getting session from redis');
 				session = await redis
 					.getBuffer(`session:${sessionId}`)
-					.then((s) => s && unpack(s));
+					.then((s) => s && unpack(new Uint8Array(s)));
 				console.log('Session from redis:', session?.userId);
 				if (!session) {
 					session =
@@ -162,11 +160,10 @@ export const serveHttp = async ({
 
 			// Parse params from MessagePack
 			const arrayBuffer = methodHasBody ? await req.arrayBuffer() : undefined;
-			const intArray = arrayBuffer ? new Uint8Array(arrayBuffer) : undefined;
-			const params = intArray?.length
-				? decode(intArray, { useBigInt64: true })
+			const params = arrayBuffer
+				? unpack(new Uint8Array(arrayBuffer))
 				: undefined;
-
+			console.log('Unpacked');
 			if ('request' in model && methodHasBody) {
 				try {
 					validator.validate(params);
@@ -183,7 +180,7 @@ export const serveHttp = async ({
 
 			const phrasebook = getDictionary(req);
 			try {
-				console.log('Executing route');
+				console.log('Executing route with params', params);
 				const output = (await execute(params ?? {}, {
 					strings: phrasebook,
 					request: req,
@@ -194,10 +191,10 @@ export const serveHttp = async ({
 					model,
 					now: new Date(),
 				})) as SecureHttpContext<any>;
-				const pack = encode(output, { useBigInt64: true });
+				const packed = pack(output);
 				console.log('Route executed successfully');
 				finishRequest?.(200); // Success
-				return new Response(pack, {
+				return new Response(packed, {
 					headers: responseHeaders,
 				});
 			} catch (e) {

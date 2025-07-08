@@ -1,5 +1,4 @@
-import { decode } from '@msgpack/msgpack';
-import { encode } from '@msgpack/msgpack';
+import { pack, unpack } from 'msgpackr';
 import { db } from './db';
 import type { ServerWebSocket } from 'bun';
 import * as redis from 'redis';
@@ -9,8 +8,6 @@ import {
 	type Validator,
 } from 'from-schema';
 import { en_US } from '@lyku/strings';
-import * as nats from 'nats';
-import { client as clickhouse } from '@lyku/clickhouse-client';
 import { createRedisClient } from '@lyku/redis-client';
 
 const r = createRedisClient();
@@ -57,11 +54,10 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 			async message(ws: ServerWebSocket<Data>, message) {
 				console.log('Decoding message', typeof message, message);
 				// Decode the incoming MessagePack message
-				const decodedMessage = decode(
+				const decodedMessage = unpack(
 					typeof message === 'string'
 						? Uint8Array.from(message)
 						: new Uint8Array(message),
-					{ useBigInt64: true },
 				);
 				console.log('Decoded message');
 
@@ -109,15 +105,11 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						}
 					} else {
 						if ('request' in decodedMessage) {
-							ws.send(
-								encode(
-									{
-										authenticated: false,
-										error: 'Invalid request',
-									},
-									{ useBigInt64: true },
-								),
-							);
+							const packed = pack({
+								authenticated: false,
+								error: 'Invalid request',
+							});
+							ws.send(new Uint8Array(packed));
 							return;
 						}
 					}
@@ -142,7 +134,10 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						requester: ws.data.user,
 						session: ws.data.sessionId,
 						socket: ws,
-						emit: (data: any) => ws.send(encode(data, { useBigInt64: true })),
+						emit: (data: any) => {
+							const packed = pack(data);
+							ws.send(new Uint8Array(packed));
+						},
 						server,
 						onClose: (closer: () => void) => closers.push(closer),
 						onTweak: (tweaker: any) => tweakers.push(tweaker),
@@ -150,7 +145,8 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 						now: new Date(),
 					});
 					console.log('Returning');
-					// ws.send(encode("Authenticated"));
+					const authPacked = pack({ authenticated: true });
+					ws.send(new Uint8Array(authPacked));
 					return;
 				}
 				if (!ws.data.user || !ws.data.sessionId) {
