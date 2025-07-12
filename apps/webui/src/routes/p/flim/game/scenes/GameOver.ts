@@ -7,9 +7,8 @@ import { EventBus } from '../EventBus';
 /* END-USER-IMPORTS */
 
 export default class GameOver extends Phaser.Scene {
-
 	constructor() {
-		super("GameOver");
+		super('GameOver');
 
 		/* START-USER-CTR-CODE */
 		// Write your code here.
@@ -17,9 +16,8 @@ export default class GameOver extends Phaser.Scene {
 	}
 
 	editorCreate(): void {
-
 		// background
-		const background = this.add.image(512, 384, "background");
+		const background = this.add.image(512, 384, 'background');
 		background.alpha = 0.5;
 		background.alphaTopLeft = 0.5;
 		background.alphaTopRight = 0.5;
@@ -27,12 +25,19 @@ export default class GameOver extends Phaser.Scene {
 		background.alphaBottomRight = 0.5;
 
 		// textgameover
-		const textgameover = this.add.text(512, 384, "", {});
+		const textgameover = this.add.text(512, 384, '', {});
 		textgameover.setOrigin(0.5, 0.5);
-		textgameover.text = "Game Over";
-		textgameover.setStyle({ "align": "center", "color": "#ffffff", "fontFamily": "Arial Black", "fontSize": "64px", "stroke": "#000000", "strokeThickness": 8 });
+		textgameover.text = 'Game Over';
+		textgameover.setStyle({
+			align: 'center',
+			color: '#ffffff',
+			fontFamily: 'Arial Black',
+			fontSize: '64px',
+			stroke: '#000000',
+			strokeThickness: 8,
+		});
 
-		this.events.emit("scene-awake");
+		this.events.emit('scene-awake');
 	}
 
 	/* START-USER-CODE */
