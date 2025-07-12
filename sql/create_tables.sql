@@ -250,7 +250,7 @@ EXECUTE FUNCTION channels_trigger_1_fn ();
 ------------------------------
 ---- Create table
 CREATE TABLE IF NOT EXISTS "developers" (
-  "id" BIGINT PRIMARY KEY NOT NULL,
+  "id" INTEGER PRIMARY KEY NOT NULL,
   "homepage" TEXT NOT NULL,
   "name" TEXT CHECK (length("name") <= 100) NOT NULL,
   "thumbnail" TEXT,
@@ -470,7 +470,8 @@ CREATE TABLE IF NOT EXISTS "games" (
   "developer" INTEGER NOT NULL,
   "homepage" TEXT,
   "icon" TEXT,
-  "id" INTEGER PRIMARY KEY NOT NULL,
+  "id" SERIAL PRIMARY KEY UNIQUE NOT NULL,
+  "slug" TEXT UNIQUE,
   "publisher" INTEGER,
   "thumbnail" TEXT,
   "title" TEXT NOT NULL,
@@ -1030,7 +1031,8 @@ CREATE TABLE IF NOT EXISTS "posts" (
   "attachments" BIGINT[] CHECK (array_length("attachments", 1) <= 256),
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated" TIMESTAMPTZ,
-  "deleted" TIMESTAMPTZ
+  "deleted" TIMESTAMPTZ,
+  "ogImage" TEXT CHECK (length("ogImage") <= 200)
 );
 
 
@@ -1083,7 +1085,7 @@ EXECUTE FUNCTION posts_trigger_1_fn ();
 ------------------------------
 ---- Create table
 CREATE TABLE IF NOT EXISTS "publishers" (
-  "id" BIGINT PRIMARY KEY NOT NULL,
+  "id" INTEGER PRIMARY KEY NOT NULL,
   "homepage" TEXT CHECK (length("homepage") <= 50) CHECK (length("homepage") >= 1) NOT NULL,
   "name" TEXT CHECK (length("name") <= 50) CHECK (length("name") >= 1) NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,

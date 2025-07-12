@@ -10,7 +10,7 @@ export const deleted = {
 	postCount: 0n,
 	username: 'deleted',
 	name: '[deleted]',
-	profilePicture: '/bots/smile-zoom.png',
+	// profilePicture: '/bots/smile-zoom.png',
 	points: 0n,
 	slug: 'deleted',
 	staff: true,

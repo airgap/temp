@@ -9,6 +9,7 @@ import { PostgresColumnModel } from 'from-schema';
 
 import { mapCharType } from './mapCharType';
 import { mapBigserialType } from './mapBigserialType';
+import { mapSerialType } from './mapSerialType';
 
 export function mapColumnType(
 	name: string,
@@ -25,6 +26,8 @@ export function mapColumnType(
 			return mapBigintType(name, columnSchema);
 		case 'bigserial':
 			return mapBigserialType(name, columnSchema);
+		case 'serial':
+			return mapSerialType(name, columnSchema);
 		case 'boolean':
 			return 'BOOLEAN';
 		case 'char':
