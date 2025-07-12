@@ -9,11 +9,12 @@ import { AUTO, Game } from 'phaser';
 // https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
 	type: AUTO,
-	width: 576,
-	height: 768,
+	width: 768,
+	height: 1024,
 	parent: 'game-container',
 	backgroundColor: '#028af8',
 	scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
+	scale: .5
 };
 
 const StartGame = (parent: string) => {
