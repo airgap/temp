@@ -1,13 +1,13 @@
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
 /* START-USER-IMPORTS */
 import { EventBus } from '../EventBus';
 /* END-USER-IMPORTS */
 
 export default class Game extends Phaser.Scene {
+
 	constructor() {
-		super('Game');
+		super("Game");
 
 		/* START-USER-CTR-CODE */
 		// Write your code here.
@@ -15,24 +15,18 @@ export default class Game extends Phaser.Scene {
 	}
 
 	editorCreate(): void {
+
 		// background
-		const background = this.add.image(512, 384, 'background');
+		const background = this.add.image(512, 384, "background");
 		background.alpha = 0.5;
 
 		// text
-		const text = this.add.text(513, 384, '', {});
+		const text = this.add.text(513, 384, "", {});
 		text.setOrigin(0.5, 0.5);
-		text.text = 'Make something fun!\nand share it with us:\nsupport@phaser.io';
-		text.setStyle({
-			align: 'center',
-			color: '#ffffff',
-			fontFamily: 'Arial Black',
-			fontSize: '38px',
-			stroke: '#000000',
-			strokeThickness: 8,
-		});
+		text.text = "Make something fun!\nand share it with us:\nsupport@phaser.io";
+		text.setStyle({ "align": "center", "color": "#ffffff", "fontFamily": "Arial Black", "fontSize": "38px", "stroke": "#000000", "strokeThickness": 8 });
 
-		this.events.emit('scene-awake');
+		this.events.emit("scene-awake");
 	}
 
 	/* START-USER-CODE */

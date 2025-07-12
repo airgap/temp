@@ -2,13 +2,13 @@
 
 /* START OF COMPILED CODE */
 
-import Phaser from 'phaser';
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
 export default class Preloader extends Phaser.Scene {
+
 	constructor() {
-		super('Preloader');
+		super("Preloader");
 
 		/* START-USER-CTR-CODE */
 		// Write your code here.
@@ -16,8 +16,9 @@ export default class Preloader extends Phaser.Scene {
 	}
 
 	editorCreate(): void {
+
 		// background
-		this.add.image(512, 384, 'background');
+		this.add.image(512, 384, "background");
 
 		// progressBar
 		const progressBar = this.add.rectangle(512, 384, 468, 32);
@@ -27,7 +28,7 @@ export default class Preloader extends Phaser.Scene {
 
 		this.progressBar = progressBar;
 
-		this.events.emit('scene-awake');
+		this.events.emit("scene-awake");
 	}
 
 	private progressBar!: Phaser.GameObjects.Rectangle;
