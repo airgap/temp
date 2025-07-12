@@ -8,8 +8,8 @@
         "createMethodName": "editorCreate",
         "sceneKey": "MainMenu",
         "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1024,
-        "borderHeight": 768
+        "borderWidth": 768,
+        "borderHeight": 1024
     },
     "displayList": [
         {
@@ -52,7 +52,7 @@
     ],
     "plainObjects": [],
     "meta": {
-        "app": "Phaser Editor 2D - Scene Editor",
+        "app": "Phaser Editor - Scene Editor",
         "url": "https://phaser.io/editor",
         "contentType": "phasereditor2d.core.scene.SceneContentType",
         "version": 5
