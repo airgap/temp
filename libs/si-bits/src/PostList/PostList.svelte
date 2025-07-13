@@ -25,7 +25,7 @@
 		onneedspage?: () => void;
 	}>();
 
-	const visiblePageSize = 50;
+	const visiblePageSize = 5;
 
 	let visibleCount = $state(visiblePageSize);
 	let postListElement: HTMLDivElement;

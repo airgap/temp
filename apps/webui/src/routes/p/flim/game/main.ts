@@ -17,6 +17,9 @@ const config: Phaser.Types.Core.GameConfig = {
 	scale: {
 		mode: Phaser.Scale.FIT,
 	},
+	loader: {
+		baseURL: '/flim/',
+	},
 	// scale: { min: { width: 400, height: 600 } },
 };
 

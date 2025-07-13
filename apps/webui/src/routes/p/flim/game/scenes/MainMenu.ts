@@ -40,6 +40,10 @@ export default class MainMenu extends Phaser.Scene {
 	}
 
 	// Write your code here
+
+	preload() {
+		this.load.pack('preload', 'asset-pack.json');
+	}
 	create() {
 		this.editorCreate();
 
