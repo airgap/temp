@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { AchievementGrant } from '@lyku/json-models';
+	import { achievement, type AchievementGrant } from '@lyku/json-models';
 	import { api, getSessionId } from 'monolith-ts-api';
 	import { AchievementTile } from '../AchievementTile';
 	import styles from './AchievementList.module.sass';
 	import classnames from 'classnames';
+	import { onMount } from 'svelte';
+	import { achievementGrantStore, achievementStore } from '../CacheProvider';
 
 	const { game = undefined } = $props<{
 		game?: number;
 	}>();
 
-	let grants: Map<bigint, AchievementGrant> = $state(new Map());
 	let dropped = $state(false);
-	let achievements = $state<any[]>([]);
 	let loading = $state(true);
 
 	// Replace useEffect with onMount
@@ -19,7 +19,7 @@
 		if (sessionId) {
 			api
 				.listenForAchievementGrants({ game })
-				.listen((e) => e.forEach((g) => grants.set(g.id, g)));
+				.listen((e) => e.forEach((g) => achievementGrantStore.set(g.id, g)));
 		}
 	});
 
@@ -27,17 +27,25 @@
 	async function loadAchievements() {
 		loading = true;
 		try {
-			achievements = await api.listAchievements({ game });
+			api
+				.listAchievements(game)
+				.then((as) => as.forEach((a) => achievementStore.set(a.id, a)));
 		} finally {
 			loading = false;
 		}
 	}
 
-	$effect(() => {
+	const achievements = $derived(
+		[...achievementStore.values()].filter((a) => a.game === game),
+	);
+
+	onMount(() => {
 		loadAchievements();
 	});
-
-	console.log('grants', grants);
+	$effect(() => {
+		console.log('achievements', achievements);
+		console.log('grants', achievementGrantStore);
+	});
 </script>
 
 <button
@@ -72,7 +80,7 @@
 		{#each achievements.sort((a, b) => a.points - b.points) as ach (ach.id)}
 			<AchievementTile
 				achievement={ach}
-				granted={grants.some((g) => g.id.startsWith(ach.id.toString()))}
+				granted={achievementGrantStore.has(ach.id)}
 			/>
 		{/each}
 	{:else}

@@ -3,12 +3,12 @@
 -----------------------------
 ---- Create table
 CREATE TABLE IF NOT EXISTS "achievementGrants" (
-  "id" TEXT PRIMARY KEY NOT NULL,
   "achievement" BIGINT NOT NULL,
   "user" BIGINT NOT NULL,
   "granted" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "game" INTEGER,
-  "updated" TIMESTAMPTZ
+  "updated" TIMESTAMPTZ,
+  PRIMARY KEY ("achievement", "user")
 );
 
 

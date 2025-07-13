@@ -19,7 +19,6 @@ export const grantAchievementToUser = async (
 					.where('id', '=', achievement)
 					.executeTakeFirstOrThrow()
 			: achievement;
-	const id = bindIds(ach.id, user);
 	console.log('Achievement', ach);
 	const result = await db
 		.insertInto('achievementGrants')
@@ -27,10 +26,9 @@ export const grantAchievementToUser = async (
 			achievement: ach.id,
 			granted: new Date(),
 			user,
-			id,
 			...(ach.game ? { game: ach.game } : {}),
 		} as AchievementGrant)
-		.onConflict((oc) => oc.column('id').doNothing())
+		.onConflict((oc) => oc.columns(['achievement', 'user']).doNothing())
 		.returningAll()
 		.executeTakeFirst();
 	console.log('Granted achievement?', result);

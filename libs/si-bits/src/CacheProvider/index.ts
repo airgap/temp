@@ -1,4 +1,6 @@
 // export * from './CurrentUserStore.svelte';
+export * from './AchievementGrantStore';
+export * from './AchievementStore';
 export * from './FileStore';
 export * from './MyFriendshipStore';
 export * from './MyFollowStore';
