@@ -17,7 +17,7 @@ export default class MainMenu extends Phaser.Scene {
 
 	editorCreate(): void {
 		// screw13a
-		this.add.image(510.53014273067794, 399.45174983847244, 'screw13a');
+		this.add.image(510.53014273067794, 512, 'screw13a');
 
 		// text
 		const text = this.add.text(512, 460, '', {});

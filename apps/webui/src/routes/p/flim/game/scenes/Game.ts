@@ -15,7 +15,7 @@ export default class Game extends Phaser.Scene {
 
 	editorCreate(): void {
 		// screw13a
-		this.add.image(378, 381, 'screw13a');
+		this.add.image(378, 512, 'screw13a');
 
 		// score
 		const score = this.add.text(384, 133, '', {});
