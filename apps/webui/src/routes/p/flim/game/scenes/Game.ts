@@ -14,15 +14,14 @@ export default class Game extends Phaser.Scene {
 	}
 
 	editorCreate(): void {
-		// background
-		const background = this.add.image(512, 384, 'background');
-		background.alpha = 0.5;
+		// screw13a
+		this.add.image(378, 381, 'screw13a');
 
-		// text
-		const text = this.add.text(513, 384, '', {});
-		text.setOrigin(0.5, 0.5);
-		text.text = 'Make something fun!\nand share it with us:\nsupport@phaser.io';
-		text.setStyle({
+		// score
+		const score = this.add.text(384, 133, '', {});
+		score.setOrigin(0.5, 0.5);
+		score.text = '0';
+		score.setStyle({
 			align: 'center',
 			color: '#ffffff',
 			fontFamily: 'Arial Black',
@@ -30,6 +29,10 @@ export default class Game extends Phaser.Scene {
 			stroke: '#000000',
 			strokeThickness: 8,
 		});
+
+		// food0
+		const food0 = this.add.sprite(353, 339, '0001');
+		food0.play('food0');
 
 		this.events.emit('scene-awake');
 	}

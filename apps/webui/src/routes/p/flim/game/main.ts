@@ -15,8 +15,8 @@ const config: Phaser.Types.Core.GameConfig = {
 	backgroundColor: '#028af8',
 	scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
 	scale: {
-		mode: Phaser.Scale.FIT
-	}
+		mode: Phaser.Scale.FIT,
+	},
 	// scale: { min: { width: 400, height: 600 } },
 };
 

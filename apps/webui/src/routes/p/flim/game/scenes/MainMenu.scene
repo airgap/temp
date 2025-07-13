@@ -14,24 +14,13 @@
     "displayList": [
         {
             "type": "Image",
-            "id": "eddaf8e1-94d1-401d-a328-cdfb23d1fef5",
-            "label": "background",
+            "id": "f9ea49dd-f802-4a6a-8150-7c8d5f941b29",
+            "label": "screw13a",
             "texture": {
-                "key": "background"
+                "key": "screw13a"
             },
-            "x": 512,
-            "y": 384
-        },
-        {
-            "type": "Image",
-            "id": "e5babb96-c526-40f4-94d3-ce0955d9767d",
-            "label": "logo",
-            "scope": "CLASS",
-            "texture": {
-                "key": "logo"
-            },
-            "x": 512,
-            "y": 384
+            "x": 510.53014273067794,
+            "y": 399.45174983847244
         },
         {
             "type": "Text",
@@ -48,6 +37,18 @@
             "color": "#ffffff",
             "stroke": "#000000",
             "strokeThickness": 8
+        },
+        {
+            "type": "Sprite",
+            "id": "69e4c250-ebc4-498d-99b0-47ec02417814",
+            "label": "food0",
+            "texture": {
+                "key": "0001"
+            },
+            "x": 288,
+            "y": 195,
+            "animationPlayMethod": 1,
+            "animationKey": "food0"
         }
     ],
     "plainObjects": [],

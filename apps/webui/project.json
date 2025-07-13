@@ -61,7 +61,7 @@
 			"options": {
 				"commands": [
 					// "./copydocs.sh",
-					"wrangler deploy dist/apps/webui/cloudflare/_worker.js -c apps/webui/wrangler.toml"
+					"bunx wrangler deploy dist/apps/webui/cloudflare/_worker.js -c apps/webui/wrangler.toml"
 				]
 			}
 		}

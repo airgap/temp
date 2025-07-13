@@ -14,30 +14,41 @@
     "displayList": [
         {
             "type": "Image",
-            "id": "cd0be28e-bb4f-4cb5-bedd-f9a0b9b35f0b",
-            "label": "background",
+            "id": "3068aca3-0b65-431b-9e5e-f4447b0eee97",
+            "label": "screw13a",
             "texture": {
-                "key": "background"
+                "key": "screw13a"
             },
-            "x": 512,
-            "y": 384,
-            "alpha": 0.5
+            "x": 378,
+            "y": 381
         },
         {
             "type": "Text",
             "id": "14c27edb-9072-4bd8-8db8-18bd78fefb3a",
-            "label": "text",
-            "x": 513,
-            "y": 384,
+            "label": "score",
+            "x": 384,
+            "y": 133,
             "originX": 0.5,
             "originY": 0.5,
-            "text": "Make something fun!\nand share it with us:\nsupport@phaser.io",
+            "text": "0",
             "align": "center",
             "fontFamily": "Arial Black",
             "fontSize": "38px",
             "color": "#ffffff",
             "stroke": "#000000",
             "strokeThickness": 8
+        },
+        {
+            "type": "Sprite",
+            "id": "b4f45358-bc51-4f3d-8a6d-2b81ee52f097",
+            "label": "food0",
+            "texture": {
+                "key": "0001"
+            },
+            "x": 353,
+            "y": 339,
+            "animationPlayMethod": 1,
+            "animationKey": "food0"
         }
     ],
     "plainObjects": [],

@@ -35,7 +35,8 @@
 </script>
 
 <div id="game-container"></div>
-<style lang='sass'>
+
+<style lang="sass">
 	#game-container
 		height: calc(100vh - 75px)
 		text-align: center

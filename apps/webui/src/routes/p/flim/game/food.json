@@ -1,0 +1,69 @@
+{
+	"anims": [
+		{
+			"key": "food0",
+			"type": "frame",
+			"frames": [
+				{
+					"key": "0001",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0002",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0003",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0004",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0005",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0006",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0007",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0008",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "0009",
+					"duration": 0,
+					"keyframe": false
+				}
+			],
+			"frameRate": 24,
+			"skipMissedFrames": true,
+			"repeat": -1,
+			"randomFrame": false
+		}
+	],
+	"globalTimeScale": 1,
+	"meta": {
+		"app": "Phaser Editor 2D v3",
+		"contentType": "Phaser v3 Animations"
+	},
+	"settings": {
+		"sourceLang": "TYPE_SCRIPT",
+		"esModule": true,
+		"generateCode": false
+	}
+}
