@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import { center } from '../defs';
 import { EventBus } from '../EventBus';
 /* END-USER-IMPORTS */
 
@@ -17,7 +18,8 @@ export default class MainMenu extends Phaser.Scene {
 
 	editorCreate(): void {
 		// screw13a
-		this.add.image(510.53014273067794, 512, 'screw13a');
+		const bg = this.add.image(378, 512, 'screw13a');
+		bg.alpha = 0.5;
 
 		// text
 		const text = this.add.text(512, 460, '', {});
@@ -33,8 +35,14 @@ export default class MainMenu extends Phaser.Scene {
 		});
 
 		// food0
-		const food0 = this.add.sprite(288, 195, '0001');
-		food0.play('food0');
+		// const food0 = this.add.sprite(288, 195, '0001');
+		// food0.play('food0');
+		const button = this.add.sprite(center.x, center.y, 'button');
+		button.setInteractive();
+		button.on('pointerdown', () => this.changeScene());
+		const play = this.add.sprite(center.x + 10, center.y, 'tri');
+		button.scale = 0.5;
+		play.scale = 0.5;
 
 		this.events.emit('scene-awake');
 	}
@@ -51,6 +59,7 @@ export default class MainMenu extends Phaser.Scene {
 	}
 
 	changeScene() {
+		console.log('Changing scene to Game');
 		this.scene.start('Game');
 	}
 	/* END-USER-CODE */

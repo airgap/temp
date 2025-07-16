@@ -55,6 +55,21 @@
 				"url": "screw13a.png",
 				"type": "image",
 				"key": "screw13a"
+			},
+			{
+				"url": "button.png",
+				"type": "image",
+				"key": "button"
+			},
+			{
+				"url": "play.png",
+				"type": "image",
+				"key": "play"
+			},
+			{
+				"url": "tri.png",
+				"type": "image",
+				"key": "tri"
 			}
 		]
 	},
