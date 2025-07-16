@@ -44,7 +44,7 @@ export default class Game extends Phaser.Scene {
 	create() {
 		this.editorCreate();
 
-		this.cameras.main.setBackgroundColor(0x00ff00);
+		this.cameras.main.setBackgroundColor(0x000000);
 
 		EventBus.emit('current-scene-ready', this);
 	}
