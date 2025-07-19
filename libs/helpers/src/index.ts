@@ -23,6 +23,7 @@ export * from './getSupertypeFromMime';
 export * from './levelThresholds';
 export * from './makeAttachmentId';
 export * from './makeDonut';
+export * from './nothing';
 export * from './Only';
 export * from './parseAttachmentId';
 export * from './patchAttachments';

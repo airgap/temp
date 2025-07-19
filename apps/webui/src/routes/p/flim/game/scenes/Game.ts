@@ -49,14 +49,6 @@ export default class Game extends Phaser.Scene {
 			strokeThickness: 8,
 		});
 
-		// Animation set
-		this.anims.create({
-			key: 'planim',
-			frames: this.anims.generateFrameNumbers('planim', { start: 0, end: 15 }),
-			frameRate: 8,
-			repeat: -1,
-		});
-
 		this.dropFood();
 
 		this.events.emit('scene-awake');
