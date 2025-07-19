@@ -54,6 +54,7 @@ export default class MainMenu extends Phaser.Scene {
 	}
 	create() {
 		this.editorCreate();
+		this.cameras.main.setBackgroundColor(0x000000);
 
 		EventBus.emit('current-scene-ready', this);
 	}

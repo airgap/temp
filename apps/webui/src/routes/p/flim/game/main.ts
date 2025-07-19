@@ -20,6 +20,15 @@ const config: Phaser.Types.Core.GameConfig = {
 	loader: {
 		baseURL: '/flim/',
 	},
+	physics: {
+		default: 'arcade',
+		arcade: {
+			gravity: {
+				x: 0,
+				y: 200,
+			},
+		},
+	},
 	// scale: { min: { width: 400, height: 600 } },
 };
 
