@@ -1,84 +1,97 @@
 {
-	"section1": {
-		"files": [
-			{
-				"url": "0001.png",
-				"type": "image",
-				"key": "0001"
-			},
-			{
-				"url": "0002.png",
-				"type": "image",
-				"key": "0002"
-			},
-			{
-				"url": "0003.png",
-				"type": "image",
-				"key": "0003"
-			},
-			{
-				"url": "0004.png",
-				"type": "image",
-				"key": "0004"
-			},
-			{
-				"url": "0005.png",
-				"type": "image",
-				"key": "0005"
-			},
-			{
-				"url": "0006.png",
-				"type": "image",
-				"key": "0006"
-			},
-			{
-				"url": "0007.png",
-				"type": "image",
-				"key": "0007"
-			},
-			{
-				"url": "0008.png",
-				"type": "image",
-				"key": "0008"
-			},
-			{
-				"url": "0009.png",
-				"type": "image",
-				"key": "0009"
-			},
-			{
-				"url": "food.json",
-				"type": "animation",
-				"key": "food"
-			},
-			{
-				"url": "screw13a.png",
-				"type": "image",
-				"key": "screw13a"
-			},
-			{
-				"url": "button.png",
-				"type": "image",
-				"key": "button"
-			},
-			{
-				"url": "play.png",
-				"type": "image",
-				"key": "play"
-			},
-			{
-				"url": "tri.png",
-				"type": "image",
-				"key": "tri"
-			}
-		]
-	},
-	"meta": {
-		"app": "Phaser Editor 2D - Asset Pack Editor",
-		"contentType": "phasereditor2d.pack.core.AssetContentType",
-		"url": "https://phasereditor2d.com",
-		"version": 2,
-		"showAllFilesInBlocks": false,
-		"visible": true
-	}
+    "section1": {
+        "files": [
+            {
+                "url": "0001.png",
+                "type": "image",
+                "key": "0001"
+            },
+            {
+                "url": "0002.png",
+                "type": "image",
+                "key": "0002"
+            },
+            {
+                "url": "0003.png",
+                "type": "image",
+                "key": "0003"
+            },
+            {
+                "url": "0004.png",
+                "type": "image",
+                "key": "0004"
+            },
+            {
+                "url": "0005.png",
+                "type": "image",
+                "key": "0005"
+            },
+            {
+                "url": "0006.png",
+                "type": "image",
+                "key": "0006"
+            },
+            {
+                "url": "0007.png",
+                "type": "image",
+                "key": "0007"
+            },
+            {
+                "url": "0008.png",
+                "type": "image",
+                "key": "0008"
+            },
+            {
+                "url": "0009.png",
+                "type": "image",
+                "key": "0009"
+            },
+            {
+                "url": "button.png",
+                "type": "image",
+                "key": "button"
+            },
+            {
+                "url": "food.json",
+                "type": "animation",
+                "key": "food"
+            },
+            {
+                "url": "apps/webui/static/flim/planim.png",
+                "frameConfig": {
+                    "frameWidth": 256,
+                    "frameHeight": 256,
+                    "startFrame": 0,
+                    "endFrame": -1,
+                    "spacing": 0,
+                    "margin": 0
+                },
+                "type": "spritesheet",
+                "key": "planim"
+            },
+            {
+                "url": "play.png",
+                "type": "image",
+                "key": "play"
+            },
+            {
+                "url": "screw13a.png",
+                "type": "image",
+                "key": "screw13a"
+            },
+            {
+                "url": "tri.png",
+                "type": "image",
+                "key": "tri"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false,
+        "visible": true
+    }
 }
