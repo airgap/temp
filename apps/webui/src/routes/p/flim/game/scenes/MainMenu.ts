@@ -5,6 +5,7 @@
 /* START-USER-IMPORTS */
 import { center } from '../defs';
 import { EventBus } from '../EventBus';
+import { nothing } from '@lyku/helpers';
 /* END-USER-IMPORTS */
 
 export default class MainMenu extends Phaser.Scene {
@@ -16,13 +17,15 @@ export default class MainMenu extends Phaser.Scene {
 		/* END-USER-CTR-CODE */
 	}
 
+	playButton?: Phaser.GameObjects.Sprite;
+
 	editorCreate(): void {
 		// screw13a
-		const bg = this.add.image(378, 512, 'screw13a');
+		const bg = this.add.image(center.x, center.y, 'screw13a');
 		bg.alpha = 0.5;
 
 		// text
-		const text = this.add.text(512, 460, '', {});
+		const text = this.add.text(center.x, center.y / 2, '', {});
 		text.setOrigin(0.5, 0.5);
 		text.text = 'Main Menu';
 		text.setStyle({
@@ -37,12 +40,19 @@ export default class MainMenu extends Phaser.Scene {
 		// food0
 		// const food0 = this.add.sprite(288, 195, '0001');
 		// food0.play('food0');
-		const button = this.add.sprite(center.x, center.y, 'button');
-		button.setInteractive();
-		button.on('pointerdown', () => this.changeScene());
-		const play = this.add.sprite(center.x + 10, center.y, 'tri');
-		button.scale = 0.5;
-		play.scale = 0.5;
+
+		this.playButton = this.add.sprite(center.x, center.y, 'planim');
+		this.playButton.setInteractive();
+		this.playButton.on('pointerup', () => this.changeScene());
+		this.playButton.scale = 0.5;
+
+		// Animation set
+		this.playButton.anims.create({
+			key: 'planimation',
+			frames: this.anims.generateFrameNumbers('planim', { start: 0, end: 17 }),
+			frameRate: 60,
+			repeat: 0,
+		});
 
 		this.events.emit('scene-awake');
 	}
@@ -59,7 +69,9 @@ export default class MainMenu extends Phaser.Scene {
 		EventBus.emit('current-scene-ready', this);
 	}
 
-	changeScene() {
+	async changeScene() {
+		this.playButton?.anims.startAnimation('planimation');
+		await nothing((18 / 60) * 1000);
 		console.log('Changing scene to Game');
 		this.scene.start('Game');
 	}
