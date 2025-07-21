@@ -88,6 +88,11 @@
 				"key": "play"
 			},
 			{
+				"url": "replay.png",
+				"type": "image",
+				"key": "replay"
+			},
+			{
 				"url": "screw13a.png",
 				"type": "image",
 				"key": "screw13a"
