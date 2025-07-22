@@ -102,6 +102,11 @@
 				"key": "food"
 			},
 			{
+				"url": "food-64x.json",
+				"type": "animation",
+				"key": "food-64x"
+			},
+			{
 				"url": "planim.png",
 				"frameConfig": {
 					"frameWidth": 256,
