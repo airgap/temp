@@ -4,20 +4,25 @@
 import { mix } from '@lyku/helpers';
 import { bounds, center, random } from '../defs';
 import { EventBus } from '../EventBus';
+import { createPlayer } from '../createPlayer';
+import { movePlayer } from '../movePlayer';
+import { heldKeys } from '../heldKeys';
+import { handleKeyboard } from '../handleKeyboard';
+import { doesPlayerEatFood } from '../doesPlayerEatFood';
+import { pop } from '../pop';
 /* END-USER-IMPORTS */
 
 type Sprite = Phaser.GameObjects.Sprite;
 // const pressVelocity = 600;
 
-const heldKeys = new Set<number>();
-const { A, LEFT, D, RIGHT } = Phaser.Input.Keyboard.KeyCodes;
-const heldKeyVelocity = 800;
 const baseDropInterval = 500;
+const maxLives = 2;
 // const baseGravity =
 
 export default class Game extends Phaser.Scene {
+	lives = maxLives;
 	speed = 300;
-	extraDropInterval = 2500;
+	extraDropInterval = 500;
 	foods: Sprite[] = [];
 	scoreText?: Phaser.GameObjects.Text;
 	dropTimer?: NodeJS.Timeout;
@@ -27,6 +32,8 @@ export default class Game extends Phaser.Scene {
 	combo = 1;
 	streakText?: Phaser.GameObjects.Text;
 	consecutive = 0;
+	livesText?: Phaser.GameObjects.Text;
+	lifeSprite?: Sprite;
 	constructor() {
 		super('Game');
 
@@ -34,70 +41,48 @@ export default class Game extends Phaser.Scene {
 		// Write your code here.
 		/* END-USER-CTR-CODE */
 	}
-	update(time: number, delta: number) {
-		if (this.player?.body) {
-			const leftHeld = Number(heldKeys.has(LEFT) || heldKeys.has(A));
-			const rightHeld = Number(heldKeys.has(RIGHT) || heldKeys.has(D));
-			const dir = (rightHeld - leftHeld) * heldKeyVelocity;
-			if (dir) this.player.body.velocity.x = dir;
-			else {
-				const baseRatioReduction = 0.003;
-				const accountingForDelta = baseRatioReduction * delta;
-				const vMultiplier = 1 - accountingForDelta;
-				const oldV = this.player.body.velocity.x;
-				const newV = Math.abs(oldV) > 1 ? oldV * vMultiplier : 0;
-				this.player.body.velocity.x = newV;
-			}
-			if (this.player.x > bounds.w + 128) this.player.x = -128;
-			else if (this.player.x < -128) this.player.x = bounds.w + 128;
-			this.desiredAngle = (this.player.body.velocity.x / heldKeyVelocity) * 90;
-			this.player.angle = mix(this.desiredAngle, this.player.angle, 0.9);
-			for (let f = this.foods.length - 1; f >= 0; f--) {
-				const food = this.foods[f];
-				const r1 = food.displayWidth / 4;
-				const r2 = this.player.displayWidth / 2;
-				const distance = Math.sqrt(
-					Math.pow(this.player.x - food.x, 2) +
-						Math.pow(this.player.y - food.y, 2),
-				);
-				console.log('distance', distance);
-				if (distance < r1 + r2) {
-					food.destroy();
-					this.foods.splice(f, 1);
-					this.score += this.combo;
-					this.scoreText?.setText(
-						`${this.score} point${this.score === 1 ? '' : 's'}`,
-					);
-					this.player.anims.play('chomping');
-					this.consecutive++;
-					if (this.consecutive >= 10 && this.consecutive % 10 === 0)
-						this.combo++;
-					this.streakText!.text = this.combo > 1 ? `X${this.combo} COMBO` : '';
-				}
-			}
-			if (Math.round(time) % 10 === 0)
-				for (let i = this.foods.length - 1; i >= 0; i--) {
-					const food = this.foods[i];
-					if (food.y > bounds.h) {
-						food.destroy();
-						this.foods.splice(i, 1);
-						this.combo = 1;
-						this.consecutive = 0;
-						this.streakText!.text = '';
-					}
-				}
-			// this.player.body.velocity.x = this.player.body.velocity.x % bounds.w;
-			// console.log(
-			// 	'x',
-			// 	this.player?.body?.velocity.x,
-			// 	'vm',
-			// 	vMultiplier,
-			// 	'oldV',
-			// 	oldV,
-			// 	'newV',
-			// 	newV,
-			// );
+	eatFood(f: number) {
+		this.foods.splice(f, 1)[0].destroy();
+		this.score += this.combo;
+		this.scoreText?.setText(
+			`${this.score} point${this.score === 1 ? '' : 's'}`,
+		);
+		this.player?.anims.play('chomping');
+		this.consecutive++;
+		if (this.consecutive >= 10 && this.consecutive % 10 === 0) {
+			this.combo++;
+			if (this.streakText) pop(this.streakText, this);
 		}
+		this.streakText!.text = this.combo > 1 ? `X${this.combo} MULT` : '';
+	}
+	tryEatingFood() {
+		if (!this.player) return;
+		for (let f = this.foods.length - 1; f >= 0; f--) {
+			if (doesPlayerEatFood(this.player, this.foods[f])) {
+				this.eatFood(f);
+			}
+		}
+	}
+	removeOldFood() {
+		if (!this.foods.length) return;
+		const food = this.foods[0];
+		if (food.y > bounds.h) {
+			food.destroy();
+			this.foods.shift();
+			this.combo = 1;
+			this.consecutive = 0;
+			this.streakText!.text = '';
+			this.lives--;
+			this.livesText?.setText('X' + this.lives);
+			if (this.livesText) pop(this.livesText, this);
+			if (this.lives < 0) this.endGame();
+		}
+	}
+	update(time: number, delta: number) {
+		if (this.input.keyboard) handleKeyboard(this.input.keyboard);
+		if (this.player) movePlayer(this.player, delta);
+		this.tryEatingFood();
+		this.removeOldFood();
 	}
 	increaseGravity() {
 		const { gravity } = this.physics.config;
@@ -162,45 +147,45 @@ export default class Game extends Phaser.Scene {
 			strokeThickness: 8,
 		});
 
-		this.dropFood();
+		const lifeCounterY = bounds.h - 40;
 
-		this.player = this.physics.add.sprite(
-			center.x,
-			mix(bounds.h, center.y, 0.25),
-			'chomping',
-		);
-		this.player.setInteractive();
-		this.player.on('pointerup', () => this.changeScene());
-		this.player.scale = 0.5;
-		(this.player.body as any)!.allowGravity = false;
-		const { keyboard } = this.input;
-		if (keyboard) {
-			for (const key of ['A', 'LEFT', 'D', 'RIGHT'] as const) {
-				keyboard.on('keydown-' + key, () =>
-					heldKeys.add(Phaser.Input.Keyboard.KeyCodes[key]),
-				);
-				keyboard.on('keyup-' + key, () =>
-					heldKeys.delete(Phaser.Input.Keyboard.KeyCodes[key]),
-				);
-			}
-		}
-		// Animation set
-		this.player.anims.create({
-			key: 'chomping',
-			frames: this.anims.generateFrameNumbers('chomping', {
-				start: 0,
-				end: 8,
-			}),
-			frameRate: 60,
-			repeat: 1,
-			yoyo: true,
+		this.lifeSprite = this.add.sprite(40, lifeCounterY, 'chomping');
+		this.lifeSprite.scale = 0.25;
+		// life count
+		this.livesText = this.add.text(70, lifeCounterY, 'X2', {});
+		this.livesText.setOrigin(0, 0.5);
+		this.livesText.text = 'X' + this.lives;
+		this.livesText.setStyle({
+			align: 'left',
+			color: '#ffffff',
+			fontFamily: 'Futura',
+			fontSize: '35px',
+			stroke: '#000000',
+			strokeThickness: 8,
 		});
 
+		this.player = createPlayer(this);
+		this.startGame();
 		EventBus.emit('current-scene-ready', this);
 	}
 
-	changeScene() {
-		this.scene.start('GameOver');
+	startGame() {
+		this.lifeSprite?.setScale(0.25);
+		this.livesText?.setScale(1);
+
+		this.dropFood();
+	}
+
+	endGame() {
+		clearTimeout(this.dropTimer);
+		this.dropTimer = undefined;
+		for (const food of this.foods) {
+			food.destroy();
+		}
+		this.foods = [];
+		this.lifeSprite?.setScale(0);
+		this.livesText?.setScale(0);
+		// this.scene.start('GameOver');
 	}
 
 	/* END-USER-CODE */

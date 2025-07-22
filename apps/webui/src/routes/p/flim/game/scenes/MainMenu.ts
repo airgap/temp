@@ -20,6 +20,17 @@ export default class MainMenu extends Phaser.Scene {
 	playButton?: Phaser.GameObjects.Sprite;
 
 	editorCreate(): void {
+		this.events.emit('scene-awake');
+	}
+
+	// Write your code here
+
+	preload() {
+		this.load.pack('preload', 'asset-pack.json');
+	}
+	create() {
+		this.editorCreate();
+		this.cameras.main.setBackgroundColor(0x000000);
 		// screw13a
 		const bg = this.add.image(center.x, center.y, 'screw13a');
 		bg.alpha = 0.5;
@@ -27,12 +38,12 @@ export default class MainMenu extends Phaser.Scene {
 		// text
 		const text = this.add.text(center.x, center.y / 2, '', {});
 		text.setOrigin(0.5, 0.5);
-		text.text = 'Main Menu';
+		text.text = 'Grabba Byte';
 		text.setStyle({
 			align: 'center',
 			color: '#ffffff',
-			fontFamily: 'Arial Black',
-			fontSize: '38px',
+			fontFamily: 'Futura',
+			fontSize: '68px',
 			stroke: '#000000',
 			strokeThickness: 8,
 		});
@@ -53,18 +64,6 @@ export default class MainMenu extends Phaser.Scene {
 			frameRate: 60,
 			repeat: 0,
 		});
-
-		this.events.emit('scene-awake');
-	}
-
-	// Write your code here
-
-	preload() {
-		this.load.pack('preload', 'asset-pack.json');
-	}
-	create() {
-		this.editorCreate();
-		this.cameras.main.setBackgroundColor(0x000000);
 
 		EventBus.emit('current-scene-ready', this);
 	}
