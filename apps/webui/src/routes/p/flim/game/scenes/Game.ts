@@ -206,7 +206,7 @@ export default class Game extends Phaser.Scene {
 			bit.scale = 0.5;
 			bit.blendMode = Phaser.BlendModes.ADD;
 			// bit.scale = 0.5;
-			bit.play('food-x64-0');
+			bit.play('food-64x-0');
 			this.bitSprites.push(bit);
 		}
 		this.playerContainer.add(this.bitSprites);
