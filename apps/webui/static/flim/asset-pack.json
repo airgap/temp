@@ -47,6 +47,51 @@
 				"key": "0009"
 			},
 			{
+				"url": "food-64x-0001.png",
+				"type": "image",
+				"key": "food-64x-0001"
+			},
+			{
+				"url": "food-64x-0002.png",
+				"type": "image",
+				"key": "food-64x-0002"
+			},
+			{
+				"url": "food-64x-0003.png",
+				"type": "image",
+				"key": "food-64x-0003"
+			},
+			{
+				"url": "food-64x-0004.png",
+				"type": "image",
+				"key": "food-64x-0004"
+			},
+			{
+				"url": "food-64x-0005.png",
+				"type": "image",
+				"key": "food-64x-0005"
+			},
+			{
+				"url": "food-64x-0006.png",
+				"type": "image",
+				"key": "food-64x-0006"
+			},
+			{
+				"url": "food-64x-0007.png",
+				"type": "image",
+				"key": "food-64x-0007"
+			},
+			{
+				"url": "food-64x-0008.png",
+				"type": "image",
+				"key": "food-64x-0008"
+			},
+			{
+				"url": "food-64x-0009.png",
+				"type": "image",
+				"key": "food-64x-0009"
+			},
+			{
 				"url": "button.png",
 				"type": "image",
 				"key": "button"
