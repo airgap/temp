@@ -5,5 +5,6 @@ import { onEach } from '@lyku/helpers';
 export default handleListenForAchievements((_, { emit, requester, socket }) => {
 	const sub = nats.subscribe(`achievementGrants.${requester}`);
 	onEach(sub, ({ data }) => emit(data));
+	console.log(requester, 'is listening for achievements');
 	return sub.unsubscribe;
 });

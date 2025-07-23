@@ -47,6 +47,111 @@
 				"key": "0009"
 			},
 			{
+				"url": "audio/Flack 4.mp3",
+				"type": "audio",
+				"key": "flack"
+			},
+			{
+				"url": "audio/combo-hit-1.ogg",
+				"type": "audio",
+				"key": "combo-hit-1"
+			},
+			{
+				"url": "audio/combo-hit-2.ogg",
+				"type": "audio",
+				"key": "combo-hit-2"
+			},
+			{
+				"url": "audio/combo-hit-3.ogg",
+				"type": "audio",
+				"key": "combo-hit-3"
+			},
+			{
+				"url": "audio/combo-hit-4.ogg",
+				"type": "audio",
+				"key": "combo-hit-4"
+			},
+			{
+				"url": "audio/combo-hit-5.ogg",
+				"type": "audio",
+				"key": "combo-hit-5"
+			},
+			{
+				"url": "audio/combo-hit-6.ogg",
+				"type": "audio",
+				"key": "combo-hit-6"
+			},
+			{
+				"url": "audio/combo-hit-7.ogg",
+				"type": "audio",
+				"key": "combo-hit-7"
+			},
+			{
+				"url": "audio/combo-hit-8.ogg",
+				"type": "audio",
+				"key": "combo-hit-8"
+			},
+			{
+				"url": "audio/combo-hit-9.ogg",
+				"type": "audio",
+				"key": "combo-hit-9"
+			},
+			{
+				"url": "audio/combo-hit-10.ogg",
+				"type": "audio",
+				"key": "combo-hit-10"
+			},
+			{
+				"url": "audio/hit-1.ogg",
+				"type": "audio",
+				"key": "hit-1"
+			},
+			{
+				"url": "audio/hit-2.ogg",
+				"type": "audio",
+				"key": "hit-2"
+			},
+			{
+				"url": "audio/hit-3.ogg",
+				"type": "audio",
+				"key": "hit-3"
+			},
+			{
+				"url": "audio/hit-4.ogg",
+				"type": "audio",
+				"key": "hit-4"
+			},
+			{
+				"url": "audio/hit-5.ogg",
+				"type": "audio",
+				"key": "hit-5"
+			},
+			{
+				"url": "audio/hit-6.ogg",
+				"type": "audio",
+				"key": "hit-6"
+			},
+			{
+				"url": "audio/hit-7.ogg",
+				"type": "audio",
+				"key": "hit-7"
+			},
+			{
+				"url": "audio/hit-8.ogg",
+				"type": "audio",
+				"key": "hit-8"
+			},
+			{
+				"url": "audio/hit-9.ogg",
+				"type": "audio",
+				"key": "hit-9"
+			},
+			{
+				"url": "audio/hit-10.ogg",
+				"type": "audio",
+				"key": "hit-10"
+			},
+			{
 				"url": "food-64x-0001.png",
 				"type": "image",
 				"key": "food-64x-0001"

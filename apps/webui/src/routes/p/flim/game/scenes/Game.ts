@@ -39,6 +39,9 @@ export default class Game extends Phaser.Scene {
 	lifeSprite?: Sprite;
 	bitSprites: Sprite[] = [];
 	playerContainer?: Phaser.GameObjects.Container;
+	track?: Phaser.Sound.BaseSound;
+	hitSounds: Phaser.Sound.BaseSound[] = [];
+	comboHitSounds: Phaser.Sound.BaseSound[] = [];
 	constructor() {
 		super('Game');
 
@@ -67,11 +70,24 @@ export default class Game extends Phaser.Scene {
 		this.playerSprite?.anims.play('chomping');
 		this.consecutive++;
 		if (this.consecutive >= 4 && this.consecutive % comboMinimum === 0) {
-			this.combo++;
+			if (this.combo < 10) this.combo++;
 			if (this.streakText) pop(this.streakText, this);
+			this.comboHitSounds[
+				Math.min(this.combo - 2, this.comboHitSounds.length - 1)
+			].play();
 		}
+		this.hitSounds[(this.consecutive - 1) % comboMinimum].play();
 		this.showBits();
-		this.streakText!.text = this.combo > 1 ? `X${this.combo} MULT` : '';
+		const maxed = this.combo === 10 ? 'MAX ' : '';
+		this.streakText!.text =
+			this.combo > 1 ? `X${this.combo} ${maxed}COMBO` : '';
+		if (this.consecutive % 80 === 0 && this.consecutive > 3) {
+			this.lives++;
+			if (this.livesText) {
+				this.livesText?.setText('X' + this.lives);
+				pop(this.livesText, this);
+			}
+		}
 	}
 	tryEatingFood() {
 		if (!this.playerSprite) return;
@@ -81,19 +97,23 @@ export default class Game extends Phaser.Scene {
 			}
 		}
 	}
+	resetCombo() {
+		this.combo = 1;
+		this.consecutive = 0;
+		this.streakText!.text = '';
+		this.lives--;
+		this.showBits();
+		this.livesText?.setText('X' + this.lives);
+		if (this.livesText) pop(this.livesText, this);
+		if (this.lives < 0) this.endGame();
+	}
 	removeOldFood() {
 		if (!this.foods.length) return;
 		const food = this.foods[0];
 		if (food.y > bounds.h) {
 			food.destroy();
 			this.foods.shift();
-			this.combo = 1;
-			this.consecutive = 0;
-			this.streakText!.text = '';
-			this.lives--;
-			this.livesText?.setText('X' + this.lives);
-			if (this.livesText) pop(this.livesText, this);
-			if (this.lives < 0) this.endGame();
+			this.resetCombo();
 		}
 	}
 	moveBitsToPlayer() {
@@ -202,14 +222,21 @@ export default class Game extends Phaser.Scene {
 			const a = (Math.PI / 8) * (i + 0.5);
 			const { x, y } = vectorToCoords({ d: 80, a });
 			const bit = this.add?.sprite(x, y, 'food-64x-000' + (i + 1));
-			bit.alpha = 0.5;
-			bit.scale = 0.5;
+			// bit.alpha = 0.5;
+			bit.scale = 0;
 			bit.blendMode = Phaser.BlendModes.ADD;
 			// bit.scale = 0.5;
 			bit.play('food-64x-0');
 			this.bitSprites.push(bit);
 		}
 		this.playerContainer.add(this.bitSprites);
+		this.track = this.sound.add('flack', { volume: 0.5 });
+		for (let i = 1; i <= 10; i++) {
+			this.hitSounds.push(this.sound.add(`hit-${i}`, { volume: 0.125 }));
+			this.comboHitSounds.push(
+				this.sound.add(`combo-hit-${i}`, { volume: 0.5 }),
+			);
+		}
 		this.startGame();
 		EventBus.emit('current-scene-ready', this);
 	}
@@ -217,6 +244,7 @@ export default class Game extends Phaser.Scene {
 	startGame() {
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
+		this.track?.play();
 
 		this.dropFood();
 	}
