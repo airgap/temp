@@ -10,6 +10,8 @@ import { heldKeys } from '../heldKeys';
 import { handleKeyboard } from '../handleKeyboard';
 import { doesPlayerEatFood } from '../doesPlayerEatFood';
 import { pop } from '../pop';
+import { bitAngle } from '../bitAngle';
+import { vectorToCoords } from '../vectorToCoords';
 /* END-USER-IMPORTS */
 
 type Sprite = Phaser.GameObjects.Sprite;
@@ -17,6 +19,7 @@ type Sprite = Phaser.GameObjects.Sprite;
 
 const baseDropInterval = 500;
 const maxLives = 2;
+const comboMinimum = 8;
 // const baseGravity =
 
 export default class Game extends Phaser.Scene {
@@ -26,7 +29,7 @@ export default class Game extends Phaser.Scene {
 	foods: Sprite[] = [];
 	scoreText?: Phaser.GameObjects.Text;
 	dropTimer?: NodeJS.Timeout;
-	player?: Sprite;
+	playerSprite?: Sprite;
 	desiredAngle = 0;
 	score = 0;
 	combo = 1;
@@ -34,6 +37,11 @@ export default class Game extends Phaser.Scene {
 	consecutive = 0;
 	livesText?: Phaser.GameObjects.Text;
 	lifeSprite?: Sprite;
+	bitSprites: Sprite[] = [];
+	playerContainer?: Phaser.GameObjects.Container;
+	track?: Phaser.Sound.BaseSound;
+	hitSounds: Phaser.Sound.BaseSound[] = [];
+	comboHitSounds: Phaser.Sound.BaseSound[] = [];
 	constructor() {
 		super('Game');
 
@@ -41,27 +49,63 @@ export default class Game extends Phaser.Scene {
 		// Write your code here.
 		/* END-USER-CTR-CODE */
 	}
+	showBits() {
+		for (let b = this.bitSprites.length - 1; b >= 0; b--)
+			this.tweens.add({
+				targets: [this.bitSprites[b]],
+				scale: Number(this.consecutive % comboMinimum > b) / 2,
+				ease: 'Linear',
+				duration: 250,
+				yoyo: false,
+				repeat: 0,
+				callbackScope: this,
+			});
+	}
 	eatFood(f: number) {
 		this.foods.splice(f, 1)[0].destroy();
 		this.score += this.combo;
 		this.scoreText?.setText(
 			`${this.score} point${this.score === 1 ? '' : 's'}`,
 		);
-		this.player?.anims.play('chomping');
+		this.playerSprite?.anims.play('chomping');
 		this.consecutive++;
-		if (this.consecutive >= 10 && this.consecutive % 10 === 0) {
-			this.combo++;
+		if (this.consecutive >= 4 && this.consecutive % comboMinimum === 0) {
+			if (this.combo < 10) this.combo++;
 			if (this.streakText) pop(this.streakText, this);
+			this.comboHitSounds[
+				Math.min(this.combo - 2, this.comboHitSounds.length - 1)
+			].play();
 		}
-		this.streakText!.text = this.combo > 1 ? `X${this.combo} MULT` : '';
+		this.hitSounds[(this.consecutive - 1) % comboMinimum].play();
+		this.showBits();
+		const maxed = this.combo === 10 ? 'MAX ' : '';
+		this.streakText!.text =
+			this.combo > 1 ? `X${this.combo} ${maxed}COMBO` : '';
+		if (this.consecutive % 80 === 0 && this.consecutive > 3) {
+			this.lives++;
+			if (this.livesText) {
+				this.livesText?.setText('X' + this.lives);
+				pop(this.livesText, this);
+			}
+		}
 	}
 	tryEatingFood() {
-		if (!this.player) return;
+		if (!this.playerSprite) return;
 		for (let f = this.foods.length - 1; f >= 0; f--) {
-			if (doesPlayerEatFood(this.player, this.foods[f])) {
+			if (doesPlayerEatFood(this.playerSprite, this.foods[f])) {
 				this.eatFood(f);
 			}
 		}
+	}
+	resetCombo() {
+		this.combo = 1;
+		this.consecutive = 0;
+		this.streakText!.text = '';
+		this.lives--;
+		this.showBits();
+		this.livesText?.setText('X' + this.lives);
+		if (this.livesText) pop(this.livesText, this);
+		if (this.lives < 0) this.endGame();
 	}
 	removeOldFood() {
 		if (!this.foods.length) return;
@@ -69,20 +113,24 @@ export default class Game extends Phaser.Scene {
 		if (food.y > bounds.h) {
 			food.destroy();
 			this.foods.shift();
-			this.combo = 1;
-			this.consecutive = 0;
-			this.streakText!.text = '';
-			this.lives--;
-			this.livesText?.setText('X' + this.lives);
-			if (this.livesText) pop(this.livesText, this);
-			if (this.lives < 0) this.endGame();
+			this.resetCombo();
 		}
+	}
+	moveBitsToPlayer() {
+		if (!(this.playerContainer && this.playerSprite)) return;
+		this.playerContainer.x =
+			this.playerSprite.x + this.playerSprite.body!.velocity.x / 75;
+		this.playerContainer.y =
+			this.playerSprite.y + this.playerSprite.body!.velocity.y / 75;
+		// this.playerContainer.copyPosition(this.playerSprite);
+		this.playerContainer.angle = this.playerSprite.angle;
 	}
 	update(time: number, delta: number) {
 		if (this.input.keyboard) handleKeyboard(this.input.keyboard);
-		if (this.player) movePlayer(this.player, delta);
+		if (this.playerSprite) movePlayer(this.playerSprite, delta);
 		this.tryEatingFood();
 		this.removeOldFood();
+		this.moveBitsToPlayer();
 	}
 	increaseGravity() {
 		const { gravity } = this.physics.config;
@@ -96,7 +144,7 @@ export default class Game extends Phaser.Scene {
 			baseDropInterval + this.extraDropInterval,
 		);
 		this.increaseGravity();
-		const food = this.physics.add.sprite(random.x(50), -100, '0001');
+		const food = this.physics.add.sprite(random.x(50), -bounds.h / 4, '0001');
 		food.blendMode = Phaser.BlendModes.ADD;
 		food.scale = 0.5;
 		food.body.setAccelerationY(200);
@@ -164,7 +212,31 @@ export default class Game extends Phaser.Scene {
 			strokeThickness: 8,
 		});
 
-		this.player = createPlayer(this);
+		this.playerSprite = createPlayer(this);
+		this.playerContainer = this.add.container(
+			center.x,
+			mix(bounds.h, center.y, 0.3),
+		);
+
+		for (let i = 7; i >= 0; i--) {
+			const a = (Math.PI / 8) * (i + 0.5);
+			const { x, y } = vectorToCoords({ d: 80, a });
+			const bit = this.add?.sprite(x, y, 'food-64x-000' + (i + 1));
+			// bit.alpha = 0.5;
+			bit.scale = 0;
+			bit.blendMode = Phaser.BlendModes.ADD;
+			// bit.scale = 0.5;
+			bit.play('food-64x-0');
+			this.bitSprites.push(bit);
+		}
+		this.playerContainer.add(this.bitSprites);
+		this.track = this.sound.add('flack', { volume: 0.5 });
+		for (let i = 1; i <= 10; i++) {
+			this.hitSounds.push(this.sound.add(`hit-${i}`, { volume: 0.125 }));
+			this.comboHitSounds.push(
+				this.sound.add(`combo-hit-${i}`, { volume: 0.5 }),
+			);
+		}
 		this.startGame();
 		EventBus.emit('current-scene-ready', this);
 	}
@@ -172,6 +244,7 @@ export default class Game extends Phaser.Scene {
 	startGame() {
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
+		this.track?.play();
 
 		this.dropFood();
 	}

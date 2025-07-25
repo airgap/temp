@@ -8,9 +8,8 @@ export const createPlayer = (that: Scene) => {
 		mix(bounds.h, center.y, 0.3),
 		'chomping',
 	);
-	player.setInteractive();
+	(player?.body as any)!.allowGravity = false;
 	player.scale = 0.5;
-	(player.body as any)!.allowGravity = false;
 	// Animation set
 	player.anims.create({
 		key: 'chomping',

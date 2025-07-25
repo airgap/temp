@@ -14,9 +14,8 @@
 	let dropped = $state(false);
 	let loading = $state(true);
 
-	// Replace useEffect with onMount
-	$effect(() => {
-		if (sessionId) {
+	onMount(() => {
+		if (getSessionId()) {
 			api
 				.listenForAchievementGrants({ game })
 				.listen((e) => e.forEach((g) => achievementGrantStore.set(g.id, g)));
@@ -48,12 +47,10 @@
 	});
 </script>
 
-<button
-	type="button"
+<div
 	class={classnames(styles.AchievementList, {
 		[styles.dropped]: dropped,
 	})}
-	onclick={() => !dropped && (dropped = true)}
 >
 	<div
 		tabindex="0"
@@ -86,4 +83,4 @@
 	{:else}
 		<h3>This game has no achievements yet -- check back soon!</h3>
 	{/if}
-</button>
+</div>
