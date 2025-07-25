@@ -1,7 +1,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { mix } from '@lyku/helpers';
+import { mix, nothing } from '@lyku/helpers';
 import { bounds, center, random } from '../defs';
 import { EventBus } from '../EventBus';
 import { createPlayer } from '../createPlayer';
@@ -46,6 +46,8 @@ export default class Game extends Phaser.Scene {
 	hitSounds: BaseSound[] = [];
 	comboHitSounds: BaseSound[] = [];
 	dropHand?: Sprite;
+	heldFood?: Sprite;
+	dropHandContainer?: Container;
 	constructor() {
 		super('Game');
 
@@ -142,14 +144,48 @@ export default class Game extends Phaser.Scene {
 		if (!gravity) return;
 		gravity.y = Math.min(gravity.y * 1.02, 600);
 	}
-	dropFood() {
+	async moveHand() {
+		if (!this.heldFood) return;
+		const d = 250;
+		this.tweens.add({
+			targets: [this.dropHandContainer],
+			x: random.x(50),
+			ease: 'Linear',
+			duration: d,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
+		});
+		this.heldFood?.setY(bounds.h / 18);
+		this.heldFood?.setScale(0);
+		this.tweens.add({
+			targets: [this.heldFood],
+			y: bounds.h / 18,
+			scale: 0.5,
+			ease: 'Linear',
+			duration: d,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
+			onComplete: () => {
+				if (!(this.heldFood && this.dropHandContainer)) return;
+				this.dropHand?.anims.play('unpinch0');
+				this.dropFood(
+					this.dropHandContainer.x + this.heldFood.x,
+					this.dropHandContainer.y + this.heldFood.y,
+				);
+				this.heldFood.setScale(0);
+			},
+		});
 		this.extraDropInterval *= 0.99;
 		this.dropTimer = setTimeout(
-			() => this.dropFood(),
+			() => this.moveHand(),
 			baseDropInterval + this.extraDropInterval,
 		);
 		this.increaseGravity();
-		const food = this.physics.add.sprite(random.x(50), -bounds.h / 4, '0001');
+	}
+	dropFood(x = random.x(50), y = -bounds.h / 4) {
+		const food = this.physics.add.sprite(x, y, '0001');
 		food.blendMode = Phaser.BlendModes.ADD;
 		food.scale = 0.5;
 		food.body.setAccelerationY(200);
@@ -174,7 +210,14 @@ export default class Game extends Phaser.Scene {
 		const bg = this.add.image(center.x, center.y, 'screw13a');
 		bg.alpha = 0.5;
 
-		this.dropHand = this.add.sprite(center.x, center.y, 'pinch');
+		this.dropHand = this.add.sprite(0, 0, 'pinch');
+		this.heldFood = this.add.sprite(-bounds.w / 128, 0, '0001');
+		this.heldFood.blendMode = Phaser.BlendModes.ADD;
+		this.heldFood.scale = 0.5;
+		this.heldFood.play('food0');
+		this.dropHandContainer = this.add.container(center.x, center.y / 8);
+		this.dropHandContainer.add([this.dropHand, this.heldFood]);
+		// this.moveHand();
 
 		// score
 		this.scoreText = this.add.text(center.x, bounds.h * 0.1, '', {});
@@ -252,8 +295,8 @@ export default class Game extends Phaser.Scene {
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
 		this.track?.play();
-
-		this.dropFood();
+		this.moveHand();
+		// this.dropFood();
 	}
 
 	endGame() {
