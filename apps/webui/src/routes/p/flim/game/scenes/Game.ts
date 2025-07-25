@@ -15,6 +15,9 @@ import { vectorToCoords } from '../vectorToCoords';
 /* END-USER-IMPORTS */
 
 type Sprite = Phaser.GameObjects.Sprite;
+type Text = Phaser.GameObjects.Text;
+type Container = Phaser.GameObjects.Container;
+type BaseSound = Phaser.Sound.BaseSound;
 // const pressVelocity = 600;
 
 const baseDropInterval = 500;
@@ -27,21 +30,22 @@ export default class Game extends Phaser.Scene {
 	speed = 300;
 	extraDropInterval = 500;
 	foods: Sprite[] = [];
-	scoreText?: Phaser.GameObjects.Text;
+	scoreText?: Text;
 	dropTimer?: NodeJS.Timeout;
 	playerSprite?: Sprite;
 	desiredAngle = 0;
 	score = 0;
 	combo = 1;
-	streakText?: Phaser.GameObjects.Text;
+	streakText?: Text;
 	consecutive = 0;
-	livesText?: Phaser.GameObjects.Text;
+	livesText?: Text;
 	lifeSprite?: Sprite;
 	bitSprites: Sprite[] = [];
-	playerContainer?: Phaser.GameObjects.Container;
-	track?: Phaser.Sound.BaseSound;
-	hitSounds: Phaser.Sound.BaseSound[] = [];
-	comboHitSounds: Phaser.Sound.BaseSound[] = [];
+	playerContainer?: Container;
+	track?: BaseSound;
+	hitSounds: BaseSound[] = [];
+	comboHitSounds: BaseSound[] = [];
+	dropHand?: Sprite;
 	constructor() {
 		super('Game');
 
@@ -102,10 +106,10 @@ export default class Game extends Phaser.Scene {
 		this.consecutive = 0;
 		this.streakText!.text = '';
 		this.lives--;
+		if (this.lives < 0) return;
 		this.showBits();
 		this.livesText?.setText('X' + this.lives);
 		if (this.livesText) pop(this.livesText, this);
-		if (this.lives < 0) this.endGame();
 	}
 	removeOldFood() {
 		if (!this.foods.length) return;
@@ -114,6 +118,7 @@ export default class Game extends Phaser.Scene {
 			food.destroy();
 			this.foods.shift();
 			this.resetCombo();
+			if (this.lives < 0) this.endGame();
 		}
 	}
 	moveBitsToPlayer() {
@@ -168,6 +173,8 @@ export default class Game extends Phaser.Scene {
 		// screw13a
 		const bg = this.add.image(center.x, center.y, 'screw13a');
 		bg.alpha = 0.5;
+
+		this.dropHand = this.add.sprite(center.x, center.y, 'pinch');
 
 		// score
 		this.scoreText = this.add.text(center.x, bounds.h * 0.1, '', {});
@@ -258,6 +265,7 @@ export default class Game extends Phaser.Scene {
 		this.foods = [];
 		this.lifeSprite?.setScale(0);
 		this.livesText?.setScale(0);
+		this.track?.stop();
 		// this.scene.start('GameOver');
 	}
 
