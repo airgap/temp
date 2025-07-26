@@ -48,6 +48,11 @@ export default class Game extends Phaser.Scene {
 	dropHand?: Sprite;
 	heldFood?: Sprite;
 	dropHandContainer?: Container;
+	duplicateSprite?: Sprite;
+	dupeSprites: Sprite[] = [];
+	duplicateContainer?: Container;
+	microTimeout?: NodeJS.Timeout;
+	microfoods: Sprite[] = [];
 	constructor() {
 		super('Game');
 
@@ -56,22 +61,29 @@ export default class Game extends Phaser.Scene {
 		/* END-USER-CTR-CODE */
 	}
 	showBits() {
-		for (let b = this.bitSprites.length - 1; b >= 0; b--)
-			this.tweens.add({
-				targets: [this.bitSprites[b]],
-				scale: Number(this.consecutive % comboMinimum > b) / 2,
-				ease: 'Linear',
-				duration: 250,
-				yoyo: false,
-				repeat: 0,
-				callbackScope: this,
-			});
+		for (const bitSprites of [this.bitSprites, this.dupeSprites])
+			for (let b = bitSprites.length - 1; b >= 0; b--) {
+				const shown = Number(this.consecutive % comboMinimum > b);
+				const a = (Math.PI / 8) * (b + 0.5);
+				const { x, y } = vectorToCoords({ d: shown * 80, a });
+				this.tweens.add({
+					targets: [bitSprites[b]],
+					// scale: shown / 2,
+					x,
+					y,
+					ease: 'Linear',
+					duration: 250,
+					yoyo: false,
+					repeat: 0,
+					callbackScope: this,
+				});
+			}
 	}
 	eatFood(f: number) {
 		this.foods.splice(f, 1)[0].destroy();
 		this.score += this.combo;
 		this.scoreText?.setText(
-			`${this.score} point${this.score === 1 ? '' : 's'}`,
+			`${this.score} point${this.score === 1 ? ' ' : 's'}`,
 		);
 		this.playerSprite?.anims.play('chomping');
 		this.consecutive++;
@@ -87,6 +99,7 @@ export default class Game extends Phaser.Scene {
 		const maxed = this.combo === 10 ? 'MAX ' : '';
 		this.streakText!.text =
 			this.combo > 1 ? `X${this.combo} ${maxed}COMBO` : '';
+
 		if (this.consecutive % 80 === 0 && this.consecutive > 3) {
 			this.lives++;
 			if (this.livesText) {
@@ -96,9 +109,12 @@ export default class Game extends Phaser.Scene {
 		}
 	}
 	tryEatingFood() {
-		if (!this.playerSprite) return;
+		if (!(this.playerSprite && this.duplicateSprite)) return;
 		for (let f = this.foods.length - 1; f >= 0; f--) {
-			if (doesPlayerEatFood(this.playerSprite, this.foods[f])) {
+			if (
+				doesPlayerEatFood(this.playerSprite, this.foods[f]) ||
+				doesPlayerEatFood(this.duplicateSprite, this.foods[f])
+			) {
 				this.eatFood(f);
 			}
 		}
@@ -108,10 +124,19 @@ export default class Game extends Phaser.Scene {
 		this.consecutive = 0;
 		this.streakText!.text = '';
 		this.lives--;
+
 		if (this.lives < 0) return;
 		this.showBits();
 		this.livesText?.setText('X' + this.lives);
 		if (this.livesText) pop(this.livesText, this);
+	}
+	removeOldMicrofood() {
+		if (!this.microfoods.length) return;
+		const food = this.microfoods[0];
+		if (food.y > bounds.h) {
+			food.destroy();
+			this.microfoods.shift();
+		}
 	}
 	removeOldFood() {
 		if (!this.foods.length) return;
@@ -131,18 +156,30 @@ export default class Game extends Phaser.Scene {
 			this.playerSprite.y + this.playerSprite.body!.velocity.y / 75;
 		// this.playerContainer.copyPosition(this.playerSprite);
 		this.playerContainer.angle = this.playerSprite.angle;
+		if (!this.duplicateContainer) return;
+
+		this.duplicateContainer.x =
+			this.playerContainer.x +
+			(this.playerContainer.x > bounds.w / 2 ? -bounds.w : bounds.w);
+		this.duplicateContainer.y = this.playerContainer.y;
+		this.duplicateContainer.angle = this.playerSprite.angle;
+		if (!this.duplicateSprite) return;
+		this.duplicateSprite.angle = this.playerSprite.angle;
+		this.duplicateSprite.x = this.duplicateContainer.x;
+		this.duplicateSprite.y = this.duplicateContainer.y;
 	}
 	update(time: number, delta: number) {
 		if (this.input.keyboard) handleKeyboard(this.input.keyboard);
 		if (this.playerSprite) movePlayer(this.playerSprite, delta);
 		this.tryEatingFood();
 		this.removeOldFood();
+		this.removeOldMicrofood();
 		this.moveBitsToPlayer();
 	}
 	increaseGravity() {
 		const { gravity } = this.physics.config;
 		if (!gravity) return;
-		gravity.y = Math.min(gravity.y * 1.02, 600);
+		// gravity.y = Math.min(gravity.y * 1.02, 600);
 	}
 	async moveHand() {
 		if (!this.heldFood) return;
@@ -169,7 +206,6 @@ export default class Game extends Phaser.Scene {
 			callbackScope: this,
 			onComplete: () => {
 				if (!(this.heldFood && this.dropHandContainer)) return;
-				this.dropHand?.anims.play('unpinch0');
 				this.dropFood(
 					this.dropHandContainer.x + this.heldFood.x,
 					this.dropHandContainer.y + this.heldFood.y,
@@ -177,6 +213,9 @@ export default class Game extends Phaser.Scene {
 				this.heldFood.setScale(0);
 			},
 		});
+		setTimeout(() => {
+			this.dropHand?.anims.play('unpinch0');
+		}, d / 2);
 		this.extraDropInterval *= 0.99;
 		this.dropTimer = setTimeout(
 			() => this.moveHand(),
@@ -191,6 +230,18 @@ export default class Game extends Phaser.Scene {
 		food.body.setAccelerationY(200);
 		food.play('food0');
 		this.foods.push(food);
+
+		this.tweens.add({
+			targets: [food],
+			scale: 0.4,
+			alpha: 0.75,
+			ease: 'Linear',
+			duration: 250,
+			yoyo: true,
+			repeat: -1,
+			callbackScope: this,
+			onComplete: () => {},
+		});
 		// food.body!.setVelocityY(this.speed);
 	}
 
@@ -211,13 +262,13 @@ export default class Game extends Phaser.Scene {
 		bg.alpha = 0.5;
 
 		this.dropHand = this.add.sprite(0, 0, 'pinch');
+		this.dropHand.blendMode = Phaser.BlendModes.SCREEN;
 		this.heldFood = this.add.sprite(-bounds.w / 128, 0, '0001');
 		this.heldFood.blendMode = Phaser.BlendModes.ADD;
-		this.heldFood.scale = 0.5;
+		this.heldFood.scale = 0;
 		this.heldFood.play('food0');
-		this.dropHandContainer = this.add.container(center.x, center.y / 8);
+		this.dropHandContainer = this.add.container(center.x, -center.y / 4);
 		this.dropHandContainer.add([this.dropHand, this.heldFood]);
-		// this.moveHand();
 
 		// score
 		this.scoreText = this.add.text(center.x, bounds.h * 0.1, '', {});
@@ -226,7 +277,7 @@ export default class Game extends Phaser.Scene {
 		this.scoreText.setStyle({
 			align: 'center',
 			color: '#ffffff',
-			fontFamily: 'Futura',
+			fontFamily: 'Silkscreen, Futura',
 			fontSize: '68px',
 			stroke: '#000000',
 			strokeThickness: 8,
@@ -239,7 +290,7 @@ export default class Game extends Phaser.Scene {
 		this.streakText.setStyle({
 			align: 'center',
 			color: '#ffffff',
-			fontFamily: 'Futura',
+			fontFamily: 'Silkscreen, Futura',
 			fontSize: '38px',
 			stroke: '#000000',
 			strokeThickness: 8,
@@ -256,30 +307,36 @@ export default class Game extends Phaser.Scene {
 		this.livesText.setStyle({
 			align: 'left',
 			color: '#ffffff',
-			fontFamily: 'Futura',
+			fontFamily: 'Silkscreen, Futura',
 			fontSize: '35px',
 			stroke: '#000000',
 			strokeThickness: 8,
 		});
 
 		this.playerSprite = createPlayer(this);
+		this.duplicateSprite = createPlayer(this);
 		this.playerContainer = this.add.container(
 			center.x,
 			mix(bounds.h, center.y, 0.3),
 		);
-
-		for (let i = 7; i >= 0; i--) {
-			const a = (Math.PI / 8) * (i + 0.5);
-			const { x, y } = vectorToCoords({ d: 80, a });
-			const bit = this.add?.sprite(x, y, 'food-64x-000' + (i + 1));
-			// bit.alpha = 0.5;
-			bit.scale = 0;
-			bit.blendMode = Phaser.BlendModes.ADD;
-			// bit.scale = 0.5;
-			bit.play('food-64x-0');
-			this.bitSprites.push(bit);
-		}
+		this.duplicateContainer = this.add.container(
+			center.x,
+			mix(bounds.h, center.y, 0.3),
+		);
+		for (const bitSprites of [this.bitSprites, this.dupeSprites])
+			for (let i = 7; i >= 0; i--) {
+				const a = (Math.PI / 8) * (i + 0.5);
+				const { x, y } = vectorToCoords({ d: 80, a });
+				const bit = this.add?.sprite(x, y, 'food-64x-000' + (i + 1));
+				// bit.alpha = 0.5;
+				bit.scale = 0;
+				bit.blendMode = Phaser.BlendModes.ADD;
+				// bit.scale = 0.5;
+				bit.play('food-64x-0');
+				bitSprites.push(bit);
+			}
 		this.playerContainer.add(this.bitSprites);
+		this.duplicateContainer.add(this.dupeSprites);
 		this.track = this.sound.add('flack', { volume: 0.5 });
 		for (let i = 1; i <= 10; i++) {
 			this.hitSounds.push(this.sound.add(`hit-${i}`, { volume: 0.125 }));
@@ -287,16 +344,70 @@ export default class Game extends Phaser.Scene {
 				this.sound.add(`combo-hit-${i}`, { volume: 0.5 }),
 			);
 		}
-		this.startGame();
+
+		setTimeout(() => this.startGame(), 1000);
+		// this.startGame();
 		EventBus.emit('current-scene-ready', this);
+	}
+
+	dropMicrofood() {
+		const food = this.physics.add.sprite(random.x(), -bounds.h / 4, '0001');
+		food.blendMode = Phaser.BlendModes.ADD;
+		food.scale = 0.05;
+		food.body.setAccelerationY(200);
+		food.play('food0');
+		this.microfoods.push(food);
+
+		this.tweens.add({
+			targets: [food],
+			scale: 0.04,
+			alpha: 0.75,
+			ease: 'Linear',
+			duration: 250,
+			yoyo: true,
+			repeat: -1,
+			callbackScope: this,
+			onComplete: () => {},
+		});
+		this.microTimeout = setTimeout(() => this.dropMicrofood(), 100);
 	}
 
 	startGame() {
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
 		this.track?.play();
+		this.track?.once(Phaser.Sound.Events.COMPLETE, () => this.phase2());
 		this.moveHand();
+		this.dropMicrofood();
 		// this.dropFood();
+	}
+	slowlyLowerHand() {
+		this.tweens.add({
+			targets: [this.dropHandContainer],
+			y: center.y,
+			ease: 'Linear',
+			duration: 20000,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
+			onComplete: () => {},
+		});
+	}
+	lowerHandToTop() {
+		this.tweens.add({
+			targets: [this.dropHandContainer],
+			y: bounds.h / 8,
+			ease: 'Linear',
+			duration: 2000,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
+			onComplete: () => this.slowlyLowerHand(),
+		});
+	}
+
+	phase2() {
+		this.lowerHandToTop();
 	}
 
 	endGame() {

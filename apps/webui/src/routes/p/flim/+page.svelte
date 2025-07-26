@@ -18,6 +18,13 @@
 	}
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&family=Silkscreen:wght@400;700&display=swap"
+	rel="stylesheet"
+/>
+
 <Divisio layout="v" size="m">
 	{#if browser && FlimGamePromise}
 		{#await FlimGamePromise}
