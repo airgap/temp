@@ -33,7 +33,8 @@
 		onlogin: () => void;
 		oncreate?: () => void;
 	}>();
-	$effect(() => console.log('user', user));
+	console.log('initial nav user', user?.id ?? 'logged out');
+	$effect(() => console.log('nav user', user?.id ?? 'logged out'));
 </script>
 
 <div class={styles.DesktopNav}>

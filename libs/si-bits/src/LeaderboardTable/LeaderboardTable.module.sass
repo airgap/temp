@@ -1,0 +1,58 @@
+@use '../symbols' as *
+.AchievementList
+	color: $clickable-color
+	display: flex
+	flex-wrap: wrap
+	width: 800px
+	max-width: 100%
+	margin-left: auto
+	margin-right: auto
+	justify-content: space-between
+	gap: 20px
+	border: 1px solid #ffffff55
+	border-radius: 10px
+	padding: 10px
+	padding-top: 7px
+	position: relative
+	max-height: 45px
+	transition: all .25s, max-height .5s
+	overflow: hidden
+	background: #ffffff11
+	cursor: pointer
+	box-shadow: 0 0 20px 0 rgba(0, 0,0, .5)
+	&:hover
+		background: #ffffff33
+	.dropHeader
+		flex-grow: 1
+		flex-basis: 100%
+		cursor: pointer
+		flex-direction: row
+		display: flex
+		justify-content: space-between
+	.dropper
+		span
+			appearance: none
+			background: transparent
+			border: none
+			color: white
+			font-size: 1em
+			pointer-events: none
+			transition: .25s
+			vertical-align: center
+			width: 1em
+			height: 1em
+			text-align: center
+			transform: rotate(90deg)
+			display: block
+			margin-top: 6px
+	&.dropped
+		max-height: 100vh
+		background: #ffffff00
+		cursor: default
+		padding: 20px
+		padding-top: 17px
+		.dropper
+			span
+				margin-right: 0px
+				margin-top: 0px
+				transform: rotate(0deg)

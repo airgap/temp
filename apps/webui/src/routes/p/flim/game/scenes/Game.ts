@@ -12,6 +12,7 @@ import { doesPlayerEatFood } from '../doesPlayerEatFood';
 import { pop } from '../pop';
 import { bitAngle } from '../bitAngle';
 import { vectorToCoords } from '../vectorToCoords';
+import { api, getSessionId } from 'monolith-ts-api';
 /* END-USER-IMPORTS */
 
 type Sprite = Phaser.GameObjects.Sprite;
@@ -53,6 +54,9 @@ export default class Game extends Phaser.Scene {
 	duplicateContainer?: Container;
 	microTimeout?: NodeJS.Timeout;
 	microfoods: Sprite[] = [];
+	bits = 0;
+	bytes = 0;
+	startTime?: Date;
 	constructor() {
 		super('Game');
 
@@ -80,6 +84,7 @@ export default class Game extends Phaser.Scene {
 			}
 	}
 	eatFood(f: number) {
+		this.bits++;
 		this.foods.splice(f, 1)[0].destroy();
 		this.score += this.combo;
 		this.scoreText?.setText(
@@ -88,6 +93,7 @@ export default class Game extends Phaser.Scene {
 		this.playerSprite?.anims.play('chomping');
 		this.consecutive++;
 		if (this.consecutive >= 4 && this.consecutive % comboMinimum === 0) {
+			this.bytes++;
 			if (this.combo < 10) this.combo++;
 			if (this.streakText) pop(this.streakText, this);
 			this.comboHitSounds[
@@ -373,6 +379,7 @@ export default class Game extends Phaser.Scene {
 	}
 
 	startGame() {
+		this.startTime = new Date();
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
 		this.track?.play();
@@ -384,33 +391,36 @@ export default class Game extends Phaser.Scene {
 	slowlyLowerHand() {
 		this.tweens.add({
 			targets: [this.dropHandContainer],
-			y: center.y,
-			ease: 'Linear',
-			duration: 20000,
+			y: bounds.h * 0.65,
+			ease: 'Out',
+			duration: 120000,
 			yoyo: false,
 			repeat: 0,
 			callbackScope: this,
 			onComplete: () => {},
 		});
 	}
-	lowerHandToTop() {
-		this.tweens.add({
-			targets: [this.dropHandContainer],
-			y: bounds.h / 8,
-			ease: 'Linear',
-			duration: 2000,
-			yoyo: false,
-			repeat: 0,
-			callbackScope: this,
-			onComplete: () => this.slowlyLowerHand(),
-		});
-	}
+	// lowerHandToTop() {
+	// 	this.tweens.add({
+	// 		targets: [this.dropHandContainer],
+	// 		y: bounds.h / 8,
+	// 		ease: 'Linear',
+	// 		duration: 2000,
+	// 		yoyo: false,
+	// 		repeat: 0,
+	// 		callbackScope: this,
+	// 		onComplete: () => this.slowlyLowerHand(),
+	// 	});
+	// }
 
 	phase2() {
-		this.lowerHandToTop();
+		this.slowlyLowerHand();
+		// this.lowerHandToTop();
 	}
 
 	endGame() {
+		if (!this.startTime) throw new Error('Game not started');
+		const finish = new Date();
 		clearTimeout(this.dropTimer);
 		this.dropTimer = undefined;
 		for (const food of this.foods) {
@@ -420,6 +430,14 @@ export default class Game extends Phaser.Scene {
 		this.lifeSprite?.setScale(0);
 		this.livesText?.setScale(0);
 		this.track?.stop();
+		api.reportGrabbaScore({
+			score: this.score,
+			bits: this.bits,
+			bytes: this.bytes,
+			start: this.startTime,
+			finish,
+			time: finish.getTime() - this.startTime.getTime(),
+		});
 		// this.scene.start('GameOver');
 	}
 

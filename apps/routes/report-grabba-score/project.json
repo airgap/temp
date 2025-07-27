@@ -1,0 +1,40 @@
+{
+	"name": "@lyku/report-grabba-score",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./scripts/build-route report-grabba-score"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route report-grabba-score --push"
+			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route report-grabba-score"
+			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route report-grabba-score",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route report-grabba-score --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
+		}
+	}
+}

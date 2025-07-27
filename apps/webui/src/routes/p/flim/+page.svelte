@@ -1,14 +1,32 @@
 <script lang="ts">
-	import { AchievementList, Button, Divisio, userStore } from '@lyku/si-bits';
+	import {
+		AchievementList,
+		Button,
+		Divisio,
+		LeaderboardTable,
+		userStore,
+	} from '@lyku/si-bits';
 	import { api, type ThiccSocket } from 'monolith-ts-api';
-	import type { TtfMatch } from '@lyku/json-models';
+	import type { TtfMatch, User } from '@lyku/json-models';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 
 	const id = 1;
 
+	const { data } = $props<{
+		data:
+			| {
+					users: Promise<User[]>;
+					user: User;
+			  }
+			| { error: string };
+	}>();
+	const { games, users, user, publishers, developers } = data;
+	if (user) userStore.set(-1n, user);
+
 	// State management
-	let user = userStore.get(-1n);
+	// let user = $derived(userStore.get(-1n));
+	console.log('flim user', userStore.get(-1n)?.id ?? 'guest');
 
 	// Lazy load FlimGame component
 	let FlimGamePromise: Promise<any> | null = $state(null);
@@ -35,5 +53,6 @@
 			<div>Error loading game: {error.message}</div>
 		{/await}
 	{/if}
+	<LeaderboardTable game={id} />
 	<AchievementList game={id} />
 </Divisio>

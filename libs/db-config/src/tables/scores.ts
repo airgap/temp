@@ -3,7 +3,8 @@ import { score } from 'bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const scores = {
 	indexes: [
-		'posted',
+		'created',
+		'updated',
 		'user',
 		'channel',
 		// 'likes',

@@ -24,7 +24,10 @@ export const mapArrayType = (
 			`CHECK (array_length("${name}", 1) <= ${columnSchema.maxItems})`,
 		);
 	}
-	return `${itemType}[]${
+	const matches = /^([^ ]+)(?: (.+))?$/.exec(itemType);
+	if (!matches) throw new Error('Array mapping error');
+	const [, itemMainType, itemRestType] = matches;
+	return `${itemMainType}[] ${itemRestType ?? ''}${
 		constraints.length ? ' ' + constraints.join(' ') : ''
 	}`;
 };

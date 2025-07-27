@@ -26,6 +26,7 @@ export * from './game';
 export * from './gameSession';
 export * from './gameStats';
 export * from './gameStatus';
+export * from './grabbaScore';
 export * from './group';
 export * from './groupMembership';
 export * from './membershipList';
