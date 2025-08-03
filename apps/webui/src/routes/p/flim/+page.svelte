@@ -10,6 +10,7 @@
 	import type { TtfMatch, User } from '@lyku/json-models';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import styles from './page.module.sass';
 
 	const id = 1;
 
@@ -44,15 +45,17 @@
 />
 
 <Divisio layout="v" size="m">
-	{#if browser && FlimGamePromise}
-		{#await FlimGamePromise}
-			<div>Loading game...</div>
-		{:then module}
-			<svelte:component this={module.default} />
-		{:catch error}
-			<div>Error loading game: {error.message}</div>
-		{/await}
-	{/if}
-	<LeaderboardTable game={id} />
+	<div class={styles.gameAndLeaderboard}>
+		{#if browser && FlimGamePromise}
+			{#await FlimGamePromise}
+				<div>Loading game...</div>
+			{:then module}
+				<svelte:component this={module.default} />
+			{:catch error}
+				<div>Error loading game: {error.message}</div>
+			{/await}
+		{/if}
+		<LeaderboardTable leaderboard={1n} />
+	</div>
 	<AchievementList game={id} />
 </Divisio>

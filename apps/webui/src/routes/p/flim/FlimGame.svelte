@@ -40,4 +40,7 @@
 	#game-container
 		height: calc(100vh - 115px)
 		text-align: center
+		width: auto
+		aspect-ratio: 3 / 4
+
 </style>

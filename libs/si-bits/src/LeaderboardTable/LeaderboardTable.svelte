@@ -5,9 +5,9 @@
 	import styles from './LeaderboardTable.module.sass';
 	import classnames from 'classnames';
 	import { onMount } from 'svelte';
-	import { scoreStore } from '../CacheProvider';
+	import { scoreStore, userStore, leaderboardStore } from '../CacheProvider';
 
-	const { leaderboard = undefined } = $props<{
+	const { leaderboard: id = undefined } = $props<{
 		leaderboard?: number;
 	}>();
 
@@ -27,15 +27,23 @@
 		loading = true;
 		try {
 			api
-				.listHighScores(leaderboard)
-				.then((as) => as.forEach((a) => scoreStore.set(a.id, a)));
+				.listHighScores({ leaderboard: id })
+				.then(({ leaderboards, scores, users }) => {
+					// console.log('scores', as);
+					scores.forEach((a) => scoreStore.set(a.id, a));
+					users.forEach((a) => userStore.set(a.id, a));
+					leaderboards.forEach((a) => leaderboardStore.set(a.id, a));
+					console.log('aaaah', leaderboards, scores, users);
+				});
 		} finally {
 			loading = false;
 		}
 	}
 
 	const scores = $derived(
-		[...scoreStore.values()].filter((a) => a.leaderboard === leaderboard),
+		[...scoreStore.values()]
+			.filter((a) => a.leaderboard === id)
+			.sort((a, b) => b.columns[0] - a.columns[0]),
 	);
 
 	onMount(() => {
@@ -74,10 +82,23 @@
 		Fetching scores...
 	{:else if scores.length}
 		<table>
-			<thead><tr><th>Rank</th><th>Name</th><th>Points</th></tr></thead>
+			<thead
+				><tr
+					><th>Rank</th><th>Name</th
+					>{#each leaderboardStore.get(id)?.columnNames ?? [] as column}
+						<th>{column}</th>
+					{/each}</tr
+				></thead
+			>
 			<tbody>
 				{#each scores.sort((a, b) => a.points - b.points) as score, rank}
-					<tr><td>{rank}</td><td>{score.name}</td><td>{score.points}</td></tr>
+					<tr
+						><td>#{rank + 1}</td><td
+							>{userStore.get(score.user)?.username ?? 'Unknown'}</td
+						>{#each score.columns as column}
+							<td>{column}</td>
+						{/each}</tr
+					>
 				{/each}
 			</tbody>
 		</table>

@@ -1,0 +1,1046 @@
+import { client as elasticsearch } from '@lyku/elasticsearch-client';
+import { client as redis } from '@lyku/redis-client';
+import type { Score } from '@lyku/json-models';
+import { pack, unpack } from 'msgpackr';
+
+// Type helpers for OpenSearch responses
+interface OpenSearchResponse {
+	body: {
+		hits: {
+			hits: Array<{
+				_source?: Record<string, any>;
+				_index: string;
+			}>;
+		};
+		aggregations?: Record<string, any>;
+	};
+}
+
+export interface StatColumn {
+	name: string;
+	type: 'number' | 'string' | 'time' | 'boolean';
+	unit?: string;
+	description?: string;
+	category?: string;
+	aggregatable?: boolean;
+	sortable?: boolean;
+}
+
+export interface ScoreDocument {
+	id: string;
+	user: string;
+	leaderboard: string;
+	score: number | string;
+	first_column: string;
+	columns: string[];
+	// Dynamic column storage strategies
+	stats: Record<string, any>; // Flattened object for flexible stats
+	typed_stats: {
+		numbers: Record<string, number>;
+		strings: Record<string, string>;
+		times: Record<string, number>; // stored as seconds
+		booleans: Record<string, boolean>;
+	};
+	nested_stats: Array<{
+		name: string;
+		value: any;
+		type: 'number' | 'string' | 'time' | 'boolean';
+		unit?: string;
+		category?: string;
+	}>;
+	created: string;
+	updated: string;
+	game: number;
+	deleted?: string;
+	reports: number;
+}
+
+export interface LeaderboardResult {
+	scores: Array<{
+		user: bigint;
+		score: number | string;
+		rank: number;
+		created: string;
+		columns: string[];
+	}>;
+	total: number;
+	took: number;
+}
+
+export class ElasticLeaderboardService {
+	private static readonly INDEX_PREFIX = 'scores';
+
+	/**
+	 * Get index name for a given date (format: scores-YYYY-MM)
+	 */
+	private static getIndexName(date: Date): string {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		return `${this.INDEX_PREFIX}-${year}-${month}`;
+	}
+
+	/**
+	 * Get current month index name
+	 */
+	private static getCurrentIndexName(): string {
+		return this.getIndexName(new Date());
+	}
+
+	/**
+	 * Index a score document in Elasticsearch
+	 */
+	static async indexScore(score: Score): Promise<void> {
+		// Skip indexing if user is invalid
+		if (!score.user || score.user <= 0) {
+			return;
+		}
+		const { stats, typedStats, nestedStats } = this.processColumns(
+			score.columns,
+			score.game,
+		);
+
+		const doc: ScoreDocument = {
+			id: score.id.toString(),
+			user: BigInt(score.user || 0).toString(),
+			leaderboard: BigInt(score.leaderboard).toString(),
+			score: this.parseScore(score.columns[0]),
+			first_column: score.columns[0] || '',
+			columns: score.columns,
+			stats,
+			typed_stats: typedStats,
+			nested_stats: nestedStats,
+			created: score.created.toISOString(),
+			updated: score.updated.toISOString(),
+			game: Number(score.game),
+			deleted: score.deleted?.toISOString(),
+			reports: Number(score.reports),
+		};
+
+		const indexName = this.getIndexName(score.created);
+
+		// Ensure index exists before indexing
+		await this.ensureIndexExists(score.created);
+
+		await elasticsearch.index({
+			index: indexName,
+			id: score.id.toString(),
+			body: doc,
+		});
+
+		// Invalidate cache for this leaderboard
+		await this.invalidateCache(score.leaderboard);
+	}
+
+	/**
+	 * Delete a score from Elasticsearch
+	 */
+	static async deleteScore(scoreId: bigint): Promise<void> {
+		// For deletes, we need to search across all indices to find the document
+		try {
+			const searchResponse = await elasticsearch.search({
+				index: `${this.INDEX_PREFIX}-*`,
+				body: {
+					query: {
+						term: { id: scoreId.toString() },
+					},
+					size: 1,
+				},
+			});
+
+			if (searchResponse.body.hits.hits.length > 0) {
+				const hit = searchResponse.body.hits.hits[0];
+				await elasticsearch.delete({
+					index: hit._index,
+					id: scoreId.toString(),
+				});
+			}
+		} catch (error) {
+			console.warn(`Failed to delete score ${scoreId}:`, error);
+		}
+	}
+
+	/**
+	 * Get leaderboard with best score per user
+	 */
+	static async getLeaderboard(
+		leaderboardId: bigint,
+		options: {
+			limit?: number;
+			orderDirection?: 'asc' | 'desc';
+			columnFormat?: 'number' | 'text' | 'time';
+			sortColumnIndex?: number;
+		} = {},
+	): Promise<LeaderboardResult> {
+		const {
+			limit = 20,
+			orderDirection = 'desc',
+			columnFormat = 'number',
+			sortColumnIndex = 0,
+		} = options;
+
+		// Validate column index
+		if (sortColumnIndex < 0 || sortColumnIndex > 10) {
+			throw new Error(
+				`Invalid sortColumnIndex: ${sortColumnIndex}. Must be between 0 and 10.`,
+			);
+		}
+
+		// Try cache first
+		const cacheKey = `elastic_leaderboard:${leaderboardId}:${orderDirection}:${columnFormat}:${sortColumnIndex}`;
+		const cached = await redis.getBuffer(cacheKey);
+		if (cached) {
+			return unpack(cached);
+		}
+
+		const startTime = Date.now();
+
+		// Build aggregation query for best score per user
+		const sortOrder = orderDirection === 'desc' ? 'desc' : 'asc';
+
+		// Build aggregation to get best score per user
+		const query = {
+			index: `${this.INDEX_PREFIX}-*`,
+			body: {
+				size: 0, // We only want aggregations, not hits
+				query: {
+					bool: {
+						filter: [{ term: { leaderboard: leaderboardId.toString() } }],
+						must_not: [{ term: { user: '0' } }],
+					},
+				},
+				aggs: {
+					users: {
+						terms: {
+							field: 'user',
+							size: 10000, // Get all users
+						},
+						aggs: {
+							best_score: {
+								top_hits: {
+									size: 1,
+									_source: ['user', 'score', 'created', 'columns'],
+									sort: [
+										{
+											score: { order: sortOrder },
+										},
+									],
+								},
+							},
+						},
+					},
+				},
+			},
+		};
+
+		try {
+			console.log('Elasticsearch query:', JSON.stringify(query, null, 2));
+			const response = (await elasticsearch.search(
+				query as any,
+			)) as OpenSearchResponse;
+			const took = Date.now() - startTime;
+
+			// Process aggregation results
+			const userBuckets = response.body.aggregations?.['users']?.buckets || [];
+			console.log(`Got ${userBuckets.length} user buckets from aggregation`);
+
+			// Extract best score for each user from aggregation
+			const allScores = userBuckets
+				.map((bucket: any) => {
+					const bestHit = bucket.best_score.hits.hits[0];
+					if (!bestHit || !bestHit._source) {
+						console.warn(`No best score found for user ${bucket.key}`);
+						return null;
+					}
+
+					const source = bestHit._source;
+					const columns = source.columns || [];
+					let scoreValue;
+
+					if (sortColumnIndex < columns.length) {
+						scoreValue =
+							columnFormat === 'number'
+								? Number(columns[sortColumnIndex] || 0)
+								: columns[sortColumnIndex] || '';
+					} else {
+						scoreValue = columnFormat === 'number' ? 0 : '';
+					}
+
+					console.log(
+						`User ${bucket.key}: best score = ${scoreValue}, columns = [${columns.join(', ')}]`,
+					);
+
+					return {
+						user: BigInt(bucket.key),
+						score: scoreValue,
+						created: source.created,
+						columns: columns,
+					};
+				})
+				.filter(Boolean); // Remove any null entries
+			const sortedScores = allScores.sort((a: any, b: any) => {
+				if (columnFormat === 'number') {
+					const aVal = Number(a.score) || 0;
+					const bVal = Number(b.score) || 0;
+					return orderDirection === 'desc' ? bVal - aVal : aVal - bVal;
+				} else {
+					const aVal = String(a.score || '');
+					const bVal = String(b.score || '');
+					return orderDirection === 'desc'
+						? bVal.localeCompare(aVal)
+						: aVal.localeCompare(bVal);
+				}
+			});
+
+			// Apply limit and set ranks
+			const scores = sortedScores
+				.slice(0, limit)
+				.map((score: any, index: number) => ({
+					user: score.user,
+					score: score.score,
+					rank: index + 1,
+					created: score.created,
+					columns: score.columns || [],
+				}));
+
+			const result: LeaderboardResult = {
+				scores,
+				total: allScores.length,
+				took,
+			};
+
+			console.log(
+				`Final leaderboard result: ${scores.length} scores, took ${took}ms`,
+			);
+
+			// Cache for longer if query was slow
+			const ttl = took > 1000 ? 1800 : took > 500 ? 900 : 600;
+			await redis.setex(cacheKey, ttl, pack(result));
+
+			return result;
+		} catch (error) {
+			console.error(
+				`Elasticsearch query failed for leaderboard ${leaderboardId} (column ${sortColumnIndex}):`,
+				error,
+			);
+			console.error('Query that failed:', JSON.stringify(query, null, 2));
+			// Return empty result on error
+			return {
+				scores: [],
+				total: 0,
+				took: Date.now() - startTime,
+			};
+		}
+	}
+
+	/**
+	 * Bulk index multiple scores
+	 */
+	static async bulkIndexScores(scores: Array<Score>): Promise<void> {
+		// Filter out invalid users
+		const validScores = scores.filter((score) => score.user && score.user > 0);
+		if (validScores.length === 0) return;
+
+		// Ensure all necessary indices exist
+		const uniqueDates = [
+			...new Set(
+				validScores.map((s) => s.created.toISOString().substring(0, 7)),
+			),
+		];
+		for (const dateStr of uniqueDates) {
+			const [year, month] = dateStr.split('-');
+			const date = new Date(parseInt(year), parseInt(month) - 1);
+			await this.ensureIndexExists(date);
+		}
+
+		const body = validScores.flatMap((score) => {
+			const indexName = this.getIndexName(score.created);
+			const { stats, typedStats, nestedStats } = this.processColumns(
+				score.columns,
+				score.game,
+			);
+
+			return [
+				{ index: { _index: indexName, _id: score.id.toString() } },
+				{
+					id: score.id.toString(),
+					user: BigInt(score.user || 0).toString(),
+					leaderboard: BigInt(score.leaderboard).toString(),
+					score: this.parseScore(score.columns[0]),
+					first_column: score.columns[0] || '',
+					columns: score.columns,
+					stats,
+					typed_stats: typedStats,
+					nested_stats: nestedStats,
+					created: score.created.toISOString(),
+					updated: score.updated.toISOString(),
+					game: Number(score.game),
+					deleted: score.deleted?.toISOString(),
+					reports: Number(score.reports),
+				} satisfies ScoreDocument,
+			];
+		});
+
+		await elasticsearch.bulk({ body });
+
+		// Invalidate cache for affected leaderboards
+		const leaderboards = [...new Set(validScores.map((s) => s.leaderboard))];
+		await Promise.all(leaderboards.map((id) => this.invalidateCache(id)));
+	}
+
+	/**
+	 * Ensure index exists with proper mapping
+	 */
+	static async ensureIndexExists(date: Date): Promise<void> {
+		const indexName = this.getIndexName(date);
+		const exists = await elasticsearch.indices.exists({
+			index: indexName,
+		});
+
+		if (!exists.body) {
+			await elasticsearch.indices.create({
+				index: indexName,
+				body: {
+					mappings: {
+						properties: {
+							id: { type: 'keyword' },
+							user: { type: 'keyword', index: true },
+							leaderboard: { type: 'keyword', index: true },
+							score: {
+								type: 'double',
+								fields: {
+									text: { type: 'text' },
+									keyword: { type: 'keyword' },
+								},
+							},
+							first_column: {
+								type: 'text',
+								fields: {
+									keyword: { type: 'keyword' },
+								},
+							},
+							columns: {
+								type: 'text',
+								fields: {
+									keyword: { type: 'keyword' },
+								},
+							},
+							// Dynamic stats storage
+							stats: {
+								type: 'object',
+								dynamic: 'true' as any,
+							},
+							typed_stats: {
+								properties: {
+									numbers: { type: 'object', dynamic: 'true' as any },
+									strings: { type: 'object', dynamic: 'true' as any },
+									times: { type: 'object', dynamic: 'true' as any },
+									booleans: { type: 'object', dynamic: 'true' as any },
+								},
+							},
+							nested_stats: {
+								type: 'nested',
+								properties: {
+									name: { type: 'keyword' },
+									value: {
+										type: 'keyword',
+										fields: {
+											number: { type: 'double' },
+											text: { type: 'text' },
+										},
+									},
+									type: { type: 'keyword' },
+									unit: { type: 'keyword' },
+									category: { type: 'keyword' },
+								},
+							},
+							created: { type: 'date' },
+							updated: { type: 'date' },
+							game: { type: 'integer' },
+							deleted: { type: 'date' },
+							reports: { type: 'integer' },
+						},
+					},
+					settings: {
+						number_of_shards: 1,
+						number_of_replicas: 1,
+						refresh_interval: '5s',
+					},
+				},
+			});
+		}
+	}
+
+	/**
+	 * Sync score from PostgreSQL to Elasticsearch
+	 */
+	static async syncScore(score: any): Promise<void> {
+		// Skip if user is invalid
+		if (!score.user || score.user <= 0) {
+			return;
+		}
+
+		if (score.deleted) {
+			await this.deleteScore(score.id);
+		} else {
+			// Ensure index exists before indexing
+			await this.ensureIndexExists(score.created);
+
+			await this.indexScore({
+				id: score.id,
+				user: score.user,
+				leaderboard: score.leaderboard,
+				columns: score.columns || [],
+				created: score.created,
+				updated: score.updated,
+				game: score.game,
+				deleted: score.deleted ? new Date(score.deleted) : undefined,
+				reports: score.reports || 0,
+			});
+		}
+	}
+
+	/**
+	 * Invalidate cache for a leaderboard
+	 */
+	static async invalidateCache(leaderboardId: bigint): Promise<void> {
+		const pattern = `elastic_leaderboard:${leaderboardId}:*`;
+		const keys = await redis.keys(pattern);
+		if (keys.length > 0) {
+			await redis.del(...keys);
+		}
+	}
+
+	/**
+	 * Create the scores index with proper mapping
+	 */
+	static async createIndex(): Promise<void> {
+		const currentIndex = this.getCurrentIndexName();
+		const exists = await elasticsearch.indices.exists({
+			index: currentIndex,
+		});
+
+		if (!exists.body) {
+			await elasticsearch.indices.create({
+				index: currentIndex,
+				body: {
+					mappings: {
+						properties: {
+							id: { type: 'keyword' },
+							user: { type: 'keyword', index: true },
+							leaderboard: { type: 'keyword', index: true },
+							score: {
+								type: 'double',
+								fields: {
+									text: { type: 'text' },
+									keyword: { type: 'keyword' },
+								},
+							},
+							first_column: {
+								type: 'text',
+								fields: {
+									keyword: { type: 'keyword' },
+								},
+							},
+							columns: {
+								type: 'text',
+								fields: {
+									keyword: { type: 'keyword' },
+								},
+							},
+							// Dynamic stats storage
+							stats: {
+								type: 'object',
+								dynamic: 'true' as any,
+							},
+							typed_stats: {
+								properties: {
+									numbers: { type: 'object', dynamic: 'true' as any },
+									strings: { type: 'object', dynamic: 'true' as any },
+									times: { type: 'object', dynamic: 'true' as any },
+									booleans: { type: 'object', dynamic: 'true' as any },
+								},
+							},
+							nested_stats: {
+								type: 'nested',
+								properties: {
+									name: { type: 'keyword' },
+									value: {
+										type: 'keyword',
+										fields: {
+											number: { type: 'double' },
+											text: { type: 'text' },
+										},
+									},
+									type: { type: 'keyword' },
+									unit: { type: 'keyword' },
+									category: { type: 'keyword' },
+								},
+							},
+							created: { type: 'date' },
+							updated: { type: 'date' },
+							game: { type: 'integer' },
+							deleted: { type: 'date' },
+							reports: { type: 'integer' },
+						},
+					},
+					settings: {
+						number_of_shards: 1,
+						number_of_replicas: 1,
+						refresh_interval: '5s',
+					},
+				},
+			});
+		}
+	}
+
+	/**
+	 * Parse score value, handling different formats
+	 */
+	private static parseScore(scoreStr: string): number | string {
+		// Try to parse as number first
+		const num = Number(scoreStr);
+		if (!isNaN(num) && isFinite(num)) {
+			return num;
+		}
+		// Return as string for text/time values
+		return scoreStr;
+	}
+
+	/**
+	 * Process columns into different storage formats for flexibility
+	 */
+	private static processColumns(
+		columns: string[],
+		gameId: number,
+	): {
+		stats: Record<string, any>;
+		typedStats: {
+			numbers: Record<string, number>;
+			strings: Record<string, string>;
+			times: Record<string, number>;
+			booleans: Record<string, boolean>;
+		};
+		nestedStats: Array<{
+			name: string;
+			value: any;
+			type: 'number' | 'string' | 'time' | 'boolean';
+			unit?: string;
+			category?: string;
+		}>;
+	} {
+		const stats: Record<string, any> = {};
+		const typedStats = {
+			numbers: {} as Record<string, number>,
+			strings: {} as Record<string, string>,
+			times: {} as Record<string, number>,
+			booleans: {} as Record<string, boolean>,
+		};
+		const nestedStats: Array<any> = [];
+
+		// Get column schema for this game (you'd implement this based on your game config)
+		const columnSchema = this.getColumnSchema(gameId);
+
+		columns.forEach((value, index) => {
+			const schema = columnSchema[index];
+			const columnName = schema?.name || `column_${index}`;
+			const columnType = schema?.type || this.inferType(value);
+
+			// Store in flattened stats object
+			stats[columnName] = this.parseValue(value, columnType);
+
+			// Store in typed buckets
+			const parsedValue = this.parseValue(value, columnType);
+			switch (columnType) {
+				case 'number':
+					typedStats.numbers[columnName] = parsedValue as number;
+					break;
+				case 'time':
+					typedStats.times[columnName] = this.parseTimeToSeconds(value);
+					break;
+				case 'boolean':
+					typedStats.booleans[columnName] = parsedValue as boolean;
+					break;
+				default:
+					typedStats.strings[columnName] = String(value);
+			}
+
+			// Store in nested format with metadata
+			nestedStats.push({
+				name: columnName,
+				value: parsedValue,
+				type: columnType,
+				unit: schema?.unit,
+				category: schema?.category || 'general',
+			});
+		});
+
+		return { stats, typedStats, nestedStats };
+	}
+
+	/**
+	 * Get column schema for a game (implement based on your game configuration)
+	 */
+	private static getColumnSchema(
+		gameId: number,
+	): Array<StatColumn | undefined> {
+		// This would be loaded from your game configuration
+		// For now, return a default schema
+		const commonSchemas: Record<number, StatColumn[]> = {
+			1: [
+				// Mario speedrun example
+				{
+					name: 'time',
+					type: 'time',
+					unit: 'seconds',
+					description: 'Completion time',
+					aggregatable: true,
+					sortable: true,
+				},
+				{
+					name: 'deaths',
+					type: 'number',
+					unit: 'count',
+					description: 'Number of deaths',
+					aggregatable: true,
+					sortable: true,
+				},
+				{
+					name: 'power_ups',
+					type: 'number',
+					unit: 'count',
+					description: 'Power-ups collected',
+					aggregatable: true,
+					sortable: true,
+				},
+			],
+			2: [
+				// Puzzle game example
+				{
+					name: 'score',
+					type: 'number',
+					unit: 'points',
+					description: 'Final score',
+					aggregatable: true,
+					sortable: true,
+				},
+				{
+					name: 'moves',
+					type: 'number',
+					unit: 'count',
+					description: 'Number of moves',
+					aggregatable: true,
+					sortable: true,
+				},
+				{
+					name: 'difficulty',
+					type: 'string',
+					description: 'Difficulty level',
+					aggregatable: false,
+					sortable: true,
+				},
+			],
+			// Add more game schemas as needed
+		};
+
+		return commonSchemas[gameId] || [];
+	}
+
+	/**
+	 * Infer the type of a column value
+	 */
+	private static inferType(
+		value: string,
+	): 'number' | 'string' | 'time' | 'boolean' {
+		// Check for time format (MM:SS, HH:MM:SS, etc.)
+		if (
+			/^\d{1,2}:\d{2}(\.\d+)?$/.test(value) ||
+			/^\d{1,2}:\d{2}:\d{2}(\.\d+)?$/.test(value)
+		) {
+			return 'time';
+		}
+
+		// Check for boolean
+		if (/^(true|false|yes|no|1|0)$/i.test(value)) {
+			return 'boolean';
+		}
+
+		// Check for number
+		if (!isNaN(Number(value)) && isFinite(Number(value))) {
+			return 'number';
+		}
+
+		return 'string';
+	}
+
+	/**
+	 * Parse value based on inferred type
+	 */
+	private static parseValue(
+		value: string,
+		type: 'number' | 'string' | 'time' | 'boolean',
+	): any {
+		switch (type) {
+			case 'number':
+				return Number(value) || 0;
+			case 'time':
+				return this.parseTimeToSeconds(value);
+			case 'boolean':
+				return /^(true|yes|1)$/i.test(value);
+			default:
+				return value;
+		}
+	}
+
+	/**
+	 * Parse time string to seconds
+	 */
+	private static parseTimeToSeconds(timeStr: string): number {
+		const parts = timeStr.split(':');
+		let seconds = 0;
+
+		if (parts.length === 3) {
+			// HH:MM:SS.MS
+			seconds += parseInt(parts[0]) * 3600;
+			seconds += parseInt(parts[1]) * 60;
+			seconds += parseFloat(parts[2]);
+		} else if (parts.length === 2) {
+			// MM:SS.MS
+			seconds += parseInt(parts[0]) * 60;
+			seconds += parseFloat(parts[1]);
+		} else {
+			// SS.MS
+			seconds = parseFloat(parts[0]);
+		}
+
+		return seconds;
+	}
+
+	/**
+	 * Aggregate on dynamic stats columns
+	 */
+	static async aggregateOnStats(
+		leaderboardIds: bigint[],
+		statName: string,
+		aggregationType:
+			| 'avg'
+			| 'sum'
+			| 'min'
+			| 'max'
+			| 'cardinality'
+			| 'percentiles' = 'avg',
+		options: {
+			groupBy?: string;
+			filters?: Record<string, any>;
+			timeRange?: { start: Date; end: Date };
+		} = {},
+	): Promise<{
+		aggregation: any;
+		buckets?: Array<{
+			key: string;
+			doc_count: number;
+			value: number;
+		}>;
+	}> {
+		const { groupBy, filters = {}, timeRange } = options;
+
+		const must: any[] = [
+			{ terms: { leaderboard: leaderboardIds.map((id) => id.toString()) } },
+		];
+
+		// Add time range filter
+		if (timeRange) {
+			must.push({
+				range: {
+					created: {
+						gte: timeRange.start.toISOString(),
+						lte: timeRange.end.toISOString(),
+					},
+				},
+			});
+		}
+
+		// Add custom filters
+		Object.entries(filters).forEach(([key, value]) => {
+			must.push({ term: { [`stats.${key}`]: value } });
+		});
+
+		// Build aggregation
+		const aggs: any = {};
+
+		if (groupBy) {
+			aggs.groups = {
+				terms: { field: `stats.${groupBy}` },
+				aggs: {
+					stat_value: {
+						[aggregationType]: { field: `stats.${statName}` },
+					},
+				},
+			};
+		} else {
+			aggs.stat_value = {
+				[aggregationType]: { field: `stats.${statName}` },
+			};
+		}
+
+		const query = {
+			index: `${this.INDEX_PREFIX}-*`,
+			body: {
+				size: 0,
+				query: { bool: { must } },
+				aggs,
+			},
+		};
+
+		try {
+			const response = (await elasticsearch.search(
+				query as any,
+			)) as OpenSearchResponse;
+
+			const aggregations = response.body.aggregations;
+			if (!aggregations) {
+				return { aggregation: null };
+			}
+
+			if (groupBy) {
+				const groups = aggregations['groups'];
+				return {
+					aggregation: groups,
+					buckets:
+						groups?.buckets?.map((bucket: any) => ({
+							key: bucket.key,
+							doc_count: bucket.doc_count,
+							value: bucket.stat_value.value,
+						})) || [],
+				};
+			} else {
+				const statValue = aggregations['stat_value'];
+				return {
+					aggregation: statValue?.value || null,
+				};
+			}
+		} catch (error) {
+			console.error(`Stats aggregation failed for stat ${statName}:`, error);
+			return { aggregation: null };
+		}
+	}
+
+	/**
+	 * Get available stats for a game or leaderboard
+	 */
+	static async getAvailableStats(
+		gameId?: number,
+		leaderboardId?: bigint,
+	): Promise<{
+		stats: Array<{
+			name: string;
+			type: string;
+			sampleValues: any[];
+			uniqueCount: number;
+		}>;
+	}> {
+		const must: any[] = [];
+
+		if (gameId) must.push({ term: { game: gameId } });
+		if (leaderboardId)
+			must.push({ term: { leaderboard: leaderboardId.toString() } });
+
+		const query = {
+			index: `${this.INDEX_PREFIX}-*`,
+			body: {
+				size: 0,
+				query: { bool: { must } },
+				aggs: {
+					stats_keys: {
+						nested: { path: 'nested_stats' },
+						aggs: {
+							stat_names: {
+								terms: { field: 'nested_stats.name', size: 100 },
+								aggs: {
+									types: { terms: { field: 'nested_stats.type' } },
+									sample_values: {
+										top_hits: {
+											_source: ['nested_stats.value'],
+											size: 5,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		};
+
+		try {
+			const response = (await elasticsearch.search(
+				query as any,
+			)) as OpenSearchResponse;
+			const aggregations = response.body.aggregations;
+			if (!aggregations) {
+				return { stats: [] };
+			}
+
+			const buckets = aggregations['stats_keys']?.['stat_names']?.buckets || [];
+
+			const stats = buckets.map((bucket: any) => ({
+				name: bucket.key,
+				type: bucket.types.buckets[0]?.key || 'unknown',
+				sampleValues: bucket.sample_values.hits.hits.map(
+					(hit: any) => hit._source.nested_stats.value,
+				),
+				uniqueCount: bucket.doc_count,
+			}));
+
+			return { stats };
+		} catch (error) {
+			console.error('Failed to get available stats:', error);
+			return { stats: [] };
+		}
+	}
+
+	/**
+	 * Get leaderboard statistics
+	 */
+	static async getLeaderboardStats(leaderboardId: bigint): Promise<{
+		totalScores: number;
+		uniqueUsers: number;
+		averageScore?: number;
+		topScore?: number | string;
+		availableStats?: Array<{ name: string; type: string }>;
+	}> {
+		const response = (await elasticsearch.search({
+			index: `${this.INDEX_PREFIX}-*`,
+			body: {
+				size: 0,
+				query: {
+					bool: {
+						filter: [{ term: { leaderboard: leaderboardId.toString() } }],
+						must_not: [{ term: { user: '0' } }],
+					},
+				},
+				aggs: {
+					total_scores: { value_count: { field: 'id' } },
+					unique_users: { cardinality: { field: 'user' } },
+					avg_score: { avg: { field: 'score' } },
+					top_score: { max: { field: 'score' } },
+				},
+			},
+		} as any)) as OpenSearchResponse;
+
+		const aggs = response.body.aggregations;
+
+		// Get available stats for this leaderboard
+		const statsInfo = await this.getAvailableStats(undefined, leaderboardId);
+
+		return {
+			totalScores: aggs?.['total_scores']?.value || 0,
+			uniqueUsers: aggs?.['unique_users']?.value || 0,
+			averageScore: aggs?.['avg_score']?.value,
+			topScore: aggs?.['top_score']?.value,
+			availableStats: statsInfo.stats.map((s) => ({
+				name: s.name,
+				type: s.type,
+			})),
+		};
+	}
+}

@@ -12,6 +12,9 @@ export const scores = {
 		'columns',
 		'leaderboard',
 		'game',
+		// Compound indexes for leaderboard optimization
+		['leaderboard', 'user'],
+		['leaderboard', 'user', 'created'],
 	],
 	schema: score,
 	triggers: [updateUpdated],

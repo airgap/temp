@@ -1,43 +1,78 @@
 import { handleListHighScores } from '@lyku/handles';
+import { Err } from '@lyku/helpers';
+import { ElasticLeaderboardService } from '@lyku/route-helpers';
 import { client as pg } from '@lyku/postgres-client';
-import { sql } from 'kysely';
 
 export default handleListHighScores(
-	async ({ leaderboard: id, channel }, { requester }) => {
+	async (
+		{ leaderboard: id, sortColumnIndex, sortDirection, framePoint, frameSize },
+		{ requester },
+	) => {
+		console.log('Listing high scores for', id);
 		const leaderboard = await pg
 			.selectFrom('leaderboards')
 			.selectAll()
 			.where('id', '=', id)
-			.executeTakeFirstOrThrow();
+			.executeTakeFirst();
+		if (!leaderboard) throw new Err(404);
 
-		// Get the first column's format and order direction
-		const columnFormat = leaderboard.columnFormats?.[0] || 'text';
-		const orderDirection = leaderboard.columnOrders?.[0] || 'desc';
+		// Determine which column to sort by and its format
+		const columnIndex = sortColumnIndex ?? 0;
+		const columnFormat =
+			(leaderboard.columnFormats?.[columnIndex] as
+				| 'number'
+				| 'text'
+				| 'time') || 'number';
+		const orderDirection =
+			sortDirection ||
+			(leaderboard.columnOrders?.[columnIndex] as 'asc' | 'desc') ||
+			'desc';
 
-		// Build the ORDER BY expression based on data format
-		let orderByExpression;
-		switch (columnFormat) {
-			case 'number':
-			case 'bigint':
-				orderByExpression = sql`(columns[1])::numeric`;
-				break;
-			case 'time':
-				orderByExpression = sql`(columns[1])::interval`;
-				break;
-			case 'text':
-			default:
-				orderByExpression = sql`columns[1]`;
-				break;
+		// Get leaderboard data from Elasticsearch
+		const startTime = performance.now();
+		const elasticResult = await ElasticLeaderboardService.getLeaderboard(id, {
+			limit: 20,
+			orderDirection: orderDirection as 'asc' | 'desc',
+			columnFormat: columnFormat as 'number' | 'text' | 'time',
+			sortColumnIndex: columnIndex,
+		});
+		const queryTime = performance.now() - startTime;
+
+		// Log slow queries for monitoring
+		if (queryTime > 1000) {
+			console.warn(
+				`Slow Elasticsearch leaderboard query: ${queryTime}ms for leaderboard ${id} (column ${columnIndex})`,
+			);
 		}
 
-		let q = pg
-			.selectFrom('scores')
-			.selectAll()
-			.where('leaderboard', '=', id)
-			.orderBy(orderByExpression, orderDirection === 'asc' ? 'asc' : 'desc');
+		// Convert Elasticsearch results to expected format
+		const scores = elasticResult.scores.map((result, index) => ({
+			id: BigInt(index + 1), // Temporary ID for compatibility
+			user: result.user,
+			leaderboard: id,
+			columns: result.columns,
+			created: new Date(result.created),
+			updated: new Date(result.created),
+			reports: 0,
+			game: Number(leaderboard.game || 1),
+			verifiers: [] as bigint[],
+		}));
 
-		if (channel) q = q.where('channel', '=', channel);
-		const messages = await q.orderBy('created', 'desc').limit(20).execute();
-		return { messages };
+		// Get user data for the scores
+		const userIds = scores.map((s) => s.user);
+		const users =
+			userIds.length > 0
+				? await pg
+						.selectFrom('users')
+						.selectAll()
+						.where('id', 'in', userIds)
+						.execute()
+				: [];
+
+		return {
+			scores,
+			users,
+			leaderboards: [leaderboard as any],
+		};
 	},
 );

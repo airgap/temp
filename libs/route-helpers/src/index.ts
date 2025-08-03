@@ -16,3 +16,5 @@ export * from './sendNotification';
 export * from './serveHttp';
 export * from './serveWebsocket';
 export * from './verifyHCaptcha';
+export * from './leaderboardCache';
+export * from './elasticLeaderboardService';

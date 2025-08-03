@@ -3,6 +3,7 @@ export * from './AchievementGrantStore';
 export * from './AchievementStore';
 export * from './ScoreStore';
 export * from './FileStore';
+export * from './LeaderboardStore';
 export * from './MyFriendshipStore';
 export * from './MyFollowStore';
 export * from './MyReactionStore';

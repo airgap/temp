@@ -23,6 +23,7 @@ export const score = {
 		stream: { type: 'text', maxLength: 100 },
 	},
 	required: [
+		'id',
 		'user',
 		'reports',
 		'columns',

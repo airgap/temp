@@ -10,7 +10,9 @@
 		"@lyku/json-models": "workspace:*",
 		"cheerio": "^1.0.0",
 		"@lyku/logger": "workspace:*",
-		"@lyku/postgres-client": "workspace:*"
+		"@lyku/postgres-client": "workspace:*",
+		"@lyku/redis-client": "workspace:*",
+		"@lyku/elasticsearch-client": "workspace:*"
 	},
 	"type": "module",
 	"main": "./src/index.js",
