@@ -8,7 +8,7 @@ export default handleListHighScores(
 		{ leaderboard: id, sortColumnIndex, sortDirection, framePoint, frameSize },
 		{ requester },
 	) => {
-		console.log('Listing high scores for', id);
+		console.log('Listing high scores for', id, 'with frameSize:', frameSize, 'framePoint:', framePoint);
 		const leaderboard = await pg
 			.selectFrom('leaderboards')
 			.selectAll()
@@ -35,6 +35,8 @@ export default handleListHighScores(
 			orderDirection: orderDirection as 'asc' | 'desc',
 			columnFormat: columnFormat as 'number' | 'text' | 'time',
 			sortColumnIndex: columnIndex,
+			framePoint: framePoint,
+			frameSize: frameSize,
 		});
 		const queryTime = performance.now() - startTime;
 

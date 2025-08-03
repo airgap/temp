@@ -1,5 +1,5 @@
 @use '../symbols' as *
-.AchievementList
+.LeaderboardTable
 	color: $clickable-color
 	display: flex
 	flex-wrap: wrap
@@ -56,3 +56,50 @@
 				margin-right: 0px
 				margin-top: 0px
 				transform: rotate(0deg)
+	.timeFrameSelector
+		display: flex
+		align-items: center
+		gap: 10px
+		margin-bottom: 15px
+		padding: 10px
+		background: #ffffff11
+		border-radius: 5px
+		label
+			color: #ffffffaa
+			font-size: 0.9em
+		.timeFrameSelect
+			background: #ffffff22
+			border: 1px solid #ffffff44
+			border-radius: 4px
+			color: white
+			padding: 5px 10px
+			font-size: 0.9em
+			cursor: pointer
+			transition: all 0.2s
+			&:hover
+				background: #ffffff33
+				border-color: #ffffff66
+			&:focus
+				outline: none
+				border-color: #ffffff88
+				box-shadow: 0 0 5px rgba(255, 255, 255, 0.3)
+	table
+		width: 100%
+		border-collapse: collapse
+		margin-top: 10px
+		th, td
+			padding: 8px 12px
+			text-align: left
+			border-bottom: 1px solid #ffffff22
+		th
+			background: #ffffff11
+			font-weight: 600
+			color: #ffffffdd
+		tr:hover
+			background: #ffffff0a
+		td
+			color: #ffffffaa
+	h3
+		text-align: center
+		color: #ffffff88
+		margin: 20px 0

@@ -169,6 +169,8 @@ export class ElasticLeaderboardService {
 			orderDirection?: 'asc' | 'desc';
 			columnFormat?: 'number' | 'text' | 'time';
 			sortColumnIndex?: number;
+			framePoint?: string;
+			frameSize?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 		} = {},
 	): Promise<LeaderboardResult> {
 		const {
@@ -176,6 +178,8 @@ export class ElasticLeaderboardService {
 			orderDirection = 'desc',
 			columnFormat = 'number',
 			sortColumnIndex = 0,
+			framePoint,
+			frameSize,
 		} = options;
 
 		// Validate column index
@@ -185,8 +189,18 @@ export class ElasticLeaderboardService {
 			);
 		}
 
+		// Calculate date range based on framePoint and frameSize
+		let dateRange: { start: Date; end: Date } | undefined;
+		if (frameSize) {
+			const referenceDate = framePoint ? new Date(framePoint) : new Date();
+			dateRange = this.calculateDateRange(referenceDate, frameSize);
+			console.log(
+				`Date range for ${frameSize}: ${dateRange.start.toISOString()} to ${dateRange.end.toISOString()}`,
+			);
+		}
+
 		// Try cache first
-		const cacheKey = `elastic_leaderboard:${leaderboardId}:${orderDirection}:${columnFormat}:${sortColumnIndex}`;
+		const cacheKey = `elastic_leaderboard:${leaderboardId}:${orderDirection}:${columnFormat}:${sortColumnIndex}:${frameSize || 'all'}:${framePoint || 'current'}`;
 		const cached = await redis.getBuffer(cacheKey);
 		if (cached) {
 			return unpack(cached);
@@ -194,17 +208,45 @@ export class ElasticLeaderboardService {
 
 		const startTime = Date.now();
 
+		// Calculate which indices to search based on date range
+		let indexPattern = `${this.INDEX_PREFIX}-*`;
+		if (dateRange) {
+			// Get list of indices that could contain data within the date range
+			const indices = this.getIndicesForDateRange(
+				dateRange.start,
+				dateRange.end,
+			);
+			if (indices.length > 0) {
+				indexPattern = indices.join(',');
+				console.log(`Searching in specific indices: ${indexPattern}`);
+			}
+		}
+
 		// Build aggregation query for best score per user
 		const sortOrder = orderDirection === 'desc' ? 'desc' : 'asc';
 
 		// Build aggregation to get best score per user
+		const filters: any[] = [
+			{ term: { leaderboard: leaderboardId.toString() } },
+		];
+		if (dateRange) {
+			filters.push({
+				range: {
+					created: {
+						gte: dateRange.start.toISOString(),
+						lte: dateRange.end.toISOString(),
+					},
+				},
+			});
+		}
+
 		const query = {
-			index: `${this.INDEX_PREFIX}-*`,
+			index: indexPattern,
 			body: {
 				size: 0, // We only want aggregations, not hits
 				query: {
 					bool: {
-						filter: [{ term: { leaderboard: leaderboardId.toString() } }],
+						filter: filters,
 						must_not: [{ term: { user: '0' } }],
 					},
 				},
@@ -234,6 +276,7 @@ export class ElasticLeaderboardService {
 
 		try {
 			console.log('Elasticsearch query:', JSON.stringify(query, null, 2));
+			console.log('Date range filter applied:', dateRange ? 'YES' : 'NO');
 			const response = (await elasticsearch.search(
 				query as any,
 			)) as OpenSearchResponse;
@@ -1042,5 +1085,74 @@ export class ElasticLeaderboardService {
 				type: s.type,
 			})),
 		};
+	}
+
+	/**
+	 * Get list of indices that could contain data within the given date range
+	 */
+	private static getIndicesForDateRange(start: Date, end: Date): string[] {
+		const indices: string[] = [];
+		const current = new Date(start);
+
+		// Iterate through months from start to end
+		while (current <= end) {
+			indices.push(this.getIndexName(current));
+			// Move to next month
+			current.setMonth(current.getMonth() + 1);
+		}
+
+		// Remove duplicates
+		return [...new Set(indices)];
+	}
+
+	/**
+	 * Calculate date range based on reference date and frame size
+	 */
+	private static calculateDateRange(
+		referenceDate: Date,
+		frameSize: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year',
+	): { start: Date; end: Date } {
+		const start = new Date(referenceDate);
+		const end = new Date(referenceDate);
+
+		switch (frameSize) {
+			case 'hour':
+				start.setMinutes(0, 0, 0);
+				end.setMinutes(59, 59, 999);
+				break;
+			case 'day':
+				start.setHours(0, 0, 0, 0);
+				end.setHours(23, 59, 59, 999);
+				break;
+			case 'week':
+				const dayOfWeek = start.getDay();
+				const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday as start
+				start.setDate(start.getDate() - daysToSubtract);
+				start.setHours(0, 0, 0, 0);
+				end.setDate(start.getDate() + 6);
+				end.setHours(23, 59, 59, 999);
+				break;
+			case 'month':
+				start.setDate(1);
+				start.setHours(0, 0, 0, 0);
+				end.setMonth(end.getMonth() + 1, 0); // Last day of month
+				end.setHours(23, 59, 59, 999);
+				break;
+			case 'quarter':
+				const currentQuarter = Math.floor(start.getMonth() / 3);
+				start.setMonth(currentQuarter * 3, 1);
+				start.setHours(0, 0, 0, 0);
+				end.setMonth(currentQuarter * 3 + 3, 0); // Last day of quarter
+				end.setHours(23, 59, 59, 999);
+				break;
+			case 'year':
+				start.setMonth(0, 1);
+				start.setHours(0, 0, 0, 0);
+				end.setMonth(11, 31);
+				end.setHours(23, 59, 59, 999);
+				break;
+		}
+
+		return { start, end };
 	}
 }

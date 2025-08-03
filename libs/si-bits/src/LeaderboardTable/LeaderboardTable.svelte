@@ -13,6 +13,8 @@
 
 	let dropped = $state(false);
 	let loading = $state(true);
+	let selectedTimeFrame = $state<'day' | 'week' | 'month' | 'year' | 'all'>('week');
+	let currentTimeFrameScores = $state<Array<any>>([]);
 
 	onMount(() => {
 		if (getSessionId()) {
@@ -26,29 +28,43 @@
 	async function loadHighScores() {
 		loading = true;
 		try {
-			api
-				.listHighScores({ leaderboard: id })
-				.then(({ leaderboards, scores, users }) => {
-					// console.log('scores', as);
-					scores.forEach((a) => scoreStore.set(a.id, a));
-					users.forEach((a) => userStore.set(a.id, a));
-					leaderboards.forEach((a) => leaderboardStore.set(a.id, a));
-					console.log('aaaah', leaderboards, scores, users);
-				});
+			const params: any = { leaderboard: id };
+			
+			// Add time frame parameters if not 'all'
+			if (selectedTimeFrame !== 'all') {
+				params.frameSize = selectedTimeFrame;
+				// framePoint defaults to current time on the server
+			}
+			
+			const result = await api.listHighScores(params);
+			
+			// Store the scores for the current time frame
+			currentTimeFrameScores = result.scores;
+			
+			// Add to stores for caching
+			result.scores.forEach((a) => scoreStore.set(a.id, a));
+			result.users.forEach((a) => userStore.set(a.id, a));
+			result.leaderboards.forEach((a) => leaderboardStore.set(a.id, a));
+			console.log('aaaah', result.leaderboards, result.scores, result.users);
 		} finally {
 			loading = false;
 		}
 	}
 
 	const scores = $derived(
-		[...scoreStore.values()]
-			.filter((a) => a.leaderboard === id)
-			.sort((a, b) => b.columns[0] - a.columns[0]),
+		[...currentTimeFrameScores].sort((a, b) => b.columns[0] - a.columns[0])
 	);
 
 	onMount(() => {
 		loadHighScores();
 	});
+	
+	// Reload scores when time frame changes
+	$effect(() => {
+		selectedTimeFrame; // Track dependency
+		loadHighScores();
+	});
+	
 	$effect(() => {
 		console.log('scores', scores);
 	});
@@ -78,6 +94,17 @@
 		</label>
 	</div>
 
+	<div class={styles.timeFrameSelector}>
+		<label>Time frame:</label>
+		<select bind:value={selectedTimeFrame} class={styles.timeFrameSelect}>
+			<option value="day">Today</option>
+			<option value="week">This Week</option>
+			<option value="month">This Month</option>
+			<option value="year">This Year</option>
+			<option value="all">All Time</option>
+		</select>
+	</div>
+
 	{#if loading}
 		Fetching scores...
 	{:else if scores.length}
@@ -91,7 +118,7 @@
 				></thead
 			>
 			<tbody>
-				{#each scores.sort((a, b) => a.points - b.points) as score, rank}
+				{#each scores as score, rank}
 					<tr
 						><td>#{rank + 1}</td><td
 							>{userStore.get(score.user)?.username ?? 'Unknown'}</td
