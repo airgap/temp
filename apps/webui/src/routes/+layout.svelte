@@ -8,15 +8,20 @@
 		MobileNav,
 		UserLoginForm,
 		UserRegistrationForm,
+		Dialog,
+		PostCreator,
+		TermsOfService,
+		userStore,
 	} from '@lyku/si-bits';
 	import { PUBLIC_CF_HASH } from '$env/static/public';
 	import { page } from '$app/stores';
 	import styles from './App.module.sass';
-	import { Dialog, PostCreator, TermsOfService } from '@lyku/si-bits';
 	import type { Post } from '@lyku/json-models';
 	import type { EventHandler } from 'svelte/elements';
 
 	const currentUser = $page.data.user;
+
+	if (currentUser) userStore.set(-1n, currentUser);
 
 	const { children } = $props<{ children?: () => any }>();
 
@@ -26,6 +31,7 @@
 	let echo = $state<bigint>();
 	let light = $state<bigint>();
 	let showLightbox = $state<boolean>(false);
+	console.log('Layout user', userStore.get(-1n)?.id ?? 'not found');
 	onMount(() => {
 		initSession();
 		const replier = (event: CustomEvent) => {

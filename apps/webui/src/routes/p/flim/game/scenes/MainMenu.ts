@@ -42,7 +42,7 @@ export default class MainMenu extends Phaser.Scene {
 		text.setStyle({
 			align: 'center',
 			color: '#ffffff',
-			fontFamily: 'Futura',
+			fontFamily: 'Silkscreen, Futura',
 			fontSize: '68px',
 			stroke: '#000000',
 			strokeThickness: 8,

@@ -7,6 +7,11 @@
 				"key": "pinch"
 			},
 			{
+				"url": "opinch.png",
+				"type": "image",
+				"key": "opinch"
+			},
+			{
 				"url": "0001.png",
 				"type": "image",
 				"key": "0001"
@@ -215,6 +220,11 @@
 				"url": "food-64x.json",
 				"type": "animation",
 				"key": "food-64x"
+			},
+			{
+				"url": "unpinch.json",
+				"type": "animation",
+				"key": "unpinch"
 			},
 			{
 				"url": "planim.png",

@@ -35,6 +35,7 @@ export * from './GroupList';
 export * from './GroupFilterSelect';
 export * from './Image';
 export * from './ImageUpload';
+export * from './LeaderboardTable';
 export * from './LeftAlign';
 export * from './LevelBadge';
 export * from './Lightbox';

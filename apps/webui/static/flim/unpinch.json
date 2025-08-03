@@ -1,0 +1,34 @@
+{
+	"anims": [
+		{
+			"key": "unpinch0",
+			"type": "frame",
+			"frames": [
+				{
+					"key": "opinch",
+					"duration": 0,
+					"keyframe": false
+				},
+				{
+					"key": "pinch",
+					"duration": 0,
+					"keyframe": false
+				}
+			],
+			"frameRate": 2,
+			"skipMissedFrames": true,
+			"repeat": 0,
+			"randomFrame": false
+		}
+	],
+	"globalTimeScale": 1,
+	"meta": {
+		"app": "Phaser Editor 2D v3",
+		"contentType": "Phaser v3 Animations"
+	},
+	"settings": {
+		"sourceLang": "TYPE_SCRIPT",
+		"esModule": true,
+		"generateCode": false
+	}
+}

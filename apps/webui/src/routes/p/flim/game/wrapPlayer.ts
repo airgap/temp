@@ -1,6 +1,6 @@
 import { bounds } from './defs';
 
 export const wrapPlayer = (player: Phaser.GameObjects.Sprite) => {
-	if (player.x > bounds.w + 128) player.x = -128;
-	else if (player.x < -128) player.x = bounds.w + 128;
+	if (player.x > bounds.w) player.x = 0;
+	else if (player.x < 0) player.x = bounds.w;
 };

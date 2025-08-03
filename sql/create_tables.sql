@@ -699,11 +699,17 @@ EXECUTE FUNCTION hashtags_trigger_1_fn ();
 ---- Create table
 CREATE TABLE IF NOT EXISTS "leaderboards" (
   "game" BIGINT NOT NULL,
+  "description" TEXT CHECK (length("description") <= 1000),
   "owner" BIGINT NOT NULL,
   "id" BIGSERIAL PRIMARY KEY NOT NULL,
+  "title" TEXT CHECK (length("title") <= 50),
   "creator" BIGINT NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated" TIMESTAMPTZ NOT NULL
+  "updated" TIMESTAMPTZ NOT NULL,
+  "columnNames" TEXT[],
+  "columnFormats" TEXT[],
+  "columnOrders" TEXT[],
+  "public" BOOLEAN
 );
 
 
@@ -721,6 +727,12 @@ CREATE INDEX IF NOT EXISTS "idx_leaderboards_updated" ON "leaderboards" ("update
 
 
 CREATE INDEX IF NOT EXISTS "idx_leaderboards_creator" ON "leaderboards" ("creator");
+
+
+CREATE INDEX IF NOT EXISTS "idx_leaderboards_columnNames" ON "leaderboards" ("columnNames");
+
+
+CREATE INDEX IF NOT EXISTS "idx_leaderboards_columnFormats" ON "leaderboards" ("columnFormats");
 
 
 ---- Create triggers
@@ -1138,13 +1150,12 @@ CREATE INDEX IF NOT EXISTS "idx_reactions_postId" ON "reactions" ("postId");
 ---- Create table
 CREATE TABLE IF NOT EXISTS "scores" (
   "id" BIGSERIAL PRIMARY KEY,
-  "posted" TIMESTAMPTZ NOT NULL,
   "user" BIGINT NOT NULL,
-  "channel" BIGINT NOT NULL,
+  "channel" BIGINT,
   "reports" INTEGER NOT NULL,
-  "columns" BIGINT[] NOT NULL,
+  "columns" TEXT[] NOT NULL,
   "leaderboard" BIGINT NOT NULL,
-  "game" BIGINT NOT NULL,
+  "game" INTEGER NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated" TIMESTAMPTZ NOT NULL,
   "deleted" TIMESTAMPTZ,
@@ -1155,7 +1166,10 @@ CREATE TABLE IF NOT EXISTS "scores" (
 
 
 ---- Create indexes
-CREATE INDEX IF NOT EXISTS "idx_scores_posted" ON "scores" ("posted");
+CREATE INDEX IF NOT EXISTS "idx_scores_created" ON "scores" ("created");
+
+
+CREATE INDEX IF NOT EXISTS "idx_scores_updated" ON "scores" ("updated");
 
 
 CREATE INDEX IF NOT EXISTS "idx_scores_user" ON "scores" ("user");

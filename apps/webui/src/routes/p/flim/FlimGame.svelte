@@ -38,6 +38,6 @@
 
 <style lang="sass">
 	#game-container
-		height: calc(100vh - 75px)
+		height: calc(100vh - 115px)
 		text-align: center
 </style>
