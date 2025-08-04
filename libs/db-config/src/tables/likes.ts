@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { like } from 'bson-models';
+import { like } from '@lyku/bson-models';
 
 export const likes = {
 	indexes: ['userId', 'postId', ['userId', 'postId'], 'created'],

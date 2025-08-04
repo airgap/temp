@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { fileDraft } from 'bson-models';
+import { fileDraft } from '@lyku/bson-models';
 
 export const fileDrafts = {
 	indexes: ['creator', 'type', 'post', 'created', 'creator'],

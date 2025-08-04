@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { userLogin } from 'bson-models';
+import { userLogin } from '@lyku/bson-models';
 
 export const logins = {
 	indexes: ['created', 'userId'],

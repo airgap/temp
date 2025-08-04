@@ -3,5 +3,17 @@
 		"@lyku/route-helpers": "workspace:*",
 		"@lyku/handles": "workspace:*",
 		"@lyku/elasticsearch-client": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "120Mi",
+				"cpu": "10m"
+			},
+			"limits": {
+				"memory": "180Mi",
+				"cpu": "20m"
+			}
+		}
 	}
 }

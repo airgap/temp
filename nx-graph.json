@@ -10639,8 +10639,8 @@
 					"implicitDependencies": []
 				}
 			},
-			"bson-models": {
-				"name": "bson-models",
+			"@lyku/bson-models": {
+				"name": "@lyku/bson-models",
 				"type": "lib",
 				"data": {
 					"root": "libs/bson-models",
@@ -10730,12 +10730,12 @@
 							"inputs": ["production", "^production"]
 						}
 					},
-					"name": "bson-models",
+					"name": "@lyku/bson-models",
 					"tags": ["npm:private"],
 					"metadata": {
 						"targetGroups": {},
 						"js": {
-							"packageName": "bson-models",
+							"packageName": "@lyku/bson-models",
 							"packageMain": "./src/index.js",
 							"isInPackageManagerWorkspaces": false
 						}
@@ -11366,7 +11366,7 @@
 								"project": "libs/db-config/package.json",
 								"format": ["esm"],
 								"compiler": "tsc",
-								"external": ["bson-models", "@lyku/stock-docs"],
+								"external": ["@lyku/bson-models", "@lyku/stock-docs"],
 								"rollupConfig": "libs/db-config/rollup.config.ts"
 							},
 							"configurations": {},
@@ -15287,7 +15287,7 @@
 				},
 				{
 					"source": "@lyku/route-helpers",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				},
 				{
@@ -15371,7 +15371,7 @@
 			"@lyku/json-models": [
 				{
 					"source": "@lyku/json-models",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				}
 			],
@@ -15383,7 +15383,7 @@
 				},
 				{
 					"source": "@lyku/mapi-models",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				},
 				{
@@ -15431,14 +15431,14 @@
 					"type": "static"
 				}
 			],
-			"bson-models": [
+			"@lyku/bson-models": [
 				{
-					"source": "bson-models",
+					"source": "@lyku/bson-models",
 					"target": "@lyku/helpers",
 					"type": "static"
 				},
 				{
-					"source": "bson-models",
+					"source": "@lyku/bson-models",
 					"target": "@lyku/defaults",
 					"type": "static"
 				}
@@ -15452,7 +15452,7 @@
 				},
 				{
 					"source": "@lyku/mapi-types",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				},
 				{
@@ -15475,7 +15475,7 @@
 			"@lyku/stock-docs": [
 				{
 					"source": "@lyku/stock-docs",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				},
 				{
@@ -15487,7 +15487,7 @@
 			"@lyku/db-config": [
 				{
 					"source": "@lyku/db-config",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				},
 				{
@@ -15523,7 +15523,7 @@
 				},
 				{
 					"source": "@lyku/db-types",
-					"target": "bson-models",
+					"target": "@lyku/bson-models",
 					"type": "static"
 				}
 			],

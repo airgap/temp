@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { session } from 'bson-models';
+import { session } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const sessions = {

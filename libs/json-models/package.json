@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"devDependencies": {
 		"@swc/helpers": "~0.5.11",
-		"bson-models": "workspace:*"
+		"@lyku/bson-models": "workspace:*"
 	},
 	"type": "module",
 	"main": "./src/index.js",

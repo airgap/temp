@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { ttfMatch } from 'bson-models';
+import { ttfMatch } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const ttfMatches = {

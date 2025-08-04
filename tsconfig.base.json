@@ -45,7 +45,7 @@
 			"@lyku/stats": ["dist/libs/stats"],
 			"@lyku/stock-docs": ["libs/stock-docs/src/index.ts"],
 			"@lyku/strings": ["libs/strings/src/index.ts"],
-			"bson-models": ["libs/bson-models/src/index.ts"],
+			"@lyku/bson-models": ["libs/bson-models/src/index.ts"],
 			"monolith-ts-api": ["libs/monolith-ts-api/src/index.ts"],
 			"@lyku/ttf-ais": ["libs/ttf-ais/src/index.ts"]
 		}

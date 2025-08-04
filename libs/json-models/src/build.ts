@@ -7,7 +7,7 @@ import {
 	stringifyBON,
 } from 'from-schema';
 import * as ts from 'typescript';
-import * as module from 'bson-models';
+import * as module from '@lyku/bson-models';
 import * as extras from './extra';
 import * as prettier from 'prettier';
 

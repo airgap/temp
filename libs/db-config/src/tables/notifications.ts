@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { notification } from 'bson-models';
+import { notification } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const notifications = {

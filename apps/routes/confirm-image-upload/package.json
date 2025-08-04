@@ -4,5 +4,17 @@
 		"@lyku/handles": "workspace:*",
 		"@lyku/json-models": "workspace:*",
 		"@lyku/postgres-client": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "120Mi",
+				"cpu": "10m"
+			},
+			"limits": {
+				"memory": "220Mi",
+				"cpu": "80m"
+			}
+		}
 	}
 }

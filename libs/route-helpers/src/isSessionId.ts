@@ -1,4 +1,4 @@
-import { sessionId } from 'bson-models';
+import { sessionId } from '@lyku/bson-models';
 
 const sessionPattern = new RegExp(sessionId.pattern);
 

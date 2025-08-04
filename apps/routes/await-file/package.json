@@ -7,5 +7,17 @@
 		"@lyku/nats-client": "workspace:*",
 		"@lyku/redis-client": "workspace:*",
 		"@lyku/json-models": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "120Mi",
+				"cpu": "10m"
+			},
+			"limits": {
+				"memory": "180Mi",
+				"cpu": "80m"
+			}
+		}
 	}
 }

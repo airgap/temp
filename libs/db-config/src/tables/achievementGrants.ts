@@ -1,4 +1,4 @@
-import { achievementGrant } from 'bson-models';
+import { achievementGrant } from '@lyku/bson-models';
 import { PostgresTableModel } from 'from-schema';
 
 export const achievementGrants = {

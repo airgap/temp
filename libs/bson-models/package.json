@@ -1,5 +1,5 @@
 {
-	"name": "bson-models",
+	"name": "@lyku/bson-models",
 	"version": "0.0.1",
 	"dependencies": {
 		"@swc/helpers": "~0.5.11",

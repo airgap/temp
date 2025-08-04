@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { developer } from 'bson-models';
+import { developer } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const developers = {

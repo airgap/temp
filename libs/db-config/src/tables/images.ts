@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { imageDoc } from 'bson-models';
+import { imageDoc } from '@lyku/bson-models';
 
 export const images = {
 	indexes: ['uploader', 'created', 'variants', 'channel'],

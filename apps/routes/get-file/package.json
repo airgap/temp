@@ -6,5 +6,17 @@
 		"@lyku/postgres-client": "workspace:*",
 		"@lyku/nats-client": "workspace:*",
 		"@lyku/json-models": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "160Mi",
+				"cpu": "50m"
+			},
+			"limits": {
+				"memory": "200Mi",
+				"cpu": "80m"
+			}
+		}
 	}
 }

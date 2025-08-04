@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { hashtagUsage } from 'bson-models';
+import { hashtagUsage } from '@lyku/bson-models';
 // import { hashtagUsages as docs } from '@lyku/stock-docs';
 export const hashtagUsages = {
 	indexes: [

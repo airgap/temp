@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { membershipList } from 'bson-models';
+import { membershipList } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const membershipLists = {
 	schema: membershipList,

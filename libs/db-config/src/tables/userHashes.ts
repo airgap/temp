@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { hashdoc } from 'bson-models';
+import { hashdoc } from '@lyku/bson-models';
 
 export const userHashes = {
 	indexes: ['username', 'email', 'hash'],

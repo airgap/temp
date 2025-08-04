@@ -14,6 +14,48 @@ export IMAGE=registry.digitalocean.com/lyku/lyku:${SERVICE_NAME}-${TIMESTAMP}
 echo "SERVICE_NAME: ${SERVICE_NAME}"
 echo "Building and deploying with timestamp: ${TIMESTAMP}"
 
+# Check for route-specific configuration in package.json
+PACKAGE_JSON_FILE="apps/routes/${SERVICE_NAME}/package.json"
+
+# Default resource values
+export MEMORY_REQUEST="120Mi"
+export MEMORY_LIMIT="180Mi"
+export CPU_REQUEST="10m"
+export CPU_LIMIT="50m"
+
+# Check if route has custom resource configuration in package.json
+if [ -f "$PACKAGE_JSON_FILE" ]; then
+    # Extract resource values using jq (if available)
+    if command -v jq &> /dev/null; then
+        # Check if k8s.resources exists in package.json
+        if [ -n "$(jq -r '.k8s.resources // empty' < "$PACKAGE_JSON_FILE")" ]; then
+            echo "📋 Found custom k8s resource configuration in package.json"
+
+            # Extract resource values
+            if [ -n "$(jq -r '.k8s.resources.requests.memory // empty' < "$PACKAGE_JSON_FILE")" ]; then
+                export MEMORY_REQUEST=$(jq -r '.k8s.resources.requests.memory' < "$PACKAGE_JSON_FILE")
+            fi
+            if [ -n "$(jq -r '.k8s.resources.requests.cpu // empty' < "$PACKAGE_JSON_FILE")" ]; then
+                export CPU_REQUEST=$(jq -r '.k8s.resources.requests.cpu' < "$PACKAGE_JSON_FILE")
+            fi
+            if [ -n "$(jq -r '.k8s.resources.limits.memory // empty' < "$PACKAGE_JSON_FILE")" ]; then
+                export MEMORY_LIMIT=$(jq -r '.k8s.resources.limits.memory' < "$PACKAGE_JSON_FILE")
+            fi
+            if [ -n "$(jq -r '.k8s.resources.limits.cpu // empty' < "$PACKAGE_JSON_FILE")" ]; then
+                export CPU_LIMIT=$(jq -r '.k8s.resources.limits.cpu' < "$PACKAGE_JSON_FILE")
+            fi
+        fi
+    else
+        echo "⚠️  jq not found, using defaults. Install jq for custom resource configuration."
+    fi
+fi
+
+echo "🔧 Using resource configuration:"
+echo "   Memory Request: ${MEMORY_REQUEST}"
+echo "   Memory Limit: ${MEMORY_LIMIT}"
+echo "   CPU Request: ${CPU_REQUEST}"
+echo "   CPU Limit: ${CPU_LIMIT}"
+
 # Check if being called from NX (which already built and pushed)
 if [ -z "$NX_TASK_TARGET_PROJECT" ]; then
     # Not from NX, do the full build process
@@ -62,7 +104,7 @@ if kubectl get deployment ${DEPLOYMENT_NAME} -n lyku ${config} >/dev/null 2>&1; 
     # Apply the manifest with the new configuration
     envsubst < k8s/micro.yaml | kubectl apply -f - ${config}
     # Force a rollout to ensure pods are recreated with new image
-    kubectl rollout restart deployment/${DEPLOYMENT_NAME} ${config}
+    kubectl rollout restart deployment/${DEPLOYMENT_NAME} -n lyku ${config}
     echo "✅ Deployment ${DEPLOYMENT_NAME} updated with new image"
 else
     echo "🆕 Creating new deployment ${DEPLOYMENT_NAME}"

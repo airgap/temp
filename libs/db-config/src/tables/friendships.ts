@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { friendship } from 'bson-models';
+import { friendship } from '@lyku/bson-models';
 
 export const friendships = {
 	indexes: ['users', 'created'],

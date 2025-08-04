@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { publisher } from 'bson-models';
+import { publisher } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const publishers = {
 	indexes: ['name'],

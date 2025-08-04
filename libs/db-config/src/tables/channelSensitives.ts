@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { channelSensitives as channelSensitivesBundle } from 'bson-models';
+import { channelSensitives as channelSensitivesBundle } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const channelSensitives = {
 	schema: channelSensitivesBundle,

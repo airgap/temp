@@ -8,7 +8,14 @@ export default handleListHighScores(
 		{ leaderboard: id, sortColumnIndex, sortDirection, framePoint, frameSize },
 		{ requester },
 	) => {
-		console.log('Listing high scores for', id, 'with frameSize:', frameSize, 'framePoint:', framePoint);
+		console.log(
+			'Listing high scores for',
+			id,
+			'with frameSize:',
+			frameSize,
+			'framePoint:',
+			framePoint,
+		);
 		const leaderboard = await pg
 			.selectFrom('leaderboards')
 			.selectAll()

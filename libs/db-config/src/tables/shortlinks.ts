@@ -1,4 +1,4 @@
-import { shortlinkRow } from 'bson-models';
+import { shortlinkRow } from '@lyku/bson-models';
 import { PostgresTableModel } from 'from-schema';
 import { updateUpdated } from '../updateUpdated';
 export const shortlinks = {

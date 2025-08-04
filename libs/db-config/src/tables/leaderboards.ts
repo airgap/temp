@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { leaderboard } from 'bson-models';
+import { leaderboard } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const leaderboards = {
 	indexes: [

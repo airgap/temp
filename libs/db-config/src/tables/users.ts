@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { user } from 'bson-models';
+import { user } from '@lyku/bson-models';
 import { users as docs } from '@lyku/stock-docs';
 import { updateUpdated } from '../updateUpdated';
 

@@ -4,5 +4,17 @@
 		"@lyku/handles": "workspace:*",
 		"@lyku/helpers": "workspace:*",
 		"@lyku/nats-client": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "120Mi",
+				"cpu": "10m"
+			},
+			"limits": {
+				"memory": "180Mi",
+				"cpu": "80m"
+			}
+		}
 	}
 }

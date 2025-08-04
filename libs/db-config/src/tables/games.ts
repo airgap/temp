@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { game } from 'bson-models';
+import { game } from '@lyku/bson-models';
 import { games as docs } from '@lyku/stock-docs';
 import { updateUpdated } from '../updateUpdated';
 export const games = {

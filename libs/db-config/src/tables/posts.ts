@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { post } from 'bson-models';
+import { post } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 export const posts = {
 	indexes: [

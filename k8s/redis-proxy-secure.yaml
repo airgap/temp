@@ -8,7 +8,7 @@ type: Opaque
 stringData:
   # username: redis
   # password: 3DTGeRwetRQkIX6ZeH25/VwLXVkhzfl+e+SG02Jftqs=
-  auth: cmVkaXM6M0RUR2VSd2V0UlFrSVg2WmVIMjUvVndMWFZraHpmbCtlK1NHMDJKZnRxcz0=
+  auth: YOUR_BASE64_ENCODED_AUTH_STRING
 ---
 # ConfigMap for Webdis configuration
 apiVersion: v1
@@ -31,7 +31,7 @@ data:
       "acl": [
         {
           "disabled": ["FLUSHDB", "FLUSHALL", "KEYS", "CONFIG", "SHUTDOWN"],
-          "http_basic_auth": "cmVkaXM6M0RUR2VSd2V0UlFrSVg2WmVIMjUvVndMWFZraHpmbCtlK1NHMDJKZnRxcz0=",
+          "http_basic_auth": "YOUR_BASE64_ENCODED_AUTH_STRING",
           "enabled": ["*"]
         }
       ],

@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { group } from 'bson-models';
+import { group } from '@lyku/bson-models';
 import { groups as docs } from '@lyku/stock-docs';
 import { updateUpdated } from '../updateUpdated';
 export const groups = {

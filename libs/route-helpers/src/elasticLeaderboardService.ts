@@ -139,6 +139,8 @@ export class ElasticLeaderboardService {
 		try {
 			const searchResponse = await elasticsearch.search({
 				index: `${this.INDEX_PREFIX}-*`,
+				ignore_unavailable: true,
+				allow_no_indices: true,
 				body: {
 					query: {
 						term: { id: scoreId.toString() },
@@ -242,6 +244,8 @@ export class ElasticLeaderboardService {
 
 		const query = {
 			index: indexPattern,
+			ignore_unavailable: true,
+			allow_no_indices: true,
 			body: {
 				size: 0, // We only want aggregations, not hits
 				query: {
@@ -927,6 +931,8 @@ export class ElasticLeaderboardService {
 
 		const query = {
 			index: `${this.INDEX_PREFIX}-*`,
+			ignore_unavailable: true,
+			allow_no_indices: true,
 			body: {
 				size: 0,
 				query: { bool: { must } },
@@ -989,6 +995,8 @@ export class ElasticLeaderboardService {
 
 		const query = {
 			index: `${this.INDEX_PREFIX}-*`,
+			ignore_unavailable: true,
+			allow_no_indices: true,
 			body: {
 				size: 0,
 				query: { bool: { must } },
@@ -1053,6 +1061,8 @@ export class ElasticLeaderboardService {
 	}> {
 		const response = (await elasticsearch.search({
 			index: `${this.INDEX_PREFIX}-*`,
+			ignore_unavailable: true,
+			allow_no_indices: true,
 			body: {
 				size: 0,
 				query: {

@@ -13,7 +13,9 @@
 
 	let dropped = $state(false);
 	let loading = $state(true);
-	let selectedTimeFrame = $state<'day' | 'week' | 'month' | 'year' | 'all'>('week');
+	let selectedTimeFrame = $state<'day' | 'week' | 'month' | 'year' | 'all'>(
+		'week',
+	);
 	let currentTimeFrameScores = $state<Array<any>>([]);
 
 	onMount(() => {
@@ -29,18 +31,18 @@
 		loading = true;
 		try {
 			const params: any = { leaderboard: id };
-			
+
 			// Add time frame parameters if not 'all'
 			if (selectedTimeFrame !== 'all') {
 				params.frameSize = selectedTimeFrame;
 				// framePoint defaults to current time on the server
 			}
-			
+
 			const result = await api.listHighScores(params);
-			
+
 			// Store the scores for the current time frame
 			currentTimeFrameScores = result.scores;
-			
+
 			// Add to stores for caching
 			result.scores.forEach((a) => scoreStore.set(a.id, a));
 			result.users.forEach((a) => userStore.set(a.id, a));
@@ -52,19 +54,19 @@
 	}
 
 	const scores = $derived(
-		[...currentTimeFrameScores].sort((a, b) => b.columns[0] - a.columns[0])
+		[...currentTimeFrameScores].sort((a, b) => b.columns[0] - a.columns[0]),
 	);
 
 	onMount(() => {
 		loadHighScores();
 	});
-	
+
 	// Reload scores when time frame changes
 	$effect(() => {
 		selectedTimeFrame; // Track dependency
 		loadHighScores();
 	});
-	
+
 	$effect(() => {
 		console.log('scores', scores);
 	});

@@ -1,5 +1,5 @@
 import { PostgresTableModel } from 'from-schema';
-import { friendRequest } from 'bson-models';
+import { friendRequest } from '@lyku/bson-models';
 import { updateUpdated } from '../updateUpdated';
 
 export const friendRequests = {

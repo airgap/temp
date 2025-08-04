@@ -19,7 +19,7 @@ if (swcJestConfig.swcrc === undefined) {
 // swcJestConfig.module.noInterop = false;
 
 export default {
-	displayName: 'bson-models',
+	displayName: '@lyku/bson-models',
 	preset: '../../jest.preset.ts',
 	transform: {
 		'^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
