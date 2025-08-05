@@ -5,9 +5,11 @@
 		Divisio,
 		LeaderboardTable,
 		userStore,
+		scoreStore,
+		leaderboardStore,
 	} from '@lyku/si-bits';
 	import { api, type ThiccSocket } from 'monolith-ts-api';
-	import type { TtfMatch, User } from '@lyku/json-models';
+	import type { Leaderboard, Score, TtfMatch, User } from '@lyku/json-models';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import styles from './page.module.sass';
@@ -19,11 +21,19 @@
 			| {
 					users: Promise<User[]>;
 					user: User;
+					scores: Score[];
+					leaderboards: Leaderboard[];
 			  }
 			| { error: string };
 	}>();
-	const { games, users, user, publishers, developers } = data;
+	const { games, users, user, publishers, developers, scores, leaderboards } =
+		data;
 	if (user) userStore.set(-1n, user);
+	users?.forEach((user) => userStore.set(user.id, user));
+	scores?.forEach((score) => scoreStore.set(score.id, score));
+	leaderboards?.forEach((leaderboard) =>
+		leaderboardStore.set(leaderboard.id, leaderboard),
+	);
 
 	// State management
 	// let user = $derived(userStore.get(-1n));

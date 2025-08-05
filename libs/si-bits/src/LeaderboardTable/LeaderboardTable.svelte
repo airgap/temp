@@ -6,13 +6,16 @@
 	import classnames from 'classnames';
 	import { onMount } from 'svelte';
 	import { scoreStore, userStore, leaderboardStore } from '../CacheProvider';
+	import { filterByTimeFrame } from './filterByTimeFrame';
+	import { highestScoreByPlayer } from './highestScoreByPlayer';
 
-	const { leaderboard: id = undefined } = $props<{
+	const { leaderboard: id = undefined, headers } = $props<{
 		leaderboard?: number;
+		headers?: string[];
 	}>();
 
-	let dropped = $state(false);
-	let loading = $state(true);
+	let dropped = $state(true);
+	let loading = $state(false);
 	let selectedTimeFrame = $state<'day' | 'week' | 'month' | 'year' | 'all'>(
 		'week',
 	);
@@ -28,7 +31,7 @@
 
 	// Replace Await component with async load
 	async function loadHighScores() {
-		loading = true;
+		// loading = true;
 		try {
 			const params: any = { leaderboard: id };
 
@@ -39,9 +42,7 @@
 			}
 
 			const result = await api.listHighScores(params);
-
-			// Store the scores for the current time frame
-			currentTimeFrameScores = result.scores;
+			result.scores.forEach((score) => scoreStore.set(score.id, score));
 
 			// Add to stores for caching
 			result.scores.forEach((a) => scoreStore.set(a.id, a));
@@ -54,11 +55,13 @@
 	}
 
 	const scores = $derived(
-		[...currentTimeFrameScores].sort((a, b) => b.columns[0] - a.columns[0]),
+		highestScoreByPlayer(
+			filterByTimeFrame([...scoreStore.values()], selectedTimeFrame),
+		).sort((a, b) => b.columns[0] - a.columns[0]),
 	);
 
 	onMount(() => {
-		loadHighScores();
+		// loadHighScores();
 	});
 
 	// Reload scores when time frame changes
@@ -114,7 +117,7 @@
 			<thead
 				><tr
 					><th>Rank</th><th>Name</th
-					>{#each leaderboardStore.get(id)?.columnNames ?? [] as column}
+					>{#each leaderboardStore.get(id)?.columnNames ?? headers ?? [] as column}
 						<th>{column}</th>
 					{/each}</tr
 				></thead

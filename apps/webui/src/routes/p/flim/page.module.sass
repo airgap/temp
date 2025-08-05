@@ -1,2 +1,19 @@
 //@import '../generic.module'
 .gameAndLeaderboard
+  display: flex
+  flex-direction: row
+  gap: 2rem
+  align-items: flex-start
+  justify-content: center
+  flex-wrap: nowrap
+  
+  > :global(div:first-child)
+    flex-shrink: 0
+    
+  > :global(.LeaderboardTable)
+    flex-shrink: 0
+    width: auto
+  
+  @media (max-width: 900px)
+    flex-direction: column
+    align-items: center

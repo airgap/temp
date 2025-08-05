@@ -42,5 +42,7 @@
 		text-align: center
 		width: auto
 		aspect-ratio: 3 / 4
+		max-width: 600px
+		margin: 0 0
 
 </style>

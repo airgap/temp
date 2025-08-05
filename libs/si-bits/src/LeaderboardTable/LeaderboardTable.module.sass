@@ -2,13 +2,11 @@
 .LeaderboardTable
 	color: $clickable-color
 	display: flex
-	flex-wrap: wrap
-	width: 800px
+	flex-direction: column
+	width: fit-content
 	max-width: 100%
-	margin-left: auto
-	margin-right: auto
-	justify-content: space-between
-	gap: 20px
+	margin: 0
+	gap: 0
 	border: 1px solid #ffffff55
 	border-radius: 10px
 	padding: 10px
@@ -23,12 +21,11 @@
 	&:hover
 		background: #ffffff33
 	.dropHeader
-		flex-grow: 1
-		flex-basis: 100%
 		cursor: pointer
 		flex-direction: row
 		display: flex
 		justify-content: space-between
+		width: 100%
 	.dropper
 		span
 			appearance: none
@@ -58,8 +55,9 @@
 				transform: rotate(0deg)
 	.timeFrameSelector
 		display: flex
-		align-items: center
-		gap: 10px
+		flex-direction: column
+		align-items: flex-start
+		gap: 5px
 		margin-bottom: 15px
 		padding: 10px
 		background: #ffffff11
@@ -76,6 +74,7 @@
 			font-size: 0.9em
 			cursor: pointer
 			transition: all 0.2s
+			width: 100%
 			&:hover
 				background: #ffffff33
 				border-color: #ffffff66
@@ -84,7 +83,7 @@
 				border-color: #ffffff88
 				box-shadow: 0 0 5px rgba(255, 255, 255, 0.3)
 	table
-		width: 100%
+		width: auto
 		border-collapse: collapse
 		margin-top: 10px
 		th, td
