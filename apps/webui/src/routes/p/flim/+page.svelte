@@ -26,8 +26,16 @@
 			  }
 			| { error: string };
 	}>();
-	const { games, users, user, publishers, developers, scores, leaderboards } =
-		data;
+	const {
+		games,
+		users,
+		user,
+		publishers,
+		developers,
+		scores,
+		leaderboards,
+		myRank,
+	} = data;
 	if (user) userStore.set(-1n, user);
 	users?.forEach((user) => userStore.set(user.id, user));
 	scores?.forEach((score) => scoreStore.set(score.id, score));

@@ -163,6 +163,19 @@ export class ElasticLeaderboardService {
 
 	/**
 	 * Get leaderboard with best score per user
+	 *
+	 * @example
+	 * // Get top 20 scores for all users
+	 * const allScores = await ElasticLeaderboardService.getLeaderboard(leaderboardId, {
+	 *   limit: 20,
+	 *   orderDirection: 'desc'
+	 * });
+	 *
+	 * // Get scores for a specific user only
+	 * const userScores = await ElasticLeaderboardService.getLeaderboard(leaderboardId, {
+	 *   user: 123n,
+	 *   limit: 10
+	 * });
 	 */
 	static async getLeaderboard(
 		leaderboardId: bigint,
@@ -173,6 +186,7 @@ export class ElasticLeaderboardService {
 			sortColumnIndex?: number;
 			framePoint?: string;
 			frameSize?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+			user?: bigint;
 		} = {},
 	): Promise<LeaderboardResult> {
 		const {
@@ -182,6 +196,7 @@ export class ElasticLeaderboardService {
 			sortColumnIndex = 0,
 			framePoint,
 			frameSize,
+			user,
 		} = options;
 
 		// Validate column index
@@ -201,8 +216,10 @@ export class ElasticLeaderboardService {
 			);
 		}
 
+		const userKey = user ?? 'all';
+
 		// Try cache first
-		const cacheKey = `elastic_leaderboard:${leaderboardId}:${orderDirection}:${columnFormat}:${sortColumnIndex}:${frameSize || 'all'}:${framePoint || 'current'}`;
+		const cacheKey = `elastic_leaderboard:${leaderboardId}:${userKey}:${orderDirection}:${columnFormat}:${sortColumnIndex}:${frameSize || 'all'}:${framePoint || 'current'}`;
 		const cached = await redis.getBuffer(cacheKey);
 		if (cached) {
 			return unpack(cached);
@@ -239,6 +256,11 @@ export class ElasticLeaderboardService {
 						lte: dateRange.end.toISOString(),
 					},
 				},
+			});
+		}
+		if (user) {
+			filters.push({
+				term: { user: user.toString() },
 			});
 		}
 
@@ -377,6 +399,333 @@ export class ElasticLeaderboardService {
 				took: Date.now() - startTime,
 			};
 		}
+	}
+
+	/**
+	 * Get a specific user's rank in a leaderboard
+	 * @param leaderboardId The leaderboard ID
+	 * @param userId The user ID to get rank for
+	 * @param options Query options (same as getLeaderboard)
+	 * @returns The user's rank and score, or null if user not found
+	 */
+	static async getUserRank(
+		leaderboardId: bigint,
+		userId: bigint,
+		options: {
+			orderDirection?: 'asc' | 'desc';
+			columnFormat?: 'number' | 'text' | 'time';
+			sortColumnIndex?: number;
+			framePoint?: string;
+			frameSize?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+		} = {},
+	): Promise<{
+		rank: number;
+		score: any;
+		total: number;
+		user: bigint;
+		created: string;
+		columns: string[];
+	} | null> {
+		const {
+			orderDirection = 'desc',
+			columnFormat = 'number',
+			sortColumnIndex = 0,
+			framePoint,
+			frameSize,
+		} = options;
+
+		// Validate column index
+		if (sortColumnIndex < 0 || sortColumnIndex > 10) {
+			throw new Error(
+				`Invalid sortColumnIndex: ${sortColumnIndex}. Must be between 0 and 10.`,
+			);
+		}
+
+		// Calculate date range based on framePoint and frameSize
+		let dateRange: { start: Date; end: Date } | undefined;
+		if (frameSize) {
+			const referenceDate = framePoint ? new Date(framePoint) : new Date();
+			dateRange = this.calculateDateRange(referenceDate, frameSize);
+		}
+
+		// Cache key for user rank
+		const cacheKey = `elastic_user_rank:${leaderboardId}:${userId}:${orderDirection}:${columnFormat}:${sortColumnIndex}:${frameSize || 'all'}:${framePoint || 'current'}`;
+		const cached = await redis.getBuffer(cacheKey);
+		if (cached) {
+			return unpack(cached);
+		}
+
+		const startTime = Date.now();
+
+		// Calculate which indices to search based on date range
+		let indexPattern = `${this.INDEX_PREFIX}-*`;
+		if (dateRange) {
+			const indices = this.getIndicesForDateRange(
+				dateRange.start,
+				dateRange.end,
+			);
+			if (indices.length > 0) {
+				indexPattern = indices.join(',');
+			}
+		}
+
+		// First, get the user's best score
+		const userFilters: any[] = [
+			{ term: { leaderboard: leaderboardId.toString() } },
+			{ term: { user: userId.toString() } },
+		];
+		if (dateRange) {
+			userFilters.push({
+				range: {
+					created: {
+						gte: dateRange.start.toISOString(),
+						lte: dateRange.end.toISOString(),
+					},
+				},
+			});
+		}
+
+		const userQuery = {
+			index: indexPattern,
+			ignore_unavailable: true,
+			allow_no_indices: true,
+			body: {
+				size: 0,
+				query: {
+					bool: {
+						filter: userFilters,
+						must_not: [{ term: { user: '0' } }],
+					},
+				},
+				aggs: {
+					user_best: {
+						top_hits: {
+							size: 1,
+							_source: ['user', 'score', 'created', 'columns'],
+							sort: [
+								{
+									score: { order: orderDirection === 'desc' ? 'desc' : 'asc' },
+								},
+							],
+						},
+					},
+				},
+			},
+		};
+
+		try {
+			const userResponse = (await elasticsearch.search(
+				userQuery as any,
+			)) as OpenSearchResponse;
+
+			const userHit =
+				userResponse.body.aggregations?.['user_best']?.hits?.hits?.[0];
+			if (!userHit || !userHit._source) {
+				return null; // User not found or has no scores
+			}
+
+			const userSource = userHit._source;
+			const userColumns = userSource.columns || [];
+			let userScoreValue;
+
+			if (sortColumnIndex < userColumns.length) {
+				userScoreValue =
+					columnFormat === 'number'
+						? Number(userColumns[sortColumnIndex] || 0)
+						: userColumns[sortColumnIndex] || '';
+			} else {
+				userScoreValue = columnFormat === 'number' ? 0 : '';
+			}
+
+			// Now count how many users have better scores
+			const rankFilters: any[] = [
+				{ term: { leaderboard: leaderboardId.toString() } },
+			];
+			if (dateRange) {
+				rankFilters.push({
+					range: {
+						created: {
+							gte: dateRange.start.toISOString(),
+							lte: dateRange.end.toISOString(),
+						},
+					},
+				});
+			}
+
+			// Add range filter for better scores
+			if (columnFormat === 'number') {
+				const numericScore = Number(userScoreValue) || 0;
+				if (orderDirection === 'desc') {
+					rankFilters.push({
+						range: { score: { gt: numericScore } },
+					});
+				} else {
+					rankFilters.push({
+						range: { score: { lt: numericScore } },
+					});
+				}
+			} else {
+				// For text/time, we'll need to use a different approach
+				// This is more complex and less efficient for non-numeric values
+				const stringScore = String(userScoreValue || '');
+				if (orderDirection === 'desc') {
+					rankFilters.push({
+						range: { 'columns.keyword': { gt: stringScore } },
+					});
+				} else {
+					rankFilters.push({
+						range: { 'columns.keyword': { lt: stringScore } },
+					});
+				}
+			}
+
+			const rankQuery = {
+				index: indexPattern,
+				ignore_unavailable: true,
+				allow_no_indices: true,
+				body: {
+					size: 0,
+					query: {
+						bool: {
+							filter: rankFilters,
+							must_not: [{ term: { user: '0' } }],
+						},
+					},
+					aggs: {
+						better_users: {
+							cardinality: {
+								field: 'user',
+							},
+						},
+						total_users: {
+							cardinality: {
+								field: 'user',
+							},
+						},
+					},
+				},
+			};
+
+			// Also get total user count
+			const totalQuery = {
+				index: indexPattern,
+				ignore_unavailable: true,
+				allow_no_indices: true,
+				body: {
+					size: 0,
+					query: {
+						bool: {
+							filter: [
+								{ term: { leaderboard: leaderboardId.toString() } },
+								...(dateRange
+									? [
+											{
+												range: {
+													created: {
+														gte: dateRange.start.toISOString(),
+														lte: dateRange.end.toISOString(),
+													},
+												},
+											},
+										]
+									: []),
+							],
+							must_not: [{ term: { user: '0' } }],
+						},
+					},
+					aggs: {
+						total_users: {
+							cardinality: {
+								field: 'user',
+							},
+						},
+					},
+				},
+			};
+
+			const [rankResponse, totalResponse] = await Promise.all([
+				elasticsearch.search(rankQuery as any) as Promise<OpenSearchResponse>,
+				elasticsearch.search(totalQuery as any) as Promise<OpenSearchResponse>,
+			]);
+
+			const betterUsersCount =
+				rankResponse.body.aggregations?.['better_users']?.value || 0;
+			const totalUsers =
+				totalResponse.body.aggregations?.['total_users']?.value || 0;
+
+			const rank = betterUsersCount + 1;
+			const took = Date.now() - startTime;
+
+			const result = {
+				rank,
+				score: userScoreValue,
+				total: totalUsers,
+				user: userId,
+				created: userSource.created,
+				columns: userColumns,
+			};
+
+			// Cache for a reasonable time
+			const ttl = took > 1000 ? 1800 : took > 500 ? 900 : 600;
+			await redis.setex(cacheKey, ttl, pack(result));
+
+			return result;
+		} catch (error) {
+			console.error(
+				`Failed to get user rank for user ${userId} in leaderboard ${leaderboardId}:`,
+				error,
+			);
+			return null;
+		}
+	}
+
+	/**
+	 * Get leaderboard with user's specific rank included
+	 * This is useful when you want both the top scores AND a specific user's position
+	 *
+	 * @example
+	 * // Get top 20 scores plus user 123's rank (even if they're not in top 20)
+	 * const result = await ElasticLeaderboardService.getLeaderboardWithUserRank(
+	 *   leaderboardId,
+	 *   123n,
+	 *   { limit: 20, orderDirection: 'desc' }
+	 * );
+	 *
+	 * // result.leaderboard contains top 20 scores
+	 * // result.userRank contains user 123's rank and score (e.g., rank: 145)
+	 */
+	static async getLeaderboardWithUserRank(
+		leaderboardId: bigint,
+		userId: bigint,
+		options: {
+			limit?: number;
+			orderDirection?: 'asc' | 'desc';
+			columnFormat?: 'number' | 'text' | 'time';
+			sortColumnIndex?: number;
+			framePoint?: string;
+			frameSize?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+		} = {},
+	): Promise<{
+		leaderboard: LeaderboardResult;
+		userRank: {
+			rank: number;
+			score: any;
+			total: number;
+			user: bigint;
+			created: string;
+			columns: string[];
+		} | null;
+	}> {
+		// Run both queries in parallel for better performance
+		const [leaderboard, userRank] = await Promise.all([
+			this.getLeaderboard(leaderboardId, options),
+			this.getUserRank(leaderboardId, userId, options),
+		]);
+
+		return {
+			leaderboard,
+			userRank,
+		};
 	}
 
 	/**

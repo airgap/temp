@@ -26,6 +26,26 @@ export default handleReportGrabbaScore(
 			.returningAll()
 			.executeTakeFirstOrThrow();
 		await redis.set(`score:${insertedScore.id}`, pack(insertedScore));
+		const buff = await redis.getBuffer(`grabbaHighScore:user:${requester}`);
+		const cachedHighScore = buff && unpack(buff);
+		const oldHighScore =
+			cachedHighScore ??
+			(
+				await ElasticLeaderboardService.getLeaderboard(1n, {
+					user: requester,
+					limit: 1,
+				})
+			)?.scores[0];
+		if (!oldHighScore) {
+			await redis.set(`grabbaHighScore:user:${requester}`, pack(insertedScore));
+		} else if (oldHighScore.columns[0] < insertedScore.columns[0]) {
+			await redis.set(`grabbaHighScore:user:${requester}`, pack(insertedScore));
+		} else if (
+			oldHighScore.columns[0] >= insertedScore.columns[0] &&
+			!cachedHighScore
+		) {
+			await redis.set(`grabbaHighScore:user:${requester}`, pack(oldHighScore));
+		}
 
 		// Sync to Elasticsearch for leaderboard queries
 		await ElasticLeaderboardService.syncScore({

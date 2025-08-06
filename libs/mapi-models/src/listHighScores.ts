@@ -26,6 +26,11 @@ export const listHighScores = {
 				description:
 					'Rough point in time to get the frame of (defaults to now)',
 			},
+			includeMyRank: {
+				type: 'boolean',
+				description:
+					"Include the requesting user's rank in the response (requires authentication)",
+			},
 		},
 		required: ['leaderboard'],
 	},
@@ -35,6 +40,22 @@ export const listHighScores = {
 			leaderboards: { type: 'array', items: leaderboard },
 			scores: { type: 'array', items: score },
 			users: { type: 'array', items: user },
+			myRank: {
+				type: 'object',
+				properties: {
+					rank: { type: 'number' },
+					score: {
+						oneOf: [{ type: 'string' }, { type: 'number' }],
+					},
+					total: { type: 'number' },
+					user: { type: 'bigint' },
+					created: { type: 'string' },
+					columns: { type: 'array', items: { type: 'string' } },
+				},
+				required: ['rank', 'score', 'total', 'user', 'created', 'columns'],
+				description:
+					"Current user's rank (only included if includeMyRank=true and authenticated)",
+			},
 		},
 		required: ['scores', 'users', 'leaderboards'],
 	},

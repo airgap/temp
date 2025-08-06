@@ -1,5 +1,7 @@
 // You can write more code here
 
+import { bounds, center } from '../defs';
+
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
@@ -16,12 +18,17 @@ export default class Preloader extends Phaser.Scene {
 
 	editorCreate(): void {
 		// background
-		this.add.image(512, 384, 'background');
+		// this.add.image(512, 384, 'background');
 
 		// progressBar
-		const progressBar = this.add.rectangle(512, 384, 468, 32);
+		const progressBar = this.add.rectangle(
+			center.x,
+			center.y,
+			bounds.w / 2,
+			bounds.w / 25,
+		);
 		progressBar.isFilled = true;
-		progressBar.fillColor = 14737632;
+		progressBar.fillColor = 55;
 		progressBar.isStroked = true;
 
 		this.progressBar = progressBar;
@@ -49,12 +56,13 @@ export default class Preloader extends Phaser.Scene {
 		//  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
 		this.load.on('progress', (progress: number) => {
 			//  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-			bar.width = 4 + 460 * progress;
+			bar.width = (bounds.w / 2) * progress;
 		});
 	}
 
 	preload() {
 		// Use the 'pack' file to load in any assets you need for this scene
+		this.load.pack('section1', 'asset-pack.json');
 		// this.load.pack('preload', 'assets/preload-asset-pack.json');
 	}
 
@@ -63,7 +71,7 @@ export default class Preloader extends Phaser.Scene {
 		//  For example, you can define global animations here, so we can use them in other scenes.
 
 		//  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-		this.scene.start('MainMenu');
+		this.scene.start('Game');
 	}
 	/* END-USER-CODE */
 }

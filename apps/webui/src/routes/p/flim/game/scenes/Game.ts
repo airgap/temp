@@ -57,6 +57,8 @@ export default class Game extends Phaser.Scene {
 	bits = 0;
 	bytes = 0;
 	startTime?: Date;
+	playing = false;
+	playButton?: Sprite;
 	constructor() {
 		super('Game');
 
@@ -351,7 +353,21 @@ export default class Game extends Phaser.Scene {
 			);
 		}
 
-		setTimeout(() => this.startGame(), 1000);
+		// Add play button
+		this.playButton = this.add.sprite(center.x, center.y, 'planim');
+		this.playButton.setInteractive();
+		this.playButton.on('pointerup', () => this.startGame());
+		this.playButton.scale = 0.5;
+
+		// Animation set
+		this.playButton.anims.create({
+			key: 'planimation',
+			frames: this.anims.generateFrameNumbers('planim', { start: 0, end: 17 }),
+			frameRate: 60,
+			repeat: 0,
+		});
+
+		// setTimeout(() => this.startGame(), 1000);
 		// this.startGame();
 		EventBus.emit('current-scene-ready', this);
 	}
@@ -382,6 +398,7 @@ export default class Game extends Phaser.Scene {
 		this.startTime = new Date();
 		this.lifeSprite?.setScale(0.25);
 		this.livesText?.setScale(1);
+		this.playButton?.setScale(0);
 		this.track?.play();
 		this.track?.once(Phaser.Sound.Events.COMPLETE, () => this.phase2());
 		this.moveHand();

@@ -5,7 +5,14 @@ import { client as pg } from '@lyku/postgres-client';
 
 export default handleListHighScores(
 	async (
-		{ leaderboard: id, sortColumnIndex, sortDirection, framePoint, frameSize },
+		{
+			leaderboard: id,
+			sortColumnIndex,
+			sortDirection,
+			framePoint,
+			frameSize,
+			includeMyRank,
+		},
 		{ requester },
 	) => {
 		console.log(
@@ -35,16 +42,38 @@ export default handleListHighScores(
 			(leaderboard.columnOrders?.[columnIndex] as 'asc' | 'desc') ||
 			'desc';
 
-		// Get leaderboard data from Elasticsearch
+		// Get leaderboard data from Elasticsearch, optionally with user rank
 		const startTime = performance.now();
-		const elasticResult = await ElasticLeaderboardService.getLeaderboard(id, {
-			limit: 20,
-			orderDirection: orderDirection as 'asc' | 'desc',
-			columnFormat: columnFormat as 'number' | 'text' | 'time',
-			sortColumnIndex: columnIndex,
-			framePoint: framePoint,
-			frameSize: frameSize,
-		});
+		let elasticResult;
+		let userRank = null;
+
+		if (includeMyRank && requester) {
+			// Get both leaderboard and user rank in parallel
+			const result = await ElasticLeaderboardService.getLeaderboardWithUserRank(
+				id,
+				requester,
+				{
+					limit: 20,
+					orderDirection,
+					columnFormat,
+					sortColumnIndex: columnIndex,
+					framePoint: framePoint,
+					frameSize: frameSize,
+				},
+			);
+			elasticResult = result.leaderboard;
+			userRank = result.userRank;
+		} else {
+			// Just get the leaderboard
+			elasticResult = await ElasticLeaderboardService.getLeaderboard(id, {
+				limit: 20,
+				orderDirection,
+				columnFormat,
+				sortColumnIndex: columnIndex,
+				framePoint: framePoint,
+				frameSize: frameSize,
+			});
+		}
 		const queryTime = performance.now() - startTime;
 
 		// Log slow queries for monitoring
@@ -78,10 +107,17 @@ export default handleListHighScores(
 						.execute()
 				: [];
 
-		return {
+		const response: any = {
 			scores,
 			users,
 			leaderboards: [leaderboard as any],
 		};
+
+		// Include user rank if requested and available
+		if (includeMyRank && userRank) {
+			response.myRank = userRank;
+		}
+
+		return response;
 	},
 );
