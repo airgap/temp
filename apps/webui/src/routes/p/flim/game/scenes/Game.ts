@@ -59,6 +59,9 @@ export default class Game extends Phaser.Scene {
 	startTime?: Date;
 	playing = false;
 	playButton?: Sprite;
+	blackFlash?: Phaser.GameObjects.Rectangle;
+	greenFlash?: Phaser.GameObjects.Rectangle;
+	redFlash?: Phaser.GameObjects.Rectangle;
 	constructor() {
 		super('Game');
 
@@ -110,6 +113,8 @@ export default class Game extends Phaser.Scene {
 
 		if (this.consecutive % 80 === 0 && this.consecutive > 3) {
 			this.lives++;
+
+			this.flash(this.greenFlash);
 			if (this.livesText) {
 				this.livesText?.setText('X' + this.lives);
 				pop(this.livesText, this);
@@ -127,11 +132,26 @@ export default class Game extends Phaser.Scene {
 			}
 		}
 	}
+	flash(item?: Phaser.GameObjects.Rectangle) {
+		if (!item) return;
+		item.setAlpha(0.25);
+		this.tweens.add({
+			targets: [item],
+			alpha: 0,
+			ease: 'Linear',
+			duration: 250,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
+		});
+	}
 	resetCombo() {
 		this.combo = 1;
 		this.consecutive = 0;
 		this.streakText!.text = '';
 		this.lives--;
+
+		this.flash(this.redFlash);
 
 		if (this.lives < 0) return;
 		this.showBits();
@@ -307,7 +327,7 @@ export default class Game extends Phaser.Scene {
 		const lifeCounterY = bounds.h - 40;
 
 		this.lifeSprite = this.add.sprite(40, lifeCounterY, 'chomping');
-		this.lifeSprite.scale = 0.25;
+		this.lifeSprite.scale = 0;
 		// life count
 		this.livesText = this.add.text(70, lifeCounterY, 'X2', {});
 		this.livesText.setOrigin(0, 0.5);
@@ -320,6 +340,7 @@ export default class Game extends Phaser.Scene {
 			stroke: '#000000',
 			strokeThickness: 8,
 		});
+		this.livesText.scale = 0;
 
 		this.playerSprite = createPlayer(this);
 		this.duplicateSprite = createPlayer(this);
@@ -367,6 +388,35 @@ export default class Game extends Phaser.Scene {
 			repeat: 0,
 		});
 
+		this.dropMicrofood();
+
+		this.greenFlash = this.add.rectangle(
+			center.x,
+			center.y,
+			bounds.w,
+			bounds.h,
+			new Phaser.Display.Color(0, 255, 0).color,
+		);
+		this.greenFlash.alpha = 0;
+
+		this.redFlash = this.add.rectangle(
+			center.x,
+			center.y,
+			bounds.w,
+			bounds.h,
+			new Phaser.Display.Color(255, 0, 0).color,
+		);
+		this.redFlash.alpha = 0;
+
+		this.blackFlash = this.add.rectangle(
+			center.x,
+			center.y,
+			bounds.w,
+			bounds.h,
+			new Phaser.Display.Color(0, 0, 0).color,
+		);
+		this.blackFlash.alpha = 0;
+
 		// setTimeout(() => this.startGame(), 1000);
 		// this.startGame();
 		EventBus.emit('current-scene-ready', this);
@@ -395,14 +445,39 @@ export default class Game extends Phaser.Scene {
 	}
 
 	startGame() {
+		this.score = 0;
+		this.scoreText?.setText('0 points');
+		this.lives = maxLives;
+		this.livesText?.setText('X' + this.lives);
 		this.startTime = new Date();
-		this.lifeSprite?.setScale(0.25);
-		this.livesText?.setScale(1);
-		this.playButton?.setScale(0);
+		this.tweens.add({
+			targets: [this.lifeSprite],
+			scale: 0.25,
+			ease: 'Linear',
+			duration: 250,
+			repeat: 0,
+			callbackScope: this,
+		});
+		this.tweens.add({
+			targets: [this.livesText],
+			scale: 1,
+			ease: 'Linear',
+			duration: 250,
+			repeat: 0,
+			callbackScope: this,
+		});
+		this.tweens.add({
+			targets: [this.playButton],
+			scale: 0,
+			ease: 'Linear',
+			duration: 250,
+			repeat: 0,
+			callbackScope: this,
+			angle: 180,
+		});
 		this.track?.play();
 		this.track?.once(Phaser.Sound.Events.COMPLETE, () => this.phase2());
 		this.moveHand();
-		this.dropMicrofood();
 		// this.dropFood();
 	}
 	slowlyLowerHand() {
@@ -437,16 +512,31 @@ export default class Game extends Phaser.Scene {
 
 	endGame() {
 		if (!this.startTime) throw new Error('Game not started');
+		this.playing = false;
 		const finish = new Date();
 		clearTimeout(this.dropTimer);
 		this.dropTimer = undefined;
-		for (const food of this.foods) {
-			food.destroy();
-		}
-		this.foods = [];
-		this.lifeSprite?.setScale(0);
-		this.livesText?.setScale(0);
+		this.tweens.add({
+			targets: [this.lifeSprite, this.livesText],
+			scale: 0,
+			ease: 'Linear',
+			duration: 250,
+			repeat: 0,
+			callbackScope: this,
+		});
 		this.track?.stop();
+		this.tweens.add({
+			targets: [this.playButton],
+			scale: 0.5,
+			ease: 'Linear',
+			duration: 250,
+			repeat: 0,
+			callbackScope: this,
+			angle: 0,
+		});
+		for (const p of this.foods) p.destroy();
+		this.foods = [];
+
 		api.reportGrabbaScore({
 			score: this.score,
 			bits: this.bits,
@@ -454,6 +544,18 @@ export default class Game extends Phaser.Scene {
 			start: this.startTime,
 			finish,
 			time: finish.getTime() - this.startTime.getTime(),
+		});
+
+		if (!this.blackFlash) return;
+		this.blackFlash.setAlpha(1);
+		this.tweens.add({
+			targets: [this.blackFlash],
+			alpha: 0,
+			ease: 'Linear',
+			duration: 2500,
+			yoyo: false,
+			repeat: 0,
+			callbackScope: this,
 		});
 		// this.scene.start('GameOver');
 	}

@@ -28,7 +28,7 @@ export default class Preloader extends Phaser.Scene {
 			bounds.w / 25,
 		);
 		progressBar.isFilled = true;
-		progressBar.fillColor = 55;
+		progressBar.fillColor = new Phaser.Display.Color(0, 0, 0, 0.25).color32;
 		progressBar.isStroked = true;
 
 		this.progressBar = progressBar;
