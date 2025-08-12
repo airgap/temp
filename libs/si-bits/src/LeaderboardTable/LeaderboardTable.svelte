@@ -11,7 +11,7 @@
 
 	const { leaderboard: id = undefined, headers } = $props<{
 		leaderboard?: number;
-		headers?: string[];
+		headers: { title: string; visible?: boolean }[];
 	}>();
 
 	let dropped = $state(true);
@@ -43,9 +43,6 @@
 
 			const result = await api.listHighScores(params);
 			result.scores.forEach((score) => scoreStore.set(score.id, score));
-
-			// Add to stores for caching
-			result.scores.forEach((a) => scoreStore.set(a.id, a));
 			result.users.forEach((a) => userStore.set(a.id, a));
 			result.leaderboards.forEach((a) => leaderboardStore.set(a.id, a));
 			console.log('aaaah', result.leaderboards, result.scores, result.users);
@@ -53,6 +50,16 @@
 			loading = false;
 		}
 	}
+	const leaderboard = $derived(leaderboardStore.get(id));
+	const columnVisibility = $derived(
+		leaderboard?.columnNames.reduce(
+			(o, c) => ({
+				...o,
+				[c]: headers?.find((h) => h.key === c && h.visible !== false) ?? false,
+			}),
+			{} as Record<string, boolean>,
+		),
+	);
 
 	const scores = $derived(
 		highestScoreByPlayer(
@@ -117,8 +124,8 @@
 			<thead
 				><tr
 					><th>Rank</th><th>Name</th
-					>{#each leaderboardStore.get(id)?.columnNames ?? headers ?? [] as column}
-						<th>{column}</th>
+					>{#each headers.filter((h) => h.visible !== false) as header}
+						<th>{header.title}</th>
 					{/each}</tr
 				></thead
 			>
@@ -127,8 +134,10 @@
 					<tr
 						><td>#{rank + 1}</td><td
 							>{userStore.get(score.user)?.username ?? 'Unknown'}</td
-						>{#each score.columns as column}
-							<td>{column}</td>
+						>{#each headers as header, i}
+							{#if headers.visible !== false}
+								<td>{score.columns[i]}</td>
+							{/if}
 						{/each}</tr
 					>
 				{/each}

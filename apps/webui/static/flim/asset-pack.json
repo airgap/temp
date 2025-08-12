@@ -271,6 +271,12 @@
 				"url": "tri.png",
 				"type": "image",
 				"key": "tri"
+			},
+			{
+				"url": "Silkscreen-Regular.ttf",
+				"type": "font",
+				"key": "Silkscreen",
+				"fontFamily": "Silkscreen"
 			}
 		]
 	},

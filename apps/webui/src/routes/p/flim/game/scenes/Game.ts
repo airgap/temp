@@ -13,6 +13,7 @@ import { pop } from '../pop';
 import { bitAngle } from '../bitAngle';
 import { vectorToCoords } from '../vectorToCoords';
 import { api, getSessionId } from 'monolith-ts-api';
+import type { Score } from '@lyku/json-models';
 /* END-USER-IMPORTS */
 
 type Sprite = Phaser.GameObjects.Sprite;
@@ -62,6 +63,8 @@ export default class Game extends Phaser.Scene {
 	blackFlash?: Phaser.GameObjects.Rectangle;
 	greenFlash?: Phaser.GameObjects.Rectangle;
 	redFlash?: Phaser.GameObjects.Rectangle;
+	myHighScore?: Score;
+	myHighScoreText?: Text;
 	constructor() {
 		super('Game');
 
@@ -73,11 +76,11 @@ export default class Game extends Phaser.Scene {
 		for (const bitSprites of [this.bitSprites, this.dupeSprites])
 			for (let b = bitSprites.length - 1; b >= 0; b--) {
 				const shown = Number(this.consecutive % comboMinimum > b);
-				const a = (Math.PI / 8) * (b + 0.5);
+				const a = (Math.PI / 6) * (6 - b);
 				const { x, y } = vectorToCoords({ d: shown * 80, a });
 				this.tweens.add({
 					targets: [bitSprites[b]],
-					// scale: shown / 2,
+					scale: shown / 2,
 					x,
 					y,
 					ease: 'Linear',
@@ -233,7 +236,7 @@ export default class Game extends Phaser.Scene {
 			repeat: 0,
 			callbackScope: this,
 			onComplete: () => {
-				if (!(this.heldFood && this.dropHandContainer)) return;
+				if (!(this.playing && this.heldFood && this.dropHandContainer)) return;
 				this.dropFood(
 					this.dropHandContainer.x + this.heldFood.x,
 					this.dropHandContainer.y + this.heldFood.y,
@@ -299,9 +302,8 @@ export default class Game extends Phaser.Scene {
 		this.dropHandContainer.add([this.dropHand, this.heldFood]);
 
 		// score
-		this.scoreText = this.add.text(center.x, bounds.h * 0.1, '', {});
+		this.scoreText = this.add.text(center.x, bounds.h * 0.1, 'GRABBA BYTE', {});
 		this.scoreText.setOrigin(0.5, 0.5);
-		this.scoreText.text = '';
 		this.scoreText.setStyle({
 			align: 'center',
 			color: '#ffffff',
@@ -314,7 +316,6 @@ export default class Game extends Phaser.Scene {
 		// score
 		this.streakText = this.add.text(center.x, bounds.h * 0.2, '', {});
 		this.streakText.setOrigin(0.5, 0.5);
-		this.streakText.text = '';
 		this.streakText.setStyle({
 			align: 'center',
 			color: '#ffffff',
@@ -354,9 +355,9 @@ export default class Game extends Phaser.Scene {
 		);
 		for (const bitSprites of [this.bitSprites, this.dupeSprites])
 			for (let i = 7; i >= 0; i--) {
-				const a = (Math.PI / 8) * (i + 0.5);
+				const a = (Math.PI / 6) * (6 - i);
 				const { x, y } = vectorToCoords({ d: 80, a });
-				const bit = this.add?.sprite(x, y, 'food-64x-000' + (i + 1));
+				const bit = this.add.sprite(x, y, 'food-64x-000' + (i + 1));
 				// bit.alpha = 0.5;
 				bit.scale = 0;
 				bit.blendMode = Phaser.BlendModes.ADD;
@@ -386,6 +387,18 @@ export default class Game extends Phaser.Scene {
 			frames: this.anims.generateFrameNumbers('planim', { start: 0, end: 17 }),
 			frameRate: 60,
 			repeat: 0,
+		});
+		// this.sound.setVolume(0.1);
+		// score
+		this.myHighScoreText = this.add.text(center.x, bounds.h * 0.2, '', {});
+		this.myHighScoreText.setOrigin(0.5, 0.5);
+		this.myHighScoreText.setStyle({
+			align: 'center',
+			color: '#ffffff',
+			fontFamily: 'Silkscreen, Futura',
+			fontSize: '38px',
+			stroke: '#000000',
+			strokeThickness: 8,
 		});
 
 		this.dropMicrofood();
@@ -417,9 +430,18 @@ export default class Game extends Phaser.Scene {
 		);
 		this.blackFlash.alpha = 0;
 
+		void this.loadHighScore();
+
 		// setTimeout(() => this.startGame(), 1000);
 		// this.startGame();
 		EventBus.emit('current-scene-ready', this);
+	}
+
+	async loadHighScore() {
+		const score = (await api.getMyHighScore(1n)) as unknown as Score;
+		if (!score) return;
+		this.myHighScore = score;
+		this.myHighScoreText?.setText('Personal best: ' + score.columns[0]);
 	}
 
 	dropMicrofood() {
@@ -445,10 +467,12 @@ export default class Game extends Phaser.Scene {
 	}
 
 	startGame() {
+		this.playing = true;
 		this.score = 0;
 		this.scoreText?.setText('0 points');
 		this.lives = maxLives;
 		this.livesText?.setText('X' + this.lives);
+		this.myHighScoreText?.setScale(0);
 		this.startTime = new Date();
 		this.tweens.add({
 			targets: [this.lifeSprite],
@@ -512,6 +536,9 @@ export default class Game extends Phaser.Scene {
 
 	endGame() {
 		if (!this.startTime) throw new Error('Game not started');
+		if (this.scoreText)
+			this.scoreText.text = 'GAME OVER\n' + this.scoreText.text;
+		this.myHighScoreText?.setScale(1);
 		this.playing = false;
 		const finish = new Date();
 		clearTimeout(this.dropTimer);

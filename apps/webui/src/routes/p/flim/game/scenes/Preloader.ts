@@ -33,8 +33,20 @@ export default class Preloader extends Phaser.Scene {
 
 		this.progressBar = progressBar;
 
+		this.loadingText = this.add.text(
+			progressBar.getBounds().left,
+			center.y * 0.95,
+			'Loading...',
+			{
+				fontSize: 25,
+			},
+		);
+		this.loadingText.setOrigin(0, 0.5);
+
 		this.events.emit('scene-awake');
 	}
+
+	private loadingText!: Phaser.GameObjects.Text;
 
 	private progressBar!: Phaser.GameObjects.Rectangle;
 
@@ -51,6 +63,13 @@ export default class Preloader extends Phaser.Scene {
 			4,
 			28,
 			0xffffff,
+		);
+
+		this.load.on(
+			Phaser.Loader.Events.FILE_PROGRESS,
+			(file: Phaser.Loader.File, percent: number) => {
+				this.loadingText.text = 'Loading ' + file.type + '...';
+			},
 		);
 
 		//  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar

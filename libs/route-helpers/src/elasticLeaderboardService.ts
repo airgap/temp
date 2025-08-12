@@ -29,6 +29,7 @@ export interface StatColumn {
 export interface ScoreDocument {
 	id: string;
 	user: string;
+	channel?: string;
 	leaderboard: string;
 	score: number | string;
 	first_column: string;
@@ -53,6 +54,9 @@ export interface ScoreDocument {
 	game: number;
 	deleted?: string;
 	reports: number;
+	verified?: string;
+	verifiers?: string[];
+	stream?: string;
 }
 
 export interface LeaderboardResult {
@@ -102,6 +106,7 @@ export class ElasticLeaderboardService {
 		const doc: ScoreDocument = {
 			id: score.id.toString(),
 			user: BigInt(score.user || 0).toString(),
+			channel: score.channel ? score.channel.toString() : undefined,
 			leaderboard: BigInt(score.leaderboard).toString(),
 			score: this.parseScore(score.columns[0]),
 			first_column: score.columns[0] || '',
@@ -114,6 +119,9 @@ export class ElasticLeaderboardService {
 			game: Number(score.game),
 			deleted: score.deleted?.toISOString(),
 			reports: Number(score.reports),
+			verified: score.verified?.toISOString(),
+			verifiers: score.verifiers?.map((v) => v.toString()),
+			stream: score.stream,
 		};
 
 		const indexName = this.getIndexName(score.created);
@@ -420,11 +428,8 @@ export class ElasticLeaderboardService {
 		} = {},
 	): Promise<{
 		rank: number;
-		score: any;
+		score: Score;
 		total: number;
-		user: bigint;
-		created: string;
-		columns: string[];
 	} | null> {
 		const {
 			orderDirection = 'desc',
@@ -501,7 +506,22 @@ export class ElasticLeaderboardService {
 					user_best: {
 						top_hits: {
 							size: 1,
-							_source: ['user', 'score', 'created', 'columns'],
+							_source: [
+								'id',
+								'user',
+								'channel',
+								'score',
+								'created',
+								'columns',
+								'updated',
+								'game',
+								'deleted',
+								'reports',
+								'leaderboard',
+								'verified',
+								'verifiers',
+								'stream',
+							],
 							sort: [
 								{
 									score: { order: orderDirection === 'desc' ? 'desc' : 'asc' },
@@ -656,13 +676,31 @@ export class ElasticLeaderboardService {
 			const rank = betterUsersCount + 1;
 			const took = Date.now() - startTime;
 
+			// Construct the Score object
+			const scoreObject: Score = {
+				id: BigInt(userSource.id),
+				user: BigInt(userSource.user),
+				channel: userSource.channel ? BigInt(userSource.channel) : undefined,
+				reports: Number(userSource.reports || 0),
+				columns: userColumns,
+				leaderboard: BigInt(userSource.leaderboard),
+				game: Number(userSource.game),
+				created: new Date(userSource.created),
+				updated: new Date(userSource.updated),
+				deleted: userSource.deleted ? new Date(userSource.deleted) : undefined,
+				verified: userSource.verified
+					? new Date(userSource.verified)
+					: undefined,
+				verifiers: userSource.verifiers
+					? userSource.verifiers.map((v: string) => BigInt(v))
+					: undefined,
+				stream: userSource.stream,
+			};
+
 			const result = {
 				rank,
-				score: userScoreValue,
+				score: scoreObject,
 				total: totalUsers,
-				user: userId,
-				created: userSource.created,
-				columns: userColumns,
 			};
 
 			// Cache for a reasonable time
@@ -709,11 +747,8 @@ export class ElasticLeaderboardService {
 		leaderboard: LeaderboardResult;
 		userRank: {
 			rank: number;
-			score: any;
+			score: Score;
 			total: number;
-			user: bigint;
-			created: string;
-			columns: string[];
 		} | null;
 	}> {
 		// Run both queries in parallel for better performance
@@ -760,6 +795,7 @@ export class ElasticLeaderboardService {
 				{
 					id: score.id.toString(),
 					user: BigInt(score.user || 0).toString(),
+					channel: score.channel ? score.channel.toString() : undefined,
 					leaderboard: BigInt(score.leaderboard).toString(),
 					score: this.parseScore(score.columns[0]),
 					first_column: score.columns[0] || '',
@@ -772,6 +808,9 @@ export class ElasticLeaderboardService {
 					game: Number(score.game),
 					deleted: score.deleted?.toISOString(),
 					reports: Number(score.reports),
+					verified: score.verified?.toISOString(),
+					verifiers: score.verifiers?.map((v) => v.toString()),
+					stream: score.stream,
 				} satisfies ScoreDocument,
 			];
 		});
@@ -800,6 +839,7 @@ export class ElasticLeaderboardService {
 						properties: {
 							id: { type: 'keyword' },
 							user: { type: 'keyword', index: true },
+							channel: { type: 'keyword' },
 							leaderboard: { type: 'keyword', index: true },
 							score: {
 								type: 'double',
@@ -854,6 +894,9 @@ export class ElasticLeaderboardService {
 							game: { type: 'integer' },
 							deleted: { type: 'date' },
 							reports: { type: 'integer' },
+							verified: { type: 'date' },
+							verifiers: { type: 'keyword' },
+							stream: { type: 'keyword' },
 						},
 					},
 					settings: {
@@ -923,6 +966,7 @@ export class ElasticLeaderboardService {
 						properties: {
 							id: { type: 'keyword' },
 							user: { type: 'keyword', index: true },
+							channel: { type: 'keyword' },
 							leaderboard: { type: 'keyword', index: true },
 							score: {
 								type: 'double',
@@ -977,6 +1021,9 @@ export class ElasticLeaderboardService {
 							game: { type: 'integer' },
 							deleted: { type: 'date' },
 							reports: { type: 'integer' },
+							verified: { type: 'date' },
+							verifiers: { type: 'keyword' },
+							stream: { type: 'keyword' },
 						},
 					},
 					settings: {

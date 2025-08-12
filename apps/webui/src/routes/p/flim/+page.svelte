@@ -73,7 +73,10 @@
 				<div>Error loading game: {error.message}</div>
 			{/await}
 		{/if}
-		<LeaderboardTable leaderboard={1n} />
+		<LeaderboardTable
+			leaderboard={1n}
+			headers={[{ visible: true, title: 'Score' }]}
+		/>
 	</div>
 	<AchievementList game={id} />
 </Divisio>

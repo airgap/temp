@@ -1,6 +1,10 @@
 import { unpack, pack } from 'msgpackr';
 export const load = async ({ params, fetch, parent }) => {
-	const body = pack({ leaderboard: 1n, includeMyRank: true });
+	const body = pack({
+		leaderboard: 1n,
+		includeMyRank: true,
+		frameSize: 'week',
+	});
 	console.log('body', body);
 	const res = await fetch('https://api.lyku.org/list-high-scores', {
 		method: 'POST',
