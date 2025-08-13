@@ -19,7 +19,7 @@ if (swcJestConfig.swcrc === undefined) {
 // swcJestConfig.module.noInterop = false;
 
 export default {
-	displayName: 'monolith-ts-api',
+	displayName: '@lyku/monolith-ts-api',
 	preset: '../../jest.preset.ts',
 	transform: {
 		'^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],

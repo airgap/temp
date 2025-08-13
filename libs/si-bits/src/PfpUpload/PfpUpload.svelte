@@ -4,7 +4,7 @@
 	import * as tus from 'tus-js-client';
 	import classnames from 'classnames';
 	import { imageMimes } from '@lyku/defaults';
-	import { api, apiHost, currentPlatform } from 'monolith-ts-api';
+	import { api, apiHost, currentPlatform } from '@lyku/monolith-ts-api';
 	// import Chunks from './Chunks.svelte';
 	import { ChunkViz } from '../ChunkViz';
 	import type { FileDraft } from '@lyku/json-models';

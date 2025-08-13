@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api, getSessionId } from 'monolith-ts-api';
+	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	import { PostList } from '@lyku/si-bits';
 	import { getContext } from 'svelte';
 	import { page } from '$app/stores';

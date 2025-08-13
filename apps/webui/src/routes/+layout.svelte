@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { initSession } from 'monolith-ts-api';
+	import { initSession } from '@lyku/monolith-ts-api';
 	import {
 		Backdrop,
 		Image,

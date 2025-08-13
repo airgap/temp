@@ -1,7 +1,7 @@
 <script lang="ts">
 	// import { default as Editor } from '@tinymce/tinymce-svelte';
 	import { safeTags } from '@lyku/helpers';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { Tippy } from '../Tippy';
 	import type {
 		AttachmentMime,

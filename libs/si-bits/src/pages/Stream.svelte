@@ -4,8 +4,8 @@
 	import { Fof } from '../Fof';
 	import { Tv } from '../Tv';
 	import { TvBox } from '../TvBox';
-	import { api } from 'monolith-ts-api';
-	import type { Channel } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
+	import type { Channel } from '@lyku/monolith-ts-api';
 
 	let channelName = window.location.pathname.substring(1);
 	let channelPromise = api.getChannel({ name: channelName });

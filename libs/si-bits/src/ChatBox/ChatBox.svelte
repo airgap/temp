@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import styles from './ChatBox.module.sass';
 	import MessageItem from './MessageItem.svelte';
 	import type { Channel, Message } from '@lyku/json-models';

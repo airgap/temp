@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { phrasebook } from '../phrasebook';
 	import styles from './VideoList.module.sass';
 	import type { Channel, ListChannelVideosResponse } from '@lyku/json-models';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import line from '../assets/line.png';
 	import linev from '../assets/linev.png';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { BoardButtons } from '../BoardButtons';
 	import { Pieces } from '../Pieces';
 	import { Wave } from '../Wave';
@@ -95,8 +95,8 @@
 		>
 			<Center>
 				<div
-					style="width: 95%; height: 95%; vertical-align: middle; padding: 2.5%; border-radius: 2.5%; 
-                 overflow: hidden; overflow-y: auto; backdrop-filter: blur(20px); background: #000000cc; 
+					style="width: 95%; height: 95%; vertical-align: middle; padding: 2.5%; border-radius: 2.5%;
+                 overflow: hidden; overflow-y: auto; backdrop-filter: blur(20px); background: #000000cc;
                  box-shadow: 0 0 20px 0 black; flex-direction: column; gap: 5%;"
 				>
 					<Divisio layout="v" size="l">

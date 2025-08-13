@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import type { Cookies } from '@sveltejs/kit';
-import { setCookieAdapter } from 'monolith-ts-api';
+import { setCookieAdapter } from '@lyku/monolith-ts-api';
 
 // Set up client-side adapter using SvelteKit's cookies
 setCookieAdapter({

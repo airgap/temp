@@ -8,7 +8,7 @@
 		scoreStore,
 		leaderboardStore,
 	} from '@lyku/si-bits';
-	import { api, type ThiccSocket } from 'monolith-ts-api';
+	import { api, type ThiccSocket } from '@lyku/monolith-ts-api';
 	import type { Leaderboard, Score, TtfMatch, User } from '@lyku/json-models';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';

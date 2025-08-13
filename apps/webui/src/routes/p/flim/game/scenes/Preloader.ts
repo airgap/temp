@@ -35,7 +35,7 @@ export default class Preloader extends Phaser.Scene {
 
 		this.loadingText = this.add.text(
 			progressBar.getBounds().left,
-			center.y * 0.95,
+			center.y * 0.925,
 			'Loading...',
 			{
 				fontSize: 25,

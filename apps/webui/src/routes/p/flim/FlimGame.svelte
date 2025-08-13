@@ -225,7 +225,7 @@
 		display: flex
 		align-items: center
 		justify-content: space-between
-		padding: 8px 12px
+		padding: 6px
 		background: rgba(0, 0, 0, 0.5)
 		border-top: 1px solid #ffffff33
 		height: 48px

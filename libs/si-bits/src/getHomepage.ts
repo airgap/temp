@@ -1,3 +1,3 @@
-import { getSessionId } from 'monolith-ts-api';
+import { getSessionId } from '@lyku/monolith-ts-api';
 
 export const getHomepage = () => (getSessionId() ? '/tail' : '/hot');

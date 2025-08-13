@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { DynamicPost } from '../DynamicPost';
 	import styles from './ViewPost.module.sass';
 

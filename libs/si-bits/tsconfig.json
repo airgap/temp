@@ -17,7 +17,7 @@
 			"@lyku/strings": ["dist/libs/strings"],
 			"@lyku/json-models": ["dist/libs/json-models"],
 			"@lyku/phrasebooks": ["dist/libs/phrasebooks"],
-			"monolith-ts-api": ["dist/libs/monolith-ts-api"],
+			"@lyku/monolith-ts-api": ["dist/libs/monolith-ts-api"],
 			"@lyku/mapi-types": ["dist/libs/mapi-types/index.d.ts"],
 			"@lyku/stock-docs": ["dist/libs/stock-docs"]
 		}

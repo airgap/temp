@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { ttfFlowMode } from '@lyku/json-models';
 	import { Button } from '../Button';
 	import { phrasebook } from '../phrasebook';

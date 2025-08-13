@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { achievement, type AchievementGrant } from '@lyku/json-models';
-	import { api, getSessionId } from 'monolith-ts-api';
+	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	import { AchievementTile } from '../AchievementTile';
 	import styles from './AchievementList.module.sass';
 	import classnames from 'classnames';

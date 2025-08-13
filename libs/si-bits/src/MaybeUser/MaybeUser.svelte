@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { User } from '@lyku/json-models';
 	import { userStore } from '../CacheProvider';
-	import { sessionId } from 'monolith-ts-api';
+	import { sessionId } from '@lyku/monolith-ts-api';
 
 	// Track loading and error states
 	let loading = true;

@@ -1,4 +1,4 @@
-import { setCookieAdapter } from 'monolith-ts-api';
+import { setCookieAdapter } from '@lyku/monolith-ts-api';
 import type { Handle } from '@sveltejs/kit';
 import { initDb } from './lib/server/db.server';
 import type { Kysely } from 'kysely';

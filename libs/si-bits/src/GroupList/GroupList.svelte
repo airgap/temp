@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api, getSessionId } from 'monolith-ts-api';
+	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	import type { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
 	import { Button } from '../Button';
 	// import { currentUserStore as currentUser } from '../CacheProvider';

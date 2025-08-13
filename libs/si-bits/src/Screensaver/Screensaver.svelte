@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { onMount, onDestroy, type ComponentType } from 'svelte';
 	import { Logo } from '../Logo';
 	import { listen } from '../Sonic';

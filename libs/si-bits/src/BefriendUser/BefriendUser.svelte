@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CoolLink } from '../CoolLink';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import type { User, FriendshipStatus } from '@lyku/json-models';
 	import { phrasebook } from '../phrasebook';
 

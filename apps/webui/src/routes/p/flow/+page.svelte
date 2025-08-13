@@ -12,7 +12,7 @@
 		WinPanel,
 	} from '@lyku/si-bits';
 	import styles from './PlayTtf.module.sass';
-	import { api, type ThiccSocket } from 'monolith-ts-api';
+	import { api, type ThiccSocket } from '@lyku/monolith-ts-api';
 	import type { TtfMatch } from '@lyku/json-models';
 	import { games } from '@lyku/stock-docs';
 	import { onMount, onDestroy } from 'svelte';

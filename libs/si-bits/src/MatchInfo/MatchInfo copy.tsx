@@ -1,6 +1,6 @@
 import styles from './MatchInfo.module.sass';
 import { useEffect, useState } from 'react';
-import { api } from 'monolith-ts-api';
+import { api } from '@lyku/monolith-ts-api';
 import classnames from 'classnames';
 import { TtfMatch, User } from '@lyku/json-models';
 import { localizeUsername } from '../localizeUsername';

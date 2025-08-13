@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api, setCookie } from 'monolith-ts-api';
+	import { api, setCookie } from '@lyku/monolith-ts-api';
 	import { EmailInput } from '../EmailInput';
 	import { PasswordInput } from '../PasswordInput';
 	import { shout } from '../Sonic';

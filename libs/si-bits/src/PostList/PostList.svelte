@@ -5,7 +5,7 @@
 	import styles from './PostList.module.sass';
 	import classNames from 'classnames';
 	import { onMount } from 'svelte';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import Dialog from '../Dialog/Dialog.svelte';
 	import Divisio from '../Divisio/Divisio.svelte';
 	import { Button } from '../Button';

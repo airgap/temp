@@ -1,6 +1,6 @@
 <script lang="ts">
 	import classnames from 'classnames';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { Stream } from '@cloudflare/stream-react';
 	import type { Post, User } from '@lyku/json-models';
 	import { AttachmentType } from '@lyku/helpers';

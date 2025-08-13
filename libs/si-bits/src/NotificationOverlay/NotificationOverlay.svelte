@@ -4,7 +4,7 @@
 	import { Divisio } from '../Divisio';
 	import { Image } from '../Image';
 	import { shout } from '../Sonic';
-	import { api, getSessionId, type ThiccSocket } from 'monolith-ts-api';
+	import { api, getSessionId, type ThiccSocket } from '@lyku/monolith-ts-api';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 

@@ -12,7 +12,7 @@ import { doesPlayerEatFood } from '../doesPlayerEatFood';
 import { pop } from '../pop';
 import { bitAngle } from '../bitAngle';
 import { vectorToCoords } from '../vectorToCoords';
-import { api, getSessionId } from 'monolith-ts-api';
+import { api, getSessionId } from '@lyku/monolith-ts-api';
 import type { Score } from '@lyku/json-models';
 /* END-USER-IMPORTS */
 

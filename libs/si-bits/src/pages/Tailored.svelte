@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api, sessionId } from 'monolith-ts-api';
+	import { api, sessionId } from '@lyku/monolith-ts-api';
 	import { PostCreator } from '../PostCreator';
 	import { PostList } from '../PostList';
 	import { phrasebook } from '../phrasebook';

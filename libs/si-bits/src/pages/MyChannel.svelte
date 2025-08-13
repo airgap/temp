@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import { Button } from '../Button';
 	import { Card } from '../Card';
 	import { Codette } from '../Codette';

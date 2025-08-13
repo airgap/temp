@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { score, type Score } from '@lyku/json-models';
-	import { api, getSessionId } from 'monolith-ts-api';
+	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	// import { AchievementTile } from '../AchievementTile';
 	import styles from './LeaderboardTable.module.sass';
 	import classnames from 'classnames';

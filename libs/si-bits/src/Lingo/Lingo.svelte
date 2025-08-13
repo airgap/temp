@@ -1,7 +1,7 @@
 <script lang="ts">
 	import styles from './Lingo.module.sass';
 	import { language } from '../phrasebook';
-	import { setCookie } from 'monolith-ts-api';
+	import { setCookie } from '@lyku/monolith-ts-api';
 	import { Link } from '../Link';
 	import Svg from '../assets/lingo.svelte';
 	import type { Lang } from '@lyku/phrasebooks';

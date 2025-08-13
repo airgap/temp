@@ -1,4 +1,4 @@
-import { api } from 'monolith-ts-api';
+import { api } from '@lyku/monolith-ts-api';
 import { useEffect, useMemo, useState } from 'react';
 import { MatchProposal, User } from '@lyku/json-models';
 import { Button } from '../Button';

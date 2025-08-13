@@ -2,7 +2,7 @@
 	import { ReactionButton } from '../ReactionButton';
 	import filledHeart from '../assets/filledheart.svg?raw';
 	import emptyHeart from '../assets/heart.svg?raw';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import type { Post } from '@lyku/json-models';
 	import { myReactionStore, userStore } from '../CacheProvider';
 	import styles from './LikeButton.module.sass';

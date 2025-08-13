@@ -1,6 +1,6 @@
 <script lang="ts">
 	import styles from './MatchInfo.module.sass';
-	import { api } from 'monolith-ts-api';
+	import { api } from '@lyku/monolith-ts-api';
 	import type { TtfMatch, User } from '@lyku/json-models';
 	import { localizeUsername } from '../localizeUsername';
 
