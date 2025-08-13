@@ -1,39 +1,49 @@
 import type { Score } from '@lyku/json-models';
+import { DateTime } from 'luxon';
 
 export const filterByTimeFrame = (
 	scores: Score[],
 	timeFrame: 'day' | 'week' | 'month' | 'year' | 'all',
 ): Score[] =>
 	scores.filter((score) => {
-		const now = new Date();
-		const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-		const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+		// Get current time in EST
+		const nowEST = DateTime.now().setZone('America/New_York');
+		let startEST: DateTime;
+		let endEST: DateTime;
 
 		switch (timeFrame) {
 			case 'day':
-				start.setHours(0, 0, 0, 0);
-				end.setHours(23, 59, 59, 999);
+				startEST = nowEST.startOf('day');
+				endEST = nowEST.endOf('day');
 				break;
 			case 'week':
-				start.setDate(start.getDate() - start.getDay());
-				end.setDate(end.getDate() + (6 - end.getDay()));
+				// Week starts on Monday in luxon by default
+				startEST = nowEST.startOf('week');
+				endEST = nowEST.endOf('week');
 				break;
 			case 'month':
-				start.setDate(1);
-				end.setMonth(end.getMonth() + 1);
-				end.setDate(0);
+				startEST = nowEST.startOf('month');
+				endEST = nowEST.endOf('month');
 				break;
 			case 'year':
-				start.setMonth(0);
-				start.setDate(1);
-				end.setMonth(11);
-				end.setDate(31);
+				startEST = nowEST.startOf('year');
+				endEST = nowEST.endOf('year');
 				break;
 			case 'all':
-				start.setFullYear(1970);
-				end.setFullYear(2050);
+				startEST = DateTime.fromObject(
+					{ year: 1970 },
+					{ zone: 'America/New_York' },
+				);
+				endEST = DateTime.fromObject(
+					{ year: 2050 },
+					{ zone: 'America/New_York' },
+				);
 				break;
 		}
+
+		// Convert boundaries back to JS Dates (in UTC) for comparison
+		const start = startEST.toJSDate();
+		const end = endEST.toJSDate();
 
 		return score.created >= start && score.created <= end;
 	});

@@ -86,6 +86,7 @@
 		"@types/bcryptjs": "^2.4.6",
 		"@types/bun": "latest",
 		"@types/jest": "^29.5.14",
+		"@types/luxon": "^3.7.1",
 		"@types/node": "18.16.9",
 		"@types/pg": "^8.11.11",
 		"@types/prettier": "^2.7.3",

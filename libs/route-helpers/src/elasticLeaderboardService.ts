@@ -2,6 +2,7 @@ import { client as elasticsearch } from '@lyku/elasticsearch-client';
 import { client as redis } from '@lyku/redis-client';
 import type { Score } from '@lyku/json-models';
 import { pack, unpack } from 'msgpackr';
+import { DateTime } from 'luxon';
 
 // Type helpers for OpenSearch responses
 interface OpenSearchResponse {
@@ -219,8 +220,18 @@ export class ElasticLeaderboardService {
 		if (frameSize) {
 			const referenceDate = framePoint ? new Date(framePoint) : new Date();
 			dateRange = this.calculateDateRange(referenceDate, frameSize);
+			// Log both UTC and EST times for clarity
+			const startEST = DateTime.fromJSDate(dateRange.start).setZone(
+				'America/New_York',
+			);
+			const endEST = DateTime.fromJSDate(dateRange.end).setZone(
+				'America/New_York',
+			);
 			console.log(
-				`Date range for ${frameSize}: ${dateRange.start.toISOString()} to ${dateRange.end.toISOString()}`,
+				`Date range for ${frameSize}: ${startEST.toFormat('yyyy-MM-dd HH:mm:ss zzz')} to ${endEST.toFormat('yyyy-MM-dd HH:mm:ss zzz')} (EST)`,
+			);
+			console.log(
+				`Date range for ${frameSize}: ${dateRange.start.toISOString()} to ${dateRange.end.toISOString()} (UTC)`,
 			);
 		}
 
@@ -1513,52 +1524,51 @@ export class ElasticLeaderboardService {
 
 	/**
 	 * Calculate date range based on reference date and frame size
+	 * Uses EST timezone for all calculations
 	 */
 	private static calculateDateRange(
 		referenceDate: Date,
 		frameSize: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year',
 	): { start: Date; end: Date } {
-		const start = new Date(referenceDate);
-		const end = new Date(referenceDate);
+		// Convert input date to EST timezone
+		const estDate =
+			DateTime.fromJSDate(referenceDate).setZone('America/New_York');
+		let startEST: DateTime;
+		let endEST: DateTime;
 
 		switch (frameSize) {
 			case 'hour':
-				start.setMinutes(0, 0, 0);
-				end.setMinutes(59, 59, 999);
+				startEST = estDate.startOf('hour');
+				endEST = estDate.endOf('hour');
 				break;
 			case 'day':
-				start.setHours(0, 0, 0, 0);
-				end.setHours(23, 59, 59, 999);
+				startEST = estDate.startOf('day');
+				endEST = estDate.endOf('day');
 				break;
 			case 'week':
-				const dayOfWeek = start.getDay();
-				const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday as start
-				start.setDate(start.getDate() - daysToSubtract);
-				start.setHours(0, 0, 0, 0);
-				end.setDate(start.getDate() + 6);
-				end.setHours(23, 59, 59, 999);
+				// Week starts on Monday in luxon by default
+				startEST = estDate.startOf('week');
+				endEST = estDate.endOf('week');
 				break;
 			case 'month':
-				start.setDate(1);
-				start.setHours(0, 0, 0, 0);
-				end.setMonth(end.getMonth() + 1, 0); // Last day of month
-				end.setHours(23, 59, 59, 999);
+				startEST = estDate.startOf('month');
+				endEST = estDate.endOf('month');
 				break;
 			case 'quarter':
-				const currentQuarter = Math.floor(start.getMonth() / 3);
-				start.setMonth(currentQuarter * 3, 1);
-				start.setHours(0, 0, 0, 0);
-				end.setMonth(currentQuarter * 3 + 3, 0); // Last day of quarter
-				end.setHours(23, 59, 59, 999);
+				startEST = estDate.startOf('quarter');
+				endEST = estDate.endOf('quarter');
 				break;
 			case 'year':
-				start.setMonth(0, 1);
-				start.setHours(0, 0, 0, 0);
-				end.setMonth(11, 31);
-				end.setHours(23, 59, 59, 999);
+				startEST = estDate.startOf('year');
+				endEST = estDate.endOf('year');
 				break;
 		}
 
-		return { start, end };
+		// Convert back to JS Date objects (these will be in UTC for storage)
+		// But the boundaries are calculated based on EST
+		return {
+			start: startEST.toJSDate(),
+			end: endEST.toJSDate(),
+		};
 	}
 }

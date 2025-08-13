@@ -23,6 +23,7 @@ export * from './Close';
 export * from './Codette';
 export * from './Crosshatch';
 export * from './Dialog';
+export * from './Dropdown';
 export * from './DynamicDate';
 export * from './DynamicPost';
 export * from './FeedPage';

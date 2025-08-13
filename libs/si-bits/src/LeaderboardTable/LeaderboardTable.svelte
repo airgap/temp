@@ -8,6 +8,8 @@
 	import { scoreStore, userStore, leaderboardStore } from '../CacheProvider';
 	import { filterByTimeFrame } from './filterByTimeFrame';
 	import { highestScoreByPlayer } from './highestScoreByPlayer';
+	import { Dropdown } from '../Dropdown';
+	import { getTimeRemaining } from './getTimeRemaining';
 
 	const { leaderboard: id = undefined, headers } = $props<{
 		leaderboard?: number;
@@ -20,6 +22,7 @@
 		'week',
 	);
 	let currentTimeFrameScores = $state<Array<any>>([]);
+	let countdownInfo = $state(getTimeRemaining(selectedTimeFrame));
 
 	onMount(() => {
 		if (getSessionId()) {
@@ -80,6 +83,18 @@
 	$effect(() => {
 		console.log('scores', scores);
 	});
+
+	// Update countdown every second
+	$effect(() => {
+		const interval = setInterval(() => {
+			countdownInfo = getTimeRemaining(selectedTimeFrame);
+		}, 1000);
+
+		// Update immediately when time frame changes
+		countdownInfo = getTimeRemaining(selectedTimeFrame);
+
+		return () => clearInterval(interval);
+	});
 </script>
 
 <div
@@ -87,35 +102,21 @@
 		[styles.dropped]: dropped,
 	})}
 >
-	<div
-		tabindex="0"
-		onkeydown={(e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				dropped = !dropped;
-			}
-		}}
-		role="button"
-		aria-label="Toggle leaderboard"
-		class={styles.dropHeader}
-		onclick={() => (dropped = !dropped)}
-		id="dropper"
-	>
-		<h2>Leaderboard</h2>
-		<label class={styles.dropper} for="dropper">
-			<span>▼</span>
-		</label>
-	</div>
+	<h2>Leaderboard</h2>
 
-	<div class={styles.timeFrameSelector}>
-		<label>Time frame:</label>
-		<select bind:value={selectedTimeFrame} class={styles.timeFrameSelect}>
-			<option value="day">Today</option>
-			<option value="week">This Week</option>
-			<option value="month">This Month</option>
-			<option value="year">This Year</option>
-			<option value="all">All Time</option>
-		</select>
-	</div>
+	<Dropdown
+		bind:value={selectedTimeFrame}
+		options={[
+			{ value: 'day', label: 'Daily' },
+			{ value: 'week', label: 'Weekly' },
+			{ value: 'month', label: 'Monthly' },
+			{ value: 'year', label: 'Yearly' },
+			{ value: 'all', label: 'All Time' },
+		]}
+		suffix={countdownInfo.formatted}
+		suffixColor={countdownInfo.color}
+		class={styles.timeFrameSelect}
+	/>
 
 	{#if loading}
 		Fetching scores...
@@ -144,6 +145,6 @@
 			</tbody>
 		</table>
 	{:else}
-		<h3>No scores submitted yet -- you're up!</h3>
+		<h3>Empty board -- you're up!</h3>
 	{/if}
 </div>

@@ -236,6 +236,8 @@
 		font-family: 'Silkscreen', monospace
 		font-size: 19px
 		white-space: nowrap
+		margin-left: 8px
+		margin-top: -4px
 
 	.controls-group
 		display: flex
