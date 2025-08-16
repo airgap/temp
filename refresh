@@ -3,8 +3,8 @@ project=$1
 # 🏗️
 if [ "$project" = "all" ]; then
 	nx run-many --target=build --parallel=99 --skip-nx-cache | sed 's/^/🔨  /' && \
-		nx run-many --target=dockerize --parallel=1 | sed 's/^/🐳  /' && \
-		doppler run -- nx run-many --target=kubernetize --parallel=1 | sed 's/^/🚀  /'
+		nx run-many --target=dockerize --parallel=10 | sed 's/^/🐳  /' && \
+		doppler run -- nx run-many --target=kubernetize --parallel=10 | sed 's/^/🚀  /'
 	exit 0
 fi
 

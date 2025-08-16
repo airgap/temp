@@ -50,6 +50,7 @@ export * from './MatchProposalList';
 export * from './MobileNav';
 export * from './Nav';
 export * from './NavLogo';
+export * from './NotificationDropdown';
 export * from './NotificationOverlay';
 export * from './PfpUpload';
 export * from './phrasebook';

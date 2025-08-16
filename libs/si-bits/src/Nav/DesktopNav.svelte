@@ -25,6 +25,7 @@
 	import Cube from '../Cube.svelte';
 	import { userStore } from '../CacheProvider';
 	import { scro } from '../scrolled.svelte.ts';
+	import { NotificationDropdown } from '../NotificationDropdown';
 	const user = $derived(userStore.get(-1n));
 	const { sessionId, url, onjoin, onlogin, oncreate } = $props<{
 		sessionId: string;
@@ -60,6 +61,7 @@
 						<Link onclick={oncreate} class={[styles.createPost, styles.round]}>
 							<img src={pen} alt="Pen post" />
 						</Link>
+						<NotificationDropdown />
 						<!--{phrasebook.navWelcome}-->
 						<Link
 							data-sveltekit-reload

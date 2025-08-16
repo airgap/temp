@@ -7,6 +7,7 @@ export * from './LeaderboardStore';
 export * from './MyFriendshipStore';
 export * from './MyFollowStore';
 export * from './MyReactionStore';
+export * from './NotificationStore';
 export * from './PostStore';
 export * from './UserStore';
 export * from './MyMembershipStore';

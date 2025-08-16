@@ -95,6 +95,12 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 
 					if (hasRequest) {
 						if (!('request' in decodedMessage)) {
+							console.warn(
+								'hasRequest',
+								hasRequest,
+								'request in model',
+								'request' in model,
+							);
 							ws.close(1008, 'Invalid request');
 							return;
 						}
@@ -104,14 +110,14 @@ export const serveWebsocket = async <Model extends TsonStreamHandlerModel>({
 							return;
 						}
 					} else {
-						if ('request' in decodedMessage) {
-							const packed = pack({
-								authenticated: false,
-								error: 'Invalid request',
-							});
-							ws.send(new Uint8Array(packed));
-							return;
-						}
+						// if ('request' in decodedMessage) {
+						// 	const packed = pack({
+						// 		authenticated: false,
+						// 		error: 'Invalid request',
+						// 	});
+						// 	ws.send(new Uint8Array(packed));
+						// 	return;
+						// }
 					}
 
 					const session = await db

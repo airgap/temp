@@ -1,0 +1,211 @@
+.NotificationDropdown
+	position: relative
+	display: inline-block
+
+.NotificationButton
+	position: relative
+	background: #652966 !important
+	border: 1px solid #FFFFFF17 !important
+	padding: 0
+	border-radius: 50%
+	cursor: pointer
+	display: flex
+	align-items: center
+	justify-content: center
+	color: white
+	transition: all 0.2s ease
+	width: 45px
+	height: 45px
+	box-shadow: 0 0 5px 0 black
+
+	&:hover
+		// background: rgba(255, 255, 255, 0.1) !important
+		// transform: scale(1.1)
+		box-shadow: 0 0 10px 0 black
+
+	.BellIcon
+		width: 24px
+		height: 24px
+		display: flex
+		align-items: center
+		justify-content: center
+
+		svg
+			width: 100%
+			height: 100%
+
+.Badge
+	position: absolute
+	top: 2px
+	right: 2px
+	background: #ff4444
+	color: white
+	border-radius: 10px
+	padding: 2px 6px
+	font-size: 11px
+	font-weight: bold
+	min-width: 18px
+	height: 18px
+	display: flex
+	align-items: center
+	justify-content: center
+	line-height: 1
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)
+
+.DropdownContent
+	position: absolute
+	top: 100%
+	right: 0
+	background: rgba(20, 20, 30, 0.95)
+	backdrop-filter: blur(20px)
+	border: 1px solid rgba(255, 255, 255, 0.1)
+	border-radius: 12px
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)
+	width: 380px
+	max-height: 500px
+	z-index: 1000
+	overflow: hidden
+	margin-top: 8px
+
+.DropdownHeader
+	padding: 16px 20px 12px
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1)
+	display: flex
+	justify-content: space-between
+	align-items: center
+
+	h3
+		color: white
+		margin: 0
+		font-size: 16px
+		font-weight: 600
+
+.MarkAllRead
+	background: none
+	border: none
+	color: #66b3ff
+	cursor: pointer
+	font-size: 12px
+	padding: 4px 8px
+	border-radius: 4px
+	transition: all 0.2s ease
+
+	&:hover
+		background: rgba(102, 179, 255, 0.1)
+
+.NotificationList
+	max-height: 400px
+	overflow-y: auto
+
+	&::-webkit-scrollbar
+		width: 6px
+
+	&::-webkit-scrollbar-track
+		background: transparent
+
+	&::-webkit-scrollbar-thumb
+		background: rgba(255, 255, 255, 0.2)
+		border-radius: 3px
+
+.EmptyState
+	padding: 40px 20px
+	text-align: center
+	color: rgba(255, 255, 255, 0.6)
+
+	p
+		margin: 0
+		font-size: 14px
+
+.NotificationItem
+	width: 100%
+	padding: 12px 20px
+	background: none
+	border: none
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05)
+	cursor: pointer
+	display: flex
+	align-items: flex-start
+	gap: 12px
+	text-align: left
+	transition: all 0.2s ease
+	position: relative
+
+	&:hover
+		background: rgba(255, 255, 255, 0.05)
+
+	&.unread
+		background: rgba(102, 179, 255, 0.1)
+
+		&::before
+			content: ''
+			position: absolute
+			left: 8px
+			top: 50%
+			transform: translateY(-50%)
+			width: 6px
+			height: 6px
+			background: #66b3ff
+			border-radius: 50%
+
+	&:last-child
+		border-bottom: none
+
+.NotificationIcon
+	flex-shrink: 0
+	width: 40px
+	height: 40px
+	border-radius: 8px
+	overflow: hidden
+
+	img
+		width: 100%
+		height: 100%
+		object-fit: cover
+
+.NotificationContent
+	flex: 1
+	min-width: 0
+
+.NotificationTitle
+	color: white
+	font-weight: 600
+	font-size: 14px
+	margin-bottom: 2px
+	line-height: 1.3
+
+.NotificationSubtitle
+	color: rgba(255, 255, 255, 0.8)
+	font-size: 12px
+	margin-bottom: 4px
+	font-weight: 500
+
+.NotificationBody
+	color: rgba(255, 255, 255, 0.7)
+	font-size: 13px
+	line-height: 1.4
+	margin-bottom: 6px
+	display: -webkit-box
+	-webkit-line-clamp: 2
+	-webkit-box-orient: vertical
+	overflow: hidden
+
+.NotificationTime
+	color: rgba(255, 255, 255, 0.5)
+	font-size: 11px
+	line-height: 1
+
+.DropdownFooter
+	padding: 12px 20px
+	border-top: 1px solid rgba(255, 255, 255, 0.1)
+	text-align: center
+
+.ViewAll
+	color: #66b3ff
+	text-decoration: none
+	font-size: 13px
+	font-weight: 500
+	transition: all 0.2s ease
+
+	&:hover
+		color: #88c5ff
+		text-decoration: underline

@@ -59,12 +59,14 @@ $isize: 45px
 	a
 		font-weight: 600 !important
 .loggedIn
-	button, a
-		padding: 0
-		box-shadow: 0 0 5px 0 black
-		&:hover
-			transform: scale(1.1)
-			box-shadow: 0 0 10px 0 black
+	> span,
+	> span > div
+		> button, > a
+			padding: 0
+			box-shadow: 0 0 5px 0 black
+			&:hover
+				transform: scale(1.1)
+				box-shadow: 0 0 10px 0 black
 .cluster
 	float: right
 	display: flex
@@ -82,8 +84,6 @@ $isize: 45px
 		width: $isize !important
 		display: inline-block
 		+ button, + a
-		margin-left: 8px
-		background: 1px solid #ffffff17 !important
 		border: 1px solid #FFFFFF17 !important
 		svg, img
 			margin: 0
@@ -104,6 +104,9 @@ $isize: 45px
 	margin: 0
 	margin-left: 10px
 	align-content: center
+	display: flex
+	align-items: center
+	gap: 8px
 	a > span
 		//display: inline-block
 		margin-top: 3px
@@ -116,8 +119,6 @@ $isize: 45px
 		// padding-top: 2px !important
 		//background: red
 		align-content: center
-		+ *
-			// margin-left: 5px
 // .badgeHolder
 // 	display: inline-block
 // 	margin-top: -5px
