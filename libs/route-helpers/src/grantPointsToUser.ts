@@ -46,7 +46,7 @@ export const grantPointsToUser = async (
 			await sendNotification(
 				{
 					user: userId,
-					icon: '/levels/up.png',
+					icon: '/up.png',
 					body: 'Reached level ' + newLevel,
 					title: 'Level up!',
 				},
