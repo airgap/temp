@@ -1,0 +1,40 @@
+{
+	"name": "@lyku/delete-notifications",
+	"extends": ["../_shared/project.json"],
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "nx:run-commands",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"command": "./scripts/build-route delete-notifications"
+			}
+		},
+		"dockerize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/dockerize-route delete-notifications --push"
+			}
+		},
+		"kubernetize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/deploy-route delete-notifications"
+			}
+		},
+		"grafanize": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route delete-notifications",
+				"cwd": "{workspaceRoot}"
+			}
+		},
+		"grafanize:wait": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "./scripts/graph-route delete-notifications --wait-for-metrics",
+				"cwd": "{workspaceRoot}"
+			}
+		}
+	}
+}

@@ -15,6 +15,7 @@ export * from './createFriendRequest';
 export * from './createGroup';
 export * from './declineFriendRequest';
 export * from './declineMatchProposal';
+export * from './deleteNotifications';
 export * from './deleteFriendship';
 export * from './deleteGroup';
 export * from './deletePost';

@@ -56,7 +56,7 @@
 	position: absolute
 	top: 100%
 	right: 0
-	background: rgba(20, 20, 30, 0.95)
+	background: #270249
 	backdrop-filter: blur(20px)
 	border: 1px solid rgba(255, 255, 255, 0.1)
 	border-radius: 12px
@@ -209,3 +209,50 @@
 	&:hover
 		color: #88c5ff
 		text-decoration: underline
+
+.NotificationWrapper
+	position: relative
+	display: flex
+	align-items: stretch
+	transition: opacity 0.2s ease
+
+.DeleteButton
+	position: absolute
+	top: 8px
+	right: 8px
+	background: transparent
+	border: none
+	color: white
+	font-size: 20px
+	line-height: 1
+	width: 24px
+	height: 24px
+	display: flex
+	align-items: center
+	justify-content: center
+	cursor: pointer
+	opacity: 0.7
+	transition: opacity 0.2s ease
+	padding: 0
+	z-index: 1
+
+	&:hover
+		opacity: 1
+
+.HeaderActions
+	display: flex
+	gap: 8px
+	align-items: center
+
+.ClearAll
+	background: none
+	border: none
+	color: #ff6666
+	cursor: pointer
+	font-size: 12px
+	padding: 4px 8px
+	border-radius: 4px
+	transition: all 0.2s ease
+
+	&:hover
+		background: rgba(255, 102, 102, 0.1)

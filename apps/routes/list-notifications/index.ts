@@ -7,6 +7,7 @@ export default handleListNotifications(
 		const notifications = await pg
 			.selectFrom('notifications')
 			.where('user', '=', requester)
+			.where('deleted', 'is', null)
 			.orderBy('posted', 'desc')
 			.limit(limit)
 			.offset(offset)
@@ -16,6 +17,7 @@ export default handleListNotifications(
 		const unreadCount = await pg
 			.selectFrom('notifications')
 			.where('user', '=', requester)
+			.where('deleted', 'is', null)
 			.where('read', 'is', null)
 			.select((eb) => eb.fn.count('id').as('count'))
 			.executeTakeFirstOrThrow();

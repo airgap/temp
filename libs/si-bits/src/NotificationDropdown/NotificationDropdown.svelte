@@ -12,6 +12,7 @@
 	let unreadCount = $derived(notifications.filter((n) => !n.read).length);
 	let isOpen = $state(false);
 	let dropdownRef: HTMLDivElement;
+	let deletingIds = $state(new Set<string>());
 	$effect(() => {
 		console.log('Notification list', notifications);
 	});
@@ -80,6 +81,30 @@
 		}
 	}
 
+	async function clearAllNotifications() {
+		try {
+			await api.deleteNotifications({});
+			notificationStore.clear();
+		} catch (error) {
+			console.error('Failed to clear notifications:', error);
+		}
+	}
+
+	async function deleteNotification(event: MouseEvent, notificationId: string) {
+		event.stopPropagation();
+		deletingIds.add(notificationId);
+		deletingIds = new Set(deletingIds);
+		try {
+			await api.deleteNotifications({ notificationIds: [notificationId] });
+			notificationStore.delete(notificationId);
+		} catch (error) {
+			console.error('Failed to delete notification:', error);
+		} finally {
+			deletingIds.delete(notificationId);
+			deletingIds = new Set(deletingIds);
+		}
+	}
+
 	function handleNotificationClick(notification: Notification) {
 		if (notification.href) {
 			window.location.href = notification.href;
@@ -126,11 +151,18 @@
 		<div class={styles.DropdownContent}>
 			<div class={styles.DropdownHeader}>
 				<h3>Notifications</h3>
-				{#if unreadCount > 0}
-					<button class={styles.MarkAllRead} onclick={markAsRead}>
-						Mark all read
-					</button>
-				{/if}
+				<div class={styles.HeaderActions}>
+					{#if unreadCount > 0}
+						<button class={styles.MarkAllRead} onclick={markAsRead}>
+							Mark all read
+						</button>
+					{/if}
+					{#if notifications.length > 0}
+						<button class={styles.ClearAll} onclick={clearAllNotifications}>
+							Clear
+						</button>
+					{/if}
+				</div>
 			</div>
 
 			<div class={styles.NotificationList}>
@@ -140,27 +172,43 @@
 					</div>
 				{:else}
 					{#each notifications.slice(0, 10) as notification (notification.id)}
-						<button
-							class={styles.NotificationItem}
-							class:unread={!notification.read}
-							onclick={() => handleNotificationClick(notification)}
+						<div
+							class={styles.NotificationWrapper}
+							style:opacity={deletingIds.has(notification.id) ? '0.5' : '1'}
 						>
-							<div class={styles.NotificationIcon}>
-								<Image src={notification.icon} alt="Notification icon" />
-							</div>
-							<div class={styles.NotificationContent}>
-								<div class={styles.NotificationTitle}>{notification.title}</div>
-								{#if notification.subtitle}
-									<div class={styles.NotificationSubtitle}>
-										{notification.subtitle}
-									</div>
-								{/if}
-								<div class={styles.NotificationBody}>{notification.body}</div>
-								<div class={styles.NotificationTime}>
-									{formatNotificationTime(notification.posted)}
+							<button
+								class={styles.NotificationItem}
+								class:unread={!notification.read}
+								onclick={() => handleNotificationClick(notification)}
+								disabled={deletingIds.has(notification.id)}
+							>
+								<div class={styles.NotificationIcon}>
+									<Image src={notification.icon} alt="Notification icon" />
 								</div>
-							</div>
-						</button>
+								<div class={styles.NotificationContent}>
+									<div class={styles.NotificationTitle}>
+										{notification.title}
+									</div>
+									{#if notification.subtitle}
+										<div class={styles.NotificationSubtitle}>
+											{notification.subtitle}
+										</div>
+									{/if}
+									<div class={styles.NotificationBody}>{notification.body}</div>
+									<div class={styles.NotificationTime}>
+										{formatNotificationTime(notification.posted)}
+									</div>
+								</div>
+							</button>
+							<button
+								class={styles.DeleteButton}
+								onclick={(e) => deleteNotification(e, notification.id)}
+								aria-label="Delete notification"
+								disabled={deletingIds.has(notification.id)}
+							>
+								×
+							</button>
+						</div>
 					{/each}
 				{/if}
 			</div>
