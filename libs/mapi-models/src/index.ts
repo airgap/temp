@@ -27,6 +27,7 @@ export * from './getFollowVectors';
 export * from './getFile';
 export * from './getMyHighScore';
 export * from './listHighScores';
+export * from './listenToPoints';
 export * from './getLeaderboard';
 export * from './getVideo';
 export * from './getVideos';

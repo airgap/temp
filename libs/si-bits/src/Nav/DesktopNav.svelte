@@ -75,9 +75,9 @@
 								src={user.profilePicture?.toString()}
 							/>
 						</Link>
-						<!-- <Link>
-							<LevelBadge points={user.points ?? 0n} progress={true} />
-						</Link> -->
+						<Link>
+							<LevelBadge progress={true} />
+						</Link>
 					</span>
 				{:else}
 					<BubbleButton onClick={onlogin}>

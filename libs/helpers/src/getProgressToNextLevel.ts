@@ -8,7 +8,8 @@ export const getProgressToNextLevel = (points: bigint): number => {
 	const currentLevel = getLevelFromPoints(points);
 	const xpRequiredForCurrentLevel = getPointsForLevel(currentLevel);
 	const pointsSinceLastLevel = points - xpRequiredForCurrentLevel;
-	const pointsToNextLevel = getPointsForLevel(currentLevel + 1);
+	const pointsToNextLevel =
+		getPointsForLevel(currentLevel + 1) - xpRequiredForCurrentLevel;
 	const divided = (pointsSinceLastLevel * 100n) / pointsToNextLevel;
 	return Number(divided);
 };

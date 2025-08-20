@@ -12,6 +12,7 @@ export const notification = {
 		posted: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		read: { type: 'timestamptz' },
 		deleted: { type: 'timestamptz' },
+		points: { type: 'int2' },
 	},
 	required: ['id', 'user', 'title', 'body', 'icon', 'posted'],
 } as const satisfies PostgresRecordModel;

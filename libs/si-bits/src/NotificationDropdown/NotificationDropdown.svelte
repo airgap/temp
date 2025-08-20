@@ -10,6 +10,7 @@
 
 	let notifications = $derived([...notificationStore.values()]);
 	let unreadCount = $derived(notifications.filter((n) => !n.read).length);
+	let unclaimedCount = $state(0);
 	let isOpen = $state(false);
 	let dropdownRef: HTMLDivElement;
 	let deletingIds = $state(new Set<string>());
@@ -50,6 +51,7 @@
 		try {
 			const response = await api.listNotifications({});
 			console.log('Notification response:', response);
+			unclaimedCount = response.unclaimedCount;
 			response.notifications.forEach((notification) => {
 				notificationStore.set(notification.id, notification);
 				console.log('Set notification', notification.id, notification);
@@ -95,7 +97,7 @@
 		deletingIds.add(notificationId);
 		deletingIds = new Set(deletingIds);
 		try {
-			await api.deleteNotifications({ notificationIds: [notificationId] });
+			await api.deleteNotifications([notificationId]);
 			notificationStore.delete(notificationId);
 		} catch (error) {
 			console.error('Failed to delete notification:', error);
@@ -159,7 +161,7 @@
 					{/if}
 					{#if notifications.length > 0}
 						<button class={styles.ClearAll} onclick={clearAllNotifications}>
-							Clear
+							{unclaimedCount ? 'Claim and clear' : 'Clear'}
 						</button>
 					{/if}
 				</div>
@@ -200,14 +202,28 @@
 									</div>
 								</div>
 							</button>
-							<button
-								class={styles.DeleteButton}
-								onclick={(e) => deleteNotification(e, notification.id)}
-								aria-label="Delete notification"
-								disabled={deletingIds.has(notification.id)}
-							>
-								×
-							</button>
+							{#if notification.points}
+								<span class={styles.PointsLabel}
+									>+{notification.points.toLocaleString()} points</span
+								>
+								<button
+									class={styles.ClaimButton}
+									onclick={(e) => deleteNotification(e, notification.id)}
+									aria-label="Claim points"
+									disabled={deletingIds.has(notification.id)}
+								>
+									Claim
+								</button>
+							{:else}
+								<button
+									class={styles.DeleteButton}
+									onclick={(e) => deleteNotification(e, notification.id)}
+									aria-label="Delete notification"
+									disabled={deletingIds.has(notification.id)}
+								>
+									×
+								</button>
+							{/if}
 						</div>
 					{/each}
 				{/if}

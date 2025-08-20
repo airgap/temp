@@ -22,9 +22,18 @@ export default handleListNotifications(
 			.select((eb) => eb.fn.count('id').as('count'))
 			.executeTakeFirstOrThrow();
 
+		const unclaimedCount = await pg
+			.selectFrom('notifications')
+			.where('user', '=', requester)
+			.where('deleted', 'is', null)
+			.where('points', 'is not', null)
+			.select((eb) => eb.fn.count('id').as('count'))
+			.executeTakeFirstOrThrow();
+
 		return {
 			notifications: notifications as Notification[],
 			unreadCount: Number(unreadCount.count) || 0,
+			unclaimedCount: Number(unclaimedCount.count) || 0,
 		};
 	},
 );

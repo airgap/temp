@@ -7,5 +7,17 @@
 		"@lyku/handles": "workspace:*",
 		"@lyku/postgres-client": "workspace:*",
 		"@lyku/mux-client": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "120Mi",
+				"cpu": "10m"
+			},
+			"limits": {
+				"memory": "180Mi",
+				"cpu": "80m"
+			}
+		}
 	}
 }

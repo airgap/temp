@@ -46,10 +46,12 @@ export default handleListUserPostsWithMeta(
 				.selectFrom('users')
 				.where('id', '=', uid)
 				.selectAll()
-				.executeTakeFirst()
-				.then((r) => r?.id);
+				.executeTakeFirst();
 			console.log('User from pg:', author);
-			if (author) await redis.set(`user:${uid}`, pack(author));
+			if (author) {
+				console.log('Setting user in redis', author);
+				await redis.set(`user:${uid}`, pack(author));
+			}
 		}
 		if (!author) throw new Err(404, 'User not found');
 		const query = pg

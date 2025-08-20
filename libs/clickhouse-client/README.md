@@ -134,10 +134,10 @@ const dictionary = getDictionary(request);
 import { grantAchievementToUser, grantPointsToUser } from '@lyku/route-helpers';
 
 // Grant achievement
-await grantAchievementToUser(achievementId, userId, db);
+await grantAchievementToUser(achievementId, userId);
 
 // Grant points
-await grantPointsToUser(points, userId, db);
+await grantPointsToUser(points, userId);
 ```
 
 ## URL Shortening

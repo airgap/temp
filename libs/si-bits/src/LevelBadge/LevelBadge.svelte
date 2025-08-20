@@ -1,18 +1,102 @@
 <script lang="ts">
 	import {
+		bigMax,
+		bigMin,
 		getLevelFromPoints,
 		getProgressToNextLevel,
 		makeDonut,
 	} from '@lyku/helpers';
 	import styles from './LevelBadge.module.sass';
-	import { derived } from 'svelte/store';
+	import { userStore } from '../CacheProvider';
+	import { cubicOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
 
 	// Props
-	const {
-		points,
-		progress = false,
-		size = 'm',
-	} = $props<{ points: bigint; progress?: boolean; size?: 's' | 'm' | 'l' }>();
+	const { progress = false, size = 'm' } = $props<{
+		progress?: boolean;
+		size?: 's' | 'm' | 'l';
+	}>();
+	const targetPoints = $derived(userStore.get(-1n)?.points ?? 0n);
+
+	// Custom bigint tweening
+	let points = $state(0n);
+	let animationFrame: number | null = null;
+	let startPoints = 0n;
+	let startTime = 0;
+	let lastPoints = $state(0n);
+	const duration = $derived(
+		Math.min(
+			5000,
+			Number(
+				(bigMax(targetPoints, lastPoints) + 1n) /
+					(bigMin(targetPoints, lastPoints) + 1n),
+			) * 1000,
+		),
+	);
+	$effect(() => {
+		console.log('Duration', duration);
+	});
+	let hasInitialized = false;
+
+	onMount(() => {
+		window.setPoints = (value: BigInt) => {
+			userStore.set(-1n, { ...userStore.get(-1n), points: value });
+		};
+	});
+
+	$effect(() => {
+		// When targetPoints changes, start animation
+		if (targetPoints !== points) {
+			// Skip animation on first load - jump directly to target
+			if (!hasInitialized) {
+				points = targetPoints;
+				lastPoints = targetPoints;
+				hasInitialized = true;
+				return;
+			}
+
+			startPoints = points;
+			startTime = Date.now();
+
+			// Cancel any existing animation
+			if (animationFrame) {
+				cancelAnimationFrame(animationFrame);
+			}
+
+			const animate = () => {
+				const elapsed = Date.now() - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+				const easedProgress = cubicOut(progress);
+
+				// Interpolate between bigints
+				const diff = targetPoints - startPoints || 0;
+				points = startPoints + BigInt(Math.floor(Number(diff) * easedProgress));
+
+				if (progress < 1) {
+					animationFrame = requestAnimationFrame(animate);
+				} else {
+					points = targetPoints;
+					animationFrame = null;
+					lastPoints = points;
+				}
+			};
+
+			animationFrame = requestAnimationFrame(animate);
+		}
+
+		return () => {
+			if (animationFrame) {
+				cancelAnimationFrame(animationFrame);
+			}
+		};
+	});
+
+	$effect(() => {
+		console.log(userStore.get(-1n));
+	});
+	$effect(() => {
+		console.log('Points', points, progressValue);
+	});
 	// export let progress: boolean = false;
 	// export let size: 's' | 'm' | 'l' = 's';
 
@@ -32,6 +116,10 @@
 	const id = $props.id();
 	const fillClipId = $derived(`fill-clip-${id}`);
 	const nonFillClipId = $derived(`non-fill-clip-${id}`);
+
+	$effect(() => {
+		console.log('PROG', progressValue);
+	});
 
 	// Calculate dimensions for the fill
 	const fillHeight = $derived((progressValue / 100) * sizeValue);

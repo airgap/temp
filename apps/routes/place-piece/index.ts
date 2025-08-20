@@ -58,14 +58,10 @@ export default handlePlacePiece(
 		if (checkWin(match.board, iAm)) {
 			match.winner = requester;
 			console.log(match.winner, 'won!');
-			void grantPointsToUser(
-				ttfBotsById.get(oppId)?.points ?? 1,
-				requester,
-				pg,
-			);
+			void grantPointsToUser(ttfBotsById.get(oppId)?.points ?? 1, requester);
 			const achievement = achievementMap.get(oppId);
 			if (!achievement) console.log('No achievement to grant');
-			else void grantAchievementToUser(achievement, requester, pg);
+			else void grantAchievementToUser(achievement, requester);
 		} else {
 			dropIfNecessary(match);
 			void delayAttack(matchId, pg);

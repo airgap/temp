@@ -30,8 +30,12 @@ export const listNotifications = {
 				type: 'integer',
 				minimum: 0,
 			},
+			unclaimedCount: {
+				type: 'integer',
+				minimum: 0,
+			},
 		},
-		required: ['notifications', 'unreadCount'],
+		required: ['notifications', 'unreadCount', 'unclaimedCount'],
 	},
 	authenticated: true,
 	throws: [400, 401, 500],

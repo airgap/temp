@@ -137,7 +137,7 @@ import { grantAchievementToUser, grantPointsToUser } from '@lyku/route-helpers';
 await grantAchievementToUser(achievementId, userId, db);
 
 // Grant points
-await grantPointsToUser(points, userId, db);
+await grantPointsToUser(points, userId);
 ```
 
 ## URL Shortening

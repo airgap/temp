@@ -18,6 +18,7 @@
 	import styles from './App.module.sass';
 	import type { Post } from '@lyku/json-models';
 	import type { EventHandler } from 'svelte/elements';
+	import { api } from '@lyku/monolith-ts-api';
 
 	const currentUser = $page.data.user;
 
@@ -65,6 +66,10 @@
 		] as const satisfies [string, EventHandler<any>][];
 		events.forEach(([event, handler]) => {
 			window.addEventListener(event as any, handler);
+		});
+		api.listenToPoints({}).listen((points) => {
+			userStore.set(-1n, { ...(userStore.get(-1n) ?? {}), points });
+			console.log('points update', points);
 		});
 		return () =>
 			events.forEach(([event, handler]) => {

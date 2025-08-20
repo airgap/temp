@@ -402,28 +402,28 @@ export class LeaderboardAwarderService {
 				name: 'day',
 				points: 250,
 				frameSize: 'day' as const,
-				displayName: 'Daily',
+				displayName: 'daily',
 				shouldAward: true, // Always award daily
 			},
 			{
 				name: 'week',
 				points: 1000,
 				frameSize: 'week' as const,
-				displayName: 'Weekly',
+				displayName: 'weekly',
 				shouldAward: dayOfWeek === 1, // Award on Monday
 			},
 			{
 				name: 'month',
 				points: 2000,
 				frameSize: 'month' as const,
-				displayName: 'Monthly',
+				displayName: 'monthly',
 				shouldAward: dayOfMonth === 1, // Award on first of month
 			},
 			{
 				name: 'year',
 				points: 10000,
 				frameSize: 'year' as const,
-				displayName: 'Yearly',
+				displayName: 'yearly',
 				shouldAward: dayOfYear === 1, // Award on January 1st
 			},
 		];
@@ -525,7 +525,7 @@ export class LeaderboardAwarderService {
 			}
 
 			// Award the points using grantPointsToUser (handles level-ups and achievements)
-			await grantPointsToUser(points, userId, this.pg!);
+			// await grantPointsToUser(points, userId, this.pg!);
 
 			// Mark as awarded with expiry
 			const expiry = this.getExpiryForPeriod(frameSize);
@@ -538,17 +538,15 @@ export class LeaderboardAwarderService {
 
 			// Send notification about the leaderboard win
 			try {
-				await sendNotification(
-					{
-						user: userId,
-						title: '🏆 Leaderboard Champion!',
-						subtitle: `${periodDisplayName} #1`,
-						body: `You earned ${points} points for being #1 in ${leaderboardTitle} (${periodDisplayName})!`,
-						icon: '/icons/trophy.png',
-						href: `/leaderboards/${leaderboardId}`,
-					},
-					this.pg!,
-				);
+				await sendNotification({
+					user: userId,
+					title: '🏆 Leaderboard Champion!',
+					subtitle: `${periodDisplayName} #1`,
+					body: `You placed #1 in the the ${periodDisplayName} ${leaderboardTitle}!`,
+					icon: '/trophy.png',
+					href: `/leaderboards/${leaderboardId}`,
+					points,
+				});
 				this.logger.info(`Sent leaderboard win notification to user ${userId}`);
 			} catch (notificationError) {
 				this.logger.error(
