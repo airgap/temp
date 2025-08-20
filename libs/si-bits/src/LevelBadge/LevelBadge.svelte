@@ -90,13 +90,6 @@
 			}
 		};
 	});
-
-	$effect(() => {
-		console.log(userStore.get(-1n));
-	});
-	$effect(() => {
-		console.log('Points', points, progressValue);
-	});
 	// export let progress: boolean = false;
 	// export let size: 's' | 'm' | 'l' = 's';
 
@@ -110,16 +103,11 @@
 	const half = $derived(sizeValue / 2);
 	const level = $derived(getLevelFromPoints(points));
 	const progressValue = $derived(getProgressToNextLevel(points));
-	$effect(() => console.log('level', level, 'pv', progressValue));
 
 	// Generate unique IDs for SVG elements
 	const id = $props.id();
 	const fillClipId = $derived(`fill-clip-${id}`);
 	const nonFillClipId = $derived(`non-fill-clip-${id}`);
-
-	$effect(() => {
-		console.log('PROG', progressValue);
-	});
 
 	// Calculate dimensions for the fill
 	const fillHeight = $derived((progressValue / 100) * sizeValue);
