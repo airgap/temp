@@ -2,7 +2,17 @@ import type { TsonHandlerModel } from 'from-schema';
 import { group } from '@lyku/json-models';
 
 export const getGroups = {
-	request: { type: 'array', items: group.properties.id },
+	request: {
+		type: 'array',
+		items: {
+			oneOf: [
+				{
+					type: 'bigint',
+				},
+				{ type: 'string' },
+			],
+		},
+	},
 	response: {
 		type: 'array',
 		items: group,

@@ -7,7 +7,6 @@ This directory contains a custom Redis client implementation that's compatible w
 The implementation consists of two main parts:
 
 1. `redis-client.ts`: A lightweight Redis client that:
-
    - Uses Web API standards (TextEncoder/TextDecoder, Fetch API)
    - Implements RESP (Redis Serialization Protocol)
    - Supports common Redis commands

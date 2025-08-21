@@ -1,5 +1,6 @@
 import type { PostgresRecordModel } from 'from-schema';
 import { groupName } from './groupName';
+import { groupSlug } from './groupSlug';
 
 export const group = {
 	properties: {
@@ -7,11 +8,7 @@ export const group = {
 			type: 'bigserial',
 			primaryKey: true,
 		},
-		slug: {
-			type: 'varchar',
-			maxLength: 20,
-			pattern: '^[a-zA-Z0-9_]{3,20}$',
-		},
+		slug: groupSlug,
 		lowerSlug: {
 			type: 'varchar',
 			maxLength: 20,

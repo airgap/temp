@@ -21,6 +21,8 @@ export function mapColumnType(
 			return 'DOUBLE PRECISION';
 		case 'integer':
 		case 'int':
+		case 'int2':
+		case 'int4':
 			return mapIntegerType(name, columnSchema);
 		case 'bigint':
 			return mapBigintType(name, columnSchema);

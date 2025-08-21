@@ -45,7 +45,7 @@ export const grantAchievementToUser = async (
 	if (result)
 		await sendNotification({
 			user,
-			title: 'ACHIEVEMENT',
+			title: 'You got an achievement!',
 			body: ach.name,
 			icon: ach.icon,
 			href: `/achievements/${ach.id}`,

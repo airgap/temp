@@ -1,27 +1,28 @@
-import { bindIds, Err } from '@lyku/helpers';
+import { bindIds, Err, groupPermissions } from '@lyku/helpers';
 import { handleCreateGroup } from '@lyku/handles';
-import { Group } from '@lyku/json-models/index';
+import { Group } from '@lyku/json-models';
 import { Insertable, sql } from 'kysely';
+import { client as pg } from '@lyku/postgres-client';
 
 export default handleCreateGroup(
-	async ({ name, slug, private: p }, { db, requester, strings }) => {
+	async ({ name, slug, private: p }, { requester, strings }) => {
 		const lowerSlug = slug.toLowerCase();
-		const user = await db
+		const user = await pg
 			.selectFrom('users')
 			.selectAll()
 			.where('id', '=', requester)
 			.executeTakeFirst();
 		if (!user) throw new Error('User not found');
-		const groups = await db
+		const groups = await pg
 			.selectFrom('groups')
 			.selectAll()
 			.where('owner', '=', requester)
 			.execute();
 		const underLimit = groups.length < user.groupLimit;
-		const existingGroup = await db
+		const existingGroup = await pg
 			.selectFrom('groups')
 			.selectAll()
-			.where(sql`lower(id)`, '=', lowerSlug)
+			.where('lowerSlug', '=', lowerSlug)
 			.executeTakeFirst();
 
 		if (existingGroup) {
@@ -32,7 +33,7 @@ export default handleCreateGroup(
 			throw new Err(403, strings.groupLimitReached);
 		}
 
-		const g = await db
+		const g = await pg
 			.insertInto('groups')
 			.values({
 				slug,
@@ -42,16 +43,18 @@ export default handleCreateGroup(
 				name,
 				private: p,
 				creator: requester,
-			} as Group)
+				members: 1n,
+			})
 			.returningAll()
 			.executeTakeFirstOrThrow();
-		await db
+		await pg
 			.insertInto('groupMemberships')
 			.values({
 				group: g.id,
 				user: requester,
-				id: bindIds(requester, g.id),
 				created: new Date(),
+				updated: new Date(),
+				permissions: groupPermissions,
 			})
 			.execute();
 		return g;

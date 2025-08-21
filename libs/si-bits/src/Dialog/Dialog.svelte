@@ -68,42 +68,44 @@
 	const transform = $derived(animations[animation]());
 </script>
 
-<div
-	class={styles.DialogBackdrop}
-	style="opacity: {$fadeSpring * 2 - 1}; pointer-events: {visible
-		? 'auto'
-		: 'none'};"
-	onclick={() => (visible = false)}
-	onkeydown={(e) => {
-		if (e.key === 'Escape') {
-			visible = false;
-		}
-	}}
-	role="dialog"
-	tabindex="0"
->
+{#if visible}
 	<div
-		class={[
-			styles.Dialog,
-			classes[size],
-			variants[variant],
-			pad && styles['pad-' + pad],
-		]}
-		style="{transform}; {style}"
-		onclick={(e) => e.stopPropagation()}
-		tabindex="0"
+		class={styles.DialogBackdrop}
+		style="opacity: {$fadeSpring * 2 - 1}; pointer-events: {visible
+			? 'auto'
+			: 'none'};"
+		onclick={() => (visible = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') {
+				visible = false;
+			}
+		}}
 		role="dialog"
-		onkeydown={(e) => e.stopPropagation()}
+		tabindex="0"
 	>
-		{#if title}<h3 class={styles.title}>{title}</h3>{/if}
-		<div class={[styles.interactives, loading && hidden.hidden]}>
-			<button
-				class={styles.Close}
-				onclick={() => (visible = false)}
-				aria-label="Close"
-			></button>
-			{@render children?.()}
+		<div
+			class={[
+				styles.Dialog,
+				classes[size],
+				variants[variant],
+				pad && styles['pad-' + pad],
+			]}
+			style="{transform}; {style}"
+			onclick={(e) => e.stopPropagation()}
+			tabindex="0"
+			role="dialog"
+			onkeydown={(e) => e.stopPropagation()}
+		>
+			{#if title}<h3 class={styles.title}>{title}</h3>{/if}
+			<div class={[styles.interactives, loading && hidden.hidden]}>
+				<button
+					class={styles.Close}
+					onclick={() => (visible = false)}
+					aria-label="Close"
+				></button>
+				{@render children?.()}
+			</div>
+			<LoadingOverlay visible={loading} />
 		</div>
-		<LoadingOverlay visible={loading} />
 	</div>
-</div>
+{/if}

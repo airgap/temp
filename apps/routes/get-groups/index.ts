@@ -1,5 +1,17 @@
 import { handleGetGroups } from '@lyku/handles';
 import { client as pg } from '@lyku/postgres-client';
-export default handleGetGroups((ids, {}) =>
-	pg.selectFrom('groups').selectAll().where('id', 'in', ids).execute(),
-);
+export default handleGetGroups((ids, {}) => {
+	const bigintIds = ids.filter((id) => typeof id === 'bigint') as bigint[];
+	const slugs = ids.filter((id) => typeof id === 'string') as string[];
+
+	return pg
+		.selectFrom('groups')
+		.selectAll()
+		.where((eb) =>
+			eb.or([
+				...(bigintIds.length > 0 ? [eb('id', 'in', bigintIds)] : []),
+				...(slugs.length > 0 ? [eb('slug', 'in', slugs)] : []),
+			]),
+		)
+		.execute();
+});

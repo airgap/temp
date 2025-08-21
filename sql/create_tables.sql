@@ -526,7 +526,8 @@ CREATE TABLE IF NOT EXISTS "groupMemberships" (
   "user" BIGINT NOT NULL,
   "created" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  PRIMARY KEY ("group", "user")
+  "permissions" TEXT[] NOT NULL,
+  PRIMARY KEY ("user", "group")
 );
 
 
@@ -535,9 +536,6 @@ CREATE INDEX IF NOT EXISTS "idx_groupMemberships_user" ON "groupMemberships" ("u
 
 
 CREATE INDEX IF NOT EXISTS "idx_groupMemberships_group" ON "groupMemberships" ("group");
-
-
-CREATE INDEX IF NOT EXISTS "idx_groupMemberships_user_group" ON "groupMemberships" ("user", "group");
 
 
 ---- Create triggers
@@ -906,12 +904,14 @@ CREATE TABLE IF NOT EXISTS "notifications" (
   "id" BIGSERIAL PRIMARY KEY NOT NULL,
   "user" BIGINT NOT NULL,
   "title" VARCHAR CHECK (length("title") <= 50) CHECK (length("title") >= 5) NOT NULL,
-  "subtitle" VARCHAR CHECK (length("subtitle") <= 50) CHECK (length("subtitle") >= 5),
+  "subtitle" VARCHAR CHECK (length("subtitle") <= 50),
   "body" TEXT CHECK (length("body") <= 1000) NOT NULL,
   "icon" VARCHAR CHECK (length("icon") <= 50) CHECK (length("icon") >= 5) NOT NULL,
-  "href" VARCHAR CHECK (length("href") <= 50) CHECK (length("href") >= 5),
+  "href" VARCHAR CHECK (length("href") <= 50),
   "posted" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "read" TIMESTAMPTZ
+  "read" TIMESTAMPTZ,
+  "deleted" TIMESTAMPTZ,
+  "points" INTEGER
 );
 
 
@@ -937,22 +937,7 @@ CREATE INDEX IF NOT EXISTS "idx_notifications_href" ON "notifications" ("href");
 CREATE INDEX IF NOT EXISTS "idx_notifications_posted" ON "notifications" ("posted");
 
 
----- Create triggers
-CREATE OR REPLACE FUNCTION notifications_trigger_1_fn () RETURNS TRIGGER AS $$
-BEGIN
-NEW.updated = CURRENT_TIMESTAMP;
-RETURN NEW;
-
-END;
-$$ LANGUAGE plpgsql;
-
-
-DROP TRIGGER IF EXISTS notifications_trigger_1 ON "notifications";
-
-
-CREATE TRIGGER notifications_trigger_1 BEFORE
-UPDATE ON "notifications" FOR EACH ROW
-EXECUTE FUNCTION notifications_trigger_1_fn ();
+CREATE INDEX IF NOT EXISTS "idx_notifications_deleted" ON "notifications" ("deleted");
 -----------------------------
 --------  pfpDrafts  --------
 -----------------------------
@@ -1149,7 +1134,7 @@ CREATE INDEX IF NOT EXISTS "idx_reactions_postId" ON "reactions" ("postId");
 ------------------------------
 ---- Create table
 CREATE TABLE IF NOT EXISTS "scores" (
-  "id" BIGSERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY NOT NULL,
   "user" BIGINT NOT NULL,
   "channel" BIGINT,
   "reports" INTEGER NOT NULL,
@@ -1188,6 +1173,12 @@ CREATE INDEX IF NOT EXISTS "idx_scores_leaderboard" ON "scores" ("leaderboard");
 
 
 CREATE INDEX IF NOT EXISTS "idx_scores_game" ON "scores" ("game");
+
+
+CREATE INDEX IF NOT EXISTS "idx_scores_leaderboard_user" ON "scores" ("leaderboard", "user");
+
+
+CREATE INDEX IF NOT EXISTS "idx_scores_leaderboard_user_created" ON "scores" ("leaderboard", "user", "created");
 
 
 ---- Create triggers

@@ -19,18 +19,20 @@ export default handleListGroups(
 		}
 
 		const groups = await groupsQuery.execute();
-
-		const memberships = await pg
-			.selectFrom('groupMemberships')
-			.selectAll()
-			.where('user', '=', requester)
-			.where(
-				'group',
-				'in',
-				groups.map((g) => g.id),
-			)
-			.execute();
-
+		console.log('Got groups', groups);
+		const memberships = groups.length
+			? await pg
+					.selectFrom('groupMemberships')
+					.selectAll()
+					.where('user', '=', requester)
+					.where(
+						'group',
+						'in',
+						groups.map((g) => g.id),
+					)
+					.execute()
+			: [];
+		console.log('Got memberships', memberships);
 		return {
 			memberships,
 			groups,

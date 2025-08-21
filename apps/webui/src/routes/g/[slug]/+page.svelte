@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	import { PostList } from '@lyku/si-bits';
-	import { getContext } from 'svelte';
 	import { page } from '$app/stores';
 
 	// Get groupId from route params instead of window.location
-	const groupId = $derived($page.params.slug);
+	const groupSlug = $derived($page.params.slug?.toLowerCase());
 
 	// Get cache from context and derive group data
-	const cache: any = getContext('cache');
-	const group = $derived($cache?.groups?.[groupId]);
+	const group = $derived(
+		groupSlug
+			? groupStore.values().find((g) => g.lowerSlug === groupSlug)
+			: undefined,
+	);
 
 	// Create posts promise based on auth state
 	const postsPromise = $derived(

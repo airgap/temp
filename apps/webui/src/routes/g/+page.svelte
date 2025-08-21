@@ -1,12 +1,21 @@
 <script lang="ts">
-	import { Button, GroupList, FeedPage } from '@lyku/si-bits';
+	import {
+		Button,
+		CreateGroupDialog,
+		Dialog,
+		GroupList,
+		FeedPage,
+		Texticle,
+	} from '@lyku/si-bits';
 	import type { GroupFilter } from '@lyku/json-models';
 
 	let substring = '';
 	let filter: GroupFilter | undefined;
 
+	let showCreateGroup = $state(false);
+
 	function handleAddClick() {
-		alert('Coming soon!');
+		showCreateGroup = true;
 	}
 </script>
 
@@ -27,4 +36,5 @@
 	/>
 	-->
 	<GroupList {filter} {substring} />
+	<CreateGroupDialog bind:visible={showCreateGroup} />
 </FeedPage>

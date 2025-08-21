@@ -108,7 +108,7 @@ export default handleRegisterUser(async (params, ctx) => {
 				bot: false,
 				username,
 				chatColor: 'FFFFFF',
-				groupLimit: 0,
+				groupLimit: 10,
 				staff: false,
 				lastSuper: new Date(),
 				live: false,

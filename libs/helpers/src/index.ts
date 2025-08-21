@@ -22,6 +22,7 @@ export * from './getPostIdFromAttachmentId';
 export * from './getProgressToNextLevel';
 export * from './getSupertypeFromAttachmentId';
 export * from './getSupertypeFromMime';
+export * from './groupPermissions';
 export * from './levelThresholds';
 export * from './makeAttachmentId';
 export * from './makeDonut';

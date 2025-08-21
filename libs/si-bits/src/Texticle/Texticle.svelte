@@ -15,7 +15,7 @@
 		minLength,
 		maxLength,
 		multiline,
-		value,
+		value = $bindable(),
 		oninput,
 		onvalidation,
 		className,

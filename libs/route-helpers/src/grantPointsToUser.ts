@@ -54,12 +54,12 @@ export const grantPointsToUser = async (
 				body: 'Reached level ' + newLevel,
 				title: 'Level up!',
 			});
-			if (newLevel in levelMap)
-				await grantAchievementToUser(
-					levelMap[newLevel as keyof typeof levelMap],
-					userId,
-					trx,
-				);
+			// if (newLevel in levelMap)
+			// 	await grantAchievementToUser(
+			// 		levelMap[newLevel as keyof typeof levelMap],
+			// 		userId,
+			// 		trx,
+			// 	);
 		}
 	}
 };
