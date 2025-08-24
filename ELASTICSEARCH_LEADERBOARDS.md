@@ -9,11 +9,13 @@ This project now uses **Elasticsearch (OpenSearch)** for blazing fast leaderboar
 ### Core Components
 
 1. **`ElasticLeaderboardService`** (`libs/route-helpers/src/elasticLeaderboardService.ts`)
+
    - Handles all Elasticsearch operations
    - Smart caching with Redis
    - Automatic sync from PostgreSQL
 
 2. **Updated Routes**
+
    - `list-high-scores`: Now queries Elasticsearch for sub-100ms response times
    - `report-grabba-score`: Automatically syncs new scores to Elasticsearch
 

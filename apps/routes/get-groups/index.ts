@@ -1,10 +1,10 @@
 import { handleGetGroups } from '@lyku/handles';
 import { client as pg } from '@lyku/postgres-client';
-export default handleGetGroups((ids, {}) => {
+export default handleGetGroups(async (ids, {}) => {
 	const bigintIds = ids.filter((id) => typeof id === 'bigint') as bigint[];
 	const slugs = ids.filter((id) => typeof id === 'string') as string[];
-
-	return pg
+	console.log('bigintIds', bigintIds, 'slugs', slugs);
+	const groups = await pg
 		.selectFrom('groups')
 		.selectAll()
 		.where((eb) =>
@@ -14,4 +14,8 @@ export default handleGetGroups((ids, {}) => {
 			]),
 		)
 		.execute();
+	console.log('groups', groups);
+	return {
+		groups,
+	};
 });

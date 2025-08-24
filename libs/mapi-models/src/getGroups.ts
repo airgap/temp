@@ -14,8 +14,13 @@ export const getGroups = {
 		},
 	},
 	response: {
-		type: 'array',
-		items: group,
+		type: 'object',
+		properties: {
+			groups: {
+				type: 'array',
+				items: group,
+			},
+		},
 	},
 	authenticated: false,
 	throws: [400, 401, 404, 500],

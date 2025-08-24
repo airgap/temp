@@ -17,12 +17,16 @@
 	onscroll={(e) => (scrolled = e.target.scrollTop > 0)}
 >
 	<div class={[styles.Feed]}>
-		{#if title}
-			<h1 class={styles.title}><span>{title}</span></h1>
-		{/if}
-		{#if actions}
-			<div class={styles.actions}>
-				{@render actions?.()}
+		{#if title || actions}
+			<div class={styles.header}>
+				{#if title}
+					<h1 class={styles.title}><span>{title}</span></h1>
+				{/if}
+				{#if actions}
+					<div class={styles.actions}>
+						{@render actions?.()}
+					</div>
+				{/if}
 			</div>
 		{/if}
 		{@render children?.()}

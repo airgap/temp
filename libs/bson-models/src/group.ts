@@ -24,6 +24,7 @@ export const group = {
 		updated: { type: 'timestamptz' },
 		members: { type: 'bigint' },
 		isolated: { type: 'timestamptz' },
+		deleted: { type: 'timestamptz' },
 	},
 	required: [
 		'id',

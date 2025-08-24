@@ -41,6 +41,6 @@ export const listFeedPosts = {
 		required: [],
 	},
 	response: { type: 'array', items: post },
-	authenticated: true,
+	authenticated: false,
 	throws: [400, 401, 500],
 } as const satisfies TsonHandlerModel;

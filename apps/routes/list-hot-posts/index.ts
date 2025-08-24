@@ -6,7 +6,6 @@ import { client as pg } from '@lyku/postgres-client';
 import { FileDoc, Post, Reaction, User } from '@lyku/json-models';
 import { bondIds } from '@lyku/helpers';
 import { handleListHotPosts } from '@lyku/handles';
-import { defaultLogger } from '@lyku/logger';
 import { unpack } from 'msgpackr';
 
 // const decompressor = brotworst();
@@ -142,6 +141,6 @@ export default handleListHotPosts(async ({ page }, { requester }) => {
 	};
 
 	console.log('Hot posts:', posts.length);
-	defaultLogger.info('Hot response', response);
+	console.info('Hot response', response);
 	return response;
 });

@@ -4,7 +4,6 @@ import { Reaction } from '@lyku/json-models';
 import { client as redis } from '@lyku/redis-client';
 import { client as clickhouse } from '@lyku/clickhouse-client';
 import { client as pg } from '@lyku/postgres-client';
-import { defaultLogger, defaultLogger as logger } from '@lyku/logger';
 
 // Add a retry queue system
 import { addToRetryQueue } from '@lyku/queue-system';
@@ -142,7 +141,7 @@ export default handleReactToPost(
 
 				// Check if we need to load the reaction set from the database
 				if (result === 'LOAD_FROM_DB') {
-					logger.info('Loading reaction set from database', { postId });
+					console.info('Loading reaction set from database', { postId });
 
 					// Load and cache the post's reaction set
 					await loadReactionSetFromDB(postId);
@@ -162,7 +161,7 @@ export default handleReactToPost(
 					)) as Reaction | undefined;
 				} else if (result === 'CHECK_DB_VIRAL') {
 					// Special case for viral posts where user's reaction isn't in cached sample
-					logger.info('Viral post: checking database for user reaction', {
+					console.info('Viral post: checking database for user reaction', {
 						postId,
 						userId: requester,
 					});
@@ -205,7 +204,7 @@ export default handleReactToPost(
 					previousReaction = result as Reaction | undefined;
 				}
 			} catch (redisError) {
-				logger.error('Redis reaction operation failed', {
+				console.error('Redis reaction operation failed', {
 					error: redisError,
 					postId,
 					userId: requester,
@@ -223,7 +222,7 @@ export default handleReactToPost(
 					previousReaction,
 				);
 			} catch (dbError) {
-				logger.error('Failed to persist reaction to Postgres', {
+				console.error('Failed to persist reaction to Postgres', {
 					error: dbError,
 					postId,
 					userId: requester,
@@ -258,7 +257,7 @@ export default handleReactToPost(
 					],
 				});
 			} catch (chError) {
-				logger.error('ClickHouse insert failed', {
+				console.error('ClickHouse insert failed', {
 					error: chError?.message,
 					postId,
 					userId: requester,
@@ -283,7 +282,7 @@ export default handleReactToPost(
 						],
 					});
 				} catch (pointsError) {
-					logger.error('Failed to grant points for reaction', {
+					console.error('Failed to grant points for reaction', {
 						error: pointsError,
 						postId,
 						authorId: author,
@@ -301,7 +300,7 @@ export default handleReactToPost(
 			// 	previousReaction,
 			// };
 		} catch (error) {
-			logger.error('Reaction handler failed', {
+			console.error('Reaction handler failed', {
 				error,
 				postId,
 				userId: requester,
@@ -346,7 +345,7 @@ async function loadReactionSetFromDB(postId: bigint): Promise<void> {
 
 	// For viral posts, take a different approach
 	if (isViralPost) {
-		logger.info('Viral post detected, loading optimized reaction data', {
+		console.info('Viral post detected, loading optimized reaction data', {
 			postId,
 			reactionCount: count,
 		});
