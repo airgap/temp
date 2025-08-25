@@ -28,6 +28,7 @@ export * from './gameStats';
 export * from './gameStatus';
 export * from './grabbaScore';
 export * from './group';
+export * from './groupIconDraft';
 export * from './groupMembership';
 export * from './groupSlug';
 export * from './groupName';

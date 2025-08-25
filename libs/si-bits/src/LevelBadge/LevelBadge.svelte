@@ -128,7 +128,7 @@
 		</defs>
 
 		<!-- Background circle -->
-		<circle cx="${half}" cy="${half}" r="${half}" fill="#ffffff17" />
+		<circle cx="${half}" cy="${half}" r="${half}" fill="#ffffff00" />
 
 		<!-- Fill that rises from bottom -->
 		<circle cx="${half}" cy="${half}" r="${half}" fill="white" clip-path="url(#${fillClipId})" />

@@ -34,6 +34,7 @@ export * from './FollowUser';
 export * from './Footer';
 export * from './FriendInviter';
 export * from './getHomepage';
+export * from './GroupIcon';
 export * from './GroupList';
 export * from './GroupFilterSelect';
 export * from './Image';

@@ -4,10 +4,13 @@
 	import {
 		Button,
 		FeedPage,
+		GroupIcon,
+		ImageUpload,
 		Link,
 		PostList,
 		groupStore,
 		groupMembershipStore,
+		PfpUpload,
 		postStore,
 		userStore,
 	} from '@lyku/si-bits';
@@ -46,14 +49,16 @@
 			group,
 		),
 	);
+	const onIconUpload = () => console.log('Image');
 </script>
 
 <FeedPage title={group?.name ?? '404'}>
-	{#snippet actions()}
-		{#if group?.owner === userStore.get(-1n)?.id}<Link
-				href="/g/{group.slug}/edit">Edit</Link
-			>
-		{/if}{/snippet}
+	{#snippet pageIcon()}
+		{#if group}
+			<PfpUpload group={group.id} image={group.icon} onUpload={onIconUpload} />
+		{/if}
+	{/snippet}
+	{#snippet actions()}{/snippet}
 
 	<PostList threads={data.posts?.map((p) => ({ focus: p.id }))} />
 </FeedPage>

@@ -2,7 +2,6 @@ import { handleGetGroup } from '@lyku/handles';
 import { bindIds, Err } from '@lyku/helpers';
 import { client as pg } from '@lyku/postgres-client';
 import { client as redis } from '@lyku/redis-client';
-import { defaultLogger as logger } from '@lyku/logger';
 
 export default handleGetGroup(async (id, { requester }) => {
 	try {

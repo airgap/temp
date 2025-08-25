@@ -2,47 +2,39 @@
 	import { api, getSessionId } from '@lyku/monolith-ts-api';
 	import type { Group, GroupFilter, GroupMembership } from '@lyku/json-models';
 	import { Button } from '../Button';
-	// import { currentUserStore as currentUser } from '../CacheProvider';
+	import { currentUserStore as currentUser } from '../CacheProvider';
+	import { GroupIcon } from '../GroupIcon';
 	import styles from './GroupList.module.sass';
-	import { userStore } from '../CacheProvider';
+	import {
+		groupMembershipStore,
+		groupStore,
+		userStore,
+	} from '../CacheProvider';
+	import { JoinLeaveGroup } from '../JoinLeaveGroup';
+	import { Link } from '../Link';
 
-	const { substring, filter } = $props<{
-		substring?: string;
-		filter?: GroupFilter;
-	}>();
+	const { groupIds } = $props();
 
-	let groups = $state<Group[]>([]);
-	let memberships = $state<GroupMembership[]>([]);
-	let queriedGroups = $state(false);
-
-	$effect(() => {
-		if (!queriedGroups && getSessionId()) {
-			queriedGroups = true;
-			api
-				.listGroups({ filter, substring })
-				.then(({ groups: g, memberships: m }) => {
-					groups = g;
-					memberships = m;
-				});
-		} else if (!queriedGroups) {
-			queriedGroups = true;
-			api.listGroupsUnauthenticated({ substring }).then((g) => {
-				groups = g;
-			});
-		}
-	});
+	const groups = $derived(groupIds.map((id) => groupStore.get(id)));
 </script>
 
-{#if groups.length}
-	<ul>
+{#if groupIds?.length}
+	<ul class={styles.GroupList}>
 		{#each groups as g (g.id)}
 			<li>
-				<h3>{g.name}</h3>
-				{#if userStore.get(-1n) && memberships.find((m) => m.group === g.id) && g.owner !== userStore.get(-1n)?.id}
-					<Button onClick={() => alert('Coming soon!')}>Leave</Button>
-				{:else}
-					<Button onClick={() => alert('Coming soon!')}>Join</Button>
-				{/if}
+				<div class={styles.groupInfo}>
+					<GroupIcon group={g.id} />
+					<h3><Link href={`/g/${g.slug}`}>{g.name}</Link></h3>
+					<span class={styles.memberCount}
+						>{g.members.toLocaleString()} member{g.members > 1 ? 's' : ''}</span
+					>
+				</div>
+				<div class={styles.groupActions}>
+					<JoinLeaveGroup group={g.id} />
+					{#if g.owner === userStore.get(-1n)?.id}
+						<Link href={`/g/${g.slug}/edit`}>Manage</Link>
+					{/if}
+				</div>
 			</li>
 		{/each}
 	</ul>

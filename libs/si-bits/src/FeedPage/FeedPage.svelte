@@ -6,6 +6,7 @@
 		title,
 		actions,
 		scrolled = $bindable(false),
+		pageIcon,
 	} = $props<{
 		children?: any;
 		title?: string;
@@ -19,8 +20,11 @@
 	<div class={[styles.Feed]}>
 		{#if title || actions}
 			<div class={styles.header}>
+				{@render pageIcon?.()}
 				{#if title}
-					<h1 class={styles.title}><span>{title}</span></h1>
+					<h1 class={styles.title}>
+						<span>{title}</span>
+					</h1>
 				{/if}
 				{#if actions}
 					<div class={styles.actions}>

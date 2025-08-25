@@ -34,7 +34,9 @@
 		attachmentUploadPack = $bindable(),
 		onFinished,
 		children,
+		group,
 	} = $props<{
+		group?: bigint;
 		disabled?: boolean;
 		className?: string;
 		onUpload?: (id: string) => void;
@@ -119,7 +121,8 @@
 	const confirmClicked = async () => {
 		if (!fileState) return;
 		workingState = true;
-		pack = await api.authorizePfpUpload();
+		if (group) pack = await api.authorizeGroupIconUpload(group);
+		else pack = await api.authorizePfpUpload();
 	};
 
 	const reset = (newImage?: string) => {
@@ -159,7 +162,8 @@
 				r.json().then(async (cfres) => {
 					console.log('cfres', cfres);
 					uploaded = true;
-					await api.confirmPfpUpload(pack.id);
+					if (group) await api.confirmGroupIconUpload(pack.id);
+					else await api.confirmPfpUpload(pack.id);
 					// processed = true;
 					// onFinished?.();
 					// onUpload?.(pack.url);
@@ -243,9 +247,9 @@
 			{:else}
 				<label for={inputId} class={buttonStyles.Button}>
 					{@render children?.()}
-					{#if image !== undefined}
-						{@html replace}
-					{/if}
+					<!-- {#if image !== undefined} -->
+					{@html replace}
+					<!-- {/if} -->
 					{@render children?.()}
 				</label>
 			{/if}

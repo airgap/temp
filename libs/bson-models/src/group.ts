@@ -19,7 +19,7 @@ export const group = {
 		owner: { type: 'bigint' },
 		created: { type: 'timestamptz', default: { sql: 'CURRENT_TIMESTAMP' } },
 		private: { type: 'boolean' },
-		thumbnail: { type: 'varchar', maxLength: 30 },
+		icon: { type: 'varchar', maxLength: 30 },
 		background: { type: 'varchar', maxLength: 30 },
 		updated: { type: 'timestamptz' },
 		members: { type: 'bigint' },

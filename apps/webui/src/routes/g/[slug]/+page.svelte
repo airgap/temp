@@ -10,6 +10,7 @@
 		groupMembershipStore,
 		postStore,
 		userStore,
+		GroupIcon,
 	} from '@lyku/si-bits';
 	import { page } from '$app/stores';
 
@@ -49,6 +50,11 @@
 </script>
 
 <FeedPage title={group?.name ?? '404'}>
+	{#snippet pageIcon()}
+		{#if group}
+			<GroupIcon group={group.id} size="l" />
+		{/if}
+	{/snippet}
 	{#snippet actions()}
 		{#if group?.owner === userStore.get(-1n)?.id}<Link
 				href="/g/{group.slug}/edit">Edit</Link

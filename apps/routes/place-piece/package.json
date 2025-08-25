@@ -6,5 +6,17 @@
 		"@lyku/json-models": "workspace:*",
 		"@lyku/stock-docs": "workspace:*",
 		"@lyku/handles": "workspace:*"
+	},
+	"k8s": {
+		"resources": {
+			"requests": {
+				"memory": "130Mi",
+				"cpu": "50m"
+			},
+			"limits": {
+				"memory": "160Mi",
+				"cpu": "100m"
+			}
+		}
 	}
 }

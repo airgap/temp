@@ -43,19 +43,3 @@
 		{@render children?.()}
 	</button>
 {/if}
-
-<style lang="sass">
-  .link
-    cursor: pointer
-    text-decoration: none
-    
-    &:disabled
-      cursor: not-allowed
-    
-    &:hover:not(:disabled)
-      text-decoration: underline
-    
-    &:focus
-      outline: 2px solid currentColor
-      outline-offset: 2px
-</style>

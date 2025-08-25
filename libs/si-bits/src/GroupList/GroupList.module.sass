@@ -1,0 +1,30 @@
+@use '../symbols' as *
+.GroupList
+	list-style: none
+	padding-left: 0
+	li
+		border: $border
+		box-shadow: 0 5px 10px 0 #0005
+		padding: 10px
+		border-radius: 10px
+		background: #fff1
+		display: flex
+		justify-content: space-between
+		align-items: center
+		+ li
+			margin-top: 10px
+	.groupInfo
+		display: flex
+		align-items: center
+	.groupActions
+		display: flex
+		align-items: center
+		gap: 10px
+	h3
+		display: inline-flex
+		margin-left: 10px
+.memberCount
+	opacity: .5
+	margin-left: 10px
+	font-size: .9em
+	display: inline-block
